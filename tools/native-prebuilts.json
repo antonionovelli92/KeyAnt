@@ -1,0 +1,9 @@
+{
+  "release": "v0.6.48",
+  "asset": "KeyAnt-native-0.6.48.zip",
+  "sha256": "caa6bf77b64f5acf51e86134c0c15ff9b4366a77085efed41945054b34b2860b",
+  "files": {
+    "app/src/main/jniLibs/arm64-v8a/libkeyant_ai.so": "6923b24d99611c35be1c902c4a266e4807939a82784f38acac1beb7981fb2c04",
+    "app/src/main/jniLibs/x86_64/libkeyant_ai.so": "219c620639f9092fc025849e0fe9e2f82a6a14bf571f5be538aba4335d11ba4d"
+  }
+}
