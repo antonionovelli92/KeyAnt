@@ -18,4 +18,14 @@ set -eu
  --tests helium314.keyboard.keyforma.KeyAntV66Test \
  --tests helium314.keyboard.keyforma.KeyAntV68Test \
  --tests helium314.keyboard.keyforma.KeyAntStudio68Test
-./gradlew :app:assembleDebugNoMinify :app:lintDebugNoMinify
+./gradlew :app:processDebugNoMinifyManifestForPackage --rerun :app:assembleDebugNoMinify
+apk=app/build/outputs/apk/debugNoMinify/KeyAnt_0.6.50-debugNoMinify.apk
+build_tools="${ANDROID_HOME:?Set ANDROID_HOME}/build-tools/36.0.0"
+badging=$("$build_tools/aapt" dump badging "$apk")
+case "$badging" in
+ *"versionCode='77' versionName='0.6.50'"*) ;;
+ *) echo 'Unexpected packaged APK version' >&2; exit 1 ;;
+esac
+"$build_tools/apksigner" verify --print-certs "$apk"
+"$build_tools/zipalign" -c -P 16 4 "$apk"
+./gradlew :app:lintDebugNoMinify
