@@ -1,0 +1,199 @@
+{
+  "version": "0.6.53",
+  "classes": 22,
+  "totals": {
+    "tests": 129,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "results": [
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntV66Test",
+      "tests": "4",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.413"
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntV647Test",
+      "tests": "6",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "13.148"
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntV635Test",
+      "tests": "13",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "3.453"
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntMultiTouch636Test",
+      "tests": "3",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "6.481"
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntBackground649Test",
+      "tests": "7",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.521"
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntCalendar653Test",
+      "tests": "8",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "8.786"
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntMaterials653Test",
+      "tests": "3",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.722"
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntV646Test",
+      "tests": "9",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "19.19"
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntActions651Test",
+      "tests": "8",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "2.917"
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntActionPrivacy651Test",
+      "tests": "5",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "6.929"
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntStudio68Test",
+      "tests": "2",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "1.516"
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntBehavior648Test",
+      "tests": "5",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.422"
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntV616Test",
+      "tests": "18",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "7.097"
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntGestureStreamTest",
+      "tests": "4",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "1.867"
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntV65Test",
+      "tests": "5",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "7.223"
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntCalibration644Test",
+      "tests": "2",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "5.642"
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntStudio649Test",
+      "tests": "2",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "8.596"
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntV68Test",
+      "tests": "9",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "5.925"
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntUpgrade650Test",
+      "tests": "8",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "6.163"
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntMotion652Test",
+      "tests": "5",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "2.741"
+    },
+    {
+      "name": "helium314.keyboard.latin.SuggestionCase647Test",
+      "tests": "1",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "4.547"
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntGlass648Test",
+      "tests": "2",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.577"
+    }
+  ],
+  "final_resource_verification": "8 calendar tests rerun after extracting three Italian-only UI strings; all passed.",
+  "lint": {
+    "passed": false,
+    "counts": {
+      "Error": 550,
+      "Warning": 450,
+      "Hint": 1
+    },
+    "new_issues_vs_0652": 0,
+    "removed_issues_vs_0652": 0
+  }
+}
