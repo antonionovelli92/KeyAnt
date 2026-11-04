@@ -52,3 +52,7 @@ Le due librerie native AI precompilate sono distribuite come allegato della rele
 ## Stato lint
 
 Il controllo lint completo termina con errore per le 550 segnalazioni di errore già presenti nella base 0.6.50 (oltre a 450 avvisi e 1 suggerimento). La suite selezionata e la compilazione APK sono controlli distinti: consultare il rapporto `VERIFICA-0.6.53.md` della release corrente. Non è stata aggiunta una soppressione globale per nascondere il debito preesistente.
+
+
+## 0.6.54
+VersionCode 81, Google Identity Services play-services-auth 22.0.0. La registrazione OAuth Android (package + SHA-1 della firma) si configura nel progetto Google, non in un file segreto dentro l’APK. Test: tools/verify_0654.sh, 24 classi / 142 test. Confermare anche la parità del lint con la 0.6.53 (baseline non pulita). I nuovi flussi si verificano senza creare eventi o attività reali, usando provider e trasporto simulati.
