@@ -1,10 +1,10 @@
-# Configurare Google Tasks per KeyAnt 0.6.55
+# Configurare Google Tasks per KeyAnt 0.6.56
 
 ## Stato reale
 
 Il client Android usa Google Identity Services `AuthorizationClient` (play-services-auth 22.0.0), selezione delle liste e Tasks REST API. Nessun server e nessun client secret nell’APK. La registrazione Google Cloud **non è stata completata in questa sessione**: la console ha restituito “Site Unavailable”. I test usano un trasporto simulato, non l’account personale.
 
-Il consenso sul telefono è necessario: la sola installazione dell’APK non collega l’account. Finché la configurazione manca, non considerare funzionante il salvataggio diretto in Tasks. Nei dettagli rimane disponibile “Copia e apri Tasks (alternativa)”. Il calendario Android funziona indipendentemente.
+Il consenso sul telefono è necessario: la sola installazione dell’APK non collega l’account. Finché la configurazione manca, non considerare funzionante il salvataggio diretto in Tasks. Il calendario Android funziona indipendentemente.
 
 ## Configurazione una volta sola
 
@@ -24,23 +24,22 @@ Il consenso sul telefono è necessario: la sola installazione dell’APK non col
 Non creare una chiave API in sostituzione del client OAuth. Non è necessario incollare un client secret nell’app. Questo flusso on-device è riconosciuto dalla coppia package/firma; non richiede un backend né un client web per ottenere un server auth code.
 
 7. Installa l’APK firmato della release. In **KeyAnt → Gesti e strumenti → Azioni dalla frase**, premi **Collega o rinnova Google Tasks**, scegli l’account registrato e completa il consenso Google.
-8. In un’app scrivi `ricordami di comprare il pane domani`, tocca l’icona e apri **Dettagli** per scegliere la lista. Controlla il giorno e premi **Salva**. Il messaggio “Aggiunto” appare solo dopo una risposta positiva dell’API.
+8. Sotto il collegamento premi **Carica liste Tasks** e scegli **Lista Tasks**. L’opzione automatica usa la prima lista restituita da Google. Se una lista scelta viene eliminata, KeyAnt richiede una nuova scelta prima dell’invio.
+9. Scrivi «ricordami di prendere pasticche tra un quarto d’ora». Verifica titolo e orario nella pillola e tocca la spunta. Al primo utilizzo Android può chiedere accesso alle notifiche e agli avvisi esatti. Tornando alla tastiera, verifica la frase e conferma di nuovo.
 
-## Limiti e gestione degli errori
+## Salvataggio e avvisi
 
-- Tasks API registra soltanto il **giorno**, non l’ora della notifica. Se serve un avviso a un’ora esatta, impostalo nell’app Tasks oppure crea un evento calendario con avviso.
-- Il token resta in memoria per al massimo 45 minuti. Alla scadenza si rinnova con il pulsante di collegamento; Google può effettuare il rinnovo senza un nuovo consenso se l’accesso resta valido.
-- Un errore di configurazione Google (codice 10) indica un problema di progetto/client/firma; non risolverlo incollando token o segreti nella tastiera.
-- Un timeout dopo l’invio ha esito incerto: KeyAnt blocca il reinvio nella stessa bozza e chiede di controllare Tasks. Non esegue retry automatici del POST.
-- “Rimuovi accesso da questa sessione” svuota il token locale. Per revocare anche il consenso Google, usa le connessioni alle app di terze parti del tuo Account Google.
-- Il pannello tiene i dati solo in memoria e li riassocia al campo e al testo originali entro due minuti. Un cambio di app/campo/testo impedisce il ripristino della bozza.
+Google Tasks registra il giorno della scadenza. Per un orario esplicito KeyAnt programma un avviso locale dopo la risposta positiva del servizio. Sul telefono puoi annullare tutti gli avvisi locali nella stessa pagina delle impostazioni. La cancellazione o modifica dell’attività nell’app Google Tasks non aggiorna gli avvisi locali già programmati. Anche dopo un riavvio l’app riprogramma gli avvisi registrati. Permessi, canale Android e impostazioni delle notifiche del dispositivo influiscono sulla consegna.
 
-## Fonti ufficiali
+Il token di sessione dura al massimo 45 minuti. Un errore Google di configurazione (codice 10) richiede di verificare progetto, package e firma. Un timeout dopo l’invio può lasciare incerto l’esito. Controlla la lista prima di riscrivere la frase. La pillola blocca i doppi invii della stessa proposta. Un cambio di campo o di testo invalida la proposta.
+
+## Calendario
+
+In **App promemoria** puoi scegliere **Calendario · promemoria con avviso**. **Carica calendari** permette di scegliere un calendario scrivibile dopo il consenso Android. La conferma crea l’evento e l’avviso nello stesso salvataggio. Per un promemoria l’avviso è all’ora indicata. Per un normale evento il preavviso predefinito è di dieci minuti se il calendario lo supporta. L’uso dell’app calendario esterna apre il suo editor.
+
+## Fonti
 
 - https://developer.android.com/identity/authorization
-- https://developers.google.com/workspace/tasks/reference/rest/v1/tasks/insert
 - https://developers.google.com/workspace/tasks/reference/rest/v1/tasks
-- https://developers.google.com/workspace/tasks/reference/rest/v1/tasklists/list
-
-## Alternativa disponibile dalla 0.6.55
-Se il collegamento non è configurato o viene annullato, il messaggio resta visibile nei dettagli della pillola. «Usa Calendario · con avviso» prepara un evento nel calendario Android, con titolo/giorno/ora/destinazione da controllare e salvare esplicitamente. Non crea una Google Task. Per usarlo abitualmente scegliere «Calendario · promemoria con avviso» in App promemoria. Questa alternativa non richiede un progetto Google Cloud.
+- https://developers.google.com/workspace/tasks/reference/rest/v1/tasks/insert
+- https://developer.android.com/develop/background-work/services/alarms/schedule
