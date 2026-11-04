@@ -1,4 +1,4 @@
-# Configurare Google Tasks per KeyAnt 0.6.54
+# Configurare Google Tasks per KeyAnt 0.6.55
 
 ## Stato reale
 
@@ -41,3 +41,6 @@ Non creare una chiave API in sostituzione del client OAuth. Non è necessario in
 - https://developers.google.com/workspace/tasks/reference/rest/v1/tasks/insert
 - https://developers.google.com/workspace/tasks/reference/rest/v1/tasks
 - https://developers.google.com/workspace/tasks/reference/rest/v1/tasklists/list
+
+## Alternativa disponibile dalla 0.6.55
+Se il collegamento non è configurato o viene annullato, il messaggio resta visibile nei dettagli della pillola. «Usa Calendario · con avviso» prepara un evento nel calendario Android, con titolo/giorno/ora/destinazione da controllare e salvare esplicitamente. Non crea una Google Task. Per usarlo abitualmente scegliere «Calendario · promemoria con avviso» in App promemoria. Questa alternativa non richiede un progetto Google Cloud.
