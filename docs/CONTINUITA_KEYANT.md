@@ -2,11 +2,10 @@
 
 ## Punto da cui ripartire
 
-Versione preparata: **0.6.52**, versionCode **79**. Conserva la 0.6.51 recuperata dalla sessione interrotta e aggiunge transizioni delle azioni e controlli di disattivazione.
+Versione corrente: **0.6.52**, versionCode **79**. Conserva la 0.6.51 recuperata dalla sessione interrotta e aggiunge transizioni delle azioni e controlli di disattivazione.
 
-La fonte completa è il pacchetto **KeyAnt-0.6.52-history.bundle**, preparato per la release GitHub, con tag `baseline-0.6.50`, `v0.6.51`, `v0.6.52`. Il ramo GitHub principale contiene la documentazione e non è sufficiente da solo per ricompilare Android.
+La fonte completa è l’allegato **KeyAnt-0.6.52-history.bundle** della release GitHub, con tag `baseline-0.6.50`, `v0.6.51`, `v0.6.52`. Il ramo GitHub principale contiene la documentazione e non è sufficiente da solo per ricompilare Android.
 
-**Stato pubblicazione:** documentazione aggiornata; APK e sorgenti 0.6.52 preparati, ma pubblicazione degli allegati ancora da autorizzare. Non presentare il download GitHub 0.6.52 come già disponibile.
 
 ## Vincoli da preservare
 

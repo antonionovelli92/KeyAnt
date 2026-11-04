@@ -1,10 +1,10 @@
-# KeyAnt · preparazione 0.6.52
+# KeyAnt 0.6.52
 
 Tastiera Android personale basata su HeliBoard, con temi, appunti, trackball e azioni locali dalla frase.
 
 ## Installazione
 
-**KeyAnt-0.6.52.apk è compilato e verificato**, con firma personale invariata e versionCode 79. Si installa sopra la versione esistente senza disinstallare. La pubblicazione degli allegati 0.6.52 è in attesa di autorizzazione; le [release già pubblicate](https://github.com/antonionovelli92/KeyAnt/releases) restano disponibili.
+Scarica **KeyAnt-0.6.52.apk** dalla [release v0.6.52](https://github.com/antonionovelli92/KeyAnt/releases/tag/v0.6.52). Installa sopra la versione esistente senza disinstallare: firma personale invariata, versionCode 79.
 
 ## Novità
 
@@ -19,7 +19,7 @@ Google Tasks usa **Copia e apri Tasks**; Calendar apre una bozza da verificare e
 
 ## Sorgenti e continuità
 
-Il ramo GitHub contiene la documentazione. Sono preparati **KeyAnt-0.6.52-sorgenti-pubblici.zip** e **KeyAnt-0.6.52-history.bundle** (baseline 0.6.50, revisione 0.6.51 e 0.6.52), da allegare alla release dopo autorizzazione. Gli archivi automatici “Source code” contengono solo questo ramo documentale.
+Il ramo GitHub contiene la documentazione. Per il progetto Android completo scaricare **KeyAnt-0.6.52-sorgenti-pubblici.zip**, oppure **KeyAnt-0.6.52-history.bundle** per avere anche baseline 0.6.50 e revisione 0.6.51. Gli archivi automatici “Source code” contengono solo questo ramo documentale.
 
 ```sh
 git clone KeyAnt-0.6.52-history.bundle KeyAnt

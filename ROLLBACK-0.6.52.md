@@ -6,7 +6,7 @@ Gesti e strumenti → Azioni dalla frase → Azioni contestuali: disattivare. Il
 
 ## Sorgenti e storico
 
-Il pacchetto preparato `KeyAnt-0.6.52-history.bundle` contiene la baseline 0.6.50, il lavoro recuperato 0.6.51 e la revisione 0.6.52. La pubblicazione degli allegati GitHub è ancora in attesa di autorizzazione. Una volta recuperato il pacchetto, verificare SHA256SUMS e poi:
+L’allegato `KeyAnt-0.6.52-history.bundle` contiene la baseline 0.6.50, il lavoro recuperato 0.6.51 e la revisione 0.6.52. Verificare SHA256SUMS e poi:
 
 ```sh
 git clone KeyAnt-0.6.52-history.bundle KeyAnt

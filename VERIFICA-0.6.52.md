@@ -34,4 +34,4 @@ Errori: MissingTranslation 509, WrongConstant 20, NewApi 12, AppCompatCustomView
 
 Nessuna prova su Fold fisico e nessuna misura di frame time: transizioni e casi funzionali verificati localmente, fluidità percepita e passaggio alle app OEM da confermare sul dispositivo. Google Tasks rimane “Copia e apri”, Calendar propone una bozza da salvare, telefono apre il tastierino.
 
-APK, sorgenti pubblicabili, storico e checksum sono preparati. La documentazione è destinata al ramo GitHub; la pubblicazione degli allegati della release 0.6.52 richiede ancora autorizzazione. Il bundle conserva baseline 0.6.50, lavoro 0.6.51 e revisione 0.6.52. Chiave personale esclusa dagli archivi.
+La distribuzione comprende APK, sorgenti pubblicabili, storico e checksum; il ramo GitHub conserva documentazione e risultati. Il bundle conserva baseline 0.6.50, lavoro 0.6.51 e revisione 0.6.52. Chiave personale esclusa dagli archivi.
