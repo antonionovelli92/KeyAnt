@@ -12,7 +12,7 @@ Eseguire dalla radice:
 ```sh
 python3 tools/fetch_native_libs.py
 ./gradlew :app:assembleDebugNoMinify
-./tools/verify_0650.sh
+./tools/verify_0652.sh
 ```
 
 L'APK viene scritto in `app/build/outputs/apk/debugNoMinify/`. Include arm64-v8a e x86_64; Android minimo 8.0/API 26. La variante personale `debugNoMinify` non abilita il debug Android.
@@ -48,3 +48,7 @@ bf7bc5998c63e50de960d4506499dce857cea819468673d0ca52d31bed527aa4
 Non allegare l'archivio di lavoro privato: può contenere la chiave di firma. I sorgenti pubblici devono escludere chiavi, credenziali, build temporanee e dati personali. Conservare licenze e attribuzioni della base HeliBoard e degli asset. La pubblicazione non è completata finché repository, tag e asset non sono verificati sul servizio.
 
 Le due librerie native AI precompilate sono distribuite come allegato della release, con SHA-256 verificato dallo script. Lo ZIP completo dei sorgenti le include già. Il clone Git richiede il comando di ripristino indicato sopra.
+
+## Stato lint
+
+Il controllo lint completo termina con errore per le 550 segnalazioni di errore già presenti nella base 0.6.50 (oltre a 450 avvisi e 1 suggerimento). La suite selezionata e la compilazione APK sono controlli distinti: consultare il rapporto `VERIFICA-0.6.52.md` della release corrente. Non è stata aggiunta una soppressione globale per nascondere il debito preesistente.

@@ -1,15 +1,32 @@
-# KeyAnt 0.6.50
+# KeyAnt · preparazione 0.6.52
 
-Tastiera Android personale, basata su HeliBoard, con temi, appunti multimediali, GIF integrate e assistente esplicito.
+Tastiera Android personale basata su HeliBoard, con temi, appunti, trackball e azioni locali dalla frase.
 
-Compilazione e firma: [BUILD_AND_RELEASE.md](docs/BUILD_AND_RELEASE.md). Novità e limiti: [AGGIORNAMENTO_0.6.50.md](AGGIORNAMENTO_0.6.50.md). Verifica: `tools/verify_0650.sh`.
+## Installazione
 
-Sono conservati sorgenti, licenze e attribuzioni della base [HeliBoard](https://github.com/Helium314/HeliBoard). La copia pubblicabile esclude chiavi di firma e credenziali personali. Gli asset che richiamano marchi e opere mantengono i diritti dei rispettivi titolari: la licenza del codice non attribuisce diritti aggiuntivi su quei marchi e opere.
+**KeyAnt-0.6.52.apk è compilato e verificato**, con firma personale invariata e versionCode 79. Si installa sopra la versione esistente senza disinstallare. La pubblicazione degli allegati 0.6.52 è in attesa di autorizzazione; le [release già pubblicate](https://github.com/antonionovelli92/KeyAnt/releases) restano disponibili.
 
-Le release firmate servono ad aggiornare l'installazione personale senza perdere impostazioni e apprendimento. Una compilazione con una firma diversa non è un aggiornamento compatibile. Non disinstallare la versione personale per sostituirla con una build firmata diversamente.
+## Novità
 
-## Download e archivio
+- Azioni dalla frase attive di default e disattivabili in Gesti e strumenti: promemoria, calendario e telefono.
+- Passaggio graduale fra freccia e azioni, apertura/chiusura della conferma e supporto alla riduzione del movimento.
+- Sei temi Materie d’autore e materiali Maker recuperati dal lavoro 0.6.51.
+- Memoria personale, calibrazione e gesti della barra conservati.
 
-Gli APK e i sorgenti completi sono negli allegati delle [Release](https://github.com/antonionovelli92/KeyAnt/releases). Usare `KeyAnt-0.6.50-sorgenti-pubblici.zip`, non gli archivi automatici “Source code”: il ramo pubblicato contiene per ora la documentazione. Il bundle `KeyAnt-0.6.50-history.bundle` conserva la baseline 0.6.49 e la modifica 0.6.50; si apre con `git clone KeyAnt-0.6.50-history.bundle KeyAnt`. L’importazione dei singoli file nel ramo GitHub resta da completare.
+Google Tasks usa **Copia e apri Tasks**; Calendar apre una bozza da verificare e salvare. Nessuna azione parte automaticamente.
 
-Fonti: [ricerca](RICERCA-0.6.50.md). Risultati: [verifica](VERIFICA-0.6.50.md). Ripristino mirato: [rollback](ROLLBACK-0.6.50.md).
+[Novità e limiti](AGGIORNAMENTO_0.6.52.md) · [Verifiche](VERIFICA-0.6.52.md) · [Ripristino](ROLLBACK-0.6.52.md) · [Build e firma](docs/BUILD_AND_RELEASE.md).
+
+## Sorgenti e continuità
+
+Il ramo GitHub contiene la documentazione. Sono preparati **KeyAnt-0.6.52-sorgenti-pubblici.zip** e **KeyAnt-0.6.52-history.bundle** (baseline 0.6.50, revisione 0.6.51 e 0.6.52), da allegare alla release dopo autorizzazione. Gli archivi automatici “Source code” contengono solo questo ramo documentale.
+
+```sh
+git clone KeyAnt-0.6.52-history.bundle KeyAnt
+cd KeyAnt
+git log --oneline --all --decorate
+```
+
+Chiavi personali, credenziali e build temporanee sono escluse. La chiave originale è necessaria per aggiornare l’installazione personale; una build con firma diversa non è compatibile come aggiornamento.
+
+Conservati sorgenti, licenze e attribuzioni della base [HeliBoard](https://github.com/Helium314/HeliBoard). Gli asset che richiamano marchi e opere mantengono i diritti dei rispettivi titolari; la licenza del codice non concede diritti aggiuntivi su tali opere.
