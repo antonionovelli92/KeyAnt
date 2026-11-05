@@ -1,4 +1,4 @@
-# Configurare Google Tasks per KeyAnt 0.6.63
+# Configurare Google Tasks per KeyAnt 0.6.64
 
 ## In parole semplici
 
@@ -8,9 +8,9 @@ OAuth è il sistema con cui autorizzi KeyAnt a usare Google Tasks. Non è una pa
 
 ## Stato reale
 
-Il client Android usa Google Identity Services `AuthorizationClient` (play-services-auth 22.0.0), selezione delle liste e Tasks REST API. Nessun server e nessun client secret nell’APK. L’ultima prova sul telefono mostra **403 access_denied**, con il messaggio che l’app è in fase di test e ammette solo tester autorizzati. Il client Android è presente nel progetto mostrato, ma il consenso e un salvataggio reale non sono ancora confermati.
+Il client Android usa Google Identity Services `AuthorizationClient` (play-services-auth 22.0.0), selezione delle liste e Tasks REST API. Nessun server e nessun client secret nell’APK. L’utente riferisce che il collegamento ora funziona. Questo ambiente verifica le risposte con un trasporto simulato: non ha effettuato un accesso o un salvataggio su un account Google reale. Il precedente errore **403 access_denied** riguardava l’accesso agli utenti di test; le istruzioni sotto servono soltanto se quel messaggio ricompare.
 
-### Per questo errore: un solo passaggio da completare
+### Se compare 403 access_denied
 
 Apri [Utenti di test](https://console.cloud.google.com/auth/audience), seleziona il progetto già usato per KeyAnt, poi **Pubblico / Audience → Utenti di test → Aggiungi utenti**. Inserisci l’indirizzo Google scelto sul telefono e salva. Torna in KeyAnt e riprova **Collega o rinnova Google Tasks** con lo stesso account. Non serve ricreare il client per questo messaggio. La verifica della proprietà del client Android è una procedura diversa dall’aggiunta del tester. La configurazione non viene modificata automaticamente dall’APK.
 
@@ -20,7 +20,7 @@ Il consenso sul telefono è necessario: la sola installazione dell’APK non col
 
 ## Percorso semplice senza Google Cloud
 
-In **Gesti e strumenti → Azioni dalla frase** premi **Usa promemoria sul telefono · senza account**, oppure scegli **App promemoria → Sul telefono · senza account né carta**. Scrivi la frase, apri l’icona e conferma. Concedi notifiche e avvisi esatti se Android li richiede, poi conferma di nuovo. Non crea attività su Google Tasks e non abilita alcun servizio a pagamento. Il salvataggio verificato mostra la pillola verde; un permesso da solo non equivale a salvataggio.
+In **Gesti e strumenti → Azioni dalla frase** scegli **Promemoria → Solo su questo telefono**. Scrivi la frase, apri l’icona e conferma. Concedi notifiche e avvisi esatti se Android li richiede, poi conferma di nuovo. Non crea attività su Google Tasks e non abilita alcun servizio a pagamento. Il salvataggio verificato mostra la pillola verde; un permesso da solo non equivale a salvataggio.
 
 ## Link diretti per Google Tasks
 
@@ -83,3 +83,7 @@ Il video 37196 riproduce codice 8 dopo la selezione account. Il riconoscimento d
 ## Calendario laterale in sola lettura — 0.6.63
 
 Il pannello legge i calendari visibili nel provider Android, inclusi quelli Google già sincronizzati sul dispositivo. Richiede soltanto READ_CALENDAR, non WRITE_CALENDAR. Mostra ricorrenze, giorni interi e agenda del giorno; si aggiorna quando il provider segnala modifiche. Non avvia una sincronizzazione cloud e non garantisce che dati non ancora sincronizzati siano già disponibili. Il pulsante Aggiorna rilegge il provider locale. Nessun inserimento, aggiornamento o cancellazione di eventi parte da questo pannello. Inserisci data e il tocco su un appuntamento inseriscono soltanto testo nel campo in cui stai scrivendo. Le pillole di creazione evento restano un flusso separato, con conferma e permessi di scrittura.
+
+## 0.6.64: orario e destinazioni
+
+Google Tasks non supporta l’orario attraverso l’API pubblica. In Azioni dalla frase scegli Google Tasks e Avviso all’orario con KeyAnt: una conferma salva la Task e programma l’avviso su questo telefono, dopo i permessi iniziali. Per evitare il riquadro tutto il giorno la scadenza giornaliera resta disattivata di default; l’ora è nelle note. Modifiche e completamento su Google non aggiornano l’allarme locale. In alternativa scegli Calendario: stessa frase, evento con durata e avviso del calendario, colore separato. Per altre app consulta [destinazioni e limiti](REMINDER_INTEGRATIONS.md).

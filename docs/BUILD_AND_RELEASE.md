@@ -12,7 +12,7 @@ Eseguire dalla radice:
 ```sh
 python3 tools/fetch_native_libs.py
 ./gradlew :app:assembleDebugNoMinify
-sh tools/verify_0663.sh
+sh tools/verify_0664.sh
 ```
 
 L'APK viene scritto in `app/build/outputs/apk/debugNoMinify/`. Include arm64-v8a e x86_64; Android minimo 8.0/API 26. La variante personale `debugNoMinify` non abilita il debug Android.
@@ -60,3 +60,7 @@ VersionCode 81, Google Identity Services play-services-auth 22.0.0. La registraz
 
 ## Compatibilità ICU dalla 0.6.62
 Eseguire anche `tools/verify_icu_0662.py` con JDK 17+ e ICU nativo. Robolectric usa il motore regex della JVM host: la compilazione riuscita in quei test non garantisce compatibilità con ICU di Android. Il controllo riproduce la regressione precedente e verifica le espressioni del parser. Non sostituisce una prova sul dispositivo.
+
+## 0.6.64
+
+Eseguire tools/verify_0664.sh. Include le regressioni precedenti e i casi su parser, comando consumato, palette account calendario, intent promemoria, ridisegno/gesto inverso, agenda e Studio. Per la suite nativa usare gradle/keyant-regression.gradle e JVM limitate; confrontare lint con la baseline senza dichiararlo superato. Consegnare l’APK verificato prima di caricare gli archivi GitHub. Conservare risultati, limiti del test fisico e impronte nella release.

@@ -1,28 +1,28 @@
-# KeyAnt 0.6.63
+# KeyAnt 0.6.64
 
 Tastiera Android personale basata su HeliBoard, con temi, appunti, trackball e azioni locali dalla frase.
 
 ## Installazione
 
-Scarica **KeyAnt-0.6.63.apk** dalla [release v0.6.63](https://github.com/antonionovelli92/KeyAnt/releases/tag/v0.6.63). Installa sopra la versione esistente senza disinstallare: firma personale invariata, versionCode 90.
+Scarica **KeyAnt-0.6.64.apk** dalla [release v0.6.64](https://github.com/antonionovelli92/KeyAnt/releases/tag/v0.6.64). Installa sopra la versione esistente senza disinstallare: firma personale invariata, versionCode 91.
 
 ## Novità
 
-- Pannelli affiancati, opt-in, su Fold aperto orizzontale con tastiera unita e spazio sufficiente: lettere e numeri oppure calendario restano utilizzabili insieme. Swipe contrario per chiudere; split e cambio formato ripristinano la geometria.
-- Calendario laterale con mese e agenda del giorno, aggiornamento delle modifiche del provider e sola lettura degli appuntamenti già sincronizzati sul telefono.
-- Tastierino realmente più stretto opzionale, luci RGB indipendenti o ereditate, Invio/Spazio/Cancella senza chiusura.
-- Studio adattivo: anteprima proporzionata, categorie affiancate su Fold e icone specifiche. Anteprima interattiva del tastierino.
-- Glifi dello split senza deformazione orizzontale al rilascio. Restano la correzione ICU, split verticale opt-in, pillole e trasparenze precedenti.
-- Tasks: link diretto alla lista tester per il blocco 403 osservato. Account reale non ancora autorizzato/verificato; nessuna fatturazione attivata.
+- Funzioni disattivabili singolarmente; Calendario unificato opzionale per tutte le frasi evento/promemoria. Pillole e glow con colori indipendenti o tema, sfumatura unificata e feedback verde/rosso invariato.
+- Promemoria: Tasks con avviso KeyAnt opzionale e ora nelle note, Calendario con colore distinto, altre app tramite comando Android compatibile o condivisione esplicita.
+- Una conferma nella pillola per salvataggi diretti; verde solo dopo esito confermato. Rimozione prudente della sola frase salvata.
+- Riconoscimento di mezzora/mezz’ora e tempi composti; autocorrezione più conservativa sulle parole distanti.
+- Correzione del ridisegno e gesto inverso dei pannelli affiancati, suono del tastierino, tema/luci/dimensioni/suoni nel Maker.
+- Agenda giornaliera su 24 ore con blocchi colorati e sovrapposizioni; ricerca GIF in pillola; categorie, percorsi e anteprime Studio più chiare.
 
-[Configurazione Google Tasks](docs/GOOGLE_TASKS_SETUP.md) · [Novità e limiti](AGGIORNAMENTO_0.6.63.md) · [Verifiche](VERIFICA-0.6.63.md) · [Ripristino](ROLLBACK-0.6.63.md) · [Build e firma](docs/BUILD_AND_RELEASE.md).
+[Configurazione Google Tasks](docs/GOOGLE_TASKS_SETUP.md) · [Novità e limiti](AGGIORNAMENTO_0.6.64.md) · [Verifiche](VERIFICA-0.6.64.md) · [Ripristino](ROLLBACK-0.6.64.md) · [Build e firma](docs/BUILD_AND_RELEASE.md).
 
 ## Sorgenti e continuità
 
-Il ramo GitHub contiene la documentazione. Per il progetto Android completo scaricare **KeyAnt-0.6.63-sorgenti-pubblici.zip**, oppure **KeyAnt-0.6.63-history.bundle** per avere anche baseline 0.6.50 e revisioni 0.6.51–0.6.63. Gli archivi automatici “Source code” contengono solo questo ramo documentale.
+Il ramo GitHub contiene la documentazione. Per il progetto Android completo scaricare **KeyAnt-0.6.64-sorgenti-pubblici.zip**, oppure **KeyAnt-0.6.64-history.bundle** per avere anche baseline 0.6.50 e revisioni 0.6.51–0.6.64. Gli archivi automatici “Source code” contengono solo questo ramo documentale.
 
 ```sh
-git clone KeyAnt-0.6.63-history.bundle KeyAnt
+git clone KeyAnt-0.6.64-history.bundle KeyAnt
 cd KeyAnt
 git log --oneline --all --decorate
 ```

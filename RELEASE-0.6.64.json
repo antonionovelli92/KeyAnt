@@ -1,0 +1,17 @@
+{
+  "version": "0.6.64",
+  "version_code": 91,
+  "source_commit": "eae1268302edcac0d9fe9d7903bd19125f9ad372",
+  "apk_sha256": "ce15d30cd9d8b795dfbc02ca6b1e134ff585be84de435d463f7e3b05431faa24",
+  "tests": {
+    "tests": 388,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "real_device_test": false,
+  "calendar": "direct save and read-only agenda with local provider; real Google sync not verified",
+  "google_tasks_oauth": "User reports connection works; not verified with real account in this environment",
+  "publication_authorization": "Standing explicit authorization for KeyAnt APK, source and history publication; 2026-11-05",
+  "release_url": "https://github.com/antonionovelli92/KeyAnt/releases/tag/v0.6.64"
+}
