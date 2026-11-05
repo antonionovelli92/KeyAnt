@@ -12,7 +12,7 @@ Eseguire dalla radice:
 ```sh
 python3 tools/fetch_native_libs.py
 ./gradlew :app:assembleDebugNoMinify
-sh tools/verify_0665.sh
+sh tools/verify_0667.sh
 ```
 
 L'APK viene scritto in `app/build/outputs/apk/debugNoMinify/`. Include arm64-v8a e x86_64; Android minimo 8.0/API 26. La variante personale `debugNoMinify` non abilita il debug Android.
@@ -42,9 +42,9 @@ bf7bc5998c63e50de960d4506499dce857cea819468673d0ca52d31bed527aa4
 2. Salvare il riferimento precedente e limitare i ripristini ai file modificati.
 3. Eseguire test, build, lint e controllare le anteprime Android pertinenti.
 4. Verificare ZIP/APK, identificativo, versione, firma e impronta SHA-256 del file.
-5. Fornire subito il link all’APK verificato nella chat, prima di attendere gli upload GitHub. Continuare documentazione e pubblicazione nella stessa sessione; non dichiarare GitHub completo prima della verifica.
-6. Creare un commit e un tag `v<versione>`; allegare l'APK firmato alla Release corrispondente, insieme a note e checksum.
-7. Provare il link dell'asset APK; la pagina della Release e il download sono collegamenti distinti.
+5. Creare il commit sorgente e il tag `v<versione>`; conservare documentazione, risultati e istruzioni di ripristino.
+6. Pubblicare l’APK firmato con sorgenti completi, bundle della cronologia, note e checksum. Il ramo principale GitHub resta documentale.
+7. Scaricare l’asset pubblicato e confrontarne la SHA-256 con l’APK verificato. Solo allora consegnare il link definitivo; la pagina della Release e il download sono collegamenti distinti.
 
 Non allegare l'archivio di lavoro privato: può contenere la chiave di firma. I sorgenti pubblici devono escludere chiavi, credenziali, build temporanee e dati personali. Conservare licenze e attribuzioni della base HeliBoard e degli asset. La pubblicazione non è completata finché repository, tag e asset non sono verificati sul servizio.
 
@@ -52,7 +52,7 @@ Le due librerie native AI precompilate sono incluse nello ZIP completo e nel bun
 
 ## Stato lint
 
-Il controllo lint completo termina con errore per le 550 segnalazioni di errore già presenti nella base 0.6.50 (oltre a 450 avvisi e 1 suggerimento). La suite selezionata e la compilazione APK sono controlli distinti: consultare il rapporto `VERIFICA-0.6.62.md` della release corrente. Non è stata aggiunta una soppressione globale per nascondere il debito preesistente.
+Il controllo lint completo termina con errore per 550 errori, 448 avvisi e 1 suggerimento già presenti nella 0.6.66. La suite selezionata e la compilazione APK sono controlli distinti: consultare il rapporto `VERIFICA-0.6.67.md` della release corrente. Non è stata aggiunta una soppressione globale per nascondere il debito preesistente.
 
 
 ## 0.6.54
@@ -71,3 +71,7 @@ Gate tools/verify_0665.sh: regressioni precedenti e riconoscimento selezione, Un
 
 ## 0.6.66
 Eseguire tools/verify_0666.sh, poi assemblare l’APK finale e verificare versione 0.6.66 / codice 93, firma invariata, integrità ZIP e allineamento. La suite usa JVM isolate per il rendering nativo; nell’ambiente offline usare il repository Maven locale già predisposto. Conservare risultati per classe e confronto lint con 0.6.65. Test e artefatto finale devono precedere pubblicazione e consegna del link; non inviare link provvisori. Il ramo GitHub principale resta documentale: progetto completo in ZIP tracciato e git bundle, esclusi segreti.
+
+## 0.6.67
+
+Gate tools/verify_0667.sh: parser degli intervalli composti, fine esatta nel provider, esiti compatti e contrasto, gesti opzionali, modalità della barra, catalogo e classe InputLogicTest ampliata. Aggiunto EventRange667 al controllo ICU. VersionCode 94, firma invariata. Le indicazioni storiche di consegna anticipata non si applicano: il link va fornito dopo la pubblicazione e il controllo del download. Nessuna misura di FPS né prova fisica Fold/Pixel viene dedotta dai test Robolectric.

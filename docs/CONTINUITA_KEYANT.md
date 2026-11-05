@@ -42,3 +42,8 @@ Video 37196 conferma numeri invisibili ma cliccabili anche nella 0.6.58. Layer s
 
 ## Ripresa 0.6.66
 Crash riprodotto in ToolbarLook.icon: ColorUtils.calculateContrast rifiuta uno sfondo traslucido. Comporre su un riferimento opaco solo per il calcolo. FormaColors usa l’inchiostro dei materiali scolpiti anche con sistema scuro. X di EmojiSearchPanel/GifPanel chiude; freccia torna alle emoji. Oggi ha un anello disegnato dopo i materiali, verificato sui pixel e non solo sul flag accessibile. MagicBallDock segue il progresso dei pannelli; PanelMotion666 usa un completamento monotono con velocità iniziale e velocità finale zero. Comandi numbers/calendar in ToolCatalog e overflow, anche a gesture disabilitate. Controlli completi in edge_panels con ricerca canonica; stessi valori condivisi. China originale e identificatori Maker conservati. Consegnare il link solo dopo test, firma e verifica degli allegati pubblicati.
+
+
+## Checkpoint 0.6.67
+
+Base c394c14809e41261e55d84c95b46834a19a96231 (0.6.66). Intervalli temporali composti, gesti immediati opzionali, esiti compatti, visualizzazioni alternative della barra, catalogo unificato e guardia contro risposte tardive del dizionario. Vedere AGGIORNAMENTO_0.6.67.md, VERIFICA-0.6.67.md e ROLLBACK-0.6.67.md. Preferenze precedenti conservate; nessuna nuova destinazione dei dati.
