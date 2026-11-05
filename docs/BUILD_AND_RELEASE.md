@@ -42,8 +42,9 @@ bf7bc5998c63e50de960d4506499dce857cea819468673d0ca52d31bed527aa4
 2. Salvare il riferimento precedente e limitare i ripristini ai file modificati.
 3. Eseguire test, build, lint e controllare le anteprime Android pertinenti.
 4. Verificare ZIP/APK, identificativo, versione, firma e impronta SHA-256 del file.
-5. Creare un commit e un tag `v<versione>`; allegare l'APK firmato alla Release corrispondente, insieme a note e checksum.
-6. Provare il link dell'asset APK; la pagina della Release e il download sono collegamenti distinti.
+5. Fornire subito il link all’APK verificato nella chat, prima di attendere gli upload GitHub. Continuare documentazione e pubblicazione nella stessa sessione; non dichiarare GitHub completo prima della verifica.
+6. Creare un commit e un tag `v<versione>`; allegare l'APK firmato alla Release corrispondente, insieme a note e checksum.
+7. Provare il link dell'asset APK; la pagina della Release e il download sono collegamenti distinti.
 
 Non allegare l'archivio di lavoro privato: può contenere la chiave di firma. I sorgenti pubblici devono escludere chiavi, credenziali, build temporanee e dati personali. Conservare licenze e attribuzioni della base HeliBoard e degli asset. La pubblicazione non è completata finché repository, tag e asset non sono verificati sul servizio.
 
@@ -51,8 +52,11 @@ Le due librerie native AI precompilate sono incluse nello ZIP completo e nel bun
 
 ## Stato lint
 
-Il controllo lint completo termina con errore per le 550 segnalazioni di errore già presenti nella base 0.6.50 (oltre a 450 avvisi e 1 suggerimento). La suite selezionata e la compilazione APK sono controlli distinti: consultare il rapporto `VERIFICA-0.6.60.md` della release corrente. Non è stata aggiunta una soppressione globale per nascondere il debito preesistente.
+Il controllo lint completo termina con errore per le 550 segnalazioni di errore già presenti nella base 0.6.50 (oltre a 450 avvisi e 1 suggerimento). La suite selezionata e la compilazione APK sono controlli distinti: consultare il rapporto `VERIFICA-0.6.62.md` della release corrente. Non è stata aggiunta una soppressione globale per nascondere il debito preesistente.
 
 
 ## 0.6.54
 VersionCode 81, Google Identity Services play-services-auth 22.0.0. La registrazione OAuth Android (package + SHA-1 della firma) si configura nel progetto Google, non in un file segreto dentro l’APK. Test: tools/verify_0654.sh, 24 classi / 142 test. Confermare anche la parità del lint con la 0.6.53 (baseline non pulita). I nuovi flussi si verificano senza creare eventi o attività reali, usando provider e trasporto simulati.
+
+## Compatibilità ICU dalla 0.6.62
+Eseguire anche `tools/verify_icu_0662.py` con JDK 17+ e ICU nativo. Robolectric usa il motore regex della JVM host: la compilazione riuscita in quei test non garantisce compatibilità con ICU di Android. Il controllo riproduce la regressione precedente e verifica le espressioni del parser. Non sostituisce una prova sul dispositivo.

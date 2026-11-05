@@ -1,0 +1,17 @@
+{
+  "version": "0.6.62",
+  "version_code": 89,
+  "source_commit": "1b49fe33d1d15a5c94b8fc9caa7dd59942d6debc",
+  "apk_sha256": "969558dddc216cc6b6b60ab217af487ad7eee1d8bca9710b287711b15a22dadb",
+  "tests": {
+    "tests": 330,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "real_device_test": false,
+  "crash_root_cause": "ICU regex POSIX property ambiguity, reproduced and fixed",
+  "google_tasks_oauth": "not verified with real account",
+  "publication_authorization": "Standing explicit authorization for KeyAnt APK, source and history publication; 2026-11-05",
+  "release_url": "https://github.com/antonionovelli92/KeyAnt/releases/tag/v0.6.62"
+}
