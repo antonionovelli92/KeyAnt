@@ -24,5 +24,8 @@
   "classes": 55,
   "real_device_test": false,
   "crash_root_cause": "unresolved",
-  "google_tasks_oauth": "unresolved"
+  "google_tasks_oauth": "unresolved",
+  "published": false,
+  "publication_status": "draft, public binary/source/history upload blocked pending explicit user authorization",
+  "private_apk_delivered": true
 }
