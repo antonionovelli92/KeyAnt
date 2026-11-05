@@ -2,9 +2,9 @@
 
 ## Punto da cui ripartire
 
-Versione corrente: **0.6.57**, versionCode **84**. Pillola a conferma singola, pannelli laterali e profili scolpiti. Il client OAuth Android deve ancora essere registrato su Google Cloud.
+Versione corrente: **0.6.58**, versionCode **85**. Pillola a conferma singola, pannelli laterali e profili scolpiti. Il client OAuth Android deve ancora essere registrato su Google Cloud.
 
-La fonte completa è l’allegato **KeyAnt-0.6.57-history.bundle** della release GitHub, con tag `baseline-0.6.50`, `v0.6.51`, `v0.6.52`, `v0.6.53`, `v0.6.54`, `v0.6.55`, `v0.6.56`, `v0.6.57`. Il ramo GitHub principale contiene la documentazione e non è sufficiente da solo per ricompilare Android.
+La fonte completa è l’allegato **KeyAnt-0.6.58-history.bundle** della release GitHub, con tag `baseline-0.6.50`, `v0.6.51`, `v0.6.52`, `v0.6.53`, `v0.6.54`, `v0.6.55`, `v0.6.56`, `v0.6.57`. Il ramo GitHub principale contiene la documentazione e non è sufficiente da solo per ricompilare Android.
 
 
 ## Vincoli da preservare
@@ -18,7 +18,7 @@ La fonte completa è l’allegato **KeyAnt-0.6.57-history.bundle** della release
 
 ## Test e limiti
 
-Consultare `VERIFICA-0.6.57.md` per gli esiti di questa revisione. Eseguire `tools/verify_0657.sh` nell’ambiente descritto in `docs/BUILD_AND_RELEASE.md`. Il lint globale presenta debito preesistente: non confonderlo con un controllo superato né con una regressione automaticamente introdotta dalla nuova funzione.
+Consultare `VERIFICA-0.6.57.md` per gli esiti di questa revisione. Eseguire `tools/verify_0658.sh` nell’ambiente descritto in `docs/BUILD_AND_RELEASE.md`. Il lint globale presenta debito preesistente: non confonderlo con un controllo superato né con una regressione automaticamente introdotta dalla nuova funzione.
 
 La verifica Robolectric non misura fluidità, frame time o compatibilità delle versioni OEM sul Fold reale. Da controllare nell’uso: passaggio a Tasks/Calendar, Fold aperto e chiuso, digitazione rapida, trascinamento quando appare l’icona e ritorno alla normale freccia.
 
@@ -34,3 +34,6 @@ Usare il tag v0.6.56 del bundle. Vedere AGGIORNAMENTO_0.6.56.md, VERIFICA-0.6.56
 
 ## Ripresa 0.6.57
 Usare il tag v0.6.57 del bundle. Ultimo contratto: icona predefinita, apertura automatica opzionale, X conserva il contesto; niente apertura obbligatoria. Pannelli traslano MainKeyboardView e misurano le proprie righe subito. Il primo stream di digitazione corregge il movimento della vista, senza alterare la mappa dei tasti. Ritiro persistente media agganciato al contenuto mostrato. OAuth reale ancora aperto: console inaccessibile, nessun codice specifico deducibile dal video. Leggere aggiornamento e verifica della release.
+
+## Ripresa 0.6.58
+Ultimi video 37191/37192: Tasks codice 8, pannelli ancora vuoti sul telefono. Nuova pagina Pannelli laterali con switch indipendenti; numeri da Invio a destra, calendario da funzione a sinistra. Geometria esplicita delle righe/colonne, primo reveal invalida i figli. Gesto nativo con linea configurabile e default false. Non dichiarare risolto OAuth reale né certificati FPS/dispositivo fisico: 8 è errore interno generico, diverso dal 10. Nuovo test KeyAntPanels658Test e suite tools/verify_0658.sh.

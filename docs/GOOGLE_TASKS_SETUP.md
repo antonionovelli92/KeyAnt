@@ -1,4 +1,4 @@
-# Configurare Google Tasks per KeyAnt 0.6.57
+# Configurare Google Tasks per KeyAnt 0.6.58
 
 ## Stato reale
 
@@ -46,3 +46,7 @@ In **App promemoria** puoi scegliere **Calendario · promemoria con avviso**. **
 
 ## Diagnosi 0.6.57
 Il risultato della scelta account viene decodificato anche se Android ritorna RESULT_CANCELED, così un errore restituito da Google mantiene il proprio codice. Scope non concesso e token assente sono distinti. La scelta dell’account da sola non prova il consenso a Tasks. Il collegamento reale non è stato verificato: l’accesso alla console Cloud dall’ambiente di lavoro restituisce Site Unavailable. Se il collegamento fallisce, il messaggio rimane nell’anteprima e nelle impostazioni. Non vengono inviati testo o token nei log di diagnosi.
+
+## Diagnosi 0.6.58: codice 8
+Nel nuovo video 37191 compare codice 8. Google lo definisce INTERNAL_ERROR; non dimostra da solo che il client OAuth sia configurato male. Codice 10 significa invece DEVELOPER_ERROR. L’app conserva entrambi separatamente e offre Riprova collegamento per 8/7. Un nuovo tentativo richiede un tocco, non parte in ciclo. Se l’8 persiste servono verifica della registrazione package/SHA-1, disponibilità/aggiornamento Play Services e log sul dispositivo; non attribuire una causa senza evidenza. Nessun salvataggio viene ritentato automaticamente.
+Fonte: https://developers.google.com/android/reference/com/google/android/gms/common/api/CommonStatusCodes.
