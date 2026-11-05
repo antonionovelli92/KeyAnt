@@ -1,29 +1,26 @@
-# KeyAnt 0.6.58
+# KeyAnt 0.6.59
 
 Tastiera Android personale basata su HeliBoard, con temi, appunti, trackball e azioni locali dalla frase.
 
 ## Installazione
 
-Scarica **KeyAnt-0.6.58.apk** dalla [release v0.6.58](https://github.com/antonionovelli92/KeyAnt/releases/tag/v0.6.58). Installa sopra la versione esistente senza disinstallare: firma personale invariata, versionCode 85.
+Scarica **KeyAnt-0.6.59.apk** dalla [release v0.6.59](https://github.com/antonionovelli92/KeyAnt/releases/tag/v0.6.59). Installa sopra la versione esistente senza disinstallare: firma personale invariata, versionCode 86.
 
 ## Novità
 
-- Pagina **Gesti e strumenti → Pannelli laterali**, con interruttori separati e istruzioni accanto a ciascuno.
-- **Numeri a destra**: tieni Invio e trascina a sinistra. **Calendario a sinistra**: tieni ?123 e trascina a destra.
-- Geometria delle righe e colonne esplicita, prima apparizione ridisegnata, pannelli più compatti e senza cornice da scheda sovrapposta. La tastiera mantiene il movimento complementare al dito.
-- **Gesto con linea di collegamento** separato in Gesti e selezione, disattivato inizialmente anche per chi aggiorna. Non disattiva i pannelli laterali.
-- Google Tasks distingue l’errore interno **8** dall’errore di configurazione **10**, mantiene l’errore visibile e propone **Riprova collegamento**. Il collegamento reale resta da risolvere/verificare: questa release non lo dichiara funzionante.
+- Rendering del solo pannello laterale isolato in un layer software: mitigazione del difetto “digita ma non si vede”, con traslazioni animate conservate. Da confermare sul Fold fisico.
+- Numeri e calendario restano attivabili separatamente in **Gesti e strumenti → Pannelli laterali**. La gesture della linea rimane spenta di default.
+- **Come collegare Google Tasks** nelle azioni dalla frase: spiegazione semplice di OAuth e copia dei dati pubblici dell’app installata. Il collegamento reale Google Tasks resta irrisolto; nessuna registrazione Cloud completata in questa sessione.
+- [Studio sulla precisione della digitazione Apple e KeyAnt](docs/DIGITAZIONE_APPLE_E_KEYANT.md), con fonti e limiti verificati del decoder attuale.
 
-[Configurazione Google Tasks e limiti](docs/GOOGLE_TASKS_SETUP.md).
-
-[Novità e limiti](AGGIORNAMENTO_0.6.58.md) · [Verifiche](VERIFICA-0.6.58.md) · [Ripristino](ROLLBACK-0.6.58.md) · [Build e firma](docs/BUILD_AND_RELEASE.md).
+[Configurazione Google Tasks](docs/GOOGLE_TASKS_SETUP.md) · [Novità e limiti](AGGIORNAMENTO_0.6.59.md) · [Verifiche](VERIFICA-0.6.59.md) · [Ripristino](ROLLBACK-0.6.59.md) · [Build e firma](docs/BUILD_AND_RELEASE.md).
 
 ## Sorgenti e continuità
 
-Il ramo GitHub contiene la documentazione. Per il progetto Android completo scaricare **KeyAnt-0.6.58-sorgenti-pubblici.zip**, oppure **KeyAnt-0.6.58-history.bundle** per avere anche baseline 0.6.50 e revisioni 0.6.51–0.6.58. Gli archivi automatici “Source code” contengono solo questo ramo documentale.
+Il ramo GitHub contiene la documentazione. Per il progetto Android completo scaricare **KeyAnt-0.6.59-sorgenti-pubblici.zip**, oppure **KeyAnt-0.6.59-history.bundle** per avere anche baseline 0.6.50 e revisioni 0.6.51–0.6.59. Gli archivi automatici “Source code” contengono solo questo ramo documentale.
 
 ```sh
-git clone KeyAnt-0.6.58-history.bundle KeyAnt
+git clone KeyAnt-0.6.59-history.bundle KeyAnt
 cd KeyAnt
 git log --oneline --all --decorate
 ```

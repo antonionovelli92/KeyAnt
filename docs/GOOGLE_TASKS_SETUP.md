@@ -1,4 +1,10 @@
-# Configurare Google Tasks per KeyAnt 0.6.58
+# Configurare Google Tasks per KeyAnt 0.6.59
+
+## In parole semplici
+
+OAuth è il sistema con cui autorizzi KeyAnt a usare Google Tasks. Non è una password da comprare e non devi cercare una chiave segreta sul telefono. Prima Google deve conoscere l’app tramite una registrazione nel progetto Cloud: quella configurazione si fa una volta per l’app e la sua firma, non per ogni promemoria.
+
+**Nell’app:** Gesti e strumenti → Azioni dalla frase → Come collegare Google Tasks. Il pulsante Copia dati dell’app prepara package e SHA-1 pubblici dell’APK effettivamente installato. Non copiare né inviare password o token. Questa guida non significa che la registrazione sia stata completata.
 
 ## Stato reale
 
@@ -50,3 +56,6 @@ Il risultato della scelta account viene decodificato anche se Android ritorna RE
 ## Diagnosi 0.6.58: codice 8
 Nel nuovo video 37191 compare codice 8. Google lo definisce INTERNAL_ERROR; non dimostra da solo che il client OAuth sia configurato male. Codice 10 significa invece DEVELOPER_ERROR. L’app conserva entrambi separatamente e offre Riprova collegamento per 8/7. Un nuovo tentativo richiede un tocco, non parte in ciclo. Se l’8 persiste servono verifica della registrazione package/SHA-1, disponibilità/aggiornamento Play Services e log sul dispositivo; non attribuire una causa senza evidenza. Nessun salvataggio viene ritentato automaticamente.
 Fonte: https://developers.google.com/android/reference/com/google/android/gms/common/api/CommonStatusCodes.
+
+## Diagnosi 0.6.59
+Il video 37196 riproduce codice 8 dopo la selezione account. Il riconoscimento della frase arriva alla proposta; il fallimento osservato è nell’autorizzazione. Console Cloud ricontrollata: Site Unavailable. Nessun connettore disponibile individuato per creare il client OAuth Android. La guida nell’app rende concreta la configurazione da completare, ma non risolve da sola il collegamento e non modifica i permessi Google.
