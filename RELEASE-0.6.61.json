@@ -25,7 +25,8 @@
   "real_device_test": false,
   "crash_root_cause": "unresolved",
   "google_tasks_oauth": "unresolved",
-  "published": false,
-  "publication_status": "draft, public binary/source/history upload blocked pending explicit user authorization",
-  "private_apk_delivered": true
+  "published": true,
+  "release_id": 435004230,
+  "release_url": "https://github.com/antonionovelli92/KeyAnt/releases/tag/v0.6.61",
+  "publication_authorization": "User explicitly authorizes recurring KeyAnt APK, complete source and history publication to this public repository; 2026-11-05"
 }
