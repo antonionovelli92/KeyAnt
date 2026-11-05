@@ -1,0 +1,17 @@
+{
+  "version": "0.6.63",
+  "version_code": 90,
+  "source_commit": "35921a5f557f323f9a26b94786dd25734f212ae1",
+  "apk_sha256": "2f2d9ed5348c6385f20c868369990719d40ac38ddab811deb78c921683dd6edf",
+  "tests": {
+    "tests": 349,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "real_device_test": false,
+  "calendar": "read-only local provider, real Google sync not verified",
+  "google_tasks_oauth": "403 tester restriction reported; not verified with real account",
+  "publication_authorization": "Standing explicit authorization for KeyAnt APK, source and history publication; 2026-11-05",
+  "release_url": "https://github.com/antonionovelli92/KeyAnt/releases/tag/v0.6.63"
+}

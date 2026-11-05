@@ -1,28 +1,28 @@
-# KeyAnt 0.6.62
+# KeyAnt 0.6.63
 
 Tastiera Android personale basata su HeliBoard, con temi, appunti, trackball e azioni locali dalla frase.
 
 ## Installazione
 
-Scarica **KeyAnt-0.6.62.apk** dalla [release v0.6.62](https://github.com/antonionovelli92/KeyAnt/releases/tag/v0.6.62). Installa sopra la versione esistente senza disinstallare: firma personale invariata, versionCode 89.
+Scarica **KeyAnt-0.6.63.apk** dalla [release v0.6.63](https://github.com/antonionovelli92/KeyAnt/releases/tag/v0.6.63). Installa sopra la versione esistente senza disinstallare: firma personale invariata, versionCode 90.
 
 ## Novità
 
-- Corretto il difetto ICU che impediva le pillole evento/promemoria e causava l’arresto nelle versioni precedenti. La vecchia espressione fallisce nella nuova verifica nativa; quella corretta passa.
-- Cancella nel tastierino elimina senza chiuderlo. Tre dimensioni visive con area di tocco invariata.
-- Pannelli con Seta, Cascata, Scorrimento o nessuna animazione; anteprime e trasparenza del tema.
-- Spaziatrice split: corretto il taglio asimmetrico della metà più larga prima del rilascio.
-- Restano split verticale opt-in, impostazioni per categorie, ricerca con focus, pillole rosse/verdi, materiali coordinati e opacità reversibile.
-- Google Tasks/OAuth reale ancora da verificare sul telefono: questa correzione ripristina il riconoscimento, non configura credenziali esterne.
+- Pannelli affiancati, opt-in, su Fold aperto orizzontale con tastiera unita e spazio sufficiente: lettere e numeri oppure calendario restano utilizzabili insieme. Swipe contrario per chiudere; split e cambio formato ripristinano la geometria.
+- Calendario laterale con mese e agenda del giorno, aggiornamento delle modifiche del provider e sola lettura degli appuntamenti già sincronizzati sul telefono.
+- Tastierino realmente più stretto opzionale, luci RGB indipendenti o ereditate, Invio/Spazio/Cancella senza chiusura.
+- Studio adattivo: anteprima proporzionata, categorie affiancate su Fold e icone specifiche. Anteprima interattiva del tastierino.
+- Glifi dello split senza deformazione orizzontale al rilascio. Restano la correzione ICU, split verticale opt-in, pillole e trasparenze precedenti.
+- Tasks: link diretto alla lista tester per il blocco 403 osservato. Account reale non ancora autorizzato/verificato; nessuna fatturazione attivata.
 
-[Configurazione Google Tasks](docs/GOOGLE_TASKS_SETUP.md) · [Novità e limiti](AGGIORNAMENTO_0.6.62.md) · [Verifiche](VERIFICA-0.6.62.md) · [Ripristino](ROLLBACK-0.6.62.md) · [Build e firma](docs/BUILD_AND_RELEASE.md).
+[Configurazione Google Tasks](docs/GOOGLE_TASKS_SETUP.md) · [Novità e limiti](AGGIORNAMENTO_0.6.63.md) · [Verifiche](VERIFICA-0.6.63.md) · [Ripristino](ROLLBACK-0.6.63.md) · [Build e firma](docs/BUILD_AND_RELEASE.md).
 
 ## Sorgenti e continuità
 
-Il ramo GitHub contiene la documentazione. Per il progetto Android completo scaricare **KeyAnt-0.6.62-sorgenti-pubblici.zip**, oppure **KeyAnt-0.6.62-history.bundle** per avere anche baseline 0.6.50 e revisioni 0.6.51–0.6.62. Gli archivi automatici “Source code” contengono solo questo ramo documentale.
+Il ramo GitHub contiene la documentazione. Per il progetto Android completo scaricare **KeyAnt-0.6.63-sorgenti-pubblici.zip**, oppure **KeyAnt-0.6.63-history.bundle** per avere anche baseline 0.6.50 e revisioni 0.6.51–0.6.63. Gli archivi automatici “Source code” contengono solo questo ramo documentale.
 
 ```sh
-git clone KeyAnt-0.6.62-history.bundle KeyAnt
+git clone KeyAnt-0.6.63-history.bundle KeyAnt
 cd KeyAnt
 git log --oneline --all --decorate
 ```

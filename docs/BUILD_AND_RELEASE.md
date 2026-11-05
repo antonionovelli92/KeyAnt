@@ -12,7 +12,7 @@ Eseguire dalla radice:
 ```sh
 python3 tools/fetch_native_libs.py
 ./gradlew :app:assembleDebugNoMinify
-sh tools/verify_0661.sh
+sh tools/verify_0663.sh
 ```
 
 L'APK viene scritto in `app/build/outputs/apk/debugNoMinify/`. Include arm64-v8a e x86_64; Android minimo 8.0/API 26. La variante personale `debugNoMinify` non abilita il debug Android.

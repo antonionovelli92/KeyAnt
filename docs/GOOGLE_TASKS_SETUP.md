@@ -1,4 +1,4 @@
-# Configurare Google Tasks per KeyAnt 0.6.60
+# Configurare Google Tasks per KeyAnt 0.6.63
 
 ## In parole semplici
 
@@ -8,7 +8,13 @@ OAuth è il sistema con cui autorizzi KeyAnt a usare Google Tasks. Non è una pa
 
 ## Stato reale
 
-Il client Android usa Google Identity Services `AuthorizationClient` (play-services-auth 22.0.0), selezione delle liste e Tasks REST API. Nessun server e nessun client secret nell’APK. La registrazione Google Cloud **non è stata completata in questa sessione**: la console ha restituito “Site Unavailable”. I test usano un trasporto simulato, non l’account personale.
+Il client Android usa Google Identity Services `AuthorizationClient` (play-services-auth 22.0.0), selezione delle liste e Tasks REST API. Nessun server e nessun client secret nell’APK. L’ultima prova sul telefono mostra **403 access_denied**, con il messaggio che l’app è in fase di test e ammette solo tester autorizzati. Il client Android è presente nel progetto mostrato, ma il consenso e un salvataggio reale non sono ancora confermati.
+
+### Per questo errore: un solo passaggio da completare
+
+Apri [Utenti di test](https://console.cloud.google.com/auth/audience), seleziona il progetto già usato per KeyAnt, poi **Pubblico / Audience → Utenti di test → Aggiungi utenti**. Inserisci l’indirizzo Google scelto sul telefono e salva. Torna in KeyAnt e riprova **Collega o rinnova Google Tasks** con lo stesso account. Non serve ricreare il client per questo messaggio. La verifica della proprietà del client Android è una procedura diversa dall’aggiunta del tester. La configurazione non viene modificata automaticamente dall’APK.
+
+Questo percorso è documentato da [Google: configurare il consenso OAuth](https://developers.google.com/workspace/guides/configure-oauth-consent). Il pulsante diretto è ora visibile nella pagina Azioni dalla frase, senza aprire tutta la guida.
 
 Il consenso sul telefono è necessario: la sola installazione dell’APK non collega l’account. Finché la configurazione manca, non considerare funzionante il salvataggio diretto in Tasks. Il calendario Android usa un percorso indipendente, da verificare anche sulla destinazione reale.
 
@@ -18,7 +24,7 @@ In **Gesti e strumenti → Azioni dalla frase** premi **Usa promemoria sul telef
 
 ## Link diretti per Google Tasks
 
-- [Crea/seleziona il progetto](https://console.cloud.google.com/projectcreate)
+- [Seleziona il progetto esistente](https://console.cloud.google.com/home/dashboard)
 - [Abilita Google Tasks API](https://console.cloud.google.com/apis/library/tasks.googleapis.com)
 - [Configura consenso e nome app](https://console.cloud.google.com/auth/branding)
 - [Utenti di test](https://console.cloud.google.com/auth/audience)
@@ -28,7 +34,7 @@ Non passare da un annuncio o da **Start free / prova da 300 dollari**. Non attiv
 
 ## Configurazione una volta sola
 
-1. Apri https://console.cloud.google.com/projectcreate e seleziona o crea il progetto personale destinato a KeyAnt. Non attivare la fatturazione per questi passaggi.
+1. Apri https://console.cloud.google.com/home/dashboard e seleziona il progetto personale destinato a KeyAnt. Crea un progetto solo se non ne esiste già uno. Non attivare la fatturazione per questi passaggi.
 2. In **API e servizi → Libreria**, abilita **Google Tasks API**.
 3. In **Google Auth Platform → Branding**, configura il nome **KeyAnt**, l’email di assistenza e il contatto sviluppatore dell’account che gestisce il progetto. Homepage: repository KeyAnt. Pubblica/indica l’informativa specifica `docs/GOOGLE_TASKS_PRIVACY.md`; completa gli eventuali campi obbligatori della console con dati reali.
 4. In **Audience**, per l’uso personale scegli **External / Testing** e aggiungi come test user l’account Google che userai sul telefono. Non pubblicare in produzione per completare questa prova. In modalità di test Google può richiedere nuovamente il consenso: non è una garanzia di collegamento permanente.
@@ -73,3 +79,7 @@ Fonte: https://developers.google.com/android/reference/com/google/android/gms/co
 
 ## Diagnosi 0.6.59
 Il video 37196 riproduce codice 8 dopo la selezione account. Il riconoscimento della frase arriva alla proposta; il fallimento osservato è nell’autorizzazione. Console Cloud ricontrollata: Site Unavailable. Nessun connettore disponibile individuato per creare il client OAuth Android. La guida nell’app rende concreta la configurazione da completare, ma non risolve da sola il collegamento e non modifica i permessi Google.
+
+## Calendario laterale in sola lettura — 0.6.63
+
+Il pannello legge i calendari visibili nel provider Android, inclusi quelli Google già sincronizzati sul dispositivo. Richiede soltanto READ_CALENDAR, non WRITE_CALENDAR. Mostra ricorrenze, giorni interi e agenda del giorno; si aggiorna quando il provider segnala modifiche. Non avvia una sincronizzazione cloud e non garantisce che dati non ancora sincronizzati siano già disponibili. Il pulsante Aggiorna rilegge il provider locale. Nessun inserimento, aggiornamento o cancellazione di eventi parte da questo pannello. Inserisci data e il tocco su un appuntamento inseriscono soltanto testo nel campo in cui stai scrivendo. Le pillole di creazione evento restano un flusso separato, con conferma e permessi di scrittura.
