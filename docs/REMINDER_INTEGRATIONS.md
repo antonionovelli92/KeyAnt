@@ -49,3 +49,13 @@ Lo stesso APK firmato usa la stessa identità package/certificato. In fase di te
 ## Modalità unificata e disattivazione
 
 Tre interruttori indipendenti filtrano i riconoscimenti. Calendario unificato, opt-in, riabilita le due famiglie temporali e forza la destinazione calendario senza usare Tasks o app alternative. Telefono rimane indipendente. Le scelte di destinazione e colore originali non vengono sovrascritte. Il controllo viene ripetuto alla conferma e prima della scrittura asincrona.
+
+## 0.6.65 · Stato locale e sincronizzazione
+
+La scrittura ALL_DAY usa UTC e fine esclusiva. La richiesta ContentResolver.requestSync è successiva al successo del provider e rispetta master sync e sync dell’account; non usa IGNORE_SETTINGS o MANUAL. Un errore di sincronizzazione non fa ripetere l’inserimento. Il permesso READ_SYNC_SETTINGS serve soltanto a rispettare quelle impostazioni.
+
+https://developer.android.com/reference/android/content/ContentResolver
+https://developer.android.com/identity/providers/calendar-provider
+
+La ricerca luogo è opt-in, dopo la conferma, solo sul testo del luogo, tramite Geocoder asincrono Android 33+. Nessuna chiave geografica incorporata, nessun GPS. Su versioni inferiori si mantiene il luogo originale. Il provider geografico può usare la rete e non garantisce copertura o precisione: si scartano risultati multipli e non coerenti.
+https://developer.android.com/reference/android/location/Geocoder

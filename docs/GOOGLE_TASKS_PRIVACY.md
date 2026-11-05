@@ -15,3 +15,7 @@ Per gli avvisi orari il telefono conserva nelle preferenze private titolo, istan
 Per problemi tecnici relativi al codice: issue del repository https://github.com/antonionovelli92/KeyAnt . Non inserire token, credenziali o contenuti personali nelle issue pubbliche.
 
 Dalla 0.6.64 la notifica oraria è una preferenza esplicita. Con avviso locale attivo la scadenza giornaliera Google è omessa di default. Il comando Android per altre app passa solo la frase confermata, il titolo e l’eventuale istante; non legge i dati di quelle app e non considera il lancio come salvataggio.
+
+## 0.6.65
+
+Il recupero del comando rimosso usa una singola memoria volatile, legata alla connessione editor, per massimo due minuti. Nessun appunto o archivio persistente. Il riconoscimento del testo selezionato conserva gli stessi divieti per password e incognito. Il geocoder è un’opzione separata, disattivata: soltanto il luogo confermato viene affidato al servizio geografico di Android; il resto della frase non viene inviato.

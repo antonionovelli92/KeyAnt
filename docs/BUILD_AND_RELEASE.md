@@ -12,7 +12,7 @@ Eseguire dalla radice:
 ```sh
 python3 tools/fetch_native_libs.py
 ./gradlew :app:assembleDebugNoMinify
-sh tools/verify_0664.sh
+sh tools/verify_0665.sh
 ```
 
 L'APK viene scritto in `app/build/outputs/apk/debugNoMinify/`. Include arm64-v8a e x86_64; Android minimo 8.0/API 26. La variante personale `debugNoMinify` non abilita il debug Android.
@@ -64,3 +64,7 @@ Eseguire anche `tools/verify_icu_0662.py` con JDK 17+ e ICU nativo. Robolectric 
 ## 0.6.64
 
 Eseguire tools/verify_0664.sh. Include le regressioni precedenti e i casi su parser, comando consumato, palette account calendario, intent promemoria, ridisegno/gesto inverso, agenda e Studio. Per la suite nativa usare gradle/keyant-regression.gradle e JVM limitate; confrontare lint con la baseline senza dichiararlo superato. Consegnare l’APK verificato prima di caricare gli archivi GitHub. Conservare risultati, limiti del test fisico e impronte nella release.
+
+## 0.6.65
+
+Gate tools/verify_0665.sh: regressioni precedenti e riconoscimento selezione, Undo, dialer, date multiple, geocodifica prudente, ABC e catalogo. ICU include EventSpan665 e TimeSpelling665. VersionCode 92, firma personale invariata. Non allegare i video del telefono agli archivi pubblici.
