@@ -33,3 +33,7 @@ AdaptiveTouch lascia invariato il rettangolo centrale dal 12% all’88% su ciasc
 ## Criteri per promuovere una modifica
 
 Corpus di frasi italiane consentite e riproducibili, set di prova separato dai campioni usati per tarare le soglie; confronto errori carattere/parola, cancellazioni, modifiche indesiderate, velocità e latenza p50/p95. Verifica su telefono fisico dei frame e della prima risposta al tocco. Nessun “zero errori” dedotto da test sintetici o da animazioni fluide. Nessun cambiamento ai default del tocco in 0.6.59, nessun testo personale aggiunto ai log.
+
+## Manutenzione 0.6.60
+
+L’intervento isola il timer delle pressioni lunghe sui tasti di lancio e cancella quel timer quando parte lo swipe. Invio non apre un menu secondario di default. La suite continua a controllare doppie rapide, multitocco, geometria e la prima lettera durante il rientro. Non sono stati cambiati i pesi del decoder o le soglie di AdaptiveTouch; nessun miglioramento quantitativo rispetto a iPhone è stato misurato. È una riduzione delle interferenze dei nuovi gesti, non un nuovo algoritmo linguistico.

@@ -1,0 +1,28 @@
+{
+  "version": "0.6.60",
+  "version_code": 87,
+  "source_commit": "44f9c29b1a899dd4eee4a87cd4f5d05f9f0af7f6",
+  "source_tag_in_history_bundle": "v0.6.60",
+  "remote_tag_contents": "Documentation only; full Android source is in the named release ZIP and history bundle",
+  "regression_tests": 253,
+  "test_failures": 0,
+  "lint_new_issues": 0,
+  "lint_baseline_clean": false,
+  "physical_device_verified": false,
+  "google_tasks_oauth_verified": false,
+  "assets_sha256": {
+    "AGGIORNAMENTO_0.6.60.md": "7de7ea5f51767262b51077e7303aa6e2c7a3442746204b53f4b1ddba07a4a7d0",
+    "DIGITAZIONE_APPLE_E_KEYANT.md": "e925a133f52ed3ce8356b1b42c89fbfbf64cce8637fe3cc894d283af4b18e6a4",
+    "GOOGLE_TASKS_PRIVACY.md": "ef314cb2925b4f1a31ce5cc9555a4c16f182932a07bc13e707af63b6750c2d1c",
+    "GOOGLE_TASKS_SETUP.md": "544ab46caec4911437df8ea109af2d2e42de5387213b61860616da8accc158c1",
+    "KeyAnt-0.6.60-history.bundle": "88930273c2f1d8213ae9fd27436a8c969ab27aad8ad503c1f2bafd1e3c1cb05b",
+    "KeyAnt-0.6.60-sorgenti-pubblici.zip": "bb3be73871b2a243aa918791402958a0af2e5ca246e55f67c192e791f3563d73",
+    "KeyAnt-0.6.60.apk": "a123a3f93c826e7cedf868f64452957fb666b1f82a5c51c7077683cb85608d18",
+    "KeyAnt-0660-materiali-coordinati.png": "282af217562a1411fc5f713f613370d69229aec242ede65774c31c73141eb0d4",
+    "KeyAnt-0660-salvato.png": "6beb6a77ffe71d101becf73f32b2f0c58f85b1bc503014c161c1acce0a802e65",
+    "ROLLBACK-0.6.60.md": "d9c8c3ead2b5b49d8c357222bf848cc847b24d9ab75ba90627954b296a86fb47",
+    "TEST-RESULTS-0.6.60.json": "4ea2eec61f06e75c85787002a75d3bf0771b14c38a472df9487aaf402ee5c289",
+    "VERIFICA-0.6.60.md": "87b3d60b5a0982db712203ec18e30f893c653061f3ba4b02a15a0063856e389d",
+    "SHA256SUMS.txt": "4a224d53afb3c088703d54f7949d9ba2da55cc549ade153441f24b2bcf3d651c"
+  }
+}

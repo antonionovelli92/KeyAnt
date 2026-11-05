@@ -1,0 +1,350 @@
+{
+  "version": "0.6.60",
+  "classes": [
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntV66Test",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntV647Test",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntHold660Test",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntV635Test",
+      "tests": 13,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntAppearance660Test",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntStudio660Test",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntStudio656Test",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntRetirement657Test",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntFeedback660Test",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntMultiTouch636Test",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntBackground649Test",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntContext657Test",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntCalendar653Test",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntMaterials653Test",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntV646Test",
+      "tests": 9,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntActions651Test",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntTasksSetup659Test",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntInline654Test",
+      "tests": 10,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntActionPrivacy651Test",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntStudio68Test",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntPanels659Test",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntBehavior648Test",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntV616Test",
+      "tests": 18,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntMediaReliabilityTest",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntPhrases656Test",
+      "tests": 10,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntResponse654Test",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntGestureStreamTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntSidePanels656Test",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntPanels658Test",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntV65Test",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntStudio659Test",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntTime660Test",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntSlide657Test",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntCalibration644Test",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntStudio649Test",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntV612Test",
+      "tests": 14,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntRecovery655Test",
+      "tests": 13,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntGeometryTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntV68Test",
+      "tests": 9,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntV613Test",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntStudio658Test",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntUpgrade650Test",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntVideoTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntMotion652Test",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "helium314.keyboard.latin.SuggestionCase647Test",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntGlass648Test",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "totals": {
+    "tests": 253,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "lint": {
+    "passed": false,
+    "counts": {
+      "Error": 550,
+      "Warning": 450,
+      "Hint": 1
+    },
+    "new_issues_vs_0659": 0,
+    "removed_issues_vs_0659": 0
+  },
+  "apk_sha256": "a123a3f93c826e7cedf868f64452957fb666b1f82a5c51c7077683cb85608d18",
+  "real_device_test": false,
+  "real_google_account_test": false,
+  "google_tasks_real_connection": "unresolved: error 8; external OAuth registration not completed",
+  "reminder_alternative": "explicit opt-in local Android alarm, no Google request or billing",
+  "rendering_change": "one drawer render owner and transparent base over shared main keyboard frame; OEM confirmation needed",
+  "typing_change": "hold/swipe arbitration and per-key popup policy; decoder/default heuristics unchanged"
+}

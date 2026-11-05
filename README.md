@@ -1,26 +1,31 @@
-# KeyAnt 0.6.59
+# KeyAnt 0.6.60
 
 Tastiera Android personale basata su HeliBoard, con temi, appunti, trackball e azioni locali dalla frase.
 
 ## Installazione
 
-Scarica **KeyAnt-0.6.59.apk** dalla [release v0.6.59](https://github.com/antonionovelli92/KeyAnt/releases/tag/v0.6.59). Installa sopra la versione esistente senza disinstallare: firma personale invariata, versionCode 86.
+Scarica **KeyAnt-0.6.60.apk** dalla [release v0.6.60](https://github.com/antonionovelli92/KeyAnt/releases/tag/v0.6.60). Installa sopra la versione esistente senza disinstallare: firma personale invariata, versionCode 87.
 
 ## Novità
 
-- Rendering del solo pannello laterale isolato in un layer software: mitigazione del difetto “digita ma non si vede”, con traslazioni animate conservate. Da confermare sul Fold fisico.
-- Numeri e calendario restano attivabili separatamente in **Gesti e strumenti → Pannelli laterali**. La gesture della linea rimane spenta di default.
-- **Come collegare Google Tasks** nelle azioni dalla frase: spiegazione semplice di OAuth e copia dei dati pubblici dell’app installata. Il collegamento reale Google Tasks resta irrisolto; nessuna registrazione Cloud completata in questa sessione.
-- [Studio sulla precisione della digitazione Apple e KeyAnt](docs/DIGITAZIONE_APPLE_E_KEYANT.md), con fonti e limiti verificati del decoder attuale.
+- 20 barre e sfere abbinate ai nuovi materiali; opzione per conservare solo le icone tematizzate.
+- Rendi tutto opaco: interruttore reversibile, spento di default, senza perdere le trasparenze salvate.
 
-[Configurazione Google Tasks](docs/GOOGLE_TASKS_SETUP.md) · [Novità e limiti](AGGIORNAMENTO_0.6.59.md) · [Verifiche](VERIFICA-0.6.59.md) · [Ripristino](ROLLBACK-0.6.59.md) · [Build e firma](docs/BUILD_AND_RELEASE.md).
+- Pillola verde pieno con spunta solo dopo salvataggio confermato, ritiro animato e protezione delle nuove frasi.
+- Pannelli laterali con un unico passaggio di disegno e scocca condivisa del tema, senza il secondo fondo opaco. Conferma sul Fold fisico ancora necessaria.
+- Calendario laterale spento all’aggiornamento, numeri indipendenti; menu della pressione lunga configurabili per tasto, Invio spento inizialmente.
+- Ore in lettere, «questa sera», durata e orario finale: stessi dati in anteprima e salvataggio.
+- Promemoria locali senza account o carta, come alternativa esplicita a Google Tasks. Il collegamento Google reale resta irrisolto; guida con link diretti e nessuna attivazione di fatturazione.
+- [Digitazione Apple e KeyAnt](docs/DIGITAZIONE_APPLE_E_KEYANT.md): ricerca e regressioni, senza promesse di un nuovo decoder o di precisione misurata pari a iPhone.
+
+[Configurazione Google Tasks](docs/GOOGLE_TASKS_SETUP.md) · [Novità e limiti](AGGIORNAMENTO_0.6.60.md) · [Verifiche](VERIFICA-0.6.60.md) · [Ripristino](ROLLBACK-0.6.60.md) · [Build e firma](docs/BUILD_AND_RELEASE.md).
 
 ## Sorgenti e continuità
 
-Il ramo GitHub contiene la documentazione. Per il progetto Android completo scaricare **KeyAnt-0.6.59-sorgenti-pubblici.zip**, oppure **KeyAnt-0.6.59-history.bundle** per avere anche baseline 0.6.50 e revisioni 0.6.51–0.6.59. Gli archivi automatici “Source code” contengono solo questo ramo documentale.
+Il ramo GitHub contiene la documentazione. Per il progetto Android completo scaricare **KeyAnt-0.6.60-sorgenti-pubblici.zip**, oppure **KeyAnt-0.6.60-history.bundle** per avere anche baseline 0.6.50 e revisioni 0.6.51–0.6.60. Gli archivi automatici “Source code” contengono solo questo ramo documentale.
 
 ```sh
-git clone KeyAnt-0.6.59-history.bundle KeyAnt
+git clone KeyAnt-0.6.60-history.bundle KeyAnt
 cd KeyAnt
 git log --oneline --all --decorate
 ```

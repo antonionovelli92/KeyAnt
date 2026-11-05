@@ -1,4 +1,4 @@
-# Configurare Google Tasks per KeyAnt 0.6.59
+# Configurare Google Tasks per KeyAnt 0.6.60
 
 ## In parole semplici
 
@@ -10,11 +10,25 @@ OAuth è il sistema con cui autorizzi KeyAnt a usare Google Tasks. Non è una pa
 
 Il client Android usa Google Identity Services `AuthorizationClient` (play-services-auth 22.0.0), selezione delle liste e Tasks REST API. Nessun server e nessun client secret nell’APK. La registrazione Google Cloud **non è stata completata in questa sessione**: la console ha restituito “Site Unavailable”. I test usano un trasporto simulato, non l’account personale.
 
-Il consenso sul telefono è necessario: la sola installazione dell’APK non collega l’account. Finché la configurazione manca, non considerare funzionante il salvataggio diretto in Tasks. Il calendario Android funziona indipendentemente.
+Il consenso sul telefono è necessario: la sola installazione dell’APK non collega l’account. Finché la configurazione manca, non considerare funzionante il salvataggio diretto in Tasks. Il calendario Android usa un percorso indipendente, da verificare anche sulla destinazione reale.
+
+## Percorso semplice senza Google Cloud
+
+In **Gesti e strumenti → Azioni dalla frase** premi **Usa promemoria sul telefono · senza account**, oppure scegli **App promemoria → Sul telefono · senza account né carta**. Scrivi la frase, apri l’icona e conferma. Concedi notifiche e avvisi esatti se Android li richiede, poi conferma di nuovo. Non crea attività su Google Tasks e non abilita alcun servizio a pagamento. Il salvataggio verificato mostra la pillola verde; un permesso da solo non equivale a salvataggio.
+
+## Link diretti per Google Tasks
+
+- [Crea/seleziona il progetto](https://console.cloud.google.com/projectcreate)
+- [Abilita Google Tasks API](https://console.cloud.google.com/apis/library/tasks.googleapis.com)
+- [Configura consenso e nome app](https://console.cloud.google.com/auth/branding)
+- [Utenti di test](https://console.cloud.google.com/auth/audience)
+- [Client OAuth Android](https://console.cloud.google.com/auth/clients)
+
+Non passare da un annuncio o da **Start free / prova da 300 dollari**. Non attivare la fatturazione né inserire una carta per seguire questa guida. Google Cloud Tasks è un altro servizio. La [documentazione Google Tasks](https://developers.google.com/workspace/tasks/limits), consultata il 5 novembre 2026, dichiara un limite di cortesia di 50.000 richieste al giorno; il [quickstart ufficiale](https://developers.google.com/workspace/tasks/quickstart/js) richiede progetto/account e consenso, senza una carta nei prerequisiti. Non è una garanzia generale sui costi di altri servizi Cloud. Se la console insiste sulla carta, interrompere quel percorso e usare gli avvisi locali. I link richiedono login/progetto e non saltano il consenso; in questa sessione non è stato completato un nuovo progetto OAuth.
 
 ## Configurazione una volta sola
 
-1. Apri https://console.cloud.google.com/ e seleziona o crea il progetto personale destinato a KeyAnt. Non attivare la fatturazione per questi passaggi.
+1. Apri https://console.cloud.google.com/projectcreate e seleziona o crea il progetto personale destinato a KeyAnt. Non attivare la fatturazione per questi passaggi.
 2. In **API e servizi → Libreria**, abilita **Google Tasks API**.
 3. In **Google Auth Platform → Branding**, configura il nome **KeyAnt**, l’email di assistenza e il contatto sviluppatore dell’account che gestisce il progetto. Homepage: repository KeyAnt. Pubblica/indica l’informativa specifica `docs/GOOGLE_TASKS_PRIVACY.md`; completa gli eventuali campi obbligatori della console con dati reali.
 4. In **Audience**, per l’uso personale scegli **External / Testing** e aggiungi come test user l’account Google che userai sul telefono. Non pubblicare in produzione per completare questa prova. In modalità di test Google può richiedere nuovamente il consenso: non è una garanzia di collegamento permanente.
