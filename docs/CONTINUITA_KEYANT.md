@@ -2,9 +2,9 @@
 
 ## Punto da cui ripartire
 
-Versione corrente: **0.6.56**, versionCode **83**. Pillola a conferma singola, pannelli laterali e profili scolpiti. Il client OAuth Android deve ancora essere registrato su Google Cloud.
+Versione corrente: **0.6.57**, versionCode **84**. Pillola a conferma singola, pannelli laterali e profili scolpiti. Il client OAuth Android deve ancora essere registrato su Google Cloud.
 
-La fonte completa è l’allegato **KeyAnt-0.6.56-history.bundle** della release GitHub, con tag `baseline-0.6.50`, `v0.6.51`, `v0.6.52`, `v0.6.53`, `v0.6.54`, `v0.6.55`, `v0.6.56`. Il ramo GitHub principale contiene la documentazione e non è sufficiente da solo per ricompilare Android.
+La fonte completa è l’allegato **KeyAnt-0.6.57-history.bundle** della release GitHub, con tag `baseline-0.6.50`, `v0.6.51`, `v0.6.52`, `v0.6.53`, `v0.6.54`, `v0.6.55`, `v0.6.56`, `v0.6.57`. Il ramo GitHub principale contiene la documentazione e non è sufficiente da solo per ricompilare Android.
 
 
 ## Vincoli da preservare
@@ -12,13 +12,13 @@ La fonte completa è l’allegato **KeyAnt-0.6.56-history.bundle** della release
 - Fluidità di apertura, chiusura e comparsa; i cambi rapidi devono ripartire dallo stato visibile.
 - Azioni dalla frase attive di default, disattivabili; rispettare una scelta già salvata.
 - Freccia nello stesso spazio, tocco per la proposta e trascinamento per gli strumenti.
-- Nessun invio automatico: conferma prima delle app esterne. Tasks ha il flusso diretto predisposto, ma OAuth Cloud è ancora da configurare (docs/GOOGLE_TASKS_SETUP.md); Copia e apri è un’alternativa nei dettagli; calendario diretto con permessi e conferma oppure editor esterno; telefono solo tastierino.
+- Nessun invio automatico: conferma prima delle app esterne. Tasks ha il flusso diretto predisposto, ma OAuth Cloud è ancora da configurare (docs/GOOGLE_TASKS_SETUP.md); calendario diretto con permessi e conferma oppure editor esterno; telefono solo tastierino.
 - Nessun azzeramento di appunti, memoria personale, preferiti e calibrazione.
 - Pubblicare sorgenti, note, risultati reali e ripristino; escludere chiavi e credenziali.
 
 ## Test e limiti
 
-Consultare `VERIFICA-0.6.55.md` per gli esiti di questa revisione. Eseguire `tools/verify_0656.sh` nell’ambiente descritto in `docs/BUILD_AND_RELEASE.md`. Il lint globale presenta debito preesistente: non confonderlo con un controllo superato né con una regressione automaticamente introdotta dalla nuova funzione.
+Consultare `VERIFICA-0.6.57.md` per gli esiti di questa revisione. Eseguire `tools/verify_0657.sh` nell’ambiente descritto in `docs/BUILD_AND_RELEASE.md`. Il lint globale presenta debito preesistente: non confonderlo con un controllo superato né con una regressione automaticamente introdotta dalla nuova funzione.
 
 La verifica Robolectric non misura fluidità, frame time o compatibilità delle versioni OEM sul Fold reale. Da controllare nell’uso: passaggio a Tasks/Calendar, Fold aperto e chiuso, digitazione rapida, trascinamento quando appare l’icona e ritorno alla normale freccia.
 
@@ -31,3 +31,6 @@ Video 37149: barra vuota dopo fallimento, parser senza mesi e UI incoerente. Pil
 
 ## Ripresa 0.6.56
 Usare il tag v0.6.56 del bundle. Vedere AGGIORNAMENTO_0.6.56.md, VERIFICA-0.6.56.md e la guida Tasks aggiornata. Per il confronto esatto dei pannelli occorre identificare la sequenza originale. Per il test reale Tasks occorre completare OAuth.
+
+## Ripresa 0.6.57
+Usare il tag v0.6.57 del bundle. Ultimo contratto: icona predefinita, apertura automatica opzionale, X conserva il contesto; niente apertura obbligatoria. Pannelli traslano MainKeyboardView e misurano le proprie righe subito. Il primo stream di digitazione corregge il movimento della vista, senza alterare la mappa dei tasti. Ritiro persistente media agganciato al contenuto mostrato. OAuth reale ancora aperto: console inaccessibile, nessun codice specifico deducibile dal video. Leggere aggiornamento e verifica della release.

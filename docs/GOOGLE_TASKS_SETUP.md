@@ -1,4 +1,4 @@
-# Configurare Google Tasks per KeyAnt 0.6.56
+# Configurare Google Tasks per KeyAnt 0.6.57
 
 ## Stato reale
 
@@ -25,7 +25,7 @@ Non creare una chiave API in sostituzione del client OAuth. Non è necessario in
 
 7. Installa l’APK firmato della release. In **KeyAnt → Gesti e strumenti → Azioni dalla frase**, premi **Collega o rinnova Google Tasks**, scegli l’account registrato e completa il consenso Google.
 8. Sotto il collegamento premi **Carica liste Tasks** e scegli **Lista Tasks**. L’opzione automatica usa la prima lista restituita da Google. Se una lista scelta viene eliminata, KeyAnt richiede una nuova scelta prima dell’invio.
-9. Scrivi «ricordami di prendere pasticche tra un quarto d’ora». Verifica titolo e orario nella pillola e tocca la spunta. Al primo utilizzo Android può chiedere accesso alle notifiche e agli avvisi esatti. Tornando alla tastiera, verifica la frase e conferma di nuovo.
+9. Scrivi «ricordami di prendere pasticche tra un quarto d’ora». Tocca l’icona luminosa, verifica titolo e orario nella pillola e tocca la spunta. Al primo utilizzo Android può chiedere accesso alle notifiche e agli avvisi esatti. Tornando alla tastiera, verifica la frase e conferma di nuovo.
 
 ## Salvataggio e avvisi
 
@@ -43,3 +43,6 @@ In **App promemoria** puoi scegliere **Calendario · promemoria con avviso**. **
 - https://developers.google.com/workspace/tasks/reference/rest/v1/tasks
 - https://developers.google.com/workspace/tasks/reference/rest/v1/tasks/insert
 - https://developer.android.com/develop/background-work/services/alarms/schedule
+
+## Diagnosi 0.6.57
+Il risultato della scelta account viene decodificato anche se Android ritorna RESULT_CANCELED, così un errore restituito da Google mantiene il proprio codice. Scope non concesso e token assente sono distinti. La scelta dell’account da sola non prova il consenso a Tasks. Il collegamento reale non è stato verificato: l’accesso alla console Cloud dall’ambiente di lavoro restituisce Site Unavailable. Se il collegamento fallisce, il messaggio rimane nell’anteprima e nelle impostazioni. Non vengono inviati testo o token nei log di diagnosi.
