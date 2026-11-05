@@ -4,7 +4,7 @@ Tastiera Android personale basata su HeliBoard, con temi, appunti, trackball e a
 
 ## Installazione
 
-Scarica **KeyAnt-0.6.59.apk** dalla [release v0.6.59](https://github.com/antonionovelli92/KeyAnt/releases/tag/v0.6.59). Installa sopra la versione esistente senza disinstallare: firma personale invariata, versionCode 86.
+**0.6.59 è pronta e verificata, ma la release è ancora una bozza non pubblicata.** APK e 10 allegati sono caricati; pubblicazione in attesa di autorizzazione esplicita. L’ultima release pubblica resta [v0.6.58](https://github.com/antonionovelli92/KeyAnt/releases/tag/v0.6.58). La 0.6.59 si installa sopra la versione esistente senza disinstallare: firma personale invariata, versionCode 86.
 
 ## Novità
 
