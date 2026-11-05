@@ -1,0 +1,28 @@
+{
+  "version": "0.6.61",
+  "source_commit": "40bfba5029207362b719248841a11f88202538ec",
+  "source_tag": "v0.6.61",
+  "assets": {
+    "AGGIORNAMENTO_0.6.61.md": "4f4d6fe598dc34b1404f42ec413df641daf58fbaa4736147c35a97d6aff45231",
+    "DIGITAZIONE_APPLE_E_KEYANT.md": "e925a133f52ed3ce8356b1b42c89fbfbf64cce8637fe3cc894d283af4b18e6a4",
+    "GOOGLE_TASKS_PRIVACY.md": "ef314cb2925b4f1a31ce5cc9555a4c16f182932a07bc13e707af63b6750c2d1c",
+    "GOOGLE_TASKS_SETUP.md": "544ab46caec4911437df8ea109af2d2e42de5387213b61860616da8accc158c1",
+    "KeyAnt-0.6.61-history.bundle": "2a31b3314f5cadb3330466266be1cd8deefe1197beccd9bc08feb42a9b1727c5",
+    "KeyAnt-0.6.61-sorgenti-pubblici.zip": "54d3879ed5e69d44c39d88a4b3716c5ab4f612afefa01ea9d166def63eb2b3da",
+    "KeyAnt-0.6.61.apk": "048a6f0a5fe1d237eedc7790dce33573364d3716f7030c432796492cb79305d7",
+    "KeyAnt-0661-aspetto-scuro.png": "beb00e15231e1d7aa2f797906549764dced767508ec92420e0c48e0b37185bca",
+    "KeyAnt-0661-aspetto.png": "8ca76d11a58b7b2bb44b29469c055eb8b07098cebe391187431273425bae3886",
+    "KeyAnt-0661-errore.png": "d3fc2be6cbdefe324f027ff3ee8bd82e09e6072c6bc366283664fe3a8aa09932",
+    "KeyAnt-0661-numeri.png": "5ec9ac3b4287db0519e050b39f9ac585e26c24ea6b837bc6e16144761de65657",
+    "KeyAnt-0661-split.png": "5c1a13a92f3e3e96a98760a4773bd0e2af6cf7ea1dd4ca813756c303369f9c53",
+    "ROLLBACK-0.6.61.md": "a6998188f810b5dea4563dad4a31a00d238c11f96cc520eead634902bd5e0e89",
+    "TEST-RESULTS-0.6.61.json": "09edf3fb3547ffe62d0c7f800d5a2e37b7f63727332f42f6f5d262bad1542e51",
+    "VERIFICA-0.6.61.md": "33d8abec634572a34894f65abd1e70389bc59ef5bd10f8164900e29523ee3447",
+    "SHA256SUMS.txt": "f17ea391cf7805994569129c4458cd7bce3995dff5ba69c7454f4fdd945942d8"
+  },
+  "tests": 322,
+  "classes": 55,
+  "real_device_test": false,
+  "crash_root_cause": "unresolved",
+  "google_tasks_oauth": "unresolved"
+}
