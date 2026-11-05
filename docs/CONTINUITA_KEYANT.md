@@ -2,10 +2,9 @@
 
 ## Punto da cui ripartire
 
-Versione corrente: **0.6.59**, versionCode **86**. Pillola a conferma singola, pannelli laterali e profili scolpiti. Il client OAuth Android deve ancora essere registrato su Google Cloud.
+Versione corrente: **0.6.66**, versionCode **93**. Leggere AGGIORNAMENTO_0.6.66.md, VERIFICA-0.6.66.md e TEST-RESULTS-0.6.66.json per lo stato verificato.
 
-La fonte completa è l’allegato **KeyAnt-0.6.59-history.bundle** della release GitHub, con tag `baseline-0.6.50`, `v0.6.51`, `v0.6.52`, `v0.6.53`, `v0.6.54`, `v0.6.55`, `v0.6.56`, `v0.6.57`. Il ramo GitHub principale contiene la documentazione e non è sufficiente da solo per ricompilare Android.
-
+La fonte completa è l’allegato **KeyAnt-0.6.66-history.bundle**, tag sorgente v0.6.66; il ramo principale GitHub contiene documentazione e non l’intero progetto Android. La configurazione Tasks è dichiarata funzionante dall’utente sul suo telefono, non verificata con un account reale in questo ambiente. Le note storiche sotto descrivono lo stato delle singole revisioni e non sostituiscono l’aggiornamento corrente.
 
 ## Vincoli da preservare
 
@@ -40,3 +39,6 @@ Ultimi video 37191/37192: Tasks codice 8, pannelli ancora vuoti sul telefono. Nu
 
 ## Ripresa 0.6.59
 Video 37196 conferma numeri invisibili ma cliccabili anche nella 0.6.58. Layer software limitato al pannello, outline clipping rimosso; conferma hardware ancora necessaria. Guida OAuth espandibile con dati del certificato installato; registrazione Cloud ancora non completata, codice 8 non risolto. Studio Apple in docs/DIGITAZIONE_APPLE_E_KEYANT.md: nessuna modifica al decoder o ai default del tocco. Fonte completa tag v0.6.59 nel bundle, non nel ramo documentale GitHub.
+
+## Ripresa 0.6.66
+Crash riprodotto in ToolbarLook.icon: ColorUtils.calculateContrast rifiuta uno sfondo traslucido. Comporre su un riferimento opaco solo per il calcolo. FormaColors usa l’inchiostro dei materiali scolpiti anche con sistema scuro. X di EmojiSearchPanel/GifPanel chiude; freccia torna alle emoji. Oggi ha un anello disegnato dopo i materiali, verificato sui pixel e non solo sul flag accessibile. MagicBallDock segue il progresso dei pannelli; PanelMotion666 usa un completamento monotono con velocità iniziale e velocità finale zero. Comandi numbers/calendar in ToolCatalog e overflow, anche a gesture disabilitate. Controlli completi in edge_panels con ricerca canonica; stessi valori condivisi. China originale e identificatori Maker conservati. Consegnare il link solo dopo test, firma e verifica degli allegati pubblicati.

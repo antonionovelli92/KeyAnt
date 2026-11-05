@@ -68,3 +68,6 @@ Eseguire tools/verify_0664.sh. Include le regressioni precedenti e i casi su par
 ## 0.6.65
 
 Gate tools/verify_0665.sh: regressioni precedenti e riconoscimento selezione, Undo, dialer, date multiple, geocodifica prudente, ABC e catalogo. ICU include EventSpan665 e TimeSpelling665. VersionCode 92, firma personale invariata. Non allegare i video del telefono agli archivi pubblici.
+
+## 0.6.66
+Eseguire tools/verify_0666.sh, poi assemblare l’APK finale e verificare versione 0.6.66 / codice 93, firma invariata, integrità ZIP e allineamento. La suite usa JVM isolate per il rendering nativo; nell’ambiente offline usare il repository Maven locale già predisposto. Conservare risultati per classe e confronto lint con 0.6.65. Test e artefatto finale devono precedere pubblicazione e consegna del link; non inviare link provvisori. Il ramo GitHub principale resta documentale: progetto completo in ZIP tracciato e git bundle, esclusi segreti.
