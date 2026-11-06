@@ -1,0 +1,788 @@
+diff --git a/app/build.gradle.kts b/app/build.gradle.kts
+index f66339b..5a38836 100644
+--- a/app/build.gradle.kts
++++ b/app/build.gradle.kts
+@@ -15,8 +15,8 @@ android {
+         applicationId = "it.keyant.keyboard"
+         minSdk = 26
+         targetSdk = 35
+-        versionCode = 95
+-        versionName = "0.6.68"
++        versionCode = 96
++        versionName = "0.6.69"
+         externalNativeBuild { ndkBuild { arguments += listOf("-j2") } }
+         ndk {
+             abiFilters.clear()
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/AutomaticStrip667.java b/app/src/main/java/helium314/keyboard/keyforma/AutomaticStrip667.java
+index 17118f4..06ff406 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/AutomaticStrip667.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/AutomaticStrip667.java
+@@ -7,17 +7,19 @@ import helium314.keyboard.latin.settings.Settings;
+ /** Collapse only the idle command strip. Never resize while a pointer is held down. */
+ public final class AutomaticStrip667 {
+  private final String previewMode;
+- private final View strip;private View host;private int expandedHeight;private boolean hidden;private ValueAnimator animator;
++ private final View strip;private View host;private int expandedHeight;private boolean hidden;private Boolean manual;private String surface="";private ValueAnimator animator;
+  private final Runnable apply=this::apply;
+  public AutomaticStrip667(View strip){this(strip,null);}
+  public AutomaticStrip667(View strip,String previewMode){this.strip=strip;this.previewMode=previewMode;}
+  private String mode(){return previewMode==null?ToolbarModes667.mode(strip.getContext()):previewMode;}
+  public void surface(String kind){
++  surface=kind;if(!kind.equals("keyant-tools"))manual=null;
+   boolean password=Settings.getValues()!=null&&Settings.getValues().mInputAttributes.mIsPasswordField;
+-  boolean next=ToolbarModes667.automatic(mode())&&kind.equals("keyant-tools")&&!password;
++  boolean next=kind.equals("keyant-tools")&&(manual!=null?!manual:ToolbarModes667.automatic(mode())&&!password);
+   if(next==hidden&&host!=null)return;
+   hidden=next;strip.removeCallbacks(apply);apply();
+  }
++ public void manual(boolean visible){if(!surface.equals("keyant-tools"))return;manual=visible;hidden=!visible;strip.removeCallbacks(apply);apply();}
+  public void show(){hidden=false;strip.removeCallbacks(apply);apply();}
+  private boolean touching(){View root=strip;while(root.getParent() instanceof View parent){root=parent;if(root instanceof InputView input)return input.hasActiveTouch667();}return false;}
+  private void apply(){
+@@ -33,6 +35,7 @@ public final class AutomaticStrip667 {
+   animator.addUpdateListener(a->{if(touching()){a.cancel();strip.postDelayed(apply,32);return;}int h=(int)a.getAnimatedValue();height(h);float fraction=Math.max(0,Math.min(1,h/(float)expandedHeight));strip.setAlpha(fraction);
+    String style=mode();strip.setTranslationY(style.equals("auto_soft")?(1-fraction)*expandedHeight*.3f:0);strip.setScaleX(style.equals("auto_veil")?.92f+.08f*fraction:1);});animator.start();
+  }
+- private void height(int value){if(host==null)return;var p=host.getLayoutParams();p.height=value;host.setLayoutParams(p);}
+- public void restore(){strip.removeCallbacks(apply);if(animator!=null)animator.cancel();hidden=false;height(expandedHeight);strip.setAlpha(1);strip.setTranslationY(0);strip.setScaleX(1);host=null;}
++ private void height(int value){if(host==null)return;var p=host.getLayoutParams();if(p.height==value)return;p.height=value;host.setLayoutParams(p);}
++ public void pause(){strip.removeCallbacks(apply);if(animator!=null)animator.cancel();height(hidden?0:expandedHeight);strip.setAlpha(hidden?0:1);strip.setTranslationY(0);strip.setScaleX(1);}
++ public void restore(){manual=null;surface="";strip.removeCallbacks(apply);if(animator!=null)animator.cancel();hidden=false;height(expandedHeight);strip.setAlpha(1);strip.setTranslationY(0);strip.setScaleX(1);host=null;}
+ }
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/BenchCaps656.java b/app/src/main/java/helium314/keyboard/keyforma/BenchCaps656.java
+index e18d241..5df73df 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/BenchCaps656.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/BenchCaps656.java
+@@ -10,6 +10,13 @@ final class BenchCaps656 {
+     private enum Cut { LINE, CUP, HIGH, BRUSH, FILM, WOOD }
+     private record Profile(String id,String title,Cut cut,int top,int accent,int desk,float wall,float taper,float radius){}
+     private static final Profile[] PROFILES={
++        new Profile("bench_pidu_rose","China · Tutto rosa",Cut.LINE,0xffffaaca,0xffdf4d8d,0xffb44e7c,7,1,6),
++        new Profile("bench_pidu_pinkblack","China · Rosa su nero",Cut.LINE,0xfff4a1c5,0xffdf548e,0xff151117,7,1,6),
++        new Profile("bench_pidu_blackpink","China · Nero su rosa",Cut.LINE,0xff26202a,0xffff8dbf,0xffd8739f,7,1,6),
++        new Profile("bench_pidu_cup","Coppa · Petali rosa",Cut.CUP,0xffefbbd1,0xffdc699d,0xff4e293f,6,3,9),
++        new Profile("bench_pidu_film","Pellicola · Quarzo rosa",Cut.FILM,0xffab648a,0xffffb3d4,0xff301c2c,5,2,8),
++        new Profile("bench_draw_twilight","China · Viola e ambra",Cut.LINE,0xc034284a,0xffffb768,0x701a1028,7,1,6),
++        new Profile("bench_seafoam","Lamina · Laguna",Cut.BRUSH,0xff80b9b5,0xffe1b974,0xff203b40,3,2,4),
+         new Profile("bench_paper","Disegno · Carta",Cut.LINE,0xfffcfcfd,0xffdc3526,0xffe3e4e8,7,1,6),
+         new Profile("bench_ink","Disegno · China",Cut.LINE,0xff22242a,0xff83e65c,0xff111317,7,1,6),
+         new Profile("bench_draw_noir","China · Fumé nero",Cut.LINE,0xc03b3d3d,0xffa6b3b0,0x70101218,7,1,6),
+@@ -46,7 +53,7 @@ final class BenchCaps656 {
+         AtelierThemes.Spec[] out=new AtelierThemes.Spec[PROFILES.length];
+         for(int i=0;i<out.length;i++){
+             Profile p=PROFILES[i];
+-            out[i]=new AtelierThemes.Spec(p.id,p.title,p.id.startsWith("bench_draw_")?"Disegno":GROUP,p.id,p.top,p.top,p.accent,p.accent);
++            out[i]=new AtelierThemes.Spec(p.id,p.title,p.id.startsWith("bench_pidu_")?"PIDDU":p.id.startsWith("bench_draw_")?"Disegno":GROUP,p.id,p.top,p.top,p.accent,p.accent);
+         }
+         return out;
+     }
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/CapPreview.java b/app/src/main/java/helium314/keyboard/keyforma/CapPreview.java
+index 9f3dfc4..3b46fde 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/CapPreview.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/CapPreview.java
+@@ -47,12 +47,15 @@ private final GlassCaps glassCaps=new GlassCaps();
+     public CapPreview(Context c,boolean dark,boolean glass){super(c);LiquidMaterial.init(c);shift=c.getDrawable(helium314.keyboard.latin.R.drawable.sym_keyboard_shift_lxx).mutate();delete=c.getDrawable(helium314.keyboard.latin.R.drawable.sym_keyboard_delete_lxx).mutate();enter=c.getDrawable(helium314.keyboard.latin.R.drawable.sym_keyboard_return_lxx).mutate();this.dark=dark;this.glass=glass;if(glass)backdrop=new GlassBackdrop(dark);setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO);}
+     public CapPreview(Context c,boolean dark,String profile){this(c,ThemeCatalog.effectiveDark(profile,dark),profile.equals("glass"));this.profile=profile;if(XboxAnniversary.supports(MakeKeyAnt.base(profile))||TranslucentShells.family(profile)||profile.equals("art_barbie_crystal"))themeBackdrop=new ThemeBackdrop(profile,this.dark);keycapPrint=new KeycapPrint(c,profile);}
+     @Override public boolean onTouchEvent(android.view.MotionEvent e){if(passive)return false;if(gallery&&previewKey==null&&(isClickable()||isLongClickable())){if(e.getActionMasked()==android.view.MotionEvent.ACTION_DOWN){touchX=e.getX();touchY=e.getY();if(AnimatedThemes.enabled(getContext()))kinetic.tap(e.getEventTime());pulses.touch(touchX,touchY,e.getEventTime());pressMotion.setPressed(true,android.os.SystemClock.uptimeMillis());invalidate();}else if(e.getActionMasked()==android.view.MotionEvent.ACTION_UP||e.getActionMasked()==android.view.MotionEvent.ACTION_CANCEL){pressMotion.setPressed(false,android.os.SystemClock.uptimeMillis());invalidate();}return super.onTouchEvent(e);}if(e.getActionMasked()==0){touchX=e.getX();touchY=e.getY();if(AnimatedThemes.enabled(getContext()))kinetic.tap(e.getEventTime());if(!gallery)PreviewFeedback.play(getContext(),touchY>getHeight()*.72f?32:97);pulses.touch(touchX,touchY,e.getEventTime());pressMotion.setPressed(true,android.os.SystemClock.uptimeMillis());invalidate();return true;}if(e.getActionMasked()==1||e.getActionMasked()==3){pressMotion.setPressed(false,android.os.SystemClock.uptimeMillis());invalidate();if(e.getActionMasked()==android.view.MotionEvent.ACTION_UP){if(previewKey!=null){int code=hitCode(e.getX(),e.getY());if(code!=0)previewKey.accept(code);}performClick();}return true;}return true;}
++    private boolean trialShift669,trialSymbols669;
++    public void trialLayer669(boolean shift,boolean symbols){if(trialShift669!=shift||trialSymbols669!=symbols){trialShift669=shift;trialSymbols669=symbols;invalidate();}}
++    private String[] trialRows669(){return trialSymbols669?new String[]{"1234567890","@#$%&*()-","⇧!?/=:;+⌫"}:new String[]{"QWERTYUIOP","ASDFGHJKL","⇧ZXCVBNM⌫"};}
+     public int hitCode(float px,float py){
+      if(px<0||py<0||px>=getWidth()||py>=getHeight())return 0;
+      float u=getWidth()/340f,kw=31*u,kh=getHeight()/4.15f;
+      if(py>=3*kh){float[] widths={49*u,33*u,156*u,33*u,49*u};int[] codes={-10001,44,32,46,10};float x=6*u;for(int i=0;i<5;i++){if(px>=x&&px<x+widths[i]-2*u)return codes[i];x+=widths[i]+2*u;}return 0;}
+      int row=(int)((py-3*u)/kh);if(py<3*u||row<0||row>2)return 0;
+-     String[] rows={"QWERTYUIOP","ASDFGHJKL","⇧ZXCVBNM⌫"};String letters=rows[row];float x=(getWidth()-(row==2?10:letters.length())*kw)/2;
++     String[] rows=trialRows669();String letters=rows[row];float x=(getWidth()-(row==2?10:letters.length())*kw)/2;
+      for(int i=0;i<letters.length();i++){float cell=(row==2&&(i==0||i==letters.length()-1)?1.5f:1)*kw;if(px>=x&&px<x+cell-2*u)return row==2&&i==0?-11:row==2&&i==letters.length()-1?-7:letters.charAt(i);x+=cell;}return 0;
+     }
+     @Override public boolean performClick(){super.performClick();return true;}
+@@ -106,16 +109,16 @@ private final GlassCaps glassCaps=new GlassCaps();
+         if(backdrop!=null)backdrop.draw(c);if(themeBackdrop!=null){int layer=anniversary?c.saveLayerAlpha(0,0,getWidth(),getHeight(),XboxAnniversary.opacity(getContext(),profile)*255/100):-1;themeBackdrop.draw(c);if(layer>=0)c.restoreToCount(layer);}continuous|=kinetic.draw(c,getWidth(),getHeight(),profile,dark,AnimatedThemes.enabled(getContext()),frameTime);
+         float u=getWidth()/340f;float kw=31*u,kh=getHeight()/4.15f;
+         if(keycapPrint!=null&&KeycapPrint.isFull(profile))keycapPrint.region(0,0,getWidth(),getHeight());else if(keycapPrint!=null)keycapPrint.region((getWidth()-10*kw)/2,3*u,(getWidth()-9*kw)/2+2*kw-2*u,2*kh+2*u);
+-        String[] rows={"QWERTYUIOP","ASDFGHJKL","⇧ZXCVBNM⌫"};
++        String[] rows=trialRows669();
+         text.setTextAlign(Paint.Align.CENTER);text.setTypeface(ThemeCatalog.font(profile));text.setTextSize(14*u*CapGeometry.labelScale(profile));
+         for(int r=0;r<3;r++){
+             String row=rows[r];float x=(getWidth()-(r==2?10:row.length())*kw)/2;
+             for(int i=0;i<row.length();i++){int kind=r==2&&i==0?1:r==2&&i==row.length()-1?2:0;
+                 float cell=(r==2&&(kind==1||kind==2)?1.5f:1)*kw;frameCode=kind==1?-11:kind==2?-7:row.charAt(i);c.save();c.translate(x,r*kh+3*u);revealCap(c,cell-2*u,kh,x);float pressure=drawCap(c,cell-2*u,kh-1*u,kind,x,r*kh+3*u);
+                 if(keycapPrint!=null)keycapPrint.draw(c,frameCode,x,r*kh+3*u,cell-2*u,kh-1*u,pressure);
+-                legend(c,row.substring(i,i+1),cell-2*u,kh,kind,pressure);c.restore();x+=cell;}
++                legend(c,previewKey!=null&&!trialShift669&&!trialSymbols669?row.substring(i,i+1).toLowerCase(java.util.Locale.ROOT):row.substring(i,i+1),cell-2*u,kh,kind,pressure);c.restore();x+=cell;}
+         }
+-        float[] widths={49*u,33*u,156*u,33*u,49*u};String[] labels={"?123",",","",".","↵"};int[] codes={-10001,44,32,46,10};float x=6*u;
++        float[] widths={49*u,33*u,156*u,33*u,49*u};String[] labels={trialSymbols669?"ABC":"?123",",","",".","↵"};int[] codes={-10001,44,32,46,10};float x=6*u;
+         for(int i=0;i<5;i++){int kind=i==0?(XboxAnniversary.supports(MakeKeyAnt.base(profile))?5:(profile.equals("liquid_android")||profile.equals("graphite")||profile.equals("classic")||profile.equals("vintage"))?0:1):i==4?3:i==2?4:0;frameCode=codes[i];c.save();c.translate(x,3*kh);revealCap(c,widths[i]-2*u,kh,x);float pressure=drawCap(c,widths[i]-2*u,kh-1*u,kind,x,3*kh);if(keycapPrint!=null)keycapPrint.draw(c,frameCode,x,3*kh,widths[i]-2*u,kh-1*u,pressure);legend(c,labels[i],widths[i]-2*u,kh,kind,pressure);c.restore();x+=widths[i]+2*u;}
+ 
+         c.restore();if(continuous&&isShown()&&getGlobalVisibleRect(visibleRect))postInvalidateOnAnimation();
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/GestureActions.java b/app/src/main/java/helium314/keyboard/keyforma/GestureActions.java
+index 4237541..f22a2bd 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/GestureActions.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/GestureActions.java
+@@ -12,6 +12,7 @@ public final class GestureActions {
+  public static boolean run(LatinIME ime,String action){
+   if(action.equals("none"))return false;
+   int code=code(action); if(code!=KeyCode.UNSPECIFIED)ime.onCodeInput(code,-1,-1,false);
++  else if(action.equals("toolbar_show")||action.equals("toolbar_hide")){ime.setKeyAntToolbarVisible669(action.equals("toolbar_show"));}
+   else if(action.equals("ai")){KeyAntBar b=OtpStore.bar.get();if(b!=null)b.aiMenu();}
+   else BottomBar.run(ime,action);
+   return true;
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/KeyAntGestures.java b/app/src/main/java/helium314/keyboard/keyforma/KeyAntGestures.java
+index 3d60c46..e374b6c 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/KeyAntGestures.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/KeyAntGestures.java
+@@ -6,6 +6,7 @@ import helium314.keyboard.keyboard.*;import helium314.keyboard.latin.*;import he
+ public final class KeyAntGestures {
+  private final MainKeyboardView host;private final LatinIME ime;private final Handler handler=new Handler(Looper.getMainLooper());
+  private Key firstKey,spaceKey;private int firstId=-1,secondId=-1,spaceId=-1;private float x1,y1,x2,y2,lastX,lastY;private long downTime;private long lastModeTap=-1000;private boolean shortcutStream;
++ private boolean paired669, extraPointer669;
+  private boolean chordWaiting;private InputConnection selectionConnection;private EditorInfo selectionEditor;private int resumeAnchor=-1,resumeFocus=-1,selectionLength,selectionHash;
+  private int selectionPointer=-1;private boolean twoFingerSelection;
+  private boolean space,trackpad,selecting,swallowed;private int anchor=-1,position=-1;private long lastHaptic;
+@@ -17,7 +18,7 @@ public final class KeyAntGestures {
+  private Key keyAt(float x,float y){if(host.getKeyboard()==null)return null;for(Key k:host.getKeyboard().getSortedKeys())if(x>=k.getX()+host.getPaddingLeft()&&x<k.getX()+k.getWidth()+host.getPaddingLeft()&&y>=k.getY()+host.getPaddingTop()&&y<k.getY()+k.getHeight()+host.getPaddingTop())return k;return null;}
+  public void reset(){clearContinuation();resetStream();}
+  private void clearContinuation(){selectionConnection=null;selectionEditor=null;resumeAnchor=resumeFocus=-1;}
+- private void resetStream(){chordWaiting=false;handler.removeCallbacks(hold);if(spaceKey!=null){spaceKey.onReleased();host.invalidateKey(spaceKey);}navigator.reset();nativeSelection=false;selectionPointer=-1;twoFingerSelection=false;anchor=position=-1;firstId=secondId=spaceId=-1;space=trackpad=selecting=swallowed=false;spaceKey=null;host.invalidate();}
++ private void resetStream(){paired669=false;extraPointer669=false;chordWaiting=false;handler.removeCallbacks(hold);if(spaceKey!=null){spaceKey.onReleased();host.invalidateKey(spaceKey);}navigator.reset();nativeSelection=false;selectionPointer=-1;twoFingerSelection=false;anchor=position=-1;firstId=secondId=spaceId=-1;space=trackpad=selecting=swallowed=false;spaceKey=null;host.invalidate();}
+  private boolean enabled(String key){return KeyAntPrefs.bool(ime,key,true);}
+  public boolean onTouch(MotionEvent e){
+   int action=e.getActionMasked();
+@@ -39,7 +40,10 @@ public final class KeyAntGestures {
+    resetStream();if(action==MotionEvent.ACTION_POINTER_UP)swallowed=true;ime.prepareKeyAntGesture();return true;
+   }
+   if(space&&!trackpad&&action==MotionEvent.ACTION_POINTER_DOWN){handler.removeCallbacks(hold);space=false;spaceId=-1;spaceKey=null;}
+-  if(action==MotionEvent.ACTION_POINTER_DOWN&&e.getPointerCount()==2){int ix=e.getActionIndex();secondId=e.getPointerId(ix);x2=e.getX(ix);y2=e.getY(ix);Key k=keyAt(x2,y2);
++  if(action==MotionEvent.ACTION_POINTER_DOWN&&e.getPointerCount()>2){extraPointer669=true;paired669=false;secondId=-1;}
++  if(action==MotionEvent.ACTION_POINTER_DOWN&&e.getPointerCount()==2&&!extraPointer669){int ix=e.getActionIndex();secondId=e.getPointerId(ix);x2=e.getX(ix);y2=e.getY(ix);Key k=keyAt(x2,y2);
++   int firstIndex=e.findPointerIndex(firstId);if(firstIndex>=0){x1=e.getX(firstIndex);y1=e.getY(firstIndex);}
++   paired669=KeyPairGesture669.matches(ime,firstKey==null?0:firstKey.getCode(),k==null?0:k.getCode());
+    if(firstKey!=null&&firstKey.getCode()==KeyCode.SHIFT&&k!=null&&k.getCode()==32&&enabled("shift_select")){host.cancelAllOngoingEvents();beginSpace(k,secondId,x2,y2,true);activate(true);return true;}
+   }
+   if(space){int ix=e.findPointerIndex(twoFingerSelection?selectionPointer:spaceId);
+@@ -59,7 +63,7 @@ public final class KeyAntGestures {
+    String direction=null;
+    if(coherentSwipe(dy1/dp(1),dy2/dp(1),dx1/dp(1),dx2/dp(1)))direction=dy1<0?"up":"down";
+    else if(coherentSwipe(dx1/dp(1),dx2/dp(1),dy1/dp(1),dy2/dp(1)))direction=dx1<0?"left":"right";
+-   if(direction!=null){String actionName=KeyAntPrefs.text(ime,"gesture_"+direction,direction.equals("up")?"select_all":direction.equals("down")?"copy":"none");
++   if(direction!=null){String actionName=paired669?KeyPairGesture669.action(ime,direction):KeyAntPrefs.text(ime,"gesture_"+direction,direction.equals("up")?"select_all":direction.equals("down")?"copy":"none");
+     if(!actionName.equals("none")){host.cancelAllOngoingEvents();swallowed=true;GestureActions.run(ime,actionName);host.performHapticFeedback(HapticFeedbackConstants.GESTURE_END);return true;}}
+ 
+   }}
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/KeyPairGesture669.java b/app/src/main/java/helium314/keyboard/keyforma/KeyPairGesture669.java
+new file mode 100644
+index 0000000..31c7ffd
+--- /dev/null
++++ b/app/src/main/java/helium314/keyboard/keyforma/KeyPairGesture669.java
+@@ -0,0 +1,14 @@
++// SPDX-License-Identifier: GPL-3.0-only
++package helium314.keyboard.keyforma;
++import android.content.Context;
++/** A pair is a two-pointer chord, in either order. Ordinary taps remain native. */
++public final class KeyPairGesture669 {
++ public static boolean matches(Context c,int a,int b){
++  if(!KeyAntPrefs.bool(c,"pair_gesture",false))return false;
++  String left=KeyAntPrefs.text(c,"pair_first","q"),right=KeyAntPrefs.text(c,"pair_second","p");
++  if(left.length()!=1||right.length()!=1||left.equalsIgnoreCase(right))return false;
++  int x=Character.toLowerCase(left.charAt(0)),y=Character.toLowerCase(right.charAt(0));
++  a=Character.toLowerCase(a);b=Character.toLowerCase(b);return a==x&&b==y||a==y&&b==x;
++ }
++ public static String action(Context c,String direction){return KeyAntPrefs.text(c,"pair_"+direction,direction.equals("up")?"toolbar_show":direction.equals("down")?"toolbar_hide":"none");}
++}
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/KeyPairSettings669.kt b/app/src/main/java/helium314/keyboard/keyforma/KeyPairSettings669.kt
+new file mode 100644
+index 0000000..d80a4c9
+--- /dev/null
++++ b/app/src/main/java/helium314/keyboard/keyforma/KeyPairSettings669.kt
+@@ -0,0 +1,17 @@
++// SPDX-License-Identifier: GPL-3.0-only
++package helium314.keyboard.keyforma
++import androidx.compose.runtime.Composable
++@Composable internal fun KeyPairSettings669(){
++ StudioCard{
++  Toggle("Gesti da una coppia di tasti","pair_gesture",false,"Due dita insieme, una su ciascun tasto: solo questa coppia usa le azioni qui sotto. I tocchi normali continuano a scrivere.")
++  val keys=('a'..'z').map{it.toString() to it.uppercase()}
++  Choice("Primo tasto della coppia","pair_first","q",keys)
++  Choice("Secondo tasto della coppia","pair_second","p",keys)
++  val actions=listOf("none" to "Nessuna azione","toolbar_show" to "Mostra barra icone","toolbar_hide" to "Nascondi barra icone","select_all" to "Seleziona tutto","copy" to "Copia","cut" to "Taglia","paste" to "Incolla","undo" to "Annulla","redo" to "Ripristina","clipboard" to "Apri appunti","emoji" to "Apri emoji","voice" to "Dettatura")
++  Choice("Coppia · verso l’alto","pair_up","toolbar_show",actions)
++  Choice("Coppia · verso il basso","pair_down","toolbar_hide",actions)
++  Choice("Coppia · verso sinistra","pair_left","none",actions)
++  Choice("Coppia · verso destra","pair_right","none",actions)
++  Note("Scegli due lettere diverse. Q + P è la coppia iniziale. Suggerimenti, pillole e riempimento automatico restano prioritari. Dopo la scrittura la barra torna alla modalità scelta.")
++ }
++}
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/SettingsSearch.kt b/app/src/main/java/helium314/keyboard/keyforma/SettingsSearch.kt
+index 9a8edf5..34fb415 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/SettingsSearch.kt
++++ b/app/src/main/java/helium314/keyboard/keyforma/SettingsSearch.kt
+@@ -25,7 +25,7 @@ internal fun Modifier.settingAnchor(title:String):Modifier=composed {
+ }
+ data class SettingResult @JvmOverloads constructor(val page:String,val title:String,val keywords:String=""){val path:String get()=SettingsSearch.paths[page]?:page}
+ object SettingsSearch {
+- val toolbar667=listOf(SettingResult("bars","Swipe verso gli strumenti","animazioni barra freccia parole gesto attiva disattiva"),SettingResult("bars","Swipe verso i suggerimenti","animazioni barra ultima icona gesto attiva disattiva"),SettingResult("edge_panels","Calendario affiancato sul Fold orizzontale","PC calendario insieme lettere"),SettingResult("bars","Visualizzazione della barra","classica manopola carosello automatica nascosta"),SettingResult("bars","Apri la manopola","tocco pressione lunga"),SettingResult("edge_panels","Gesto del tastierino","swipe immediato tieni premuto trascina numeri"),SettingResult("edge_panels","Gesto del calendario","swipe immediato ABC simboli prima icona barra"),SettingResult("themes","Luminosità del tema","chiaro scuro sistema"))
++ val toolbar667=listOf(SettingResult("privacy","Pillola anche in incognito e nei login","incolla password privata appunti anonimo"),SettingResult("gestures","Gesti da una coppia di tasti","Q P due dita barra mostra nascondi scorciatoia personalizzata"),SettingResult("gestures","Primo tasto della coppia"),SettingResult("gestures","Secondo tasto della coppia"),SettingResult("gestures","Coppia · verso l’alto"),SettingResult("gestures","Coppia · verso il basso"),SettingResult("gestures","Coppia · verso sinistra"),SettingResult("gestures","Coppia · verso destra"),SettingResult("bars","Swipe verso gli strumenti","animazioni barra freccia parole gesto attiva disattiva"),SettingResult("bars","Swipe verso i suggerimenti","animazioni barra ultima icona gesto attiva disattiva"),SettingResult("edge_panels","Calendario affiancato sul Fold orizzontale","PC calendario insieme lettere"),SettingResult("bars","Visualizzazione della barra","classica manopola carosello automatica nascosta"),SettingResult("bars","Apri la manopola","tocco pressione lunga"),SettingResult("edge_panels","Gesto del tastierino","swipe immediato tieni premuto trascina numeri"),SettingResult("edge_panels","Gesto del calendario","swipe immediato ABC simboli prima icona barra"),SettingResult("themes","Luminosità del tema","chiaro scuro sistema"))
+  val selectionTitles=setOf("Effetto del perimetro","Colore del perimetro","Spessore del perimetro · dp","Intensità della luce · %")
+  val movementTitles=setOf("Precisione · dp per carattere","Accelerazione della sfera","Inerzia della sfera","Tocco singolo sulla sfera")
+  val voiceTextTitles=setOf("Punteggiatura automatica","Domande prudenti","Pausa nella dettatura · secondi","Comandi di punteggiatura","Pulizia della dettatura")
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/StudioActivity.kt b/app/src/main/java/helium314/keyboard/keyforma/StudioActivity.kt
+index 88ecfd3..c404748 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/StudioActivity.kt
++++ b/app/src/main/java/helium314/keyboard/keyforma/StudioActivity.kt
+@@ -19,6 +19,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
+ import androidx.compose.foundation.verticalScroll
+ import androidx.compose.material3.*
+ import androidx.compose.runtime.*
++import androidx.compose.ui.draw.blur
+ import androidx.compose.ui.draw.clip
+ import androidx.compose.ui.graphics.Color
+ import androidx.compose.ui.graphics.toArgb
+@@ -52,7 +53,7 @@ class StudioActivity : ComponentActivity() {
+  private var requestId by mutableIntStateOf(0)
+  override fun onNewIntent(intent:Intent){super.onNewIntent(intent);setIntent(intent);destination=intent.getStringExtra("page")?:"home";requestId++}
+ 
+- override fun onCreate(state:Bundle?){super.onCreate(state); Settings.getInstance().loadSettings(this); KeyAntPrefs.migrate(this); window.setSoftInputMode(android.view.WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE or android.view.WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);destination=intent.getStringExtra("page")?:"home";setContent { Theme { key(requestId){Studio(destination) { finish() }} } }}
++ override fun onCreate(state:Bundle?){super.onCreate(state); Settings.getInstance().loadSettings(this); KeyAntPrefs.migrate(this); window.setSoftInputMode(android.view.WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE or android.view.WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);destination=intent.getStringExtra("page")?:"home";setContent { Theme { val trialBlur=remember{mutableStateOf(false)};CompositionLocalProvider(LocalTrialBlur669 provides trialBlur){key(requestId){Studio(destination) { finish() }}} } }}
+ }
+ @Composable fun StudioEntry(page:String="home",name:String="KeyAnt Studio",description:String="Temi, RGB, suoni, gesti e layout") {
+  val c=LocalContext.current
+@@ -77,7 +78,7 @@ class StudioActivity : ComponentActivity() {
+   (fadeIn(tween(ms))+slideInHorizontally(tween(ms)){direction*it/12}) togetherWith (fadeOut(tween(ms/2))+slideOutHorizontally(tween(ms)){-direction*it/16})
+  }){shownPage->
+  val pageScroll=rememberScrollState(scrollPositions[shownPage]?:0);DisposableEffect(shownPage){val current=shownPage;onDispose{scrollPositions[current]=pageScroll.value}}
+- Column(Modifier.widthIn(max=if(shownPage in setOf("home","themes","effects","maker","maker_library","appearance","tools","writing"))1040.dp else 760.dp).fillMaxSize().then(if(shownPage=="maker"||shownPage=="maker_library")Modifier else (if(shownPage in setOf("voice","trackball","words"))Modifier else Modifier.verticalScroll(pageScroll)).padding(16.dp)),verticalArrangement=Arrangement.spacedBy(10.dp)){
++ Column(Modifier.blur(if(LocalTrialBlur669.current?.value==true)14.dp else 0.dp).widthIn(max=if(shownPage in setOf("home","themes","effects","maker","maker_library","appearance","tools","writing"))1040.dp else 760.dp).fillMaxSize().then(if(shownPage=="maker"||shownPage=="maker_library")Modifier else (if(shownPage in setOf("voice","trackball","words"))Modifier else Modifier.verticalScroll(pageScroll)).padding(16.dp)),verticalArrangement=Arrangement.spacedBy(10.dp)){
+  if(shownPage !in setOf("home","search","maker","maker_library")){
+   val parent=StudioNavigation.parent(shownPage)
+   Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically){
+@@ -161,6 +162,7 @@ class StudioActivity : ComponentActivity() {
+   Note("Le scorciatoie Calendario e Tastierino numerico sono disponibili anche in ⋯, indipendentemente dai gesti. Puoi attivarne uno solo, entrambi oppure nessuno. Per tornare trascina il pannello verso il bordo. Nella modalità normale anche scrivere sulla tastiera principale lo richiude; nella modalità affiancata resta aperto. Il Cancella del tastierino elimina i caratteri senza chiuderlo. Un tocco breve conserva la funzione normale del tasto.")
+  }
+  "gestures"->{StudioDestinations(listOf(Triple("edge_panels","Pannelli laterali","Attiva numeri e calendario separatamente"))){page=it}
++ KeyPairSettings669()
+  Text("Trascinamento dai tasti funzione",style=MaterialTheme.typography.titleMedium)
+  StudioCard{Toggle("Gesto con linea di collegamento","modifier_slide",false,"Gesto classico: trascina da Shift o ?123 verso un altro tasto per sceglierlo. Spento inizialmente; indipendente da numeri e calendario.")};StudioCard{TextButton(onClick={page="typing";searchTarget="Pressione prolungata"}){Text("Regola la pressione prolungata ›")}};StudioCard{Toggle("Dividi con due pollici","split_spread",true,"Allarga due dita dal centro, su schermi ampi o in orizzontale.");Toggle("Split con due dita anche in verticale","split_portrait_gesture",false,"Consente il gesto sul telefono chiuso in verticale. Non cambia il layout finché non allarghi le due dita.");if(KeyAntPrefs.bool(c,"transparent_surround",false)){Note("Riunisci con due pollici · sempre attivo con centro trasparente")}else{Toggle("Riunisci con due pollici","split_join",true,"Avvicina un dito da ciascuna metà verso il centro.")}};StudioCard{TextButton(onClick={page="trackball"}){Text("Trackball · aspetto, movimento e feedback ›")}};StudioCard{val actions=listOf("none" to "Nessuna azione","select_all" to "Seleziona tutto","copy" to "Copia","cut" to "Taglia","paste" to "Incolla","undo" to "Annulla","redo" to "Ripristina","clipboard" to "Apri appunti","emoji" to "Apri emoji","voice" to "Dettatura","ai" to "Correggi con AI","hide" to "Chiudi tastiera")
+  Choice("Due dita verso l’alto","gesture_up","select_all",actions)
+@@ -194,7 +196,7 @@ class StudioActivity : ComponentActivity() {
+  Choice("Comando in basso a sinistra","bottom_left","voice",listOf("none" to "Nessuno","voice" to "Microfono","emoji" to "Emoji","clipboard" to "Appunti","language" to "Cambia lingua"))
+  Choice("Comando in basso a destra","bottom_right","hide",listOf("none" to "Nessuno","hide" to "Chiudi tastiera","emoji" to "Emoji","voice" to "Microfono","language" to "Cambia lingua"))}
+  Note("La dettatura usa il servizio vocale installato sul telefono. La barra di navigazione Android rimane gestita dal sistema.")}
+- "privacy"->{StudioCard{Toggle("Mantieni nascosta dopo la scrittura","clipboard_sticky_retirement",true,"Dopo che scrivi, la stessa pillola non ricompare cambiando campo o app. Una nuova copia resta disponibile. Disattiva per ripristinare il comportamento precedente (0.6.42).")};SurfaceStyleSettings("clipboard");Text("Contenuti e pillole",style=MaterialTheme.typography.titleMedium);StudioCard{Toggle("Pillola degli appunti",Settings.PREF_SUGGEST_CLIPBOARD_CONTENT,true,"Mostra il contenuto recente sopra i tasti: immagini, GIF, video da condividere e codici. Separata dalla cronologia.",false)};ScreenshotSettings();RecordingSettings();StudioCard{Toggle("SafeInCloud nella barra","safeincloud",true,"I suggerimenti di accesso arrivano da Android. Nei campi login è disponibile anche il collegamento al gestore.");TextButton(onClick={SafeInCloudBridge.setup(c)}){Text("Configura riempimento automatico")};TextButton(onClick={SafeInCloudBridge.open(c)}){Text("Apri SafeInCloud")};Note("L’associazione al sito e lo sblocco sono gestiti da SafeInCloud. KeyAnt non legge il suo archivio.")};Text("Cronologia e riservatezza",style=MaterialTheme.typography.titleMedium);StudioCard{Toggle("Cronologia appunti",Settings.PREF_ENABLE_CLIPBOARD_HISTORY,true,"Testi e immagini, senza scadenza predefinita.",false)
++ "privacy"->{StudioCard{Toggle("Pillola anche in incognito e nei login","private_paste_pill",true,"Mostra Incolla senza esporre il contenuto. Non aggiunge copie allo storico e non attiva suggerimenti o correzione.")};StudioCard{Toggle("Mantieni nascosta dopo la scrittura","clipboard_sticky_retirement",true,"Dopo che scrivi, la stessa pillola non ricompare cambiando campo o app. Una nuova copia resta disponibile. Disattiva per ripristinare il comportamento precedente (0.6.42).")};SurfaceStyleSettings("clipboard");Text("Contenuti e pillole",style=MaterialTheme.typography.titleMedium);StudioCard{Toggle("Pillola degli appunti",Settings.PREF_SUGGEST_CLIPBOARD_CONTENT,true,"Mostra il contenuto recente sopra i tasti: immagini, GIF, video da condividere e codici. Separata dalla cronologia.",false)};ScreenshotSettings();RecordingSettings();StudioCard{Toggle("SafeInCloud nella barra","safeincloud",true,"I suggerimenti di accesso arrivano da Android. Nei campi login è disponibile anche il collegamento al gestore.");TextButton(onClick={SafeInCloudBridge.setup(c)}){Text("Configura riempimento automatico")};TextButton(onClick={SafeInCloudBridge.open(c)}){Text("Apri SafeInCloud")};Note("L’associazione al sito e lo sblocco sono gestiti da SafeInCloud. KeyAnt non legge il suo archivio.")};Text("Cronologia e riservatezza",style=MaterialTheme.typography.titleMedium);StudioCard{Toggle("Cronologia appunti",Settings.PREF_ENABLE_CLIPBOARD_HISTORY,true,"Testi e immagini, senza scadenza predefinita.",false)
+  Toggle("Polvere alla cancellazione","clipboard_dust",true,"Le schede si dissolvono in particelle. L’effetto resta limitato agli elementi visibili.")
+  Toggle("Codici copiati da Authenticator","copied_auth_codes",true,"Codici numerici da 4 a 8 cifre: pillola e cronologia, se attive, anche nei campi di verifica e con copie sensibili. Funziona con qualsiasi app; non legge gli account. Incognito manuale escluso.")
+  Toggle("Conserva copie sensibili","save_sensitive_clips",true,"Include le password copiate volontariamente. Salvate localmente e inizialmente mascherate; l’occhio nasconde solo l’anteprima, non cifra il contenuto. Incognito resta escluso.")
+@@ -335,7 +337,7 @@ Toggle("Correzione anche nelle app che la disattivano","force_prose_correction",
+  HorizontalPager(state=pager,modifier=Modifier.fillMaxWidth().height(pageHeight),verticalAlignment=Alignment.Top,key={"$collection-$it"}){pageIndex->Column(verticalArrangement=Arrangement.spacedBy(10.dp)){
+  collectionIds.drop(pageIndex*pageSize).take(pageSize).chunked(columns).forEach{pair->Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.spacedBy(10.dp)){
+   pair.forEach{id->val index=ThemeCatalog.IDS.indexOf(id);Card(modifier=Modifier.weight(1f).settingAnchor(ThemeCatalog.NAMES[index]),shape=RoundedCornerShape(20.dp),colors=CardDefaults.cardColors(containerColor=if(family==id)MaterialTheme.colorScheme.secondaryContainer else MaterialTheme.colorScheme.surfaceContainer)){
+-   Row(Modifier.fillMaxWidth().combinedClickable(onClick={previewTheme=id},onLongClick={favorite(id)},onLongClickLabel=if(ThemeUsage.favorite(c,id))"Rimuovi dai Preferiti" else "Aggiungi ai Preferiti").heightIn(min=46.dp).padding(horizontal=4.dp),verticalAlignment=Alignment.CenterVertically){RadioButton(family==id,null);Text((if(ThemeUsage.favorite(c,id))"★ " else "")+ThemeCatalog.NAMES[index]+" · "+ThemeCatalog.appearanceLabel(id),fontSize=13.sp,fontWeight=FontWeight.SemiBold)}
++   Row(Modifier.fillMaxWidth().combinedClickable(onClick={previewTheme=id},onLongClick={favorite(id)},onLongClickLabel=if(ThemeUsage.favorite(c,id))"Rimuovi dai Preferiti" else "Aggiungi ai Preferiti").heightIn(min=46.dp).padding(horizontal=4.dp),verticalAlignment=Alignment.CenterVertically){RadioButton(family==id,onClick={family=id;ThemeUsage.record(c,id);apply()},modifier=Modifier.semantics{contentDescription="Applica tema "+ThemeCatalog.NAMES[index]});Text((if(ThemeUsage.favorite(c,id))"★ " else "")+ThemeCatalog.NAMES[index]+" · "+ThemeCatalog.appearanceLabel(id),fontSize=13.sp,fontWeight=FontWeight.SemiBold)}
+    key(id,ThemeCatalog.effectiveDark(id,requestedNight)){ThemeGalleryPreview(id,ThemeCatalog.effectiveDark(id,requestedNight),ThemeUsage.favorite(c,id),onPreview={previewTheme=id},onFavorite={favorite(id)})}
+   }}
+   repeat(columns-pair.size){Spacer(Modifier.weight(1f))}
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/ThemeTrialDialog.kt b/app/src/main/java/helium314/keyboard/keyforma/ThemeTrialDialog.kt
+index 1092d6d..9e67d40 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/ThemeTrialDialog.kt
++++ b/app/src/main/java/helium314/keyboard/keyforma/ThemeTrialDialog.kt
+@@ -4,41 +4,68 @@ import androidx.compose.runtime.*
+ import androidx.compose.animation.*
+ import androidx.compose.animation.core.tween
+ import androidx.compose.foundation.*
+-import androidx.compose.foundation.gestures.detectVerticalDragGestures
+-import androidx.compose.ui.input.pointer.pointerInput
++import androidx.compose.foundation.text.BasicTextField
+ import androidx.compose.foundation.layout.*
+ import androidx.compose.foundation.interaction.MutableInteractionSource
+ import androidx.compose.foundation.shape.RoundedCornerShape
+ import androidx.compose.material3.*
+ import androidx.compose.ui.*
+ import androidx.compose.ui.graphics.Color
++import androidx.compose.ui.text.TextRange
++import androidx.compose.ui.text.input.TextFieldValue
+ import androidx.compose.ui.unit.dp
+ import androidx.compose.ui.semantics.*
+ import androidx.compose.ui.viewinterop.AndroidView
+ import androidx.compose.ui.window.*
+ import kotlinx.coroutines.launch
+ import kotlinx.coroutines.delay
+-/** A local instrument: pressing keys never selects a theme or reaches an InputConnection. */
++internal val LocalTrialBlur669=compositionLocalOf<MutableState<Boolean>?>{null}
++/** An isolated trial: keys edit this selection only; neither preferences nor the IME are touched. */
+ @Composable internal fun ThemeTrialDialog(id:String,dark:Boolean,onApply:(()->Unit)?=null,onClose:()->Unit){
+  var entered by remember{mutableStateOf(false)};var closing by remember{mutableStateOf(false)}
+- var text by remember(id){mutableStateOf("")};val scope=rememberCoroutineScope()
+- val duration=if(android.animation.ValueAnimator.areAnimatorsEnabled())180 else 0
++ var value by remember(id){mutableStateOf(TextFieldValue(""))}
++ var shift by remember(id){mutableStateOf(false)};var symbols by remember(id){mutableStateOf(false)}
++ val blur=LocalTrialBlur669.current
++ DisposableEffect(blur){blur?.value=true;onDispose{blur?.value=false}}
++ val scope=rememberCoroutineScope()
++ val duration=if(android.animation.ValueAnimator.areAnimatorsEnabled())220 else 0
+  fun dismiss(){if(!closing){closing=true;entered=false;scope.launch{delay(duration.toLong());onClose()}}}
++ fun press(code:Int){
++  if(code == -11){shift=!shift;return}
++  if(code == -10001){symbols=!symbols;return}
++  value=TrialText669.edit(value,code,shift)
++  if(code in 65..90)shift=false
++ }
+  LaunchedEffect(Unit){entered=true}
+  Dialog(onDismissRequest=::dismiss,properties=DialogProperties(usePlatformDefaultWidth=false,decorFitsSystemWindows=false)){
+-  Box(Modifier.fillMaxSize().background(Color.Black.copy(alpha=.68f)).clickable(remember{MutableInteractionSource()},indication=null,onClick=::dismiss).semantics{contentDescription="Chiudi anteprima toccando lo sfondo"}.padding(20.dp),contentAlignment=Alignment.Center){
+-   AnimatedVisibility(entered,enter=fadeIn(tween(duration))+scaleIn(tween(duration),initialScale=.94f),exit=fadeOut(tween(duration))+scaleOut(tween(duration),targetScale=.96f)){
+-    Surface(shape=RoundedCornerShape(28.dp),shadowElevation=16.dp,tonalElevation=8.dp,modifier=Modifier.widthIn(max=900.dp).fillMaxWidth().clickable(remember{MutableInteractionSource()},indication=null){}){
+-     Column(Modifier.padding(16.dp),verticalArrangement=Arrangement.spacedBy(12.dp)){
+-      Box(Modifier.fillMaxWidth().height(20.dp).pointerInput(Unit){var distance=0f;detectVerticalDragGestures(onDragStart={distance=0f},onDragEnd={if(distance>60.dp.toPx())dismiss()},onVerticalDrag={change,amount->change.consume();distance+=amount})},contentAlignment=Alignment.Center){Surface(shape=RoundedCornerShape(3.dp),color=MaterialTheme.colorScheme.outlineVariant,modifier=Modifier.width(42.dp).height(4.dp)) {}}
+-      Row(verticalAlignment=Alignment.CenterVertically){Column(Modifier.weight(1f)){Text(ThemeCatalog.NAMES[ThemeCatalog.IDS.indexOf(id)],style=MaterialTheme.typography.titleMedium);Text("Anteprima · il tema attivo resta invariato",style=MaterialTheme.typography.bodySmall,color=MaterialTheme.colorScheme.onSurfaceVariant)};IconButton(onClick=::dismiss,modifier=Modifier.semantics{contentDescription="Chiudi anteprima"}){StudioIcon("close")}}
+-      Surface(shape=RoundedCornerShape(14.dp),color=MaterialTheme.colorScheme.surfaceContainerHighest){Text(text.ifEmpty{"Tocca i tasti per provare"},modifier=Modifier.fillMaxWidth().heightIn(min=54.dp).padding(14.dp).semantics{contentDescription="Testo di prova"},style=MaterialTheme.typography.bodyLarge,maxLines=3)}
+-      key(id,dark){AndroidView(factory={CapPreview(it,dark,id).gallery().reveal().onPreviewKey{code->text=when(code){-7->if(text.isEmpty())text else text.substring(0,text.offsetByCodePoints(text.length,-1));32->(text+" ").takeLast(140);10->(text+"\n").takeLast(140);in 33..126->(text+code.toChar().lowercaseChar()).takeLast(140);else->text}}},modifier=Modifier.fillMaxWidth().aspectRatio(1.9f).semantics{contentDescription="Tastiera di prova"})}
+-      if(onApply!=null)Button(onClick={onApply();dismiss()},modifier=Modifier.align(Alignment.End)){Text("Usa questo tema")}
+-      Text("Tocca fuori dalla scheda per tornare al catalogo.",style=MaterialTheme.typography.labelSmall,color=MaterialTheme.colorScheme.onSurfaceVariant)
++  BoxWithConstraints(Modifier.fillMaxSize().background(Color.Black.copy(alpha=.28f)).clickable(remember{MutableInteractionSource()},indication=null,onClick=::dismiss).semantics{contentDescription="Chiudi anteprima toccando lo sfondo"}.navigationBarsPadding(),contentAlignment=Alignment.BottomCenter){
++   val keyboardHeight=minOf(maxWidth/1.9f,maxHeight*.48f)
++   AnimatedVisibility(entered,enter=fadeIn(tween(duration))+slideInVertically(tween(duration)){it/2},exit=fadeOut(tween(duration))+slideOutVertically(tween(duration)){it/2}){
++    Surface(shape=RoundedCornerShape(topStart=24.dp,topEnd=24.dp),shadowElevation=12.dp,tonalElevation=8.dp,modifier=Modifier.widthIn(max=900.dp).fillMaxWidth().clickable(remember{MutableInteractionSource()},indication=null){}){
++     Column(verticalArrangement=Arrangement.spacedBy(8.dp)){
++      Row(Modifier.padding(start=16.dp,end=6.dp,top=6.dp),verticalAlignment=Alignment.CenterVertically){
++       Column(Modifier.weight(1f)){Text(ThemeCatalog.NAMES[ThemeCatalog.IDS.indexOf(id)],style=MaterialTheme.typography.titleMedium);Text("Prova prima di confermare",style=MaterialTheme.typography.labelSmall,color=MaterialTheme.colorScheme.onSurfaceVariant)}
++       IconButton(onClick=::dismiss,modifier=Modifier.semantics{contentDescription="Chiudi anteprima"}){StudioIcon("close")}
++      }
++      Row(Modifier.padding(horizontal=12.dp),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(8.dp)){
++       Surface(shape=RoundedCornerShape(14.dp),color=MaterialTheme.colorScheme.surfaceContainerHighest,modifier=Modifier.weight(1f)){
++        BasicTextField(value=value,onValueChange={value=it},readOnly=true,maxLines=3,textStyle=MaterialTheme.typography.bodyLarge.copy(color=MaterialTheme.colorScheme.onSurface),modifier=Modifier.fillMaxWidth().heightIn(min=54.dp,max=100.dp).padding(14.dp).semantics{contentDescription="Testo di prova"},decorationBox={inner->if(value.text.isEmpty())Text("Tocca i tasti per provare",color=MaterialTheme.colorScheme.onSurfaceVariant);inner()})
++       }
++       if(onApply!=null)Button(onClick={if(!closing){onApply();dismiss()}},modifier=Modifier.semantics{contentDescription="Usa questo tema"}){Text("Conferma")}
++      }
++      key(id,dark){AndroidView(factory={CapPreview(it,dark,id).gallery().reveal()},update={preview->preview.trialLayer669(shift,symbols);preview.onPreviewKey{press(it)}},modifier=Modifier.fillMaxWidth().height(keyboardHeight).semantics{contentDescription="Tastiera di prova"})}
+      }
+     }
+    }
+   }
+  }
+ }
++internal object TrialText669 {
++ fun edit(value:TextFieldValue,code:Int,shift:Boolean):TextFieldValue {
++  val text=value.text;var start=value.selection.min.coerceIn(0,text.length);val end=value.selection.max.coerceIn(start,text.length)
++  val insert=when(code){-7->{if(start==end&&start>0)start=text.offsetByCodePoints(start,-1);""};10->"\n";in 32..126->code.toChar().let{if(shift)it else it.lowercaseChar()}.toString();else->return value}
++  if(text.length-(end-start)+insert.length>2000)return value
++  val result=text.substring(0,start)+insert+text.substring(end)
++  return TextFieldValue(result,TextRange(start+insert.length))
++ }
++}
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/ToolbarModes667.java b/app/src/main/java/helium314/keyboard/keyforma/ToolbarModes667.java
+index 77554f5..6194e79 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/ToolbarModes667.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/ToolbarModes667.java
+@@ -24,13 +24,24 @@ public final class ToolbarModes667 {
+   for(int i=0;i<commands.getChildCount();i++){View child=commands.getChildAt(i);LinearLayout.LayoutParams cp=new LinearLayout.LayoutParams(dp(44),dp(44));cp.setMargins(dp(2),0,dp(2),0);child.setLayoutParams(cp);}
+   commands.setGravity(Gravity.CENTER_VERTICAL);commands.setPadding(dp(6),0,dp(6),0);
+   outer.removeView(commands);outer.setFillViewport(true);
+-  LinearLayout shell=new LinearLayout(c);shell.setGravity(Gravity.CENTER_VERTICAL);outer.addView(shell,new HorizontalScrollView.LayoutParams(-1,-1));
++  LinearLayout shell=new LinearLayout(c);shell.setGravity(Gravity.CENTER_VERTICAL);shell.setPadding(dp(10),dp(2),dp(10),dp(2));outer.addView(shell,new HorizontalScrollView.LayoutParams(-1,-1));
++  // A scroll parent gives children an unbounded width. Bound this shell, letting only
++  // the inner commands scroll, otherwise the weighted panel grows beyond the keyboard.
++  outer.addOnLayoutChangeListener((v,l,t,r,b,ol,ot,or,ob)->{
++   int width=r-l-outer.getPaddingLeft()-outer.getPaddingRight();
++   if(width>0&&shell.getLayoutParams().width!=width){
++    var params=shell.getLayoutParams();params.width=width;shell.setLayoutParams(params);
++    shell.measure(View.MeasureSpec.makeMeasureSpec(width,View.MeasureSpec.EXACTLY),View.MeasureSpec.makeMeasureSpec(Math.max(0,b-t-outer.getPaddingTop()-outer.getPaddingBottom()),View.MeasureSpec.EXACTLY));
++    shell.layout(shell.getLeft(),shell.getTop(),shell.getLeft()+width,shell.getTop()+shell.getMeasuredHeight());
++    outer.scrollTo(0,0);
++   }
++  });
+   knob=button("Strumenti · apri la manopola","settings");knob.setTag("keyant-knob");knob.setImageDrawable(new ToolDial668(ink));
+   GradientDrawable ring=new GradientDrawable(GradientDrawable.Orientation.TL_BR,new int[]{ToolSurface.mix(back,ink,.16f),back});ring.setShape(GradientDrawable.OVAL);ring.setStroke(dp(1),ToolSurface.mix(back,ink,.35f));knob.setBackground(ring);knob.setPadding(dp(10),dp(10),dp(10),dp(10));knob.setScaleType(ImageView.ScaleType.FIT_CENTER);
+   LinearLayout.LayoutParams dial=new LinearLayout.LayoutParams(dp(44),dp(44));dial.setMargins(dp(4),0,dp(4),0);shell.addView(knob,dial);
+-  viewport=new HorizontalScrollView(c);viewport.setHorizontalScrollBarEnabled(false);viewport.setClipToPadding(false);viewport.setFillViewport(true);
+-  viewport.setBackground(new PillSurface(c,ink));viewport.addView(commands,new HorizontalScrollView.LayoutParams(-1,-1));
+-  shell.addView(viewport,new LinearLayout.LayoutParams(0,-1,1));
++  viewport=new HorizontalScrollView(c);viewport.setHorizontalScrollBarEnabled(false);viewport.setClipToPadding(true);viewport.setFillViewport(true);
++  viewport.setBackground(new PillSurface(c,ink));viewport.setClipToOutline(true);viewport.setOutlineProvider(new ViewOutlineProvider(){public void getOutline(View v,android.graphics.Outline out){out.setRoundRect(0,0,v.getWidth(),v.getHeight(),dp(20));}});viewport.addView(commands,new HorizontalScrollView.LayoutParams(-1,-1));
++  shell.addView(viewport,new LinearLayout.LayoutParams(0,dp(44),1));
+   last=button("Ultimo strumento","more");last.setTag("keyant-last-tool");shell.addView(last,new LinearLayout.LayoutParams(dp(48),dp(44)));
+   viewport.setVisibility(View.INVISIBLE);viewport.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS);
+   knob.setOnClickListener(v->{if(!"hold".equals(KeyAntPrefs.text(c,"toolbar_knob_trigger","tap"))||((android.view.accessibility.AccessibilityManager)c.getSystemService(Context.ACCESSIBILITY_SERVICE)).isTouchExplorationEnabled())toggle();else knob.announceForAccessibility("Tieni premuto per aprire gli strumenti");});
+@@ -73,8 +84,8 @@ public final class ToolbarModes667 {
+   viewport.setPivotX(0);if(presentation.equals("ribbon")){if(value)viewport.setScaleX(moves()?.75f:1);viewport.animate().scaleX(value?1:.75f);}
+   knob.setContentDescription(value?"Chiudi strumenti":"Apri strumenti");knob.setSelected(value);
+   viewport.setImportantForAccessibility(value?View.IMPORTANT_FOR_ACCESSIBILITY_AUTO:View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS);
+-  if(value){viewport.setVisibility(View.VISIBLE);viewport.setAlpha(moves()?0:1);viewport.setTranslationX(moves()?-dp(12):0);}
+-  if(moves()){viewport.animate().alpha(value?1:0).translationX(value?0:-dp(12)).setDuration(value?280:220).setInterpolator(new android.view.animation.PathInterpolator(.22f,1,.36f,1)).withEndAction(()->{if(!expanded)viewport.setVisibility(View.INVISIBLE);}).start();knob.animate().rotation(value?90:0).setDuration(280).start();}
++  if(value){boolean wasVisible=viewport.getVisibility()==View.VISIBLE;viewport.setVisibility(View.VISIBLE);if(!wasVisible){viewport.setAlpha(moves()?0:1);viewport.setTranslationX(moves()?-dp(6):0);}}
++  if(moves()){viewport.animate().alpha(value?1:0).translationX(value?0:-dp(6)).setDuration(value?280:220).setInterpolator(new android.view.animation.PathInterpolator(.22f,1,.36f,1)).withEndAction(()->{if(!expanded)viewport.setVisibility(View.INVISIBLE);}).start();knob.animate().rotation(value?90:0).setDuration(280).start();}
+   else{viewport.setAlpha(value?1:0);viewport.setVisibility(value?View.VISIBLE:View.INVISIBLE);knob.setRotation(value?90:0);}
+  }
+  private void bindLast(String id){
+diff --git a/app/src/main/java/helium314/keyboard/latin/ClipboardHistoryManager.kt b/app/src/main/java/helium314/keyboard/latin/ClipboardHistoryManager.kt
+index 9dce7d1..aef4b09 100644
+--- a/app/src/main/java/helium314/keyboard/latin/ClipboardHistoryManager.kt
++++ b/app/src/main/java/helium314/keyboard/latin/ClipboardHistoryManager.kt
+@@ -65,14 +65,14 @@ class ClipboardHistoryManager(
+         clipboardManager.removePrimaryClipChangedListener(this)
+     }
+ 
++    private var privateClipboardEpoch669 = 0L
+     override fun onPrimaryClipChanged() {
++        privateClipboardEpoch669++
+         fallbackStamp = maxOf(System.currentTimeMillis(), fallbackStamp + 1)
+-        // Make sure we read clipboard content only if history settings is set
+-        if (latinIME.mSettings.current.mClipboardHistoryEnabled) {
+-            fetchPrimaryClip()
+-            dontShowCurrentSuggestion = false
+-            latinIME.refreshKeyAntExternalSuggestions()
+-        }
++        // Presentation and history are independent. Saving still uses the privacy gates below.
++        if (latinIME.mSettings.current.mClipboardHistoryEnabled) fetchPrimaryClip()
++        dontShowCurrentSuggestion = false
++        latinIME.refreshKeyAntExternalSuggestions()
+     }
+ 
+     fun refreshPrimaryClip() {
+@@ -310,7 +310,11 @@ class ClipboardHistoryManager(
+         val copiedCode = helium314.keyboard.keyforma.CopiedCode.enabled(latinIME, validClip)
+         val manualPrivate = helium314.keyboard.keyforma.KeyAntPrefs.get(latinIME).getBoolean(Settings.PREF_ALWAYS_INCOGNITO_MODE,false)
+         // The explicit copy-code option also works in verification fields that disable learning.
+-        if (manualPrivate || (!copiedCode && (InputTypeUtils.isPasswordInputType(inputType) || !publicSession()))) return null
++        if (manualPrivate || InputTypeUtils.isPasswordInputType(inputType) || !publicSession()) {
++            if (helium314.keyboard.keyforma.KeyAntPrefs.bool(latinIME,"private_paste_pill",true))
++                return privateSuggestion669(editorInfo, validClip)
++            if (manualPrivate || !copiedCode) return null
++        }
+         val timeStamp = validClip?.let { clipStamp(it) } ?: 0L
+         val otp = saveOtpHistory()
+         if (otp != null && (!InputTypeUtils.isNumberInputType(inputType) || otp.value.isValidNumber()) && otp.timestamp >= maxOf(timeStamp, MediaSuggestionStore.latestEvent(latinIME)) && latinIME.shouldOfferKeyAntClipboard(otp.timestamp)) {
+@@ -380,19 +384,77 @@ class ClipboardHistoryManager(
+         return pill
+     }
+ 
++    // Private offers retain only timestamps and editor identity in memory. No preview or disk token.
++    private var retiredPrivateStamp669 = 0L
++    private var retiredPrivateEpoch669 = -1L
++    private var renderedPrivateEpoch669 = 0L
++    private fun retirePrivate669(stamp: Long, epoch: Long) {
++        if (epoch != privateClipboardEpoch669) return
++        retiredPrivateStamp669=maxOf(retiredPrivateStamp669,stamp)
++        retiredPrivateEpoch669=maxOf(retiredPrivateEpoch669,epoch)
++    }
++    private var privateEditor669: EditorInfo? = null
++    private var privateConnection669: android.view.inputmethod.InputConnection? = null
++    private var privateStamp669 = 0L
++    private fun privateSuggestion669(editor: EditorInfo?, clip: android.content.ClipData?): View? {
++        if (!helium314.keyboard.keyforma.KeyAntPrefs.bool(latinIME,"private_paste_pill",true)) return null
++        val lock = latinIME.getSystemService(Context.KEYGUARD_SERVICE) as? android.app.KeyguardManager
++        if (lock?.isDeviceLocked == true) return null
++        val connection = latinIME.currentInputConnection ?: return null
++        val stamp = clip?.let { clipStamp(it) } ?: 0L
++        // Read only: media already imported in a public session can be explicitly pasted here.
++        val media = MediaSuggestionStore.candidate(latinIME, stamp)
++        val offerStamp = if (media != null) MediaSuggestionStore.timestamp(latinIME) else stamp
++        val epoch = privateClipboardEpoch669
++        if ((offerStamp <= retiredPrivateStamp669 && epoch <= retiredPrivateEpoch669) || !latinIME.shouldOfferKeyAntClipboard(offerStamp)) return null
++        if (media == null && (clip == null || System.currentTimeMillis()-stamp > RECENT_TIME_MILLIS)) return null
++        val hasUri = clip != null && (0 until clip.itemCount).any { clip.getItemAt(it).uri != null }
++        val content = if (media == null && !hasUri) clip?.getItemAt(0)?.text?.toString() else null
++        if (media == null && !hasUri && content.isNullOrEmpty()) return null
++        if (InputTypeUtils.isNumberInputType(editor?.inputType ?: 0) &&
++            (media != null || hasUri || content?.isValidNumber() != true)) return null
++        val token = "private:$offerStamp:$epoch:${latinIME.mSettings.current.mColors}"
++        if (renderedOffer == token && privateEditor669 === editor && privateConnection669 === connection && clipboardSuggestionView?.isGone == false) return clipboardSuggestionView
++        privateEditor669=editor; privateConnection669=connection; privateStamp669=offerStamp; renderedPrivateEpoch669=epoch
++        fun retire() {
++            retirePrivate669(offerStamp,epoch)
++            if(renderedOffer==token)clipboardSuggestionView?.isGone=true
++        }
++        val pill=helium314.keyboard.keyforma.PastePill(latinIME,"Incolla dagli appunti",null, {
++            val current=try { clipboardManager.primaryClip } catch (_: SecurityException) { null }
++            val currentStamp=current?.let { clipStamp(it) } ?: 0L
++            if (latinIME.currentInputEditorInfo === editor && latinIME.currentInputConnection === connection &&
++                lock?.isDeviceLocked != true && currentStamp == stamp && privateClipboardEpoch669 == epoch &&
++                (media == null || MediaSuggestionStore.candidate(latinIME,currentStamp)==media)) {
++                if(media!=null)helium314.keyboard.keyforma.MediaClipboard.deliver(latinIME,media){ok->if(ok){retire();latinIME.setNeutralSuggestionStrip()}}
++                else if(hasUri){latinIME.onCodeInput(KeyCode.CLIPBOARD_PASTE,-1,-1,false);retire();latinIME.setNeutralSuggestionStrip()}
++                else if(content!=null){retire();latinIME.onTextInput(content);latinIME.setNeutralSuggestionStrip()}
++            } else {retire();latinIME.setNeutralSuggestionStrip()}
++        }, {retire()}, {if(renderedOffer==token){retire();latinIME.setNeutralSuggestionStrip()}})
++        renderedOffer=token; renderedMedia=null; clipboardSuggestionView=pill
++        return pill
++    }
++
+     /** Withdraw a mounted pill even when this editor does not request dictionary callbacks. */
+     fun refreshAfterTyping() {
+         val view = clipboardSuggestionView ?: return
+         if (view.parent == null || view.isGone) return
+-        if (helium314.keyboard.keyforma.KeyAntPrefs.bool(latinIME,"clipboard_sticky_retirement",true))
++        if(renderedOffer.startsWith("private:"))retirePrivate669(privateStamp669,renderedPrivateEpoch669)
++        else if (helium314.keyboard.keyforma.KeyAntPrefs.bool(latinIME,"clipboard_sticky_retirement",true))
+             MediaSuggestionStore.dismiss(latinIME, renderedMedia)
+         view.isGone = true
+         latinIME.setNeutralSuggestionStrip()
+     }
+ 
+-    fun isClipboardSuggestionVisible(): Boolean = (renderedOffer.startsWith("otp:") || helium314.keyboard.keyforma.ClipboardOffer.eligible(latinIME)) && clipboardSuggestionView?.let { it.parent != null && !it.isGone } == true
++    fun isClipboardSuggestionVisible(): Boolean = (renderedOffer.startsWith("private:") || renderedOffer.startsWith("otp:") || helium314.keyboard.keyforma.ClipboardOffer.eligible(latinIME)) && clipboardSuggestionView?.let { it.parent != null && !it.isGone } == true
+ 
+     fun removeClipboardSuggestion() {
++        if(renderedOffer.startsWith("private:")) {
++            retirePrivate669(privateStamp669,renderedPrivateEpoch669)
++            clipboardSuggestionView?.isGone=true
++            latinIME.setNeutralSuggestionStrip()
++            return
++        }
+         helium314.keyboard.keyforma.ClipboardOffer.retireBefore(latinIME, System.currentTimeMillis())
+         if (renderedOffer.startsWith("otp:")) helium314.keyboard.keyforma.OtpStore.clear()
+         dontShowCurrentSuggestion = true
+diff --git a/app/src/main/java/helium314/keyboard/latin/LatinIME.java b/app/src/main/java/helium314/keyboard/latin/LatinIME.java
+index f5b2205..081bc3e 100644
+--- a/app/src/main/java/helium314/keyboard/latin/LatinIME.java
++++ b/app/src/main/java/helium314/keyboard/latin/LatinIME.java
+@@ -1730,6 +1730,15 @@ public class LatinIME extends InputMethodService implements
+         if(km!=null&&km.isDeviceLocked())return;
+         mTypingBar.suggestions();mSuggestionStripView.restoreKeyAntSuggestions();
+     }
++    /** Explicit paired-key gesture; never replaces an autofill or clipboard offer. */
++    public void setKeyAntToolbarVisible669(boolean visible) {
++        if(mInputView==null||hasKeyAntPanel()||!hasSuggestionStripView()||mInlineSuggestionsVisible)return;
++        android.app.KeyguardManager km=(android.app.KeyguardManager)getSystemService(KEYGUARD_SERVICE);
++        if(km!=null&&km.isDeviceLocked())return;
++        if(mClipboardHistoryManager.isClipboardSuggestionVisible())return;
++        if(visible)showKeyAntTools();
++        mSuggestionStripView.setToolsVisible669(visible);
++    }
+     public void showKeyAntTools() {
+         if(!helium314.keyboard.keyforma.ToolbarVisibility.enabled(this)&&!hasKeyAntPanel()){if(hasSuggestionStripView())setSuggestedWords(SuggestedWords.getEmptyInstance());return;}
+         if(!hasKeyAntPanel())mTypingBar.tools();
+diff --git a/app/src/main/java/helium314/keyboard/latin/suggestions/SuggestionStripView.kt b/app/src/main/java/helium314/keyboard/latin/suggestions/SuggestionStripView.kt
+index 76bcd13..7b8b586 100644
+--- a/app/src/main/java/helium314/keyboard/latin/suggestions/SuggestionStripView.kt
++++ b/app/src/main/java/helium314/keyboard/latin/suggestions/SuggestionStripView.kt
+@@ -515,6 +515,7 @@ class SuggestionStripView(context: Context, attrs: AttributeSet?, defStyle: Int)
+         return handled
+     }
+ 
++    fun setToolsVisible669(visible: Boolean) { automaticStrip667.manual(visible) }
+     private val automaticStrip667 = helium314.keyboard.keyforma.AutomaticStrip667(this)
+     private var stripSurface = ""
+     private fun enterSurface(kind: String) {
+@@ -619,7 +620,7 @@ class SuggestionStripView(context: Context, attrs: AttributeSet?, defStyle: Int)
+         if (view === this) {
+             suggestionsStrip.visibility = visibility
+             if(visibility != VISIBLE) {
+-                automaticStrip667.restore()
++                automaticStrip667.pause()
+                 cancelCalendar668()
+                 iconPillBridge668.reset()
+                 contextIcon652?.jumpToCurrentState()
+diff --git a/app/src/test/java/helium314/keyboard/keyforma/KeyAntGesture669Test.java b/app/src/test/java/helium314/keyboard/keyforma/KeyAntGesture669Test.java
+new file mode 100644
+index 0000000..1a55cc1
+--- /dev/null
++++ b/app/src/test/java/helium314/keyboard/keyforma/KeyAntGesture669Test.java
+@@ -0,0 +1,18 @@
++// SPDX-License-Identifier: GPL-3.0-only
++package helium314.keyboard.keyforma;
++import android.app.Application;import android.view.*;import helium314.keyboard.keyboard.*;import helium314.keyboard.keyboard.internal.keyboard_parser.floris.KeyCode;
++import org.junit.*;import org.junit.runner.RunWith;import org.robolectric.*;import org.robolectric.annotation.*;import java.util.*;import static org.junit.Assert.*;import static org.mockito.Mockito.*;
++@RunWith(RobolectricTestRunner.class) @Config(sdk=35,application=Application.class,manifest=Config.NONE)
++public class KeyAntGesture669Test {
++ KeyAntMultiTouch636Test f;
++ @Before public void setup(){f=new KeyAntMultiTouch636Test();f.setup();Keyboard keyboard=mock(Keyboard.class);Key q=key('q',0,65),p=key('p',65,65);when(keyboard.getSortedKeys()).thenReturn(List.of(q,p));when(f.host.getKeyboard()).thenReturn(keyboard);KeyAntPrefs.get(RuntimeEnvironment.getApplication()).edit().putBoolean("ka_pair_gesture",true).apply();}
++ Key key(char code,int x,int w){Key k=mock(Key.class);when(k.getCode()).thenReturn((int)code);when(k.getX()).thenReturn(x);when(k.getWidth()).thenReturn(w);when(k.getHeight()).thenReturn(120);return k;}
++ void down(){f.gestures.onTouch(MotionEvent.obtain(100,100,MotionEvent.ACTION_DOWN,35,80,0));f.gestures.onTouch(f.event(115,MotionEvent.ACTION_POINTER_DOWN|256,80,80));}
++ @Test public void pairUpOverridesGlobalAndRunsOnce(){down();assertTrue(f.gestures.onTouch(f.event(180,MotionEvent.ACTION_MOVE,48,61)));assertTrue(f.gestures.onTouch(f.event(190,MotionEvent.ACTION_POINTER_UP|256,45,55)));verify(f.ime,times(1)).setKeyAntToolbarVisible669(true);verify(f.ime,never()).onCodeInput(anyInt(),anyInt(),anyInt(),anyBoolean());}
++ @Test public void pairDownHidesAndTapsStillTypeNatively(){down();assertFalse(f.gestures.onTouch(f.event(140,MotionEvent.ACTION_MOVE,81,81)));assertTrue(f.gestures.onTouch(f.event(200,MotionEvent.ACTION_MOVE,112,101)));verify(f.ime).setKeyAntToolbarVisible669(false);}
++ @Test public void disabledPairKeepsGlobalSelectAll(){KeyAntPrefs.get(RuntimeEnvironment.getApplication()).edit().putBoolean("ka_pair_gesture",false).apply();down();assertTrue(f.gestures.onTouch(f.event(180,MotionEvent.ACTION_MOVE,48,61)));verify(f.ime).onCodeInput(KeyCode.CLIPBOARD_SELECT_ALL,-1,-1,false);verify(f.ime,never()).setKeyAntToolbarVisible669(anyBoolean());}
++ @Test public void noneForPairNeverFallsBackToGlobal(){KeyAntPrefs.get(RuntimeEnvironment.getApplication()).edit().putString("ka_pair_up","none").apply();down();assertFalse(f.gestures.onTouch(f.event(180,MotionEvent.ACTION_MOVE,48,61)));verify(f.ime,never()).onCodeInput(anyInt(),anyInt(),anyInt(),anyBoolean());}
++ @Test public void firstFingerTravelBeforeChordIsIgnored(){f.gestures.onTouch(MotionEvent.obtain(100,100,MotionEvent.ACTION_DOWN,35,110,0));f.gestures.onTouch(f.event(115,MotionEvent.ACTION_POINTER_DOWN|256,80,80));assertFalse(f.gestures.onTouch(f.event(180,MotionEvent.ACTION_MOVE,79,48)));verify(f.ime,never()).setKeyAntToolbarVisible669(anyBoolean());}
++ @Test public void thirdPointerDisarmsTheChord(){down();MotionEvent.PointerProperties[] p=new MotionEvent.PointerProperties[3];MotionEvent.PointerCoords[] c=new MotionEvent.PointerCoords[3];for(int i=0;i<3;i++){p[i]=new MotionEvent.PointerProperties();p[i].id=i;c[i]=new MotionEvent.PointerCoords();c[i].x=35+i*30;c[i].y=80;}f.gestures.onTouch(MotionEvent.obtain(100,130,MotionEvent.ACTION_POINTER_DOWN|512,3,p,c,0,0,1,1,0,0,0,0));assertFalse(f.gestures.onTouch(f.event(180,MotionEvent.ACTION_MOVE,48,61)));verify(f.ime,never()).setKeyAntToolbarVisible669(anyBoolean());}
++ @Test public void pairIsOrderIndependentAndRejectsSameLetter(){assertTrue(KeyPairGesture669.matches(f.ime,'P','Q'));assertFalse(KeyPairGesture669.matches(f.ime,'a','p'));KeyAntPrefs.get(RuntimeEnvironment.getApplication()).edit().putString("ka_pair_second","q").apply();assertFalse(KeyPairGesture669.matches(f.ime,'q','q'));}
++}
+diff --git a/app/src/test/java/helium314/keyboard/keyforma/KeyAntPrivate669Test.java b/app/src/test/java/helium314/keyboard/keyforma/KeyAntPrivate669Test.java
+new file mode 100644
+index 0000000..a686ffe
+--- /dev/null
++++ b/app/src/test/java/helium314/keyboard/keyforma/KeyAntPrivate669Test.java
+@@ -0,0 +1,19 @@
++// SPDX-License-Identifier: GPL-3.0-only
++package helium314.keyboard.keyforma;
++import android.content.*;import android.view.*;import android.view.inputmethod.*;import android.widget.*;import helium314.keyboard.latin.settings.Settings;import helium314.keyboard.latin.InputAttributes;import helium314.keyboard.ShadowInputMethodManager2;
++import org.junit.*;import org.junit.runner.RunWith;import org.robolectric.*;import org.robolectric.annotation.*;import static org.junit.Assert.*;import static org.mockito.Mockito.*;
++@RunWith(RobolectricTestRunner.class) @Config(sdk=35,qualifiers="w400dp-h900dp-mdpi",shadows={ShadowInputMethodManager2.class}) @GraphicsMode(GraphicsMode.Mode.NATIVE)
++public class KeyAntPrivate669Test {
++ KeyAntV612Test f;
++ @Before public void setup(){f=new KeyAntV612Test();f.setup();KeyAntPrefs.get(f.c).edit().putBoolean(Settings.PREF_ALWAYS_INCOGNITO_MODE,true).putBoolean(Settings.PREF_ENABLE_CLIPBOARD_HISTORY,false).apply();Settings.getInstance().loadSettings(f.c);doNothing().when(f.ime).onTextInput(anyString());}
++ @After public void close(){f.close();}
++ void copy(String value){f.primary(ClipData.newPlainText("test",value),System.currentTimeMillis());}
++ String labels(View v){String s=v instanceof TextView t?t.getText().toString():"";if(v.getContentDescription()!=null)s+=v.getContentDescription();if(v instanceof ViewGroup g)for(int i=0;i<g.getChildCount();i++)s+=labels(g.getChildAt(i));return s;}
++ @Test public void privateCopyHasMaskedPillWithoutHistoryOrFingerprint(){int before=f.history.getHistorySize();copy("synthetic-private-password");var prefs=KeyAntPrefs.get(f.c).getAll();View pill=f.offer();assertNotNull(pill);assertTrue(labels(pill).contains("Incolla dagli appunti"));assertFalse(labels(pill).contains("synthetic-private-password"));assertEquals(prefs,KeyAntPrefs.get(f.c).getAll());assertEquals(before,f.history.getHistorySize());f.chip(pill).performClick();verify(f.ime).onTextInput("synthetic-private-password");assertNull(f.offer());}
++ @Test public void stalePillNeverPastesIntoAnotherEditor(){copy("old-secret");View pill=f.offer();assertNotNull(pill);doReturn(new EditorInfo()).when(f.ime).getCurrentInputEditorInfo();f.chip(pill).performClick();verify(f.ime,never()).onTextInput(anyString());}
++ @Test public void copiesWithIdenticalTimestampsStillInvalidateOldPill(){long stamp=System.currentTimeMillis();f.primary(ClipData.newPlainText("old","old-secret"),stamp);View old=f.offer();f.primary(ClipData.newPlainText("new","new-secret"),stamp);f.history.onPrimaryClipChanged();f.chip(old).performClick();verify(f.ime,never()).onTextInput(anyString());assertNotNull(f.offer());}
++ @Test public void changedClipboardAndOptOutPreventPaste(){copy("old-secret");View pill=f.offer();f.primary(ClipData.newPlainText("new","new-secret"),System.currentTimeMillis()+10);f.chip(pill).performClick();verify(f.ime,never()).onTextInput(anyString());assertNotNull(f.offer());KeyAntPrefs.get(f.c).edit().putBoolean("ka_private_paste_pill",false).apply();assertNull(f.offer());}
++ @Test public void typingRetiresPrivateOfferWithoutMutatingMediaStore(){copy("secret");View pill=f.offer();new FrameLayout(f.c).addView(pill);var before=KeyAntPrefs.get(f.c).getAll();f.history.refreshAfterTyping();assertNull(f.offer());assertEquals(before,KeyAntPrefs.get(f.c).getAll());}
++ @Test public void publicScreenshotRemainsAvailablePrivatelyWithoutExposingThumbnail()throws Exception{String image=f.image(669,"png");MediaSuggestionStore.save(f.c,image,System.currentTimeMillis(),"screenshot","public capture");View pill=f.offer();assertNotNull(pill);assertTrue(labels(pill).contains("Incolla dagli appunti"));assertFalse(labels(pill).contains(image));f.history.removeClipboardSuggestion();assertEquals(image,MediaSuggestionStore.candidate(f.c,0));assertNull(f.offer());}
++ @Test public void loginPrivacyDoesNotEnableCorrections(){KeyAntPrefs.get(f.c).edit().putBoolean(Settings.PREF_ALWAYS_INCOGNITO_MODE,false).apply();f.editor.inputType=129;f.editor.imeOptions=EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING;Settings.getInstance().loadSettings(f.c,java.util.Locale.ITALIAN,new InputAttributes(f.editor,false,f.c.getPackageName()));copy("login-secret");assertNotNull(f.offer());assertTrue(Settings.getValues().mIncognitoModeEnabled);assertFalse(Settings.getValues().needsToLookupSuggestions());}
++}
+diff --git a/app/src/test/java/helium314/keyboard/keyforma/KeyAntStudio667Test.kt b/app/src/test/java/helium314/keyboard/keyforma/KeyAntStudio667Test.kt
+index 915af85..41bc4bc 100644
+--- a/app/src/test/java/helium314/keyboard/keyforma/KeyAntStudio667Test.kt
++++ b/app/src/test/java/helium314/keyboard/keyforma/KeyAntStudio667Test.kt
+@@ -26,7 +26,7 @@ class KeyAntStudio667Test {
+    val decor=controller.get().window.decorView;KeyAntV42Test.layout(decor,1000,750);compose.waitForIdle()
+    compose.onNodeWithText("I tuoi temi").assertDoesNotExist();compose.onNodeWithText("Sistema").assertDoesNotExist()
+    compose.onNodeWithContentDescription("Tutte le categorie di temi").performScrollTo().performClick();compose.waitForIdle();compose.onAllNodesWithText("Disegno",useUnmergedTree=true).onLast().performClick();compose.waitForIdle()
+-   compose.onNodeWithText("Disegno · 12 temi").assertExists()
++   compose.onNodeWithText("Disegno · 13 temi").assertExists()
+    KeyAntV42Test.save(KeyAntV63Test.render(decor,1000,750),"KeyAnt-0667-catalogo-fold.png")
+   }
+  }
+diff --git a/app/src/test/java/helium314/keyboard/keyforma/KeyAntStudio669Test.kt b/app/src/test/java/helium314/keyboard/keyforma/KeyAntStudio669Test.kt
+new file mode 100644
+index 0000000..e54cd63
+--- /dev/null
++++ b/app/src/test/java/helium314/keyboard/keyforma/KeyAntStudio669Test.kt
+@@ -0,0 +1,54 @@
++// SPDX-License-Identifier: GPL-3.0-only
++package helium314.keyboard.keyforma
++import android.content.Intent
++import androidx.compose.ui.test.*
++import androidx.compose.ui.test.junit4.createEmptyComposeRule
++import androidx.compose.ui.text.TextRange
++import androidx.compose.ui.text.input.TextFieldValue
++import helium314.keyboard.ShadowInputMethodManager2
++import helium314.keyboard.latin.settings.Settings
++import org.junit.*
++import org.junit.Assert.*
++import org.junit.runner.RunWith
++import org.robolectric.*
++import org.robolectric.annotation.*
++@RunWith(RobolectricTestRunner::class) @Config(sdk=[35],qualifiers="w420dp-h900dp-mdpi",shadows=[ShadowInputMethodManager2::class]) @GraphicsMode(GraphicsMode.Mode.NATIVE)
++class KeyAntStudio669Test {
++ @get:Rule val compose=createEmptyComposeRule()
++ @Before fun clear(){val c=RuntimeEnvironment.getApplication();KeyAntPrefs.get(c).edit().clear().putBoolean("ka_053_defaults",true).apply();MakeKeyAnt.init(c)}
++ @Test fun themeRadioAppliesImmediatelyAndPreviewRequiresConfirmation(){
++  val c=RuntimeEnvironment.getApplication()
++  Robolectric.buildActivity(StudioActivity::class.java,Intent(c,StudioActivity::class.java).putExtra("page","themes")).setup().visible().use{controller->
++   KeyAntV42Test.layout(controller.get().window.decorView,420,900);compose.waitForIdle()
++   val radio=compose.onAllNodes(hasContentDescription("Applica tema",substring=true)).onFirst()
++   radio.performScrollTo().performClick();compose.waitForIdle()
++   compose.onNodeWithText("Conferma").assertDoesNotExist()
++   val selected=KeyAntPrefs.get(c).getString(Settings.PREF_THEME_COLORS,"")
++   compose.onNodeWithText("Prova").performScrollTo().performClick();compose.waitForIdle()
++   compose.onNodeWithText("Conferma").assertExists();compose.onNodeWithContentDescription("Tastiera di prova").assertExists()
++   assertEquals(selected,KeyAntPrefs.get(c).getString(Settings.PREF_THEME_COLORS,""))
++   compose.onNodeWithContentDescription("Tastiera di prova").performTouchInput{click(androidx.compose.ui.geometry.Offset(width*.08f,height*.12f))};compose.waitForIdle()
++   compose.onNodeWithText("q",substring=false).assertExists()
++   org.robolectric.shadows.ShadowDialog.getLatestDialog()?.window?.decorView?.let{KeyAntV42Test.save(KeyAntV63Test.render(it,420,900),"KeyAnt-0669-prova-tema.png")}
++   compose.onNodeWithContentDescription("Chiudi anteprima").performClick();compose.waitForIdle()
++   assertEquals(selected,KeyAntPrefs.get(c).getString(Settings.PREF_THEME_COLORS,""))
++  }
++ }
++ @Test fun trialEditorHandlesSelectionUnicodeAndShift(){
++  assertEquals("aB",TrialText669.edit(TextFieldValue("a",TextRange(1)),66,true).text)
++  assertEquals("a",TrialText669.edit(TextFieldValue("a🙂",TextRange(3)),-7,false).text)
++  assertEquals("ciao",TrialText669.edit(TextFieldValue("ciXXo",TextRange(2,4)),65,false).text)
++ }
++ @Test fun pairSettingsPersistAndAreSearchable(){
++  val c=RuntimeEnvironment.getApplication()
++  Robolectric.buildActivity(StudioActivity::class.java,Intent(c,StudioActivity::class.java).putExtra("page","gestures")).setup().visible().use{controller->
++   KeyAntV42Test.layout(controller.get().window.decorView,420,900);compose.waitForIdle()
++   compose.onNodeWithText("Gesti da una coppia di tasti").performScrollTo().performClick();compose.waitForIdle()
++   assertTrue(KeyAntPrefs.bool(c,"pair_gesture",false));assertEquals("toolbar_show",KeyPairGesture669.action(c,"up"))
++   compose.onNodeWithText("Primo tasto della coppia").performScrollTo().performClick();compose.waitForIdle()
++   compose.onNodeWithText("A").performScrollTo().performClick();compose.waitForIdle()
++   assertTrue(KeyPairGesture669.matches(c,97,112));assertFalse(KeyPairGesture669.matches(c,113,112))
++  }
++  assertEquals(1,SettingsSearch.entries.count{it.title=="Gesti da una coppia di tasti"})
++ }
++}
+diff --git a/app/src/test/java/helium314/keyboard/keyforma/KeyAntSurface669Test.java b/app/src/test/java/helium314/keyboard/keyforma/KeyAntSurface669Test.java
+new file mode 100644
+index 0000000..d771b67
+--- /dev/null
++++ b/app/src/test/java/helium314/keyboard/keyforma/KeyAntSurface669Test.java
+@@ -0,0 +1,13 @@
++// SPDX-License-Identifier: GPL-3.0-only
++package helium314.keyboard.keyforma;
++import android.view.*;import android.widget.*;import android.graphics.*;import helium314.keyboard.ShadowInputMethodManager2;import org.junit.*;import org.junit.runner.RunWith;import org.robolectric.*;import org.robolectric.annotation.*;import static org.junit.Assert.*;
++@RunWith(RobolectricTestRunner.class) @Config(sdk=35,qualifiers="w420dp-h900dp-mdpi",shadows={ShadowInputMethodManager2.class}) @GraphicsMode(GraphicsMode.Mode.NATIVE)
++public class KeyAntSurface669Test {
++ KeyAntInline654Test f;
++ @Before public void setup(){f=new KeyAntInline654Test();f.setup();KeyAntPrefs.get(f.f.c).edit().putBoolean("ka_pill_motion",false).putString("ka_toolbar_display","auto").apply();}
++ @After public void close(){f.close();}
++ @Test public void manualRevealSurvivesRepeatedToolsButTypingRestoresAutomatic(){FrameLayout host=new FrameLayout(f.f.c);host.setLayoutParams(new LinearLayout.LayoutParams(420,48));View strip=new View(f.f.c);host.addView(strip);var auto=new AutomaticStrip667(strip);auto.surface("keyant-tools");assertEquals(0,host.getLayoutParams().height);auto.manual(true);auto.surface("keyant-tools");assertEquals(48,host.getLayoutParams().height);auto.manual(false);auto.pause();assertEquals(0,host.getLayoutParams().height);auto.surface("clipboard");auto.manual(false);assertEquals(48,host.getLayoutParams().height);auto.surface("words");auto.surface("keyant-tools");assertEquals(0,host.getLayoutParams().height);}
++ @Test public void knobHasRoundedInsetViewportAtPhoneAndFoldWidths()throws Exception{for(int width:new int[]{320,420,900}){KeyAntPrefs.get(f.f.c).edit().putString("ka_toolbar_display","knob").apply();f.bar.refresh();View tools=f.bar.takeToolsView();KeyAntV42Test.layout(tools,width,48);tools.findViewWithTag("keyant-knob").performClick();KeyAntV42Test.layout(tools,width,48);LinearLayout shell=(LinearLayout)((HorizontalScrollView)tools).getChildAt(0);View panel=shell.getChildAt(1);assertEquals(44,panel.getHeight());assertTrue(panel.getClipToOutline());assertTrue(shell.getPaddingLeft()>=10);assertTrue("panel fits",panel.getRight()<=width);KeyAntV42Test.save(KeyAntV63Test.render(tools,width,48),"KeyAnt-0669-manopola-"+width+".png");}}
++ @Test public void coordinatedPiduThemesHaveDistinctGeometryAndPalette()throws Exception{for(String id:new String[]{"bench_pidu_rose","bench_pidu_pinkblack","bench_pidu_blackpink","bench_pidu_cup","bench_pidu_film","bench_draw_twilight","bench_seafoam"}){assertTrue(java.util.Arrays.asList(ThemeCatalog.IDS).contains(id));if(id.startsWith("bench_pidu"))assertEquals("PIDDU",ThemeCatalog.collection(id));CapPreview preview=new CapPreview(f.f.c,true,id).gallery();KeyAntV42Test.save(KeyAntV63Test.render(preview,420,220),"KeyAnt-0669-"+id+".png");}assertNotEquals(BenchCaps656.face("bench_pidu_pinkblack",0),BenchCaps656.face("bench_pidu_blackpink",0));}
++ @Test public void previewSymbolsUseTheSameHitGeometry(){CapPreview p=new CapPreview(f.f.c,true,"bench_pidu_rose").gallery();KeyAntV42Test.layout(p,340,180);assertEquals('Q',p.hitCode(25,15));p.trialLayer669(false,true);assertEquals('1',p.hitCode(25,15));assertEquals(-10001,p.hitCode(20,150));}
++}
+diff --git a/app/src/test/java/helium314/keyboard/keyforma/KeyAntV612Test.java b/app/src/test/java/helium314/keyboard/keyforma/KeyAntV612Test.java
+index 7d4c0b2..421cf77 100644
+--- a/app/src/test/java/helium314/keyboard/keyforma/KeyAntV612Test.java
++++ b/app/src/test/java/helium314/keyboard/keyforma/KeyAntV612Test.java
+@@ -30,7 +30,7 @@ public class KeyAntV612Test {
+   }
+  }
+  @Test public void upgradePreservesClipboardAndCaptureChoices(){var p=KeyAntPrefs.get(c);p.edit().putBoolean(Settings.PREF_SUGGEST_CLIPBOARD_CONTENT,true).putBoolean("ka_screenshots",true).putBoolean("ka_recordings",true).putBoolean("ka_otp",true).putInt("ka_image_pill_minutes",90).apply();KeyAntPrefs.migrate(c);assertTrue(p.getBoolean(Settings.PREF_SUGGEST_CLIPBOARD_CONTENT,false));assertTrue(KeyAntPrefs.bool(c,"screenshots",false));assertTrue(KeyAntPrefs.bool(c,"recordings",false));assertTrue(KeyAntPrefs.bool(c,"otp",false));assertEquals(90,KeyAntPrefs.number(c,"image_pill_minutes",0));p.edit().putBoolean(Settings.PREF_SUGGEST_CLIPBOARD_CONTENT,false).apply();KeyAntPrefs.migrate(c);assertFalse(p.getBoolean(Settings.PREF_SUGGEST_CLIPBOARD_CONTENT,true));}
+- @Test public void privateSessionAndDisabledPillsRemainRespected()throws Exception{String value=image(3,"png");MediaSuggestionStore.save(c,value,System.currentTimeMillis(),"screenshot","source");assertNotNull(offer());editor.imeOptions=EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING;assertNull(offer());editor.imeOptions=0;editor.inputType=129;assertNull(offer());editor.inputType=1;KeyAntPrefs.get(c).edit().putBoolean(Settings.PREF_SUGGEST_CLIPBOARD_CONTENT,false).apply();Settings.getInstance().loadSettings(c);assertNull(offer());}
++ @Test public void privateSessionAndDisabledPillsRemainRespected()throws Exception{String value=image(3,"png");MediaSuggestionStore.save(c,value,System.currentTimeMillis(),"screenshot","source");assertNotNull(offer());editor.imeOptions=EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING;assertNotNull(offer());KeyAntPrefs.get(c).edit().putBoolean("ka_private_paste_pill",false).apply();assertNull(offer());editor.imeOptions=0;editor.inputType=129;assertNull(offer());KeyAntPrefs.get(c).edit().putBoolean("ka_private_paste_pill",true).apply();assertNotNull(offer());editor.inputType=1;KeyAntPrefs.get(c).edit().putBoolean(Settings.PREF_SUGGEST_CLIPBOARD_CONTENT,false).apply();Settings.getInstance().loadSettings(c);assertNull(offer());}
+ 
+  @Test public void sameScreenshotUriUsesExactClipboardTimestamp()throws Exception{
+   long now=System.currentTimeMillis();android.net.Uri uri=android.net.Uri.parse("content://media/external/images/media/321");
+diff --git a/app/src/test/java/helium314/keyboard/keyforma/KeyAntV613Test.java b/app/src/test/java/helium314/keyboard/keyforma/KeyAntV613Test.java
+index ad032e3..ab07281 100644
+--- a/app/src/test/java/helium314/keyboard/keyforma/KeyAntV613Test.java
++++ b/app/src/test/java/helium314/keyboard/keyforma/KeyAntV613Test.java
+@@ -71,7 +71,8 @@ public class KeyAntV613Test {
+   assertTrue(chip.getContentDescription().toString().contains("Codice"));assertFalse(chip.getContentDescription().toString().contains("012345"));
+   doNothing().when(ime).onTextInput(anyString());chip.performClick();verify(ime).onTextInput("012345");
+  }
+- @Test public void copiedCodeWorksInNoLearningNumericPasswordFieldButNeverManualIncognito(){
++ @Test public void copiedCodeWorksInNoLearningNumericPasswordFieldAndPrivatePillCanBeDisabled(){
++  KeyAntPrefs.get(c).edit().putBoolean("ka_private_paste_pill",false).apply();
+   editor.inputType=android.text.InputType.TYPE_CLASS_NUMBER|android.text.InputType.TYPE_NUMBER_VARIATION_PASSWORD;
+   editor.imeOptions=EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING;
+   Settings.getInstance().loadSettings(c,Locale.ITALIAN,new InputAttributes(editor,false,c.getPackageName()));
+diff --git a/tools/verify_0669.sh b/tools/verify_0669.sh
+new file mode 100755
+index 0000000..1decf84
+--- /dev/null
++++ b/tools/verify_0669.sh
+@@ -0,0 +1,38 @@
++#!/bin/sh
++set -eu
++# Use the project wrapper or provide a Gradle executable already configured for the SDK.
++runner=${KEYANT_GRADLE:-./gradlew}
++python3 tools/verify_icu_0662.py
++"$runner" --max-workers=1 -Dorg.gradle.jvmargs=-Xmx1536m -I gradle/keyant-regression.gradle :app:testDebugNoMinifyUnitTest \
++ --tests '*KeyAnt*669Test' \
++ --tests '*KeyAntMultiTouch636Test' \
++ --tests '*KeyAntToolbar667Test' \
++ --tests '*KeyAntV613Test' \
++ --tests '*KeyAntV612Test' \
++ --tests '*KeyAntStudio643Test.trialKeysAndOutsideDismissDoNotSelectTheme' \
++ --tests '*KeyAntRetirement657Test' \
++ --tests '*KeyAntGesture668Test' \
++ --tests '*KeyAntStrip668Test' \
++ --tests '*KeyAntMaterials668Test' \
++ --tests '*KeyAntStudio668Test' \
++ --tests '*KeyAntStudio667Test' \
++ --tests '*KeyAntGestureStreamTest' \
++ --tests '*KeyAntCorrection641Test' \
++ --tests '*KeyAntV62Test' \
++ --tests 'helium314.keyboard.latin.InputLogicTest' \
++ --tests '*SuggestionCase647Test' \
++ --tests '*KeyAntCalibration644Test' \
++ --tests '*KeyAntPanels666Test' \
++ --tests '*KeyAntSplit663Test' \
++ --tests '*KeyAntBehavior648Test' \
++ --tests '*KeyAntContext657Test'
++"$runner" :app:processDebugNoMinifyManifestForPackage --rerun :app:assembleDebugNoMinify
++apk=app/build/outputs/apk/debugNoMinify/KeyAnt_0.6.69-debugNoMinify.apk
++build_tools="${ANDROID_HOME:?Set ANDROID_HOME}/build-tools/36.0.0"
++badging=$("$build_tools/aapt" dump badging "$apk")
++case "$badging" in
++ *"versionCode='96' versionName='0.6.69'"*) ;;
++ *) echo 'Unexpected packaged APK version' >&2; exit 1 ;;
++esac
++"$build_tools/apksigner" verify --print-certs "$apk"
++"$build_tools/zipalign" -c -P 16 4 "$apk"

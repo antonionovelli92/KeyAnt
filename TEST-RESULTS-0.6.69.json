@@ -1,0 +1,1727 @@
+{
+  "version": "0.6.69",
+  "versionCode": 96,
+  "code_commit": "2b3910a85b84d56707cd9fa9379eb725aff6b67f",
+  "unique_tests": 213,
+  "classes": 25,
+  "status_counts": {
+    "passed": 213
+  },
+  "runs": [
+    {
+      "run": "extended",
+      "code_checkpoint": "e9661f7",
+      "classes": [
+        {
+          "class": "helium314.keyboard.keyforma.KeyAntBehavior648Test",
+          "tests": [
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntBehavior648Test",
+              "test": "watermarkCannotMoveBackwardsAndLegacyChoiceIsHonored",
+              "status": "passed",
+              "seconds": 5.362
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntBehavior648Test",
+              "test": "lateMediaCannotReviveTypedCopyInAnotherEditor",
+              "status": "passed",
+              "seconds": 0.142
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntBehavior648Test",
+              "test": "lateRepresentationOfSameRetiredEventStaysRetired",
+              "status": "passed",
+              "seconds": 0.122
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntBehavior648Test",
+              "test": "providerKeepsOwnSurfaceAndNavigationHasAccessibleTargets",
+              "status": "passed",
+              "seconds": 0.287
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntBehavior648Test",
+              "test": "contextIncludesItalianSingleLetterWordsWithoutWeakeningAdmission",
+              "status": "passed",
+              "seconds": 0.155
+            }
+          ]
+        },
+        {
+          "class": "helium314.keyboard.keyforma.KeyAntCalibration644Test",
+          "tests": [
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntCalibration644Test",
+              "test": "trainedSharedEdgeWorksWithoutPredictionsButCentersAndPasswordsStayExact",
+              "status": "passed",
+              "seconds": 6.465
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntCalibration644Test",
+              "test": "oneTrainedNeighborCannotStealFromAnUntrainedLetterOrSplitLayout",
+              "status": "passed",
+              "seconds": 0.215
+            }
+          ]
+        },
+        {
+          "class": "helium314.keyboard.keyforma.KeyAntContext657Test",
+          "tests": [
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntContext657Test",
+              "test": "canceledGoogleResultPreservesTheRealStatusInsteadOfGenericCancellation",
+              "status": "passed",
+              "seconds": 7.822
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntContext657Test",
+              "test": "missingAuthorizationKeepsFailureInPreviewAndNeverWrites",
+              "status": "passed",
+              "seconds": 0.564
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntContext657Test",
+              "test": "explicitDetailsAndInvalidDurationStayDistinctFromReminderContents",
+              "status": "passed",
+              "seconds": 0.349
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntContext657Test",
+              "test": "explicitLocationAndDurationReachTheCalendarProvider",
+              "status": "passed",
+              "seconds": 0.436
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntContext657Test",
+              "test": "activeTypingUpdatesContextBeyondTwentySeconds",
+              "status": "passed",
+              "seconds": 0.339
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntContext657Test",
+              "test": "automaticPreviewCanCloseWithoutLosingContextOrReopeningOnTyping",
+              "status": "passed",
+              "seconds": 0.408
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntContext657Test",
+              "test": "manualIconKeepsSuggestionsAndLatestTextUntilUserConfirms",
+              "status": "passed",
+              "seconds": 0.343
+            }
+          ]
+        },
+        {
+          "class": "helium314.keyboard.keyforma.KeyAntCorrection641Test",
+          "tests": [
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntCorrection641Test",
+              "test": "defaultPreservesAppsPolicy",
+              "status": "passed",
+              "seconds": 5.083
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntCorrection641Test",
+              "test": "optInEnablesProseInKeepAndUnrelatedApps",
+              "status": "passed",
+              "seconds": 0.126
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntCorrection641Test",
+              "test": "incognitoNeedsSeparateConsent",
+              "status": "passed",
+              "seconds": 0.126
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntCorrection641Test",
+              "test": "specialEditorsAreNeverForced",
+              "status": "passed",
+              "seconds": 0.118
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntCorrection641Test",
+              "test": "masterSwitchesStillWin",
+              "status": "passed",
+              "seconds": 0.089
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntCorrection641Test",
+              "test": "fullscreenAppCompletionsDoNotStealForcedProseSuggestions",
+              "status": "passed",
+              "seconds": 0.083
+            }
+          ]
+        },
+        {
+          "class": "helium314.keyboard.keyforma.KeyAntGesture668Test",
+          "tests": [
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntGesture668Test",
+              "test": "earlyMovementContinuesIntoHeldCalendarInsteadOfChangingLayer",
+              "status": "passed",
+              "seconds": 7.875
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntGesture668Test",
+              "test": "visibleEdgeCommandsWorkEvenWhenMoreCommandsCanScroll",
+              "status": "passed",
+              "seconds": 1.006
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntGesture668Test",
+              "test": "disabledCalendarCannotBeOpenedFromToolbar",
+              "status": "passed",
+              "seconds": 0.355
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntGesture668Test",
+              "test": "toolbarModeLeavesModeKeyTapAndSwipeToNormalKeyboard",
+              "status": "passed",
+              "seconds": 0.364
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntGesture668Test",
+              "test": "toolbarCalendarUsesRealPanelAndCancellationRestoresKeyboard",
+              "status": "passed",
+              "seconds": 0.772
+            }
+          ]
+        },
+        {
+          "class": "helium314.keyboard.keyforma.KeyAntGesture669Test",
+          "tests": [
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntGesture669Test",
+              "test": "pairUpOverridesGlobalAndRunsOnce",
+              "status": "passed",
+              "seconds": 5.656
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntGesture669Test",
+              "test": "pairDownHidesAndTapsStillTypeNatively",
+              "status": "passed",
+              "seconds": 0.062
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntGesture669Test",
+              "test": "thirdPointerDisarmsTheChord",
+              "status": "passed",
+              "seconds": 0.053
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntGesture669Test",
+              "test": "pairIsOrderIndependentAndRejectsSameLetter",
+              "status": "passed",
+              "seconds": 0.041
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntGesture669Test",
+              "test": "noneForPairNeverFallsBackToGlobal",
+              "status": "passed",
+              "seconds": 0.04
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntGesture669Test",
+              "test": "disabledPairKeepsGlobalSelectAll",
+              "status": "passed",
+              "seconds": 0.039
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntGesture669Test",
+              "test": "firstFingerTravelBeforeChordIsIgnored",
+              "status": "passed",
+              "seconds": 0.044
+            }
+          ]
+        },
+        {
+          "class": "helium314.keyboard.keyforma.KeyAntGestureStreamTest",
+          "tests": [
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntGestureStreamTest",
+              "test": "overlappingSecondFingerCancelsSpaceHoldWithoutSwallowingTheLetter",
+              "status": "passed",
+              "seconds": 5.744
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntGestureStreamTest",
+              "test": "fastRepeatedSpaceTapsDoNotAccumulateHoldOrStealEvents",
+              "status": "passed",
+              "seconds": 0.109
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntGestureStreamTest",
+              "test": "heldSpaceMovesCursorWithoutInsertingSpace",
+              "status": "passed",
+              "seconds": 0.152
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntGestureStreamTest",
+              "test": "normalSpaceRemainsInNativeTypingPipeline",
+              "status": "passed",
+              "seconds": 0.032
+            }
+          ]
+        },
+        {
+          "class": "helium314.keyboard.keyforma.KeyAntMaterials668Test",
+          "tests": [
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntMaterials668Test",
+              "test": "allOptionalBarModesKeepCommandCountAndPreferences",
+              "status": "passed",
+              "seconds": 7.507
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntMaterials668Test",
+              "test": "materialGalleryHasChinaWallsAtRestAndDuringPress",
+              "status": "passed",
+              "seconds": 0.482
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntMaterials668Test",
+              "test": "iconDonatesSpaceAndReturnsWithoutLosingItsOriginalWidth",
+              "status": "passed",
+              "seconds": 0.387
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntMaterials668Test",
+              "test": "originalAndChinaPreviewsRetainReadableBlueMaterials",
+              "status": "passed",
+              "seconds": 0.605
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntMaterials668Test",
+              "test": "derivedMaterialsMatchOriginalRolesInkAndPopupPixels",
+              "status": "passed",
+              "seconds": 0.398
+            }
+          ]
+        },
+        {
+          "class": "helium314.keyboard.keyforma.KeyAntMultiTouch636Test",
+          "tests": [
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntMultiTouch636Test",
+              "test": "ordinaryOverlappingTapsRemainNative",
+              "status": "passed",
+              "seconds": 6.012
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntMultiTouch636Test",
+              "test": "twoFingerSwipeCanStartOnSpaceWithoutBecomingTouchpad",
+              "status": "passed",
+              "seconds": 0.068
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntMultiTouch636Test",
+              "test": "flickRecognizedOnPointerUpAndRemainingFingerIsConsumed",
+              "status": "passed",
+              "seconds": 0.055
+            }
+          ]
+        },
+        {
+          "class": "helium314.keyboard.keyforma.KeyAntPanels666Test",
+          "tests": [
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntPanels666Test",
+              "test": "symbolTrackballFadesWithPanelAndCannotReappearDuringLayout",
+              "status": "passed",
+              "seconds": 8.435
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntPanels666Test",
+              "test": "todayRingSurvivesSculptedMaterialsAndHeaderContainsOnlyNavigation",
+              "status": "passed",
+              "seconds": 1.586
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntPanels666Test",
+              "test": "toolbarShortcutsWorkWithoutGesturesAndToggleWithoutTyping",
+              "status": "passed",
+              "seconds": 1.144
+            }
+          ]
+        },
+        {
+          "class": "helium314.keyboard.keyforma.KeyAntPrivate669Test",
+          "tests": [
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntPrivate669Test",
+              "test": "publicScreenshotRemainsAvailablePrivatelyWithoutExposingThumbnail",
+              "status": "passed",
+              "seconds": 6.367
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntPrivate669Test",
+              "test": "privateCopyHasMaskedPillWithoutHistoryOrFingerprint",
+              "status": "passed",
+              "seconds": 0.221
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntPrivate669Test",
+              "test": "typingRetiresPrivateOfferWithoutMutatingMediaStore",
+              "status": "passed",
+              "seconds": 0.136
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntPrivate669Test",
+              "test": "stalePillNeverPastesIntoAnotherEditor",
+              "status": "passed",
+              "seconds": 0.131
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntPrivate669Test",
+              "test": "loginPrivacyDoesNotEnableCorrections",
+              "status": "passed",
+              "seconds": 0.123
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntPrivate669Test",
+              "test": "changedClipboardAndOptOutPreventPaste",
+              "status": "passed",
+              "seconds": 0.122
+            }
+          ]
+        },
+        {
+          "class": "helium314.keyboard.keyforma.KeyAntRetirement657Test",
+          "tests": [
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntRetirement657Test",
+              "test": "typingRetiresOnlyTheDisplayedMediaNotANewerAsyncCapture",
+              "status": "passed",
+              "seconds": 7.509
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntRetirement657Test",
+              "test": "dismissedVideoCannotReturnAfterEditorRestartOrGalleryReimport",
+              "status": "passed",
+              "seconds": 0.227
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntRetirement657Test",
+              "test": "typingRetirementSurvivesTheNextEditor",
+              "status": "passed",
+              "seconds": 0.122
+            }
+          ]
+        },
+        {
+          "class": "helium314.keyboard.keyforma.KeyAntSplit663Test",
+          "tests": [
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntSplit663Test",
+              "test": "letterShapesAtGestureEndMatchCommittedLayout",
+              "status": "passed",
+              "seconds": 7.932
+            }
+          ]
+        },
+        {
+          "class": "helium314.keyboard.keyforma.KeyAntStrip668Test",
+          "tests": [
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntStrip668Test",
+              "test": "disablingForwardSwipeStillAllowsArrowTap",
+              "status": "passed",
+              "seconds": 6.995
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntStrip668Test",
+              "test": "disableReversePreservesToolbarAndCanBeReenabled",
+              "status": "passed",
+              "seconds": 0.607
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntStrip668Test",
+              "test": "calendarFromFirstCommandDoesNotRunItsTapOrStartReverse",
+              "status": "passed",
+              "seconds": 1.958
+            }
+          ]
+        },
+        {
+          "class": "helium314.keyboard.keyforma.KeyAntStudio667Test",
+          "tests": [
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntStudio667Test",
+              "test": "toolbarModesCanBeSelectedWithoutChangingCommandOrder",
+              "status": "passed",
+              "seconds": 7.701
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntStudio667Test",
+              "test": "foldGalleryUsesOneCatalogAndKeepsBrightnessCollapsed",
+              "status": "passed",
+              "seconds": 0.94
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntStudio667Test",
+              "test": "gesturesHaveIndependentChoicesAndSearchEntries",
+              "status": "passed",
+              "seconds": 0.553
+            }
+          ]
+        },
+        {
+          "class": "helium314.keyboard.keyforma.KeyAntStudio668Test",
+          "tests": [
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntStudio668Test",
+              "test": "sharedSwipeControlsPersistAcrossPagesAndSearchOnlyOnce",
+              "status": "passed",
+              "seconds": 7.686
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntStudio668Test",
+              "test": "toolbarCalendarChoiceIsSeparateFromNumbersAndDocking",
+              "status": "passed",
+              "seconds": 0.788
+            }
+          ]
+        },
+        {
+          "class": "helium314.keyboard.keyforma.KeyAntStudio669Test",
+          "tests": [
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntStudio669Test",
+              "test": "trialEditorHandlesSelectionUnicodeAndShift",
+              "status": "passed",
+              "seconds": 4.575
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntStudio669Test",
+              "test": "pairSettingsPersistAndAreSearchable",
+              "status": "passed",
+              "seconds": 2.432
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntStudio669Test",
+              "test": "themeRadioAppliesImmediatelyAndPreviewRequiresConfirmation",
+              "status": "passed",
+              "seconds": 0.942
+            }
+          ]
+        },
+        {
+          "class": "helium314.keyboard.keyforma.KeyAntSurface669Test",
+          "tests": [
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntSurface669Test",
+              "test": "previewSymbolsUseTheSameHitGeometry",
+              "status": "passed",
+              "seconds": 7.188
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntSurface669Test",
+              "test": "knobHasRoundedInsetViewportAtPhoneAndFoldWidths",
+              "status": "passed",
+              "seconds": 0.586
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntSurface669Test",
+              "test": "coordinatedPiduThemesHaveDistinctGeometryAndPalette",
+              "status": "passed",
+              "seconds": 0.499
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntSurface669Test",
+              "test": "manualRevealSurvivesRepeatedToolsButTypingRestoresAutomatic",
+              "status": "passed",
+              "seconds": 0.32
+            }
+          ]
+        },
+        {
+          "class": "helium314.keyboard.keyforma.KeyAntToolbar667Test",
+          "tests": [
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntToolbar667Test",
+              "test": "automaticWaitsForPointerAndRestoresBeforeEmoji",
+              "status": "passed",
+              "seconds": 8.148
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntToolbar667Test",
+              "test": "classicRemainsDefaultAndKnobRemembersOnlyCommandId",
+              "status": "passed",
+              "seconds": 0.598
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntToolbar667Test",
+              "test": "resultCapsuleKeepsTransparentMarginsAndLegibleControls",
+              "status": "passed",
+              "seconds": 0.482
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntToolbar667Test",
+              "test": "unhandledTouchCannotLeaveAutomaticBarWaiting",
+              "status": "passed",
+              "seconds": 0.391
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntToolbar667Test",
+              "test": "carouselKeepsCommandsAndExpandedKnobRenders",
+              "status": "passed",
+              "seconds": 0.429
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntToolbar667Test",
+              "test": "newMaterialsKeepChinaGeometryAndOpaqueOverride",
+              "status": "passed",
+              "seconds": 0.323
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntToolbar667Test",
+              "test": "knobHoldAndPreviewDoNotExecuteCommandsOrAlterHistory",
+              "status": "passed",
+              "seconds": 0.294
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntToolbar667Test",
+              "test": "automaticHidesIdleButRestoresWordsAndExternalSuggestions",
+              "status": "passed",
+              "seconds": 0.281
+            }
+          ]
+        },
+        {
+          "class": "helium314.keyboard.keyforma.KeyAntV613Test",
+          "tests": [
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV613Test",
+              "test": "lightCurveHasNoLowEndPlateauAndClassicRemainsAvailable",
+              "status": "passed",
+              "seconds": 6.399
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV613Test",
+              "test": "recopyingDismissedCodeOffersItAgainWithoutDuplicatingHistory",
+              "status": "passed",
+              "seconds": 0.52
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV613Test",
+              "test": "deletingOlderCurrentTextDoesNotRetireNewerScreenshotPill",
+              "status": "passed",
+              "seconds": 0.193
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV613Test",
+              "test": "copiedCodesOptOutKeepsSensitiveCopiesOutAndPasswordsRemainExcludedFromPill",
+              "status": "passed",
+              "seconds": 0.154
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV613Test",
+              "test": "pinMovesKeepStableIdentityAndBulkClearWorksWithPinsAtEitherEnd",
+              "status": "passed",
+              "seconds": 0.136
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV613Test",
+              "test": "heatmapAsyncFlushPersistsNewestDataAndClearCannotResurrectIt",
+              "status": "passed",
+              "seconds": 0.271
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV613Test",
+              "test": "dndAllowsTouchButKeepsSoundOffAndExplicitOptOutWorks",
+              "status": "passed",
+              "seconds": 0.533
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV613Test",
+              "test": "clearUnpinnedReportsCorrectIndicesWithPinnedEntriesAndKeepsMedia",
+              "status": "passed",
+              "seconds": 0.084
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV613Test",
+              "test": "fastDoubleLettersAreNotDroppedInPhoneOrSplitKeyboard",
+              "status": "passed",
+              "seconds": 1.737
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV613Test",
+              "test": "imageAndVideoCanBePinnedThroughTheirPreviewAndSelectionDoesNotPaste",
+              "status": "passed",
+              "seconds": 0.219
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV613Test",
+              "test": "durationLabelAndSmallerEyeAreVisuallySeparated",
+              "status": "passed",
+              "seconds": 0.116
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV613Test",
+              "test": "sensitiveCopyIsOptInAndPreservesTheSystemClipboard",
+              "status": "passed",
+              "seconds": 0.08
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV613Test",
+              "test": "pulseStopsWhenPillLeavesWindowAndCanBeDisabled",
+              "status": "passed",
+              "seconds": 0.653
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV613Test",
+              "test": "trashSelectsThenDeletesAndLongPressOnlyOpensConfirmation",
+              "status": "passed",
+              "seconds": 0.746
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV613Test",
+              "test": "foldedOutDeviceAlsoKeepsRapidDoubleLetters",
+              "status": "passed",
+              "seconds": 0.593
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV613Test",
+              "test": "groupedAuthenticatorCodeRetainsExactTextAndIsMaskedInNumericEditor",
+              "status": "passed",
+              "seconds": 0.101
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV613Test",
+              "test": "deletingOlderEntryDoesNotClearUnrelatedCurrentCopy",
+              "status": "passed",
+              "seconds": 0.068
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV613Test",
+              "test": "expiredCopiedCodeIsNotOfferedAsFresh",
+              "status": "passed",
+              "seconds": 0.061
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV613Test",
+              "test": "explicitPrivateSessionsNeverSaveEvenAfterOptIn",
+              "status": "passed",
+              "seconds": 0.062
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV613Test",
+              "test": "passwordEditorOptInAllowsCopiedSecretWithoutEnablingLearning",
+              "status": "passed",
+              "seconds": 0.062
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV613Test",
+              "test": "authenticatorCopyIsRecoveredWhenImeRegainsClipboardAccess",
+              "status": "passed",
+              "seconds": 0.075
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV613Test",
+              "test": "deletingCurrentSecretPreventsReimportButKeepsOtherHistory",
+              "status": "passed",
+              "seconds": 0.065
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV613Test",
+              "test": "visibleDeletionCreatesBoundedDustAndCleansItOnClose",
+              "status": "passed",
+              "seconds": 0.287
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV613Test",
+              "test": "nestedPillSurfaceAnimatesOnlyWhileVisibleAndEnabled",
+              "status": "passed",
+              "seconds": 0.113
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV613Test",
+              "test": "copiedCodePillCanBeUsedWithoutSavingHistory",
+              "status": "passed",
+              "seconds": 0.065
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV613Test",
+              "test": "copyEmailThenPasswordRetainsBothAndMasksOnlyTheSecret",
+              "status": "passed",
+              "seconds": 0.058
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV613Test",
+              "test": "hapticsUseTouchAttributesAndRespectDuration",
+              "status": "passed",
+              "seconds": 0.063
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV613Test",
+              "test": "selectedStableIdsDeleteOnlyChosenEntriesAfterNewInsertion",
+              "status": "passed",
+              "seconds": 0.066
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV613Test",
+              "test": "copiedCodeRecognitionDoesNotExtractNumbersFromUnrelatedTextOrMedia",
+              "status": "passed",
+              "seconds": 0.057
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV613Test",
+              "test": "noAmplitudeControlUsesCalibratedTickInsteadOfSubthresholdPulse",
+              "status": "passed",
+              "seconds": 0.069
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV613Test",
+              "test": "copiedCodeWorksInNoLearningNumericPasswordFieldAndPrivatePillCanBeDisabled",
+              "status": "passed",
+              "seconds": 0.079
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV613Test",
+              "test": "authenticatorSensitiveCodeAppearsInPillAndHistoryWithPasswordSavingOff",
+              "status": "passed",
+              "seconds": 0.087
+            }
+          ]
+        },
+        {
+          "class": "helium314.keyboard.keyforma.KeyAntV62Test",
+          "tests": [
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV62Test",
+              "test": "optionalPrivateCorrectionPreservesPrivacyAndUserAutocorrectPreference",
+              "status": "passed",
+              "seconds": 5.254
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV62Test",
+              "test": "privacyOptionChangesInvalidateRestartEvenWhenEditorObjectIsReused",
+              "status": "passed",
+              "seconds": 0.148
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV62Test",
+              "test": "instagramMessageFlagsRestorePredictionAndCorrection",
+              "status": "passed",
+              "seconds": 0.105
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV62Test",
+              "test": "workaroundDoesNotTouchLoginSearchCodesOrOtherApps",
+              "status": "passed",
+              "seconds": 0.123
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV62Test",
+              "test": "manualIncognitoAlsoUsesTheOptionalCorrectionPolicy",
+              "status": "passed",
+              "seconds": 0.107
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV62Test",
+              "test": "searchFindsThePrivateCorrectionSwitch",
+              "status": "passed",
+              "seconds": 0.172
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV62Test",
+              "test": "privateCorrectionCannotLearnUnlearnOrSaveClipboard",
+              "status": "passed",
+              "seconds": 0.588
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV62Test",
+              "test": "optionalCorrectionNeverEnablesPasswordsNumbersOrAddresses",
+              "status": "passed",
+              "seconds": 0.084
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV62Test",
+              "test": "privateFieldsAreSilentByDefaultEvenWithForceSuggestions",
+              "status": "passed",
+              "seconds": 0.101
+            }
+          ]
+        },
+        {
+          "class": "helium314.keyboard.latin.InputLogicTest",
+          "tests": [
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "autospace works in URL field when starting with quotes",
+              "status": "passed",
+              "seconds": 6.961
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "autospace still happens after \"",
+              "status": "passed",
+              "seconds": 0.228
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "emailSubjectRejectsInlineResponse",
+              "status": "passed",
+              "seconds": 0.233
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "autospace still happens after \" if next word is in quotes",
+              "status": "passed",
+              "seconds": 0.145
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "no intermediate commit in URL field without protocol and with URL detection",
+              "status": "passed",
+              "seconds": 0.118
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "noAutospaceInUrlFieldWhenPickingSuggestion",
+              "status": "passed",
+              "seconds": 0.117
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "select whole thing except http(s) as composing word if URL detection enabled and selecting",
+              "status": "passed",
+              "seconds": 0.124
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "trackballSelectionDeletesWithoutCollapsingFirst",
+              "status": "passed",
+              "seconds": 0.114
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "confirmedSuggestionReplacesComposingWord",
+              "status": "passed",
+              "seconds": 0.126
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "deleteInsideWord",
+              "status": "passed",
+              "seconds": 0.107
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "autospace propagates over \"",
+              "status": "passed",
+              "seconds": 0.099
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "insertLetterIntoWordWithWeirdEditor",
+              "status": "passed",
+              "seconds": 0.085
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "mediaArrivalRefreshesDuringCompositionWithoutChangingText",
+              "status": "passed",
+              "seconds": 0.417
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "clipboardDismissShortcutNeverEatsRealDeletions",
+              "status": "passed",
+              "seconds": 0.153
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "double space results in period and space, and delete removes the period",
+              "status": "passed",
+              "seconds": 0.08
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "inlineEmojiSearchString",
+              "status": "passed",
+              "seconds": 0.079
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "dismissingAutofillDoesNotDisableItForTheNextEditor",
+              "status": "passed",
+              "seconds": 0.064
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "no intermediate commit in URL field with protocol",
+              "status": "passed",
+              "seconds": 0.104
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "autospaceButWithTextAfter",
+              "status": "passed",
+              "seconds": 0.091
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "no weird space inside multi-\"",
+              "status": "passed",
+              "seconds": 0.094
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "noAutospaceInUrlField",
+              "status": "passed",
+              "seconds": 0.1
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "no intermediate commit in URL field with protocol and URL detection",
+              "status": "passed",
+              "seconds": 0.083
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "delete",
+              "status": "passed",
+              "seconds": 0.121
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "deleteHangul",
+              "status": "passed",
+              "seconds": 0.108
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "savedCommandRestoresThroughCtrlLayerAndToolbarUndo",
+              "status": "passed",
+              "seconds": 0.085
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "noComposingForPasswordFields",
+              "status": "passed",
+              "seconds": 0.084
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "autospace after selecting a suggestion",
+              "status": "passed",
+              "seconds": 0.079
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "emoji uses phantom space",
+              "status": "passed",
+              "seconds": 0.099
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "only protocol commit in text field with protocol and URL detection",
+              "status": "passed",
+              "seconds": 0.1
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "separatorAfterHangul",
+              "status": "passed",
+              "seconds": 0.095
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "text input and delete",
+              "status": "passed",
+              "seconds": 0.086
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "select whole thing except http(s) as composing word if URL detection enabled and typing",
+              "status": "passed",
+              "seconds": 0.087
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "lateDictionaryResultCannotReplaceANewerPrefix",
+              "status": "passed",
+              "seconds": 0.103
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "dontCommitPartialUrlBeforeFirstPeriod",
+              "status": "passed",
+              "seconds": 0.08
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "adaptiveMemoryLearnsOnlyConfirmedChoicesAndStopsInPrivateFields",
+              "status": "passed",
+              "seconds": 0.08
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "contextCorrectionLeavesConjunctionAndDisabledSettingAlone",
+              "status": "passed",
+              "seconds": 0.093
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "no autospace after opening quotes",
+              "status": "passed",
+              "seconds": 0.092
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "timestamp",
+              "status": "passed",
+              "seconds": 0.11
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "stripSeparatorsBeforeAddingToHistoryWithURLDetection",
+              "status": "passed",
+              "seconds": 0.08
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "dontSelectConsecutiveSeparatorsWithURLDetection",
+              "status": "passed",
+              "seconds": 0.068
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "intermediate commit in text field without protocol and with URL detection",
+              "status": "passed",
+              "seconds": 0.069
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "emoji is added to dictionary",
+              "status": "passed",
+              "seconds": 0.087
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "autospace works in URL field when input isn't URL, also for multiple suggestions",
+              "status": "passed",
+              "seconds": 0.083
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "don't accidentally detect some other text fields as URI",
+              "status": "passed",
+              "seconds": 0.078
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "separatorUnselectsWord",
+              "status": "passed",
+              "seconds": 0.07
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "autospace works in URL field when input isn't URL",
+              "status": "passed",
+              "seconds": 0.067
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "selectDoesSelect",
+              "status": "passed",
+              "seconds": 0.065
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "inlineEmojiSearchStart",
+              "status": "passed",
+              "seconds": 0.064
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "noAutospaceForDetectedUrl",
+              "status": "passed",
+              "seconds": 0.045
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "urlProperlySelected",
+              "status": "passed",
+              "seconds": 0.067
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "assistantReplacementDoesNotCommitStaleComposingWord",
+              "status": "passed",
+              "seconds": 0.061
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "emoji text input and delete",
+              "status": "passed",
+              "seconds": 0.064
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "autospace still happens after \" if nex word is in \" and after comma",
+              "status": "passed",
+              "seconds": 0.086
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "personalEmailLearnsRepeatedAddressAndCompletesDottedPrefix",
+              "status": "passed",
+              "seconds": 0.075
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "don't add partial URL to history",
+              "status": "passed",
+              "seconds": 0.067
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "suggestionsStayInWritingModeAcrossSpacesEnterAndDeletingEverything",
+              "status": "passed",
+              "seconds": 0.067
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "insertLetterIntoOneOfSeveralWords",
+              "status": "passed",
+              "seconds": 0.063
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "contextCopulaCorrectsPreviousWordAndBackspaceUndoes",
+              "status": "passed",
+              "seconds": 0.071
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "emptyOrObsoleteAnswerClearsPreviousAutomaticCorrection",
+              "status": "passed",
+              "seconds": 0.063
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "fastBurstKeepsEveryLetterAndSpaceBeforeSuggestionCallbacks",
+              "status": "passed",
+              "seconds": 0.066
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "noAutospaceForDetectedEmail",
+              "status": "passed",
+              "seconds": 0.069
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "intermediate commits in text field without protocol",
+              "status": "passed",
+              "seconds": 0.067
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "insertLetterIntoWord",
+              "status": "passed",
+              "seconds": 0.068
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "no intermediate commit in URL field without protocol",
+              "status": "passed",
+              "seconds": 0.064
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "autospace",
+              "status": "passed",
+              "seconds": 0.067
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "inputCode",
+              "status": "passed",
+              "seconds": 0.061
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "URL detection does not trigger on non-words",
+              "status": "passed",
+              "seconds": 0.07
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "urlProperlySelectedWhenNotDeletingFullTld",
+              "status": "passed",
+              "seconds": 0.079
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "remove glide typing word on delete",
+              "status": "passed",
+              "seconds": 0.059
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "gesturePreparationDoesNotCommitComposingWordTwice",
+              "status": "passed",
+              "seconds": 0.068
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "emojis deleted one by one",
+              "status": "passed",
+              "seconds": 0.065
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "don't select whole thing as composing word if URL detection disabled",
+              "status": "passed",
+              "seconds": 0.074
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "urlDetectionThings",
+              "status": "passed",
+              "seconds": 0.076
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "autospace in json editor",
+              "status": "passed",
+              "seconds": 0.062
+            },
+            {
+              "class": "helium314.keyboard.latin.InputLogicTest",
+              "test": "revert autocorrect on delete",
+              "status": "passed",
+              "seconds": 0.07
+            }
+          ]
+        },
+        {
+          "class": "helium314.keyboard.latin.SuggestionCase647Test",
+          "tests": [
+            {
+              "class": "helium314.keyboard.latin.SuggestionCase647Test",
+              "test": "learnedCompletionUsesComposerCaseAndKeepsStoredSpelling",
+              "status": "passed",
+              "seconds": 6.319
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "run": "final-clipboard",
+      "code_checkpoint": "2b3910a85b84d56707cd9fa9379eb725aff6b67f",
+      "classes": [
+        {
+          "class": "helium314.keyboard.keyforma.KeyAntPrivate669Test",
+          "tests": [
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntPrivate669Test",
+              "test": "copiesWithIdenticalTimestampsStillInvalidateOldPill",
+              "status": "passed",
+              "seconds": 6.558
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntPrivate669Test",
+              "test": "publicScreenshotRemainsAvailablePrivatelyWithoutExposingThumbnail",
+              "status": "passed",
+              "seconds": 0.271
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntPrivate669Test",
+              "test": "privateCopyHasMaskedPillWithoutHistoryOrFingerprint",
+              "status": "passed",
+              "seconds": 0.195
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntPrivate669Test",
+              "test": "typingRetiresPrivateOfferWithoutMutatingMediaStore",
+              "status": "passed",
+              "seconds": 0.147
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntPrivate669Test",
+              "test": "stalePillNeverPastesIntoAnotherEditor",
+              "status": "passed",
+              "seconds": 0.14
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntPrivate669Test",
+              "test": "loginPrivacyDoesNotEnableCorrections",
+              "status": "passed",
+              "seconds": 0.121
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntPrivate669Test",
+              "test": "changedClipboardAndOptOutPreventPaste",
+              "status": "passed",
+              "seconds": 0.135
+            }
+          ]
+        },
+        {
+          "class": "helium314.keyboard.keyforma.KeyAntRetirement657Test",
+          "tests": [
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntRetirement657Test",
+              "test": "typingRetiresOnlyTheDisplayedMediaNotANewerAsyncCapture",
+              "status": "passed",
+              "seconds": 6.553
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntRetirement657Test",
+              "test": "dismissedVideoCannotReturnAfterEditorRestartOrGalleryReimport",
+              "status": "passed",
+              "seconds": 0.186
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntRetirement657Test",
+              "test": "typingRetirementSurvivesTheNextEditor",
+              "status": "passed",
+              "seconds": 0.118
+            }
+          ]
+        },
+        {
+          "class": "helium314.keyboard.keyforma.KeyAntStudio643Test",
+          "tests": [
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntStudio643Test",
+              "test": "trialKeysAndOutsideDismissDoNotSelectTheme",
+              "status": "passed",
+              "seconds": 7.522
+            }
+          ]
+        },
+        {
+          "class": "helium314.keyboard.keyforma.KeyAntV612Test",
+          "tests": [
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV612Test",
+              "test": "providerQuestionsAreTemperedOnlyWithMatchingRawWords",
+              "status": "passed",
+              "seconds": 6.109
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV612Test",
+              "test": "newerGalleryScreenshotIsNotBlockedByOlderSensitiveClipboard",
+              "status": "passed",
+              "seconds": 0.415
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV612Test",
+              "test": "upgradePreservesClipboardAndCaptureChoices",
+              "status": "passed",
+              "seconds": 0.117
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV612Test",
+              "test": "mediaHiddenWhileTypingReturnsInNextEditorButExplicitDismissalDoesNot",
+              "status": "passed",
+              "seconds": 0.157
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV612Test",
+              "test": "previouslyAnimatedOutPillCanBeShownAgain",
+              "status": "passed",
+              "seconds": 1.922
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV612Test",
+              "test": "standaloneSkinToneAndOrphanJoinerDoNotCrashOrConsumeNeighbourText",
+              "status": "passed",
+              "seconds": 0.095
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV612Test",
+              "test": "expiredOrDeletedMediaNeverProducesBrokenPill",
+              "status": "passed",
+              "seconds": 0.159
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV612Test",
+              "test": "sameScreenshotUriUsesExactClipboardTimestamp",
+              "status": "passed",
+              "seconds": 0.106
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV612Test",
+              "test": "newerTextReplacesOldScreenshotAndDismissalPersists",
+              "status": "passed",
+              "seconds": 0.134
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV612Test",
+              "test": "gifInsertionUsesGifMimeAndOnlyRetiresOnAcceptance",
+              "status": "passed",
+              "seconds": 0.13
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV612Test",
+              "test": "delayedDuplicateCannotAgeHistoryOrReplaceNewerCopy",
+              "status": "passed",
+              "seconds": 0.068
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV612Test",
+              "test": "unsupportedImageKeepsPillForAnotherApp",
+              "status": "passed",
+              "seconds": 0.095
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV612Test",
+              "test": "privateSessionAndDisabledPillsRemainRespected",
+              "status": "failed",
+              "seconds": 0.101
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV612Test",
+              "test": "videoAlwaysOpensShareSheetEvenWhenEditorAdvertisesVideo",
+              "status": "passed",
+              "seconds": 0.096
+            }
+          ]
+        },
+        {
+          "class": "helium314.keyboard.keyforma.KeyAntV613Test",
+          "tests": [
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV613Test",
+              "test": "lightCurveHasNoLowEndPlateauAndClassicRemainsAvailable",
+              "status": "passed",
+              "seconds": 5.986
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV613Test",
+              "test": "recopyingDismissedCodeOffersItAgainWithoutDuplicatingHistory",
+              "status": "passed",
+              "seconds": 0.471
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV613Test",
+              "test": "deletingOlderCurrentTextDoesNotRetireNewerScreenshotPill",
+              "status": "passed",
+              "seconds": 0.198
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV613Test",
+              "test": "copiedCodesOptOutKeepsSensitiveCopiesOutAndPasswordsRemainExcludedFromPill",
+              "status": "passed",
+              "seconds": 0.12
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV613Test",
+              "test": "pinMovesKeepStableIdentityAndBulkClearWorksWithPinsAtEitherEnd",
+              "status": "passed",
+              "seconds": 0.117
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV613Test",
+              "test": "heatmapAsyncFlushPersistsNewestDataAndClearCannotResurrectIt",
+              "status": "passed",
+              "seconds": 0.335
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV613Test",
+              "test": "dndAllowsTouchButKeepsSoundOffAndExplicitOptOutWorks",
+              "status": "passed",
+              "seconds": 0.428
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV613Test",
+              "test": "clearUnpinnedReportsCorrectIndicesWithPinnedEntriesAndKeepsMedia",
+              "status": "passed",
+              "seconds": 0.084
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV613Test",
+              "test": "fastDoubleLettersAreNotDroppedInPhoneOrSplitKeyboard",
+              "status": "passed",
+              "seconds": 1.376
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV613Test",
+              "test": "imageAndVideoCanBePinnedThroughTheirPreviewAndSelectionDoesNotPaste",
+              "status": "passed",
+              "seconds": 0.15
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV613Test",
+              "test": "durationLabelAndSmallerEyeAreVisuallySeparated",
+              "status": "passed",
+              "seconds": 0.111
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV613Test",
+              "test": "sensitiveCopyIsOptInAndPreservesTheSystemClipboard",
+              "status": "passed",
+              "seconds": 0.101
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV613Test",
+              "test": "pulseStopsWhenPillLeavesWindowAndCanBeDisabled",
+              "status": "passed",
+              "seconds": 0.666
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV613Test",
+              "test": "trashSelectsThenDeletesAndLongPressOnlyOpensConfirmation",
+              "status": "passed",
+              "seconds": 0.753
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV613Test",
+              "test": "foldedOutDeviceAlsoKeepsRapidDoubleLetters",
+              "status": "passed",
+              "seconds": 0.704
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV613Test",
+              "test": "groupedAuthenticatorCodeRetainsExactTextAndIsMaskedInNumericEditor",
+              "status": "passed",
+              "seconds": 0.098
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV613Test",
+              "test": "deletingOlderEntryDoesNotClearUnrelatedCurrentCopy",
+              "status": "passed",
+              "seconds": 0.088
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV613Test",
+              "test": "expiredCopiedCodeIsNotOfferedAsFresh",
+              "status": "passed",
+              "seconds": 0.06
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV613Test",
+              "test": "explicitPrivateSessionsNeverSaveEvenAfterOptIn",
+              "status": "passed",
+              "seconds": 0.057
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV613Test",
+              "test": "passwordEditorOptInAllowsCopiedSecretWithoutEnablingLearning",
+              "status": "passed",
+              "seconds": 0.072
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV613Test",
+              "test": "authenticatorCopyIsRecoveredWhenImeRegainsClipboardAccess",
+              "status": "passed",
+              "seconds": 0.073
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV613Test",
+              "test": "deletingCurrentSecretPreventsReimportButKeepsOtherHistory",
+              "status": "passed",
+              "seconds": 0.063
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV613Test",
+              "test": "visibleDeletionCreatesBoundedDustAndCleansItOnClose",
+              "status": "passed",
+              "seconds": 0.246
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV613Test",
+              "test": "nestedPillSurfaceAnimatesOnlyWhileVisibleAndEnabled",
+              "status": "passed",
+              "seconds": 0.12
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV613Test",
+              "test": "copiedCodePillCanBeUsedWithoutSavingHistory",
+              "status": "passed",
+              "seconds": 0.071
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV613Test",
+              "test": "copyEmailThenPasswordRetainsBothAndMasksOnlyTheSecret",
+              "status": "passed",
+              "seconds": 0.072
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV613Test",
+              "test": "hapticsUseTouchAttributesAndRespectDuration",
+              "status": "passed",
+              "seconds": 0.069
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV613Test",
+              "test": "selectedStableIdsDeleteOnlyChosenEntriesAfterNewInsertion",
+              "status": "passed",
+              "seconds": 0.064
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV613Test",
+              "test": "copiedCodeRecognitionDoesNotExtractNumbersFromUnrelatedTextOrMedia",
+              "status": "passed",
+              "seconds": 0.056
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV613Test",
+              "test": "noAmplitudeControlUsesCalibratedTickInsteadOfSubthresholdPulse",
+              "status": "passed",
+              "seconds": 0.051
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV613Test",
+              "test": "copiedCodeWorksInNoLearningNumericPasswordFieldAndPrivatePillCanBeDisabled",
+              "status": "passed",
+              "seconds": 0.068
+            },
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV613Test",
+              "test": "authenticatorSensitiveCodeAppearsInPillAndHistoryWithPasswordSavingOff",
+              "status": "passed",
+              "seconds": 0.118
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "run": "private-option-contract",
+      "code_checkpoint": "2b3910a85b84d56707cd9fa9379eb725aff6b67f",
+      "classes": [
+        {
+          "class": "helium314.keyboard.keyforma.KeyAntV612Test",
+          "tests": [
+            {
+              "class": "helium314.keyboard.keyforma.KeyAntV612Test",
+              "test": "privateSessionAndDisabledPillsRemainRespected",
+              "status": "passed",
+              "seconds": 6.63
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "icu_patterns": 85,
+  "lint": {
+    "baseline": {
+      "Error": 550,
+      "Warning": 448,
+      "Hint": 1
+    },
+    "current": {
+      "Error": 550,
+      "Warning": 448,
+      "Hint": 1
+    },
+    "new_findings": []
+  },
+  "apk_sha256": "848eb2f360f8058a30a73e197ff68e826bb39d9c66ef3e35106514463e93be1a",
+  "apk_bytes": 144472929,
+  "limitations": [
+    "Robolectric API 35/native rendering, no physical Fold or Pixel test",
+    "No FPS measurement or Samsung One UI compositor validation",
+    "Two pre-existing upstream exclusions: Hangul known-failing demonstration and external XLink availability; see gradle/keyant-regression.gradle",
+    "First targeted run found toolbar overflow; corrected and passing in extended run"
+  ]
+}

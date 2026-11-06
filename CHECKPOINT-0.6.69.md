@@ -1,6 +1,6 @@
 # Checkpoint KeyAnt 0.6.69 — richieste e ripresa
 
-Stato: lavorazione iniziata, nessun APK 0.6.69 ancora validato.
+Stato finale: APK 0.6.69 validato; 213 casi distinti superati in 25 classi.
 Baseline sorgente originale: 1898d6f78437f01a4d59abec512848895b683087 (v0.6.68).
 APK 0.6.68 pubblico e verificato: ce15f04a82d68e113c8c6870fb1a4128e1a6713c3e3b22e654d7dfd8ebe13c17.
 Non sostituire la versione pubblicata prima dei controlli. Non azzerare dati o preferenze.
@@ -21,7 +21,11 @@ Checkpoint del codice, note, risultati test e ripristino. Nessuna chiave, creden
 APK, sorgenti completi, cronologia e checksum nella release; download normale in chat e link diretto GitHub dopo verifica.
 Il ramo main non è stato aggiornato alla 0.6.68: precedente controllo automatico lo ha impedito. La release v0.6.68 è sul checkpoint work/keyant-0.6.68.
 
-## Checkpoint implementazione
-Sorgente locale 961a3a3, compilazione Kotlin/Java riuscita. Patch completa del primo checkpoint in checkpoints/keyant-0.6.69-first.patch, applicabile al sorgente originale 1898d6f.
-Implementati pillola privata mascherata, opzione dedicata, Q+P configurabile, isolamento delle gesture, ricalcolo movimento dal secondo dito, cornice manopola, pallino applica tema, prova in basso con selezione testo/maiuscole/numeri, sfocatura galleria, sette temi coordinati e ricerca impostazioni.
-Test di regressione in corso: nessun APK 0.6.69 ancora pubblicato. Non confondere compilazione riuscita con verifica su dispositivo reale.
+
+## Stato intermedio verificato
+Compilazione Kotlin/Java riuscita. Primo gruppo: 65 test, un fallimento riproducibile sulla larghezza della manopola. Corretto limitando il contenitore esterno e lasciando lo scorrimento alla sola riga interna; il test ora passa a 320/420/900 px.
+Pillola privata, protezione del campo di destinazione e ritiro dopo digitazione verificati. Nessun cambiamento al motore del dizionario. Regressione estesa e build finale in corso.
+
+## Consegna finale
+APK codice 96, firma uguale alla 0.6.68, SHA-256 848eb2f360f8058a30a73e197ff68e826bb39d9c66ef3e35106514463e93be1a.
+Codice applicativo finale 2b3910a85b84d56707cd9fa9379eb725aff6b67f. Risultati dettagliati in TEST-RESULTS-0.6.69.json e VERIFICA-0.6.69.md. Lint invariato, nessuna prova su telefono fisico. Le sezioni intermedie sopra conservano la cronologia del lavoro.
