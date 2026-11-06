@@ -1,6 +1,6 @@
 diff --git a/AGGIORNAMENTO-0.6.70.md b/AGGIORNAMENTO-0.6.70.md
 new file mode 100644
-index 0000000..4b395ab
+index 0000000..ca73666
 --- /dev/null
 +++ b/AGGIORNAMENTO-0.6.70.md
 @@ -0,0 +1,24 @@
@@ -11,7 +11,7 @@ index 0000000..4b395ab
 +La scocca delle modalità raccolte viene misurata nella larghezza effettiva a ogni riaggancio/ridimensionamento, anziché corretta dopo il layout. Nuova manopola con corona zigrinata, faccia incassata e indice; ventaglio più contenuto, cassetto e lamelle. Le animazioni interrotte non devono lasciare callback obsolete che nascondono la barra riaperta. Presentazioni disponibili nel Maker, salvate nel progetto e modificabili con anteprima.
 +
 +## Trackball
-+Sharingan a tre tomoe ridisegnato e collegato al caricamento effettivo; revisionati anche gli altri sei motivi anime del generatore già presente. I vecchi asset non hanno più precedenza su questi disegni. Le miniature Luffy, Takemichi, Hinata e Naruto hanno fronte, lati e nuca distinti; sono illustrazioni avvolte sulla sfera, non modelli anatomici 3D.
++Sharingan a tre tomoe ridisegnato e collegato al caricamento effettivo; revisionati anche gli altri cinque motivi anime del generatore già presente. I vecchi asset non hanno più precedenza su questi disegni. Le miniature Luffy, Takemichi, Hinata e Naruto hanno fronte, lati e nuca distinti; sono illustrazioni avvolte sulla sfera, non modelli anatomici 3D.
 +PIDDU raccoglie Barbie, Sailor Moon, Hello Kitty, Kuromi e My Melody, oltre alle sfere rosa/lunari già presenti. Nuovi easter egg: MacLaren’s Pub e l’ananas di HIMYM, la porta viola di Friends, Karasuno 10 e Log Pose. Disegni creati in codice; nessuna fotografia di un volto reale.
 +
 +## Scrittura
@@ -30,14 +30,14 @@ index 0000000..4b395ab
 +Le nuove animazioni sono una realizzazione KeyAnt; non attribuiamo a queste tastiere effetti non documentati.
 diff --git a/CHECKPOINT-0.6.70.md b/CHECKPOINT-0.6.70.md
 new file mode 100644
-index 0000000..49bf3fa
+index 0000000..a169495
 --- /dev/null
 +++ b/CHECKPOINT-0.6.70.md
-@@ -0,0 +1,14 @@
+@@ -0,0 +1,22 @@
 +# KeyAnt 0.6.70 — checkpoint
 +Base: v0.6.69, d6079be3efced0d914e364183b64751882ced49b. Video utente 37411.mp4 esaminato (50,8s).
 +
-+## Richieste da completare
++## Perimetro della richiesta
 +- Swipe icone→parole: ripristino, zona selezionabile ultime 1/2/3 icone, gesto e morbidezza configurabili; ritorno dalla sola freccia.
 +- Correggere perdita della geometria della barra dopo scrittura/ritorno; manopola meccanica, ventaglio migliore, nuove animazioni e integrazione Maker.
 +- Revisione Sharingan e altre sfere anime; teste stilizzate rotanti Luffy, Takemichi, Hinata; PIDDU rosa/Barbie/Sailor Moon/Hello Kitty/Kuromi; MacLaren’s e altri easter egg.
@@ -48,6 +48,58 @@ index 0000000..49bf3fa
 +
 +## Riscontri iniziali
 +EmailMemory.complete esclude prefissi <3 caratteri: a. non può agganciare un indirizzo conosciuto. Toolbar usa un vincolo di larghezza applicato dopo il layout: fragile durante riaggancio. I motivi AnimeOrbs non sono raggiunti dal caricatore BallMaps (asset precedenti hanno priorità).
++
++## Stato implementazione
++Codice applicativo salvato nel commit 183fc4c. Ramo locale work/0.6.70-toolbar-orbs-writing; checkpoint pubblico work/keyant-0.6.70. Dettagli e limiti in AGGIORNAMENTO-0.6.70.md.
++264 casi distinti superati in 32 classi. Verifica mirata della compatibilità completata: altri 9 test superati, inclusi nei 264 casi distinti. APK finale verificato: versione 0.6.70, codice 97, stessa firma, ZIP integro, allineamento 16 KiB. Lint: zero nuove segnalazioni rispetto alla 0.6.69; dettagli in VERIFICA-0.6.70.md.
++Correzioni emerse durante la verifica: nomi con refuso nel prefisso; etichette delle sfere e continuità dei capelli sui lati; proprietà residue dell’animazione wave; icone fuori viewport escluse dal riconoscimento del bordo; fixture dei gesti ripetuti con downTime aggiornato a ogni nuovo gesto; sincronizzazione della selezione dopo Ctrl+Z/Y.
++
++## Recupero del lavoro
++La release contiene APK, sorgenti completi, bundle Git con cronologia, patch dalla 0.6.69, risultati dei test e checksum. Usare il bundle o lo ZIP dedicato: gli archivi Source code automatici del ramo documentale non sono il progetto Android completo. Nessun video personale o chiave privata è incluso. ROLLBACK-0.6.70.md descrive il ripristino senza disinstallazione.
+diff --git a/README.md b/README.md
+index db9ed33..8c4e636 100644
+--- a/README.md
++++ b/README.md
+@@ -1,28 +1,28 @@
+-# KeyAnt 0.6.69
++# KeyAnt 0.6.70
+ 
+ Tastiera Android personale basata su HeliBoard, con temi, appunti, trackball e azioni locali dalla frase.
+ 
+ ## Installazione
+ 
+-Scarica **KeyAnt-0.6.69.apk** dalla [release v0.6.69](https://github.com/antonionovelli92/KeyAnt/releases/tag/v0.6.69). Installa sopra la versione esistente senza disinstallare: firma personale invariata, versionCode 96. Non occorre installare le versioni intermedie, anche su un secondo telefono. Account e permessi delle integrazioni restano personali.
++Scarica **KeyAnt-0.6.70.apk** dalla [release v0.6.70](https://github.com/antonionovelli92/KeyAnt/releases/tag/v0.6.70). Installa sopra la versione esistente senza disinstallare: firma personale invariata, versionCode 97. Non occorre installare le versioni intermedie, anche su un secondo telefono. Account e permessi delle integrazioni restano personali.
+ 
+ ## Novità
+ 
+-- Pillola Incolla disponibile in incognito e nei login, con testo nascosto e opzione dedicata.
+-- Coppia di tasti configurabile: Q + P inizialmente, swipe su/giù per mostrare/nascondere la barra. Funzione opzionale, spenta inizialmente.
+-- Migliore riconoscimento del movimento comune a due dita; nessun cambiamento alle soglie e alle azioni generali.
+-- Manopola e varianti contenute entro la larghezza della tastiera, con margini e contorno arrotondato.
+-- Pallino per applicare subito un tema; grafica per provarlo nella tastiera in basso, con testo selezionabile e conferma. Preferiti invariati.
+-- Cinque nuovi temi rosa PIDDU e due materiali aggiuntivi, coordinati con barra e trackball.
++- Swipe icone → suggerimenti dalla zona selezionabile delle ultime 1/2/3 icone visibili; attivazione immediata o premi e trascina, risposta morbida/bilanciata/rapida.
++- Geometria stabile della barra durante ritorno dalla scrittura e ridimensionamento; manopola meccanica, ventaglio rifinito, cassetto e lamelle, anche nel Maker.
++- Protezione della selezione durante gesti a due dita incompleti; recupero locale limitato con Ctrl+Z e Ctrl+Y, oltre al supporto nativo dell’editor.
++- Email note completabili da un prefisso con punto di due caratteri; peso delle abitudini ridotto gradualmente con il tempo; lessico offline supplementare con tolleranza ai refusi.
++- 14 nuove trackball: volti anime con fronte/lati/nuca, PIDDU e piccoli riferimenti a serie e anime; Sharingan rivisto e collegato al caricatore effettivo.
++- Incluse le novità 0.6.69: pillola privata mascherata, coppia di tasti per mostrare/nascondere la barra, selezione rapida del tema, prova interattiva e temi PIDDU coordinati.
+ 
+-[Novità e limiti](AGGIORNAMENTO-0.6.69.md) · [Verifiche](VERIFICA-0.6.69.md) · [Ripristino](ROLLBACK-0.6.69.md) · [Build e firma](docs/BUILD_AND_RELEASE.md) · [Configurazione Google Tasks](docs/GOOGLE_TASKS_SETUP.md).
++[Novità e limiti](AGGIORNAMENTO-0.6.70.md) · [Verifiche](VERIFICA-0.6.70.md) · [Ripristino](ROLLBACK-0.6.70.md) · [Build e firma](docs/BUILD_AND_RELEASE.md) · [Configurazione Google Tasks](docs/GOOGLE_TASKS_SETUP.md).
+ 
+ ## Sorgenti e continuità
+ 
+-Il ramo GitHub contiene la documentazione. Per il progetto Android completo scaricare **KeyAnt-0.6.69-sorgenti-pubblici.zip**, oppure **KeyAnt-0.6.69-history.bundle** per avere anche baseline 0.6.50 e revisioni 0.6.51–0.6.69. Gli archivi automatici “Source code” contengono solo questo ramo documentale.
++Il ramo GitHub contiene la documentazione. Per il progetto Android completo scaricare **KeyAnt-0.6.70-sorgenti-pubblici.zip**, oppure **KeyAnt-0.6.70-history.bundle** per avere anche baseline 0.6.50 e revisioni 0.6.51–0.6.70. Gli archivi automatici “Source code” contengono solo questo ramo documentale.
+ 
+ ```sh
+-git clone KeyAnt-0.6.69-history.bundle KeyAnt
++git clone KeyAnt-0.6.70-history.bundle KeyAnt
+ cd KeyAnt
+ git log --oneline --all --decorate
+ ```
 diff --git a/ROLLBACK-0.6.70.md b/ROLLBACK-0.6.70.md
 new file mode 100644
 index 0000000..cd1d3f6
@@ -60,6 +112,39 @@ index 0000000..cd1d3f6
 +Android blocca normalmente APK con versionCode inferiore: per un rollback conservativo ricompilare il checkpoint desiderato con un codice superiore e la stessa chiave di firma. Chiave personale mantenuta separata, mai pubblicata.
 +Nessuna migrazione distruttiva del dizionario: il peso della recenza è calcolato in lettura. Nuove preferenze e progetti Maker sono retrocompatibili; una versione precedente ignora le nuove presentazioni.
 +Esportare dall’app il backup delle impostazioni e dei dati personali: il repository e gli APK non contengono i dati del telefono. Il recupero Ctrl+Z temporaneo non è un backup e non sopravvive a chiusura/cambio campo.
+diff --git a/VERIFICA-0.6.70.md b/VERIFICA-0.6.70.md
+new file mode 100644
+index 0000000..d8f5393
+--- /dev/null
++++ b/VERIFICA-0.6.70.md
+@@ -0,0 +1,27 @@
++# Verifica KeyAnt 0.6.70
++
++Esito dei test: **264 casi distinti superati in 32 classi**, nessun fallimento finale, errore o test saltato nei casi selezionati.
++
++- Suite estesa: 263 casi. Tre fallimenti nelle fixture: due selettori Compose legati alle etichette precedenti e un test Ctrl che non aveva una tastiera montata. Fixture aggiornate senza indebolire le asserzioni sul comportamento.
++- Riesecuzione finale: 94 casi superati, inclusi Ctrl+Z/Y, selezione, scrittura, impostazioni, animazioni interrotte, riaggancio e ridimensionamento della barra. Include la sincronizzazione finale della cache di selezione dopo Annulla/Ripristina.
++- Ultimo controllo mirato dopo la correzione API Android del lessico: 9 casi di scrittura superati.
++- Un ulteriore caso distinto di memoria email/incognito è incluso nel gruppo precedente. Il JSON allegato associa ogni caso all’ultimo esito, senza contare due volte le riesecuzioni.
++- Le verifiche preliminari hanno rilevato e fatto correggere il riconoscimento delle icone fuori viewport, la soglia dei refusi nei prefissi e una fixture con downTime non aggiornato tra gesti consecutivi.
++- 85 espressioni compilate con ICU nativo. Rendering nativo Robolectric API 35 e controlli Compose; larghezze 320, 420 e 900 px.
++- Esclusioni upstream conservate: dimostrazione Hangul nota come fallente e test di disponibilità degli URL XLink, elencati in gradle/keyant-regression.gradle.
++
++## APK
++Package it.keyant.keyboard, versionCode 97, versionName 0.6.70, non debuggable.
++Integrità ZIP, firma e zipalign con allineamento 16 KiB verificati.
++Firma SHA-256 uguale alla 0.6.69: bf7bc5998c63e50de960d4506499dce857cea819468673d0ca52d31bed527aa4.
++Dimensione: 144484353 byte.
++SHA-256: 8aa2ccf9e91bac8fd510847a155d7575dfe58892393ad718dbca2a1a85018bc2.
++Ultimo commit del codice applicativo: 183fc4c4458cba530ab56a031de93e98e3e21240.
++
++## Analisi statica
++Lint NON è globalmente superato: 550 errori, 448 avvisi e 1 suggerimento preesistenti. Confronto strutturale con la 0.6.69: **zero nuove segnalazioni**, stessi conteggi. Il controllo ha trovato una nuova chiamata Stream.toList che richiedeva API 34; è stata sostituita con Collectors.toList, rieseguiti i test e rigenerato l’APK. Nessuna nuova baseline o soppressione usata per nascondere il problema.
++
++## Limiti delle verifiche
++Nessuna prova su Fold/Pixel fisico e nessuna misura FPS. One UI, editor web e app che limitano l’InputConnection richiedono riscontro sul telefono. Ctrl+Z/Y locale protegge una singola sostituzione di selezione nello stesso campo, con contesto estratto completo fino a 65.536 caratteri e scadenza di due minuti; non sostituisce una cronologia universale delle app. Password escluse; nessun contenuto salvato su disco.
++Le teste sono illustrazioni sferiche con fronte/lati/nuca, non mesh anatomiche. Il lessico supplementare è finito e non promette copertura universale. Nessun collegamento reale OAuth o operazione su account personali dichiarato verificato.
++I test usano dati sintetici. Video personale, chiavi e credenziali esclusi dagli archivi. Sorgenti e APK non contengono il backup dei dati del telefono.
 diff --git a/app/build.gradle.kts b/app/build.gradle.kts
 index 5a38836..95eafde 100644
 --- a/app/build.gradle.kts

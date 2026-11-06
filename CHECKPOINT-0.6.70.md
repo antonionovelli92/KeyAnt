@@ -15,5 +15,8 @@ EmailMemory.complete esclude prefissi <3 caratteri: a. non può agganciare un in
 
 ## Stato implementazione
 Codice applicativo salvato nel commit 183fc4c. Ramo locale work/0.6.70-toolbar-orbs-writing; checkpoint pubblico work/keyant-0.6.70. Dettagli e limiti in AGGIORNAMENTO-0.6.70.md.
-264 casi distinti superati in 32 classi. Resta la verifica mirata della compatibilità del lessico con Android 8+, segnalata dal controllo NewApi e corretta sostituendo Stream.toList. APK in rigenerazione con la stessa firma.
+264 casi distinti superati in 32 classi. Verifica mirata della compatibilità completata: altri 9 test superati, inclusi nei 264 casi distinti. APK finale verificato: versione 0.6.70, codice 97, stessa firma, ZIP integro, allineamento 16 KiB. Lint: zero nuove segnalazioni rispetto alla 0.6.69; dettagli in VERIFICA-0.6.70.md.
 Correzioni emerse durante la verifica: nomi con refuso nel prefisso; etichette delle sfere e continuità dei capelli sui lati; proprietà residue dell’animazione wave; icone fuori viewport escluse dal riconoscimento del bordo; fixture dei gesti ripetuti con downTime aggiornato a ogni nuovo gesto; sincronizzazione della selezione dopo Ctrl+Z/Y.
+
+## Recupero del lavoro
+La release contiene APK, sorgenti completi, bundle Git con cronologia, patch dalla 0.6.69, risultati dei test e checksum. Usare il bundle o lo ZIP dedicato: gli archivi Source code automatici del ramo documentale non sono il progetto Android completo. Nessun video personale o chiave privata è incluso. ROLLBACK-0.6.70.md descrive il ripristino senza disinstallazione.
