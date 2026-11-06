@@ -1,0 +1,369 @@
+diff --git a/app/build.gradle.kts b/app/build.gradle.kts
+index 95eafde..38027b1 100644
+--- a/app/build.gradle.kts
++++ b/app/build.gradle.kts
+@@ -15,8 +15,8 @@ android {
+         applicationId = "it.keyant.keyboard"
+         minSdk = 26
+         targetSdk = 35
+-        versionCode = 97
+-        versionName = "0.6.70"
++        versionCode = 98
++        versionName = "0.6.71"
+         externalNativeBuild { ndkBuild { arguments += listOf("-j2") } }
+         ndk {
+             abiFilters.clear()
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/ActionDraft654.java b/app/src/main/java/helium314/keyboard/keyforma/ActionDraft654.java
+index f2297eb..9511df9 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/ActionDraft654.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/ActionDraft654.java
+@@ -31,7 +31,7 @@ final class ActionDraft654 {
+   ZonedDateTime reference=ZonedDateTime.now();
+   when=ContextAction651.date(action.text(),reference);if(when==null&&tasks())when=ContextAction651.date(action.text()+" alle 0",reference);title=when==null?action.text():ContextAction651.eventTitle(action.text());
+   if(action.kind()!=ContextAction651.Kind.CALL){var details=EventDetails657.parse(action.text(),reference);title=details.title();place=details.place();minutes=details.minutes();}
+-  var span=EventSpan665.parse(action.text(),reference);allDay=span!=null&&span.allDay();
++  var span=EventSpan665.parse(EventLanguage671.protect(action.text()).text(),reference);allDay=span!=null&&span.allDay();
+   if(span!=null&&span.valid()&&!allDay){originalStart667=when;exactEnd667=span.end();originalMinutes667=minutes;}
+   if(allDay)alert=false;calendar.allDay=allDay;
+   calendar.colorPreference=unified?"unified_event_color":calendarReminder?"reminder_event_color":"event_color";
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/BallMaps.java b/app/src/main/java/helium314/keyboard/keyforma/BallMaps.java
+index c71bb73..577f3bd 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/BallMaps.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/BallMaps.java
+@@ -9,6 +9,7 @@ final class BallMaps {
+  };
+  static Surface load(Context c,String id){if(id.equals("custom")||Companion660.orb(id))return null;Surface map=CACHE.get(id);if(map!=null)return map;
+ 
++  if(PortraitMaps671.supports(id)){try{Bitmap b=PortraitMaps671.create(c,id);map=new Surface(b);b.recycle();CACHE.put(id,map);return map;}catch(IOException ignored){/* Vector fallback for missing artwork. */}}
+   // Corrected vector maps take precedence over legacy bitmap assets.
+   if(AnimeOrbs.supports(id)||CharacterOrbs670.supports(id)){Bitmap b=AnimeOrbs.supports(id)?AnimeOrbs.create(id):CharacterOrbs670.create(id);map=new Surface(b);b.recycle();CACHE.put(id,map);return map;}
+ 
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/CharacterOrbs670.java b/app/src/main/java/helium314/keyboard/keyforma/CharacterOrbs670.java
+index 848da45..7ee2ce8 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/CharacterOrbs670.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/CharacterOrbs670.java
+@@ -3,8 +3,8 @@ package helium314.keyboard.keyforma;
+ import android.graphics.*;import java.util.*;
+ /** Original vector miniatures mapped around the complete sphere: separate face, sides and nape. */
+ public final class CharacterOrbs670 {
+- public static final String[] IDS={"head_luffy","head_takemichi","head_hinata","head_naruto","piddu_barbie","piddu_moon","piddu_kitty","piddu_kuromi","piddu_melody","tv_maclarens","tv_pineapple","tv_purple_door","anime_karasuno","anime_logpose"};
+- public static final String[] NAMES={"Luffy · Miniatura 360°","Takemichi · Miniatura 360°","Hinata · Miniatura 360°","Naruto · Miniatura 360°","PIDDU · Barbie rosa","PIDDU · Sailor Moon","PIDDU · Hello Kitty","PIDDU · Kuromi rosa e nero","PIDDU · My Melody","HIMYM · MacLaren’s Pub","HIMYM · L’ananas","Friends · Porta viola","Haikyuu · Karasuno 10","One Piece · Log Pose"};
++ public static final String[] IDS={"head_luffy","head_takemichi","head_hinata","head_naruto","head_deku","head_allmight","piddu_barbie","piddu_moon","piddu_kitty","piddu_kuromi","piddu_melody","tv_maclarens","tv_pineapple","tv_purple_door","anime_karasuno","anime_logpose"};
++ public static final String[] NAMES={"Luffy · Miniatura 360°","Takemichi · Miniatura 360°","Hinata · Miniatura 360°","Naruto · Miniatura 360°","Deku · Miniatura 360°","All Might · Miniatura 360°","PIDDU · Barbie rosa","PIDDU · Sailor Moon","PIDDU · Hello Kitty","PIDDU · Kuromi rosa e nero","PIDDU · My Melody","HIMYM · MacLaren’s Pub","HIMYM · L’ananas","Friends · Porta viola","Haikyuu · Karasuno 10","One Piece · Log Pose"};
+  public static boolean supports(String id){return Arrays.asList(IDS).contains(id);}
+  public static String group(String id){return id.startsWith("piddu_")||id.equals("pink")||id.equals("moon_crystal")?"PIDDU":id.startsWith("head_")?"Volti anime":null;}
+  private static final int INK=0xff242332,CREAM=0xfffff0d2,PINK=0xffee5b9f;
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/ContextAction651.java b/app/src/main/java/helium314/keyboard/keyforma/ContextAction651.java
+index 329dddb..7f8d11f 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/ContextAction651.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/ContextAction651.java
+@@ -12,7 +12,7 @@ public final class ContextAction651 {
+         public String icon() { return switch(kind) { case REMINDER -> "reminder"; case EVENT -> "calendar"; case CALL -> "phone"; }; }
+         public String label() { return switch(kind) { case REMINDER -> "Prepara promemoria"; case EVENT -> "Prepara evento"; case CALL -> "Prepara chiamata"; }; }
+     }
+-    private static final Pattern START = Pattern.compile("^(ricorda(?:mi)?(?: di)?|rammentami(?: di)?|promemoria|salvami(?: un)? promemoria|salvami(?: un)? evento|segna (?:sul|nel) calendario|aggiungi (?:al calendario|un evento)|crea(?:mi)?(?: un)? (?:evento|appuntamento|promemoria)|salva(?:mi)?(?: un)? appuntamento|salvami|segna(?:mi)?(?: un evento)?|evento|chiama|telefona(?: al?)?)\\s+(.+)$", Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
++    private static final Pattern START = Pattern.compile("^(ricorda(?:mi)?|rammentami|promemoria|salvami(?: un)? promemoria|salvami(?: un)? evento|segna (?:sul|nel) calendario|aggiungi (?:al calendario|un evento)|crea(?:mi)?(?: un)? (?:evento|appuntamento|promemoria)|salva(?:mi)?(?: un)? appuntamento|salvami|segna(?:mi)?(?: un evento)?|evento|chiama|telefona(?: al?)?)\\s+(.+)$", Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
+     private static final Pattern NEXT = Pattern.compile("\\s+(?:comunque|invece|a proposito|poi ti|ora ti)\\s", Pattern.CASE_INSENSITIVE);
+     private static final Pattern TIME = Pattern.compile("\\b(?:alle|ore)\\s+(\\d{1,2})(?:[.:](\\d{2}))?\\b", Pattern.CASE_INSENSITIVE);
+     private static final Pattern DATE = Pattern.compile("\\b(\\d{1,2})/(\\d{1,2})(?:/(\\d{4}))?\\b");
+@@ -39,9 +39,10 @@ public final class ContextAction651 {
+     private static final Pattern WEEKDAY=Pattern.compile("\\b(luned[iì]|marted[iì]|mercoled[iì]|gioved[iì]|venerd[iì]|sabato|domenica)\\b",Pattern.CASE_INSENSITIVE|Pattern.UNICODE_CASE);
+     /** Only unambiguous dates. Missing or invalid date/time stays unset for user review. */
+     public static ZonedDateTime date(String text, ZonedDateTime now) {
+-        text=TimeSpelling665.normalize(text);
++        text=TimeSpelling665.normalize(EventLanguage671.protect(text).text());
+         var span=EventSpan665.parse(text,now);
+         if(span!=null)return span.valid()?span.start():null;
++        if(count(DATE,text)+count(NAMED_DATE,text)>1)return null;
+         ZonedDateTime relative=PhraseTime656.relative(text,now);
+         if(relative!=null)return relative;
+         String s=ItalianTime660.normalized(text).toLowerCase(Locale.ITALIAN); LocalDate day=null; Matcher d=DATE.matcher(s);
+@@ -77,7 +78,8 @@ public final class ContextAction651 {
+     }
+     /** Remove only the date/time fragments already recognized; preserve all other words. */
+     public static String eventTitle(String text){
+-        text=TimeSpelling665.normalize(text);
++        var protectedTitle=EventLanguage671.protect(text);
++        text=TimeSpelling665.normalize(protectedTitle.text());
+         var span=EventSpan665.parse(text,ZonedDateTime.now());if(span!=null&&span.valid())text=span.titleSource();
+         boolean dated=DATE.matcher(text).find()||NAMED_DATE.matcher(text).find()||WEEKDAY.matcher(text).find();
+         String clean=TIME.matcher(ItalianTime660.stripTime(PhraseTime656.removeRelative(text))).replaceAll("");
+@@ -86,9 +88,10 @@ public final class ContextAction651 {
+         clean=DATE.matcher(clean).replaceAll("");
+         clean=clean.replaceAll("(?iu)\\b(?:oggi|domani|dopodomani)\\b","").replaceAll("\\s+"," ").trim();
+         clean=clean.replaceAll("(?iu)\\s+(?:il|per|alle|ore|dal|giorno)$","").trim();
+-        if(dated)clean=clean.replaceFirst("(?iu)^(?:(?:tra|fra|per|il|di|giorno|giorni|dal)\\s+)+", "").trim();
+-        return clean;
++        if(dated)clean=clean.replaceFirst("(?iu)^(?:(?:tra|fra|per|il|giorno|giorni|dal)\\s+)+", "").trim();
++        return protectedTitle.restore(EventLanguage671.title(clean));
+     }
++    private static int count(Pattern pattern,String text){int n=0;var matcher=pattern.matcher(text);while(matcher.find())n++;return n;}
+     private static boolean standalonePhone(String text) {
+         if (!text.matches("[+]?[0-9 ()-]+") || text.matches("\\d{4}-\\d{1,2}-\\d{1,2}")) return false;
+         int digits = text.replaceAll("[^0-9]", "").length();
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/EventDetails657.java b/app/src/main/java/helium314/keyboard/keyforma/EventDetails657.java
+index 2042c1f..ecbba56 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/EventDetails657.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/EventDetails657.java
+@@ -12,6 +12,8 @@ final class EventDetails657 {
+         return parse(text,java.time.ZonedDateTime.now());
+     }
+     static Details parse(String text,java.time.ZonedDateTime now){
++        var protectedTitle=EventLanguage671.protect(text);
++        text=EventLanguage671.locationSpelling(protectedTitle.text());
+         var span=EventSpan665.parse(text,now);
+         int minutes=span==null?ItalianTime660.duration(text,ContextAction651.date(text,now)):span.minutes();
+         boolean valid=minutes>=1&&minutes<=527040;
+@@ -24,7 +26,7 @@ final class EventDetails657 {
+             place=trim(clean.substring(start));clean=clean.substring(0,location.start());
+         }
+         if(place.isEmpty()){var venue=VENUE.matcher(clean);if(venue.find()){place=trim(venue.group(1));clean=clean.substring(0,venue.start());}}
+-        return new Details(trim(clean),place,minutes,valid);
++        return new Details(protectedTitle.restore(EventLanguage671.title(clean)),place,minutes,valid);
+     }
+     private static String trim(String text){return text.replaceAll("\\s+"," ").replaceAll("^[\\s,;:–-]+|[\\s,;:–-]+$","");}
+ }
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/EventLanguage671.java b/app/src/main/java/helium314/keyboard/keyforma/EventLanguage671.java
+new file mode 100644
+index 0000000..4f23c30
+--- /dev/null
++++ b/app/src/main/java/helium314/keyboard/keyforma/EventLanguage671.java
+@@ -0,0 +1,26 @@
++// SPDX-License-Identifier: GPL-3.0-only
++package helium314.keyboard.keyforma;
++import java.util.regex.*;
++/** Local grammatical boundaries, not a dictionary of the user's particular reminders. */
++final class EventLanguage671 {
++ private static final String TOKEN="KEYANTTITLEMARKER";
++ private static final Pattern NAME=Pattern.compile("(?iu)\\b(?:chiamat[oa]|intitolat[oa]|dal titolo|con (?:il )?titolo|titolo\\s*:)\\s*[\"“«]?(.+?)(?=[\"”»]|\\s+(?:(?:in|a)\\s+(?:via|vja|viale|piazza|corso|largo)\\b|presso\\b|indirizzo\\b|alle\\s+\\d|ore\\s+\\d|(?:il|per il)\\s+\\d|domani\\b|dopodomani\\b|dalle\\b|per\\s+\\d+\\s+(?:ore|minuti|giorni))|$)");
++ private static final Pattern QUOTED=Pattern.compile("[\"“«]([^\"”»]+)[\"”»]");
++ record Protected(String text,String title,boolean explicit) {
++  String restore(String clean){return title==null?clean:explicit&&clean.contains(TOKEN)?title:clean.replace(TOKEN,title);}
++ }
++ static Protected protect(String text){
++  var literal=Pattern.compile("(?iu)\\b(?:chiamat[oa]|intitolat[oa]|dal titolo|con (?:il )?titolo|titolo\\s*:)\\s*[\"“«]([^\"”»]+)[\"”»]").matcher(text);
++  if(literal.find())return new Protected(text.substring(0,literal.start())+TOKEN+text.substring(literal.end()),literal.group(1).trim(),true);
++  var named=NAME.matcher(text);if(named.find())return new Protected(text.substring(0,named.start())+TOKEN+text.substring(named.end()).replaceFirst("^[\"”»]",""),named.group(1).trim(),true);
++  var quoted=QUOTED.matcher(text);if(quoted.find())return new Protected(text.substring(0,quoted.start())+TOKEN+text.substring(quoted.end()),quoted.group(1),false);
++  return new Protected(text,null,false);
++ }
++ static String locationSpelling(String text){return text.replaceAll("(?iu)\\b(in|a)\\s+vja\\b","$1 via");}
++ static String title(String text){
++  String clean=text.replaceAll("\\s+"," ").replaceAll("^[\\s,;:–-]+|[\\s,;:–-]+$","");
++  // A command linker before an infinitive is not part of the action's name.
++  // Preserve Di Maggio, di sera, di lavoro and every internal preposition.
++  return clean.replaceFirst("(?iu)^di\\s+(?=[\\p{L}]+(?:are|ere|ire)(?:mi|ti|si|ci|vi|lo|la|li|le|ne)?\\b)","");
++ }
++}
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/GifPanel.java b/app/src/main/java/helium314/keyboard/keyforma/GifPanel.java
+index 0c32db0..4299d48 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/GifPanel.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/GifPanel.java
+@@ -9,7 +9,7 @@ public final class GifPanel extends LinearLayout {
+  private static final ExecutorService historyWorker=Executors.newSingleThreadExecutor();
+  private static final ExecutorService mediaWorker=Executors.newFixedThreadPool(2);
+  private final LatinIME ime;private final KeyAntBar bar;private final View keyboard;private final TextView query,status;private final LinearLayout results;private final ScrollView scroll;private final LinearLayout header;
+- private android.app.AlertDialog historyDialog;
++ private android.app.AlertDialog historyDialog; private final ImageButton back;
+  private TextView moreRecent;private java.util.List<File> recentFiles=java.util.Collections.emptyList();private int recentShown;
+  private String category="Recenti";private final java.util.ArrayList<TextView> categoryButtons=new java.util.ArrayList<>();
+  private String text="";private boolean searching,choosing;private volatile boolean closed;private volatile int generation;private int columns=3;
+@@ -18,7 +18,7 @@ public final class GifPanel extends LinearLayout {
+  public GifPanel(LatinIME ime,KeyAntBar bar,View keyboard){super(ime);this.ime=ime;this.bar=bar;this.keyboard=keyboard;setOrientation(VERTICAL);setBackgroundColor(Settings.getValues().mColors.get(ColorType.MAIN_BACKGROUND));
+   int ink=Settings.getValues().mColors.get(ColorType.KEY_TEXT);
+   header=new LinearLayout(ime);header.setGravity(Gravity.CENTER_VERTICAL);
+-  ImageButton back=new ImageButton(ime);back.setImageDrawable(new ToolbarIcon("back",ink,dp(22)));back.setContentDescription("Torna alla selezione emoji");back.setBackgroundColor(Color.TRANSPARENT);back.setOnClickListener(v->{bar.closeGifs();ime.onCodeInput(KeyCode.EMOJI,-1,-1,false);});TouchFeedback.install(back);header.addView(back,new LayoutParams(dp(44),dp(48)));
++  back=new ImageButton(ime);back.setImageDrawable(new ToolbarIcon("back",ink,dp(22)));back.setContentDescription("Torna alla selezione emoji");back.setBackgroundColor(Color.TRANSPARENT);back.setOnClickListener(v->{if(searching){searchMode(false);return;}bar.closeGifs();ime.onCodeInput(KeyCode.EMOJI,-1,-1,false);});TouchFeedback.install(back);header.addView(back,new LayoutParams(dp(44),dp(48)));
+   LinearLayout pill=new LinearLayout(ime);pill.setGravity(Gravity.CENTER_VERTICAL);pill.setBackground(new PillSurface(ime,ink));
+   query=new QueryText664(ime);query.setTextColor(ink);query.setTextSize(15);query.setPadding(dp(14),0,dp(4),0);query.setGravity(Gravity.CENTER_VERTICAL);query.setOnClickListener(v->searchMode(true));
+   pill.addView(query,new LayoutParams(0,dp(44),1));
+@@ -39,7 +39,7 @@ public final class GifPanel extends LinearLayout {
+  public boolean input(int code){if(!isSearching())return false;if(code==10){search();return true;}if(code==KeyCode.DELETE){if(!text.isEmpty())text=text.substring(0,text.offsetByCodePoints(text.length(),-1));}else if(code>0&&Character.isValidCodePoint(code)&&!Character.isISOControl(code)){if(text.length()<80)text+=new String(Character.toChars(code));}else return true;updateQuery();return true;}
+  public boolean inputText(String value){if(!isSearching())return false;for(int cp:value.codePoints().toArray())input(cp);return true;}
+  private void updateQuery(){((QueryText664)query).query(text,searching);query.setTypeface(null,searching?Typeface.BOLD:Typeface.NORMAL);query.setActivated(searching);}
+- private void searchMode(boolean value){searching=value;updateAnimations();setVisibility(value?GONE:VISIBLE);keyboard.setVisibility(value?VISIBLE:INVISIBLE);updateQuery();}
++ private void searchMode(boolean value){searching=value;back.setContentDescription(value?"Torna alle GIF":"Torna alla selezione emoji");updateAnimations();setVisibility(value?GONE:VISIBLE);keyboard.setVisibility(value?VISIBLE:INVISIBLE);updateQuery();}
+  private void showRecent(){category="Recenti";styleCategories();int ticket=++generation;showStatus("Carico i recenti…");stopAnimations();results.removeAllViews();moreRecent.setVisibility(GONE);recentShown=0;
+   historyWorker.execute(()->{try{java.util.List<File> files=GifHistory.recent(ime);post(()->{if(closed||ticket!=generation)return;recentFiles=files;showStatus(files.isEmpty()?"Le GIF che scegli rimangono qui":"");appendRecent();});}catch(Exception e){post(()->{if(!closed&&ticket==generation)showStatus("Impossibile leggere lo storico GIF");});}});
+  }
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/ItalianTime660.java b/app/src/main/java/helium314/keyboard/keyforma/ItalianTime660.java
+index 80e8904..0c5d45b 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/ItalianTime660.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/ItalianTime660.java
+@@ -64,7 +64,7 @@ final class ItalianTime660 {
+  }
+  static String stripTime(String text){
+   String clean=DURATION.matcher(QUARTER.matcher(intervals(TimeSpelling665.normalize(text))).replaceAll(" ")).replaceAll(" ");clean=END.matcher(clean).replaceAll(" ");
+-  return normalized(clean).replaceAll("(?iu)\\b(?:di|del|della)\\s+(?:sera|mattina|mattino|pomeriggio|notte)\\b","");
++  return normalized(clean);
+  }
+  static int duration(String text,ZonedDateTime start){
+   text=intervals(TimeSpelling665.normalize(text));
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/PortraitMaps671.java b/app/src/main/java/helium314/keyboard/keyforma/PortraitMaps671.java
+new file mode 100644
+index 0000000..485568c
+--- /dev/null
++++ b/app/src/main/java/helium314/keyboard/keyforma/PortraitMaps671.java
+@@ -0,0 +1,19 @@
++// SPDX-License-Identifier: GPL-3.0-only
++package helium314.keyboard.keyforma;
++import android.content.Context;import android.graphics.*;import java.io.*;
++/** Detailed full-longitude portrait albedos. The same mipmapped sphere is used in Maker and IME. */
++final class PortraitMaps671 {
++ static boolean supports(String id){return id.equals("piddu_kitty")||id.equals("piddu_kuromi")||id.equals("piddu_melody")||id.equals("head_luffy")||id.equals("head_takemichi")||id.equals("head_hinata")||id.equals("head_naruto")||id.equals("head_deku")||id.equals("head_allmight");}
++ static Bitmap create(Context context,String id)throws IOException{
++  try(InputStream stream=context.getAssets().open("ball_portraits/"+id+".png")){
++   Bitmap source=BitmapFactory.decodeStream(stream);if(source==null)throw new IOException("Invalid portrait "+id);
++   int w=1024,h=512;Bitmap target=Bitmap.createBitmap(w,h,Bitmap.Config.ARGB_8888);Canvas c=new Canvas(target);Paint paint=new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
++   // Renderer longitude increases from screen right to left. Preserve asymmetric
++   // facial marks by reversing U; front is pi/2 (u=.75), source front u=.5.
++   c.scale(-1,1);
++   c.drawBitmap(source,null,new RectF(-w*1.25f,0,-w*.25f,h),paint);
++   c.drawBitmap(source,null,new RectF(-w*.25f,0,w*.75f,h),paint);source.recycle();
++   return target;
++  }
++ }
++}
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/QuickPill656.java b/app/src/main/java/helium314/keyboard/keyforma/QuickPill656.java
+index f44a1be..8aa159d 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/QuickPill656.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/QuickPill656.java
+@@ -89,7 +89,7 @@ public final class QuickPill656 extends LinearLayout {
+         }
+         if(action.kind()!=ContextAction651.Kind.CALL){
+             var details=EventDetails657.parse(text);heading=details.title();
+-            var span=EventSpan665.parse(text,now);
++            var span=EventSpan665.parse(EventLanguage671.protect(text).text(),now);
+             meta+=" · "+(details.valid()?(span!=null&&span.allDay()?"Tutto il giorno · "+DAY.format(span.start())+" – "+DAY.format(span.end().minusDays(1)):span!=null&&span.valid()&&!span.allDay()?"fino al "+MOMENT.format(span.end()):details.minutes()+" min"):"controlla durata");
+             if(!details.place().isBlank())meta+=" · "+details.place();
+         }
+diff --git a/app/src/main/java/helium314/keyboard/latin/ClipboardHistoryManager.kt b/app/src/main/java/helium314/keyboard/latin/ClipboardHistoryManager.kt
+index aef4b09..827a601 100644
+--- a/app/src/main/java/helium314/keyboard/latin/ClipboardHistoryManager.kt
++++ b/app/src/main/java/helium314/keyboard/latin/ClipboardHistoryManager.kt
+@@ -274,6 +274,33 @@ class ClipboardHistoryManager(
+         clipboardDao?.listener = listener
+     }
+ 
++    /** Explicit paste shares the pill's media selection, never coerces content URIs to text. */
++    fun pasteClipboardContent() {
++        val clip = try { clipboardManager.primaryClip } catch (_: SecurityException) { null }
++        val stamp = clip?.let { clipStamp(it) } ?: 0L
++        val media = MediaSuggestionStore.candidate(latinIME, stamp)
++        if (media != null) {
++            helium314.keyboard.keyforma.MediaClipboard.deliver(latinIME, media) { }
++            return
++        }
++        if (clip == null || clip.itemCount == 0) return
++        val uris = helium314.keyboard.keyforma.MediaClipboard.imageUris(clip)
++        if (uris.isNotEmpty()) {
++            val owned = helium314.keyboard.keyforma.MediaClipboard.ownedValue(latinIME, uris.first())
++            val identity = (0 until clip.itemCount).joinToString("\u0000") { clip.getItemAt(it).uri?.toString() ?: clip.getItemAt(it).text?.toString().orEmpty() } + uris.joinToString()
++            val captured = owned ?: MediaSuggestionStore.captured(latinIME, MediaSuggestionStore.fingerprint("$stamp:$identity"))
++            if (captured != null) helium314.keyboard.keyforma.MediaClipboard.deliver(latinIME, captured) { }
++            else {
++                // Let the receiving editor use Android's URI grants. No private capture/history.
++                val accepted = try { latinIME.currentInputConnection?.performContextMenuAction(android.R.id.paste) == true } catch (_: RuntimeException) { false }
++                if (!accepted) android.widget.Toast.makeText(latinIME, "Questa app non ha accettato l’immagine: usa la pillola o Condividi", android.widget.Toast.LENGTH_SHORT).show()
++            }
++            return
++        }
++        val content = clip.getItemAt(0).coerceToText(latinIME)?.toString().orEmpty()
++        if (content.isNotEmpty()) latinIME.onTextInput(content)
++    }
++
+     fun retrieveClipboardContent(): CharSequence {
+         val clipData = try { clipboardManager.primaryClip } catch (_: SecurityException) { null } ?: return ""
+         if (clipData.itemCount == 0) return ""
+diff --git a/app/src/main/java/helium314/keyboard/latin/inputlogic/InputLogic.java b/app/src/main/java/helium314/keyboard/latin/inputlogic/InputLogic.java
+index 8a07f4b..d6cb8bc 100644
+--- a/app/src/main/java/helium314/keyboard/latin/inputlogic/InputLogic.java
++++ b/app/src/main/java/helium314/keyboard/latin/inputlogic/InputLogic.java
+@@ -674,10 +674,7 @@ public final class InputLogic {
+      *
+      */
+     private void handleClipboardPaste() {
+-        final String clipboardContent = mLatinIME.getClipboardHistoryManager().retrieveClipboardContent().toString();
+-        if (!clipboardContent.isEmpty()) {
+-            mLatinIME.onTextInput(clipboardContent);
+-        }
++        mLatinIME.getClipboardHistoryManager().pasteClipboardContent();
+     }
+ 
+     /**
+diff --git a/app/src/test/java/helium314/keyboard/keyforma/KeyAntArt671Test.java b/app/src/test/java/helium314/keyboard/keyforma/KeyAntArt671Test.java
+new file mode 100644
+index 0000000..7fd37ee
+--- /dev/null
++++ b/app/src/test/java/helium314/keyboard/keyforma/KeyAntArt671Test.java
+@@ -0,0 +1,18 @@
++// SPDX-License-Identifier: GPL-3.0-only
++package helium314.keyboard.keyforma;
++import android.graphics.*;import org.junit.*;import org.junit.runner.RunWith;import org.robolectric.*;import org.robolectric.annotation.*;import static org.junit.Assert.*;
++@RunWith(RobolectricTestRunner.class) @Config(sdk=35) @GraphicsMode(GraphicsMode.Mode.NATIVE)
++public class KeyAntArt671Test {
++ @Test public void catalogAndFiveAnglesExport()throws Exception{
++  var context=RuntimeEnvironment.getApplication();java.util.List<String> ids=new java.util.ArrayList<>();for(String id:BallAppearance.IDS)if(!Companion660.orb(id))ids.add(id);
++  assertEquals(BallAppearance.IDS.length,BallAppearance.NAMES.length);assertEquals(ids.size(),new java.util.HashSet<>(ids).size());
++  java.nio.file.Files.createDirectories(java.nio.file.Path.of("build/keyant-artifacts"));java.nio.file.Files.write(java.nio.file.Path.of("build/keyant-artifacts/catalog671.txt"),ids);
++  for(int page=0;page*24<ids.size();page++){Bitmap sheet=Bitmap.createBitmap(1200,840,Bitmap.Config.ARGB_8888);Canvas c=new Canvas(sheet);c.drawColor(0xff242a34);Paint p=new Paint(3);p.setColor(Color.WHITE);p.setTextSize(14);
++   for(int cell=0;cell<24&&page*24+cell<ids.size();cell++){String id=ids.get(page*24+cell);float x=cell%6*200,y=cell/6*210;c.drawText(id,x+8,y+20,p);BallAppearance b=new BallAppearance();b.skin(id);b.draw(c,context,x+100,y+108,74,0,0,false,Color.MAGENTA);}
++   KeyAntV42Test.save(sheet,"KeyAnt-0671-catalog-"+page+".png");sheet.recycle();
++  }
++  String[] heads={"head_takemichi","head_deku","head_allmight","head_luffy","head_hinata","head_naruto","piddu_kitty","piddu_kuromi","piddu_melody"};Bitmap sheet=Bitmap.createBitmap(1100,heads.length*220,Bitmap.Config.ARGB_8888);Canvas c=new Canvas(sheet);c.drawColor(0xff242a34);Paint p=new Paint(3);p.setColor(Color.WHITE);p.setTextSize(17);
++  for(int row=0;row<heads.length;row++){String id=heads[row];try(var original=context.getAssets().open("ball_portraits/"+id+".png")){assertTrue(original.available()>10000);}var map=BallMaps.load(context,id);assertNotNull(map);assertEquals(1024,map.w);assertNotEquals(map.sample(Math.PI/2,0),map.sample(-Math.PI/2,0));c.drawText(id,12,row*220+22,p);for(int angle=0;angle<5;angle++){BallAppearance b=new BallAppearance();b.skin(id);b.draw(c,context,110+angle*220,row*220+124,83,0,angle*56.1f,false,Color.MAGENTA);}}
++  KeyAntV42Test.save(sheet,"KeyAnt-0671-portraits-360.png");sheet.recycle();
++ }
++}
+diff --git a/app/src/test/java/helium314/keyboard/keyforma/KeyAntGif671Test.java b/app/src/test/java/helium314/keyboard/keyforma/KeyAntGif671Test.java
+new file mode 100644
+index 0000000..9121780
+--- /dev/null
++++ b/app/src/test/java/helium314/keyboard/keyforma/KeyAntGif671Test.java
+@@ -0,0 +1,7 @@
++// SPDX-License-Identifier: GPL-3.0-only
++package helium314.keyboard.keyforma;
++import android.view.*;import android.widget.*;import helium314.keyboard.ShadowInputMethodManager2;import org.junit.*;import org.junit.runner.RunWith;import org.robolectric.annotation.*;import org.mockito.ArgumentCaptor;import static org.junit.Assert.*;import static org.mockito.Mockito.*;
++@RunWith(org.robolectric.RobolectricTestRunner.class) @Config(sdk=35,shadows={ShadowInputMethodManager2.class}) @GraphicsMode(GraphicsMode.Mode.NATIVE)
++public class KeyAntGif671Test {
++ @Test public void searchBackKeepsGifPanelQueryAndOrigin(){var f=new KeyAntV612Test();f.setup();try{KeyAntBar bar=mock(KeyAntBar.class);View keyboard=new View(f.c);GifPanel panel=new GifPanel(f.ime,bar,keyboard);var captor=ArgumentCaptor.forClass(View.class);verify(bar).showPanelHeader(captor.capture());ViewGroup header=(ViewGroup)captor.getValue();ImageButton back=(ImageButton)header.getChildAt(0);ViewGroup pill=(ViewGroup)header.getChildAt(1);TextView query=(TextView)pill.getChildAt(0);for(int i=0;i<3;i++){query.performClick();assertTrue(panel.isSearching());panel.inputText("gatto");back.performClick();assertFalse(panel.isSearching());assertEquals(View.VISIBLE,panel.getVisibility());assertEquals(View.INVISIBLE,keyboard.getVisibility());assertTrue(query.getText().toString().contains("gatto"));}verify(bar,never()).closeGifs();verify(f.ime,never()).onTextInput(anyString());pill.getChildAt(2).performClick();verify(bar).closeGifs();panel.close();assertEquals(View.VISIBLE,keyboard.getVisibility());}finally{f.close();}}
++}
+diff --git a/app/src/test/java/helium314/keyboard/keyforma/KeyAntLanguage671Test.java b/app/src/test/java/helium314/keyboard/keyforma/KeyAntLanguage671Test.java
+new file mode 100644
+index 0000000..f53965e
+--- /dev/null
++++ b/app/src/test/java/helium314/keyboard/keyforma/KeyAntLanguage671Test.java
+@@ -0,0 +1,14 @@
++// SPDX-License-Identifier: GPL-3.0-only
++package helium314.keyboard.keyforma;
++import java.time.*;import org.junit.Test;import static org.junit.Assert.*;
++public class KeyAntLanguage671Test {
++ final ZonedDateTime now=ZonedDateTime.of(2026,11,6,12,0,0,0,ZoneId.of("Europe/Rome"));
++ @Test public void naturalReminderLinkersWorkBeforeAndAfterTime(){for(String phrase:new String[]{"ricordami di entrare su discord domani alle 15:30","ricordami domani alle 15:30 di entrare su discord","ricordami tra 20 minuti di entrare su discord","promemoria di entrare su discord domani alle 15:30"}){var action=ContextAction651.parse(phrase);assertNotNull(phrase,action);assertEquals(phrase,"entrare su discord",EventDetails657.parse(action.text(),now).title());}}
++ @Test public void meaningfulPrepositionsAndNamesArePreserved(){for(String title:new String[]{"Di Maggio e amici","di sera al museo","lezione di inglese","comprare il libro di fisica","Di Pietro"})assertEquals(title,EventDetails657.parse(title+" domani alle 17",now).title());}
++ @Test public void namedTitleLocationTypoAndDefaultDuration(){var d=EventDetails657.parse("di maggio, 5 luglio alle 17 chiamato Pieraccioni and Friends in vja parco dei Medici",now);assertEquals("Pieraccioni and Friends",d.title());assertEquals("via parco dei Medici",d.place());assertEquals(60,d.minutes());assertTrue(d.valid());assertEquals(7,ContextAction651.date("5 luglio alle 17 chiamato Pieraccioni and Friends",now).getMonthValue());}
++ @Test public void quotedNamesCannotBecomeDatesOrAddresses(){String text="domani alle 17 chiamato \"Domenica in via Roma\" presso Teatro Centrale per 90 minuti";var d=EventDetails657.parse(text,now);assertEquals("Domenica in via Roma",d.title());assertEquals("Teatro Centrale",d.place());assertEquals(90,d.minutes());assertEquals(now.toLocalDate().plusDays(1),ContextAction651.date(text,now).toLocalDate());assertEquals("Di mangiare la carne",EventDetails657.parse("domani alle 17 chiamato \"Di mangiare la carne\"",now).title());}
++ @Test public void titleCanPrecedeSchedule(){var d=EventDetails657.parse("chiamato Serata di giochi domani alle 20 in via Roma 12 per 2 ore",now);assertEquals("Serata di giochi",d.title());assertEquals("via Roma 12",d.place());assertEquals(120,d.minutes());}
++ @Test public void properNameAfterTriggerIsNotACommandLinker(){var a=ContextAction651.parse("ricordami Di Maggio domani alle 17");assertEquals("Di Maggio",EventDetails657.parse(a.text(),now).title());}
++ @Test public void conflictingDatesRequireReview(){assertNull(ContextAction651.date("visita 5 luglio oppure 6 luglio alle 17",now));}
++ @Test public void vagueAndInvalidTimesRequireReview(){assertNull(ContextAction651.date("entrare su discord un giorno di questi",now));assertNull(ContextAction651.date("entrare su discord 31 febbraio alle 17",now));assertNull(ContextAction651.date("entrare su discord domani alle 27",now));}
++}
+diff --git a/app/src/test/java/helium314/keyboard/keyforma/KeyAntPaste671Test.java b/app/src/test/java/helium314/keyboard/keyforma/KeyAntPaste671Test.java
+new file mode 100644
+index 0000000..a962d4e
+--- /dev/null
++++ b/app/src/test/java/helium314/keyboard/keyforma/KeyAntPaste671Test.java
+@@ -0,0 +1,13 @@
++// SPDX-License-Identifier: GPL-3.0-only
++package helium314.keyboard.keyforma;
++import android.content.*;import android.net.Uri;import android.view.inputmethod.*;import androidx.core.view.inputmethod.EditorInfoCompat;import helium314.keyboard.ShadowInputMethodManager2;import org.junit.*;import org.junit.runner.RunWith;import org.robolectric.annotation.*;import static org.junit.Assert.*;import static org.mockito.Mockito.*;
++@RunWith(org.robolectric.RobolectricTestRunner.class) @Config(sdk=35,shadows={ShadowInputMethodManager2.class}) @GraphicsMode(GraphicsMode.Mode.NATIVE)
++public class KeyAntPaste671Test {
++ KeyAntV612Test f;InputConnection connection;
++ @Before public void setup(){f=new KeyAntV612Test();f.setup();connection=mock(InputConnection.class);doReturn(connection).when(f.ime).getCurrentInputConnection();doNothing().when(f.ime).onTextInput(anyString());EditorInfoCompat.setContentMimeTypes(f.editor,new String[]{"image/png"});when(connection.commitContent(any(),anyInt(),any())).thenReturn(true);}
++ @After public void close(){f.close();}
++ @Test public void newerImageUsesRichContentInsteadOfText()throws Exception{long stamp=System.currentTimeMillis();f.primary(ClipData.newPlainText("old","old text"),stamp-5000);String image=f.image(671,"png");MediaSuggestionStore.save(f.c,image,stamp,"screenshot","new");f.history.pasteClipboardContent();verify(connection).commitContent(any(),anyInt(),any());verify(f.ime,never()).onTextInput(anyString());}
++ @Test public void newTextWinsOverOlderImage()throws Exception{long stamp=System.currentTimeMillis();String image=f.image(671,"png");MediaSuggestionStore.save(f.c,image,stamp-5000,"screenshot","old");f.primary(ClipData.newPlainText("new","new text"),stamp);f.history.pasteClipboardContent();verify(f.ime).onTextInput("new text");verify(connection,never()).commitContent(any(),anyInt(),any());}
++ @Test public void unresolvedContentUriNeverLeaksAsText(){f.primary(new ClipData("image",new String[]{"image/png"},new ClipData.Item(Uri.parse("content://example/image"))),System.currentTimeMillis());when(connection.performContextMenuAction(android.R.id.paste)).thenReturn(true);f.history.pasteClipboardContent();verify(connection).performContextMenuAction(android.R.id.paste);verify(f.ime,never()).onTextInput(anyString());}
++ @Test public void rejectedImageDoesNotPasteOldText()throws Exception{long stamp=System.currentTimeMillis();f.primary(ClipData.newPlainText("old","old text"),stamp-5000);String image=f.image(672,"png");MediaSuggestionStore.save(f.c,image,stamp,"screenshot","new");when(connection.commitContent(any(),anyInt(),any())).thenReturn(false);f.history.pasteClipboardContent();verify(f.ime,never()).onTextInput(anyString());}
++}
