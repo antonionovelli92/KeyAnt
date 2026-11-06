@@ -1,0 +1,3 @@
+Full source commit: 3f91d966483c74130a8774a2996b1455dd94b1f5
+APK SHA256: 1f8696255debdc11eb301d9571eccdbac93a7f6883f403c2863cdfc714d911dd
+Source ZIP and full Git bundle are release assets. No signing key included.
