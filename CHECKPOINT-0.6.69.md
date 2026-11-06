@@ -20,3 +20,8 @@ Incremento 0.6.69/codice 96. Stessa firma personale.
 Checkpoint del codice, note, risultati test e ripristino. Nessuna chiave, credenziale o registrazione privata nei sorgenti pubblici.
 APK, sorgenti completi, cronologia e checksum nella release; download normale in chat e link diretto GitHub dopo verifica.
 Il ramo main non è stato aggiornato alla 0.6.68: precedente controllo automatico lo ha impedito. La release v0.6.68 è sul checkpoint work/keyant-0.6.68.
+
+## Checkpoint implementazione
+Sorgente locale 961a3a3, compilazione Kotlin/Java riuscita. Patch completa del primo checkpoint in checkpoints/keyant-0.6.69-first.patch, applicabile al sorgente originale 1898d6f.
+Implementati pillola privata mascherata, opzione dedicata, Q+P configurabile, isolamento delle gesture, ricalcolo movimento dal secondo dito, cornice manopola, pallino applica tema, prova in basso con selezione testo/maiuscole/numeri, sfocatura galleria, sette temi coordinati e ricerca impostazioni.
+Test di regressione in corso: nessun APK 0.6.69 ancora pubblicato. Non confondere compilazione riuscita con verifica su dispositivo reale.
