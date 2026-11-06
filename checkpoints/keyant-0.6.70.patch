@@ -1,0 +1,990 @@
+diff --git a/AGGIORNAMENTO-0.6.70.md b/AGGIORNAMENTO-0.6.70.md
+new file mode 100644
+index 0000000..4b395ab
+--- /dev/null
++++ b/AGGIORNAMENTO-0.6.70.md
+@@ -0,0 +1,24 @@
++# KeyAnt 0.6.70 — barra, miniature e recupero del testo
++
++## Barra e gesti
++Lo swipe da icone a parole rimane inizialmente attivo. La zona di partenza è selezionabile: ultima icona, ultime due o ultime tre icone visibili (non coordinate fisse). Il ritorno parte dalla freccia accanto ai suggerimenti, senza sottrarre gesti alle parole. Si possono scegliere swipe immediato o premi e trascina e risposta morbida, bilanciata o rapida.
++La scocca delle modalità raccolte viene misurata nella larghezza effettiva a ogni riaggancio/ridimensionamento, anziché corretta dopo il layout. Nuova manopola con corona zigrinata, faccia incassata e indice; ventaglio più contenuto, cassetto e lamelle. Le animazioni interrotte non devono lasciare callback obsolete che nascondono la barra riaperta. Presentazioni disponibili nel Maker, salvate nel progetto e modificabili con anteprima.
++
++## Trackball
++Sharingan a tre tomoe ridisegnato e collegato al caricamento effettivo; revisionati anche gli altri sei motivi anime del generatore già presente. I vecchi asset non hanno più precedenza su questi disegni. Le miniature Luffy, Takemichi, Hinata e Naruto hanno fronte, lati e nuca distinti; sono illustrazioni avvolte sulla sfera, non modelli anatomici 3D.
++PIDDU raccoglie Barbie, Sailor Moon, Hello Kitty, Kuromi e My Melody, oltre alle sfere rosa/lunari già presenti. Nuovi easter egg: MacLaren’s Pub e l’ananas di HIMYM, la porta viola di Friends, Karasuno 10 e Log Pose. Disegni creati in codice; nessuna fotografia di un volto reale.
++
++## Scrittura
++Completamento delle email note da due caratteri: un prefisso con punto resta collegato all’indirizzo. Nessun indirizzo personale preinserito. Memoria locale dei termini: il tempo trascorso riduce il peso dei suggerimenti vecchi senza cancellare le parole. Lessico supplementare offline per nomi, scienza, termini medici, tecnologia e personaggi, con tolleranza limitata agli errori nel prefisso. Non copre ogni termine possibile e non fornisce informazioni mediche: sono soltanto proposte di scrittura da selezionare.
++Le impostazioni di correzione nelle app e in incognito restano distinte dall’apprendimento. I completamenti personali restano esclusi dai campi privati secondo le regole esistenti.
++
++## Selezione, Ctrl+Z e Ctrl+Y
++Quando c’è testo selezionato e arriva il secondo dito, i tasti nativi vengono annullati prima che il gesto incompleto possa inserire una lettera. Se una selezione viene comunque sostituita con testo, eliminata o tagliata da KeyAnt, una singola operazione può essere recuperata e ripristinata nella stessa connessione e nello stesso campo. Copia temporanea solo in RAM, massimo 65.536 caratteri del contesto estratto, scadenza di due minuti e cancellazione alla chiusura/cambio campo. Password escluse. Verifica integrale del contesto prima di modificare solo la porzione sostituita; se il campo è cambiato il recupero locale viene rifiutato.
++Fuori da questa protezione, la cronologia resta quella dell’app di destinazione: non tutte le app Android supportano l’annullamento PC. Mappatura predefinita: Ctrl+A seleziona tutto, C copia, X taglia, V incolla, Z annulla, Y ripristina.
++
++## Riferimenti di design consultati
++- Keychron Q1 Max: https://www.keychron.com/products/keychron-q1-max-qmk-via-wireless-custom-mechanical-keyboard
++- SwiftKey, barra personalizzabile: https://support.microsoft.com/it-it/swiftkey-keyboard/how-do-i-access-toolbar-in-microsoft-swiftkey-keyboard
++- Sharingan (riferimento visivo): https://commons.wikimedia.org/wiki/File:Sharingan_triple.svg
++- Kuromi: https://www.sanrio.co.jp/characters/kuromi/
++Le nuove animazioni sono una realizzazione KeyAnt; non attribuiamo a queste tastiere effetti non documentati.
+diff --git a/CHECKPOINT-0.6.70.md b/CHECKPOINT-0.6.70.md
+new file mode 100644
+index 0000000..49bf3fa
+--- /dev/null
++++ b/CHECKPOINT-0.6.70.md
+@@ -0,0 +1,14 @@
++# KeyAnt 0.6.70 — checkpoint
++Base: v0.6.69, d6079be3efced0d914e364183b64751882ced49b. Video utente 37411.mp4 esaminato (50,8s).
++
++## Richieste da completare
++- Swipe icone→parole: ripristino, zona selezionabile ultime 1/2/3 icone, gesto e morbidezza configurabili; ritorno dalla sola freccia.
++- Correggere perdita della geometria della barra dopo scrittura/ritorno; manopola meccanica, ventaglio migliore, nuove animazioni e integrazione Maker.
++- Revisione Sharingan e altre sfere anime; teste stilizzate rotanti Luffy, Takemichi, Hinata; PIDDU rosa/Barbie/Sailor Moon/Hello Kitty/Kuromi; MacLaren’s e altri easter egg.
++- Email con punto: prefisso breve e composizione intera, nessuna email codificata nel sorgente.
++- Suggerimenti di nomi/termini fuori dizionario; memoria con peso della recenza; proteggere modalità privata e opzioni correzione nelle app.
++- Segnalazione successiva: sostituzione accidentale del testo selezionato durante gesto a due dita; Ctrl+Z/Y devono annullare/ripristinare dove possibile. Verificare dispatch e tutela delle selezioni.
++- Test, rendering, APK stessa firma, download normale, release con sorgenti e cronologia, note e rollback.
++
++## Riscontri iniziali
++EmailMemory.complete esclude prefissi <3 caratteri: a. non può agganciare un indirizzo conosciuto. Toolbar usa un vincolo di larghezza applicato dopo il layout: fragile durante riaggancio. I motivi AnimeOrbs non sono raggiunti dal caricatore BallMaps (asset precedenti hanno priorità).
+diff --git a/ROLLBACK-0.6.70.md b/ROLLBACK-0.6.70.md
+new file mode 100644
+index 0000000..cd1d3f6
+--- /dev/null
++++ b/ROLLBACK-0.6.70.md
+@@ -0,0 +1,6 @@
++# Recupero e rollback 0.6.70
++Installare sopra la versione esistente: stessa firma, versionCode 97. Non disinstallare per tentare un downgrade: si perderebbero i dati dell’app.
++Base completa: sorgente v0.6.69, commit d6079be3efced0d914e364183b64751882ced49b. Il bundle conserva la cronologia; lo ZIP dedicato conserva i sorgenti completi senza chiavi. Gli archivi Source code automatici della release riguardano il ramo documentale.
++Android blocca normalmente APK con versionCode inferiore: per un rollback conservativo ricompilare il checkpoint desiderato con un codice superiore e la stessa chiave di firma. Chiave personale mantenuta separata, mai pubblicata.
++Nessuna migrazione distruttiva del dizionario: il peso della recenza è calcolato in lettura. Nuove preferenze e progetti Maker sono retrocompatibili; una versione precedente ignora le nuove presentazioni.
++Esportare dall’app il backup delle impostazioni e dei dati personali: il repository e gli APK non contengono i dati del telefono. Il recupero Ctrl+Z temporaneo non è un backup e non sopravvive a chiusura/cambio campo.
+diff --git a/app/build.gradle.kts b/app/build.gradle.kts
+index 5a38836..95eafde 100644
+--- a/app/build.gradle.kts
++++ b/app/build.gradle.kts
+@@ -15,8 +15,8 @@ android {
+         applicationId = "it.keyant.keyboard"
+         minSdk = 26
+         targetSdk = 35
+-        versionCode = 96
+-        versionName = "0.6.69"
++        versionCode = 97
++        versionName = "0.6.70"
+         externalNativeBuild { ndkBuild { arguments += listOf("-j2") } }
+         ndk {
+             abiFilters.clear()
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/AnimeOrbs.java b/app/src/main/java/helium314/keyboard/keyforma/AnimeOrbs.java
+index 44e0e1d..858f2fa 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/AnimeOrbs.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/AnimeOrbs.java
+@@ -42,7 +42,7 @@ final class AnimeOrbs {
+   if(purple){for(float r:new float[]{.24f,.40f,.57f,.74f,.91f})c.drawCircle(0,0,r,p);}
+   else if(id.equals("sharingan")){
+    c.drawCircle(0,0,.53f,p);c.drawCircle(0,0,.88f,p);p.setStyle(Paint.Style.FILL);
+-   for(int k=0;k<3;k++){c.save();c.rotate(k*120-90);c.drawCircle(.53f,0,.095f,p);Path tail=new Path();tail.moveTo(.60f,-.05f);tail.cubicTo(.64f,.11f,.51f,.24f,.33f,.25f);tail.cubicTo(.44f,.17f,.44f,.10f,.45f,.025f);tail.close();c.drawPath(tail,p);c.restore();}
++   for(int k=0;k<3;k++){c.save();c.rotate(k*120-90);c.drawCircle(.53f,0,.105f,p);Path tail=new Path();tail.moveTo(.62f,-.04f);tail.cubicTo(.67f,.09f,.59f,.21f,.43f,.24f);tail.cubicTo(.51f,.16f,.51f,.10f,.46f,.055f);tail.close();c.drawPath(tail,p);c.restore();}
+   }else{
+    c.drawCircle(0,0,.87f,p);p.setStyle(Paint.Style.FILL);
+    for(int k=0;k<3;k++){c.save();c.rotate(k*120);Path blade=new Path();blade.moveTo(.08f,.05f);blade.cubicTo(.24f,-.42f,.77f,-.58f,.76f,-.17f);blade.cubicTo(.62f,-.34f,.38f,.09f,.08f,.05f);blade.close();c.drawPath(blade,p);c.restore();}
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/BallAppearance.java b/app/src/main/java/helium314/keyboard/keyforma/BallAppearance.java
+index 20fe21e..bfc3862 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/BallAppearance.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/BallAppearance.java
+@@ -4,10 +4,10 @@ import android.content.Context;
+ import android.graphics.*;
+ /** Small cached sphere renderer. Surface patterns rotate in 3D; light stays above the sphere. */
+ public final class BallAppearance {
+- public static final String[] IDS=join(new String[]{"total90","total90_hi_vis","fevernova","teamgeist","jabulani","tango","tricolore","football","basket","baseball","volley","volley_molten","tennis","dragon","pokeball","eva","pink","sharingan","rinnegan","mangekyo","rasengan","gomu","moon_crystal","alchemy_seal","master_orb","ice_prism","nebula","obsidian_gold","lunar_rock","copper_armillary"},join(Companion660.orbIds(),join(OrbCollection639.IDS,join(SeriesOrbs641.IDS,OrbCollection644.IDS))));
+- public static final String[] NAMES=join(new String[]{"Total 90 · Bianco e blu","Total 90 · Giallo e blu","Fevernova · 2002","Teamgeist · 2006","Jabulani · 2010","Tango · Classico","Tricolore · 1998","Telstar · Bianco e nero","Basket · Spalding","Baseball · Cuciture rosse","Mikasa · Giallo e blu","Molten · Bianco rosso verde","Tennis · Feltro lime","Dragon · Sfera stellata","Poké · Rosso e bianco","EVA · Viola e lime","Barbie · Cristallo rosa","Sharingan · Tre tomoe","Rinnegan · Viola","Mangekyō · Uchiha","Rasengan · Chakra","Gomu · Frutto viola","Luna · Cristallo","Alchimia · Sigillo dorato","Poké · Master","Prisma · Ghiaccio","Nebulosa · Viola","Ossidiana · Venature oro","Luna · Crateri","Armillare · Rame e petrolio"},join(Companion660.names(),join(OrbCollection639.NAMES,join(SeriesOrbs641.NAMES,OrbCollection644.NAMES))));
++ public static final String[] IDS=join(new String[]{"total90","total90_hi_vis","fevernova","teamgeist","jabulani","tango","tricolore","football","basket","baseball","volley","volley_molten","tennis","dragon","pokeball","eva","pink","sharingan","rinnegan","mangekyo","rasengan","gomu","moon_crystal","alchemy_seal","master_orb","ice_prism","nebula","obsidian_gold","lunar_rock","copper_armillary"},join(CharacterOrbs670.IDS,join(Companion660.orbIds(),join(OrbCollection639.IDS,join(SeriesOrbs641.IDS,OrbCollection644.IDS)))));
++ public static final String[] NAMES=join(new String[]{"Total 90 · Bianco e blu","Total 90 · Giallo e blu","Fevernova · 2002","Teamgeist · 2006","Jabulani · 2010","Tango · Classico","Tricolore · 1998","Telstar · Bianco e nero","Basket · Spalding","Baseball · Cuciture rosse","Mikasa · Giallo e blu","Molten · Bianco rosso verde","Tennis · Feltro lime","Dragon · Sfera stellata","Poké · Rosso e bianco","EVA · Viola e lime","Barbie · Cristallo rosa","Sharingan · Tre tomoe","Rinnegan · Viola","Mangekyō · Uchiha","Rasengan · Chakra","Gomu · Frutto viola","Luna · Cristallo","Alchimia · Sigillo dorato","Poké · Master","Prisma · Ghiaccio","Nebulosa · Viola","Ossidiana · Venature oro","Luna · Crateri","Armillare · Rame e petrolio"},join(CharacterOrbs670.NAMES,join(Companion660.names(),join(OrbCollection639.NAMES,join(SeriesOrbs641.NAMES,OrbCollection644.NAMES)))));
+  private static String[] join(String[] a,String[] b){String[] all=java.util.Arrays.copyOf(a,a.length+b.length);System.arraycopy(b,0,all,a.length,b.length);return all;}
+- public static String group(String id){return Companion660.orb(id)?"Abbinati alla tastiera":OrbCollection644.group(id)!=null?OrbCollection644.group(id):id.startsWith("tv_")?"Serie TV":OrbCollection639.group(id);}
++ public static String group(String id){return CharacterOrbs670.group(id)!=null?CharacterOrbs670.group(id):Companion660.orb(id)?"Abbinati alla tastiera":OrbCollection644.group(id)!=null?OrbCollection644.group(id):id.startsWith("tv_")?"Serie TV":OrbCollection639.group(id);}
+  private static final double[][] PANELS=panels();
+  private static double[][] panels(){
+   double g=(1+Math.sqrt(5))/2;double[][] v={{0,1,g},{0,-1,g},{0,1,-g},{0,-1,-g},{1,g,0},{-1,g,0},{1,-g,0},{-1,-g,0},{g,0,1},{g,0,-1},{-g,0,1},{-g,0,-1}};
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/BallMaps.java b/app/src/main/java/helium314/keyboard/keyforma/BallMaps.java
+index d66084a..c71bb73 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/BallMaps.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/BallMaps.java
+@@ -9,6 +9,9 @@ final class BallMaps {
+  };
+  static Surface load(Context c,String id){if(id.equals("custom")||Companion660.orb(id))return null;Surface map=CACHE.get(id);if(map!=null)return map;
+ 
++  // Corrected vector maps take precedence over legacy bitmap assets.
++  if(AnimeOrbs.supports(id)||CharacterOrbs670.supports(id)){Bitmap b=AnimeOrbs.supports(id)?AnimeOrbs.create(id):CharacterOrbs670.create(id);map=new Surface(b);b.recycle();CACHE.put(id,map);return map;}
++
+   try(InputStream input=c.getAssets().open("keyant/balls/"+id+".png")){Bitmap b=BitmapFactory.decodeStream(input);if(b==null)return null;Bitmap material=null;
+    try(InputStream m=c.getAssets().open("keyant/balls/materials/"+id+".png")){BitmapFactory.Options options=new BitmapFactory.Options();options.inPremultiplied=false;material=BitmapFactory.decodeStream(m,null,options);}catch(IOException ignored){}
+    map=new Surface(b,material);b.recycle();if(material!=null)material.recycle();CACHE.put(id,map);return map;
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/BallSettings.kt b/app/src/main/java/helium314/keyboard/keyforma/BallSettings.kt
+index a0de5c8..f5f04ae 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/BallSettings.kt
++++ b/app/src/main/java/helium314/keyboard/keyforma/BallSettings.kt
+@@ -34,7 +34,7 @@ import androidx.compose.ui.viewinterop.AndroidView
+   Choice("Aspetto della trackball","ball_look","theme",listOf("theme" to "Segue il tema · attuale","skin" to "Temi, palloni e personaggi","custom" to "Personalizzata"))
+   if(look=="skin"||targetSkin!=null)Column(Modifier.settingAnchor("Tema della trackball")){
+    var group by remember(targetSkin) { mutableStateOf(BallAppearance.group(targetSkin?:selectedSkin)) }
+-   Row(Modifier.horizontalScroll(rememberScrollState()).padding(horizontal=12.dp),horizontalArrangement=Arrangement.spacedBy(8.dp)){listOf("Sport","Calcio","Anime","Serie TV","Power Rangers","Generiche","Classiche","Materiali e fantasia","Abbinati alla tastiera").forEach{g->FilterChip(group==g,{group=g},label={Text(g)})}}
++   Row(Modifier.horizontalScroll(rememberScrollState()).padding(horizontal=12.dp),horizontalArrangement=Arrangement.spacedBy(8.dp)){listOf("Sport","Calcio","Anime","Volti anime","PIDDU","Serie TV","Power Rangers","Generiche","Classiche","Materiali e fantasia","Abbinati alla tastiera").forEach{g->FilterChip(group==g,{group=g},label={Text(g)})}}
+    Text("Tocca per applicare · scorri per cambiare pagina",Modifier.padding(12.dp),style=MaterialTheme.typography.bodySmall,color=MaterialTheme.colorScheme.onSurfaceVariant)
+    val available=remember(group){BallAppearance.IDS.indices.filter{BallAppearance.group(BallAppearance.IDS[it])==group}}
+    val pageCount=(available.size+8)/9
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/CharacterOrbs670.java b/app/src/main/java/helium314/keyboard/keyforma/CharacterOrbs670.java
+new file mode 100644
+index 0000000..848da45
+--- /dev/null
++++ b/app/src/main/java/helium314/keyboard/keyforma/CharacterOrbs670.java
+@@ -0,0 +1,54 @@
++// SPDX-License-Identifier: GPL-3.0-only
++package helium314.keyboard.keyforma;
++import android.graphics.*;import java.util.*;
++/** Original vector miniatures mapped around the complete sphere: separate face, sides and nape. */
++public final class CharacterOrbs670 {
++ public static final String[] IDS={"head_luffy","head_takemichi","head_hinata","head_naruto","piddu_barbie","piddu_moon","piddu_kitty","piddu_kuromi","piddu_melody","tv_maclarens","tv_pineapple","tv_purple_door","anime_karasuno","anime_logpose"};
++ public static final String[] NAMES={"Luffy · Miniatura 360°","Takemichi · Miniatura 360°","Hinata · Miniatura 360°","Naruto · Miniatura 360°","PIDDU · Barbie rosa","PIDDU · Sailor Moon","PIDDU · Hello Kitty","PIDDU · Kuromi rosa e nero","PIDDU · My Melody","HIMYM · MacLaren’s Pub","HIMYM · L’ananas","Friends · Porta viola","Haikyuu · Karasuno 10","One Piece · Log Pose"};
++ public static boolean supports(String id){return Arrays.asList(IDS).contains(id);}
++ public static String group(String id){return id.startsWith("piddu_")||id.equals("pink")||id.equals("moon_crystal")?"PIDDU":id.startsWith("head_")?"Volti anime":null;}
++ private static final int INK=0xff242332,CREAM=0xfffff0d2,PINK=0xffee5b9f;
++ static Bitmap create(String id){int w=1024,h=512,n=768;Bitmap face=Bitmap.createBitmap(n,n,Bitmap.Config.ARGB_8888);Canvas c=new Canvas(face);c.translate(n*.5f,n*.5f);c.scale(n*.5f,n*.5f);Paint p=new Paint(3);p.setStrokeJoin(Paint.Join.ROUND);p.setStrokeCap(Paint.Cap.ROUND);
++ boolean head=id.startsWith("head_");int hair=id.equals("head_hinata")?0xffe57b2b:id.equals("head_takemichi")?0xffe8bb56:id.equals("head_naruto")?0xffedc848:0xff25222a;
++ if(head)head(c,p,id,hair);else emblem(c,p,id);
++ int[] f=new int[n*n],out=new int[w*h];face.getPixels(f,0,n,0,0,n,n);face.recycle();
++ for(int j=0;j<h;j++)for(int i=0;i<w;i++){double lon=(i+.5)/w*2*Math.PI-Math.PI,lat=(j+.5)/h*Math.PI-Math.PI/2,x=Math.cos(lon)*Math.cos(lat),y=Math.sin(lat),z=Math.sin(lon)*Math.cos(lat);int base;
++ if(head){base=hair;double side=Math.abs(Math.atan2(x,z));double line=-.42+1.16*Math.pow(Math.min(1,side/2.8),1.7)+.035*Math.cos(lon*19);if(y>line)base=0xfff1c295;if(y>.88)base=id.equals("head_hinata")?0xffe7762c:id.equals("head_naruto")?0xffe9802e:0xff242835;
++  if(id.equals("head_luffy")&&y<-.54){base=y>-.68&&y<-.57?0xffb8323b:0xffdab96e;if(Math.cos(lon*60+lat*130)>.9)base=ToolSurface.mix(base,CREAM,.12f);}
++ }else{base=id.equals("tv_maclarens")?0xff174c3c:id.equals("tv_purple_door")?0xff8165a0:id.equals("anime_karasuno")?0xff21242e:id.equals("anime_logpose")?0xff284d68:id.equals("piddu_kuromi")?0xff3a293f:id.equals("piddu_moon")?0xffc94e8e:0xffeeb1cc;double grain=Math.sin(lon*21)*Math.cos(lat*19);base=ToolSurface.mix(base,CREAM,(float)(.03+.025*grain));}
++ boolean front=head?z>.02:Math.abs(z)>.35;double xx=head?x:x*(z<0?-1:1);int px=Math.max(0,Math.min(n-1,(int)((xx*.5+.5)*(n-1)))),py=Math.max(0,Math.min(n-1,(int)((y*.5+.5)*(n-1))));int mark=f[py*n+px];if(front&&Color.alpha(mark)>0&&!(id.equals("head_luffy")&&y<-.54))base=ToolSurface.mix(base,mark,Color.alpha(mark)/255f);out[j*w+i]=base;
++ }return Bitmap.createBitmap(out,w,h,Bitmap.Config.ARGB_8888);}
++ private static void fill(Paint p,int color){p.setShader(null);p.setStyle(Paint.Style.FILL);p.setColor(color);}
++ private static void oval(Canvas c,Paint p,int color,float x,float y,float rx,float ry){fill(p,color);c.drawOval(x-rx,y-ry,x+rx,y+ry,p);}
++ private static void line(Canvas c,Paint p,int color,float width,float x,float y,float xx,float yy){p.setStyle(Paint.Style.STROKE);p.setStrokeWidth(width);p.setColor(color);c.drawLine(x,y,xx,yy,p);p.setStyle(Paint.Style.FILL);}
++ private static void text(Canvas c,Paint p,String s,float y,float size,int color){fill(p,color);p.setTypeface(Typeface.create("sans-serif-condensed",Typeface.BOLD));p.setTextAlign(Paint.Align.CENTER);p.setTextSize(size*384);int save=c.save();c.scale(1/384f,1/384f);c.drawText(s,0,y*384,p);c.restoreToCount(save);}
++ private static void head(Canvas c,Paint p,String id,int hair){
++ oval(c,p,0xffcf916d,-.75f,.15f,.11f,.20f);oval(c,p,0xffcf916d,.75f,.15f,.11f,.20f);
++ oval(c,p,0xfff7cea6,0,.14f,.71f,.76f);
++ for(float side:new float[]{-1,1}){float x=side*.29f;oval(c,p,INK,x,.04f,.14f,.19f);oval(c,p,Color.WHITE,x,.04f,.115f,.16f);oval(c,p,id.equals("head_takemichi")||id.equals("head_naruto")?0xff4387b2:0xff8c542e,x+side*.012f,.06f,.068f,.11f);oval(c,p,INK,x+side*.012f,.07f,.035f,.082f);oval(c,p,Color.WHITE,x-.025f,-.005f,.022f,.034f);line(c,p,INK,.035f,x-.13f,-.19f,x+.11f,-.21f);}
++ line(c,p,0xffc18c65,.018f,.015f,.19f,-.025f,.29f);line(c,p,0xffc18c65,.018f,-.025f,.29f,.035f,.30f);
++ if(id.equals("head_luffy")){oval(c,p,INK,0,.51f,.34f,.18f);oval(c,p,Color.WHITE,0,.46f,.28f,.085f);line(c,p,INK,.021f,.36f,.27f,.57f,.29f);line(c,p,INK,.018f,.41f,.23f,.40f,.32f);line(c,p,INK,.018f,.51f,.25f,.49f,.34f);}
++ else{p.setColor(INK);p.setStyle(Paint.Style.STROKE);p.setStrokeWidth(.025f);c.drawArc(-.18f,.38f,.18f,.57f,8,158,false,p);p.setStyle(Paint.Style.FILL);}
++ fill(p,hair);Path fringe=new Path();fringe.moveTo(-.77f,-.18f);fringe.lineTo(-.81f,-.71f);fringe.lineTo(.74f,-.75f);fringe.lineTo(.78f,-.12f);
++ if(id.equals("head_takemichi")){fringe.lineTo(.53f,-.31f);fringe.cubicTo(.48f,-.62f,.25f,-.64f,-.10f,-.34f);fringe.cubicTo(-.43f,-.13f,-.66f,-.18f,-.77f,-.18f);}
++ else{for(int i=7;i>=0;i--){float x=-.72f+i*.20f;fringe.lineTo(x,-.27f-(i%2)*.09f);fringe.lineTo(x-.08f,-.05f-(i%3)*.055f);}}fringe.close();c.drawPath(fringe,p);
++ if(id.equals("head_naruto")){fill(p,0xff283449);c.drawRoundRect(-.72f,-.48f,.72f,-.24f,.04f,.04f,p);fill(p,0xffb7c6cf);c.drawRoundRect(-.38f,-.46f,.38f,-.26f,.04f,.04f,p);p.setStyle(Paint.Style.STROKE);p.setStrokeWidth(.023f);p.setColor(INK);c.drawCircle(0,-.36f,.06f,p);c.drawLine(.03f,-.41f,.11f,-.44f,p);p.setStyle(Paint.Style.FILL);for(float side:new float[]{-1,1})for(int i=0;i<3;i++)line(c,p,INK,.017f,side*.45f,.23f+i*.09f,side*.65f,.20f+i*.12f);}
++ if(id.equals("head_luffy")){fill(p,0xffdbb566);c.drawRoundRect(-.93f,-.77f,.93f,-.56f,.08f,.08f,p);fill(p,0xffb63b3f);c.drawRect(-.68f,-.81f,.68f,-.70f,p);line(c,p,0xfff4d994,.025f,-.85f,-.59f,.85f,-.59f);}
++ }
++ private static void emblem(Canvas c,Paint p,String id){
++ if(id.equals("piddu_kitty")||id.equals("piddu_melody")||id.equals("piddu_kuromi")){boolean ku=id.endsWith("kuromi"),mel=id.endsWith("melody");int hood=ku?INK:mel?PINK:0xfffff7ee;
++ if(mel){oval(c,p,hood,-.43f,-.42f,.20f,.44f);oval(c,p,hood,.43f,-.42f,.20f,.44f);}else{for(float side:new float[]{-1,1}){Path ear=new Path();ear.moveTo(side*.25f,-.38f);ear.lineTo(side*.58f,ku?-.87f:-.72f);ear.quadTo(side*.78f,-.48f,side*.64f,-.12f);ear.close();fill(p,hood);c.drawPath(ear,p);if(ku)oval(c,p,PINK,side*.58f,-.84f,.045f,.045f);}}oval(c,p,hood,0,.05f,.72f,.64f);oval(c,p,0xfffff8ee,0,.20f,.58f,.42f);
++ oval(c,p,INK,-.24f,.17f,.035f,.068f);oval(c,p,INK,.24f,.17f,.035f,.068f);oval(c,p,0xffe2bb54,0,.29f,.055f,.04f);
++ if(ku){line(c,p,INK,.022f,-.34f,.04f,-.20f,.08f);line(c,p,INK,.022f,.34f,.04f,.20f,.08f);oval(c,p,PINK,0,.29f,.05f,.033f);oval(c,p,PINK,0,-.25f,.14f,.12f);oval(c,p,INK,-.05f,-.26f,.025f,.034f);oval(c,p,INK,.05f,-.26f,.025f,.034f);fill(p,PINK);c.drawRect(-.07f,-.18f,.07f,-.10f,p);line(c,p,INK,.02f,-.02f,-.17f,-.02f,-.10f);line(c,p,INK,.02f,.025f,-.17f,.025f,-.10f);}
++ else{bow(c,p,.43f,-.35f,PINK);if(!mel)for(float side:new float[]{-1,1})for(int i=0;i<3;i++)line(c,p,INK,.023f,side*.48f,.12f+i*.11f,side*.73f,.09f+i*.14f);}
++ }else if(id.equals("piddu_barbie")){oval(c,p,0xffffd9e9,0,0,.78f,.78f);p.setTypeface(Typeface.create("cursive",Typeface.BOLD_ITALIC));p.setTextSize(.40f*384);p.setColor(0xffdb368d);p.setTextAlign(Paint.Align.CENTER);int save=c.save();c.scale(1/384f,1/384f);c.drawText("Barbie",0,.12f*384,p);c.restoreToCount(save);bow(c,p,0,-.40f,PINK);}
++ else if(id.equals("piddu_moon")){oval(c,p,0xffd4a64e,0,0,.73f,.73f);oval(c,p,0xffffd5e4,0,0,.65f,.65f);star(c,p,0,0,.56f,.25f,0xffffd371);oval(c,p,PINK,0,0,.19f,.19f);oval(c,p,0xffffefd0,0,-.01f,.12f,.12f);oval(c,p,PINK,.05f,-.055f,.10f,.10f);for(int i=0;i<4;i++){double a=i*Math.PI/2;oval(c,p,new int[]{0xff527dd4,0xffd15467,0xff64ad89,0xffe4b956}[i],(float)Math.cos(a)*.61f,(float)Math.sin(a)*.61f,.06f,.06f);}}
++ else if(id.equals("tv_maclarens")){oval(c,p,0xffd4bc72,0,0,.84f,.75f);oval(c,p,0xff154b39,0,0,.78f,.69f);text(c,p,"MacLaren’s",.08f,.29f,0xfff4dca1);text(c,p,"IRISH PUB",.37f,.15f,0xfff4dca1);text(c,p,"NEW YORK",-.45f,.115f,CREAM);for(float x:new float[]{-.16f,.16f}){fill(p,0xffd09c43);c.drawRoundRect(x-.10f,-.35f,x+.10f,-.13f,.025f,.025f,p);oval(c,p,CREAM,x,-.35f,.12f,.045f);p.setStyle(Paint.Style.STROKE);p.setStrokeWidth(.035f);p.setColor(CREAM);c.drawOval(x+.07f,-.30f,x+.16f,-.18f,p);p.setStyle(Paint.Style.FILL);}}
++ else if(id.equals("tv_pineapple")){oval(c,p,0xffdda73c,0,.15f,.39f,.50f);for(int i=-3;i<=3;i++){float x=i*.12f;line(c,p,0xff94662e,.016f,-.28f,x+.15f,.28f,x+.43f);line(c,p,0xff94662e,.016f,-.28f,x+.43f,.28f,x+.15f);}for(int i=-2;i<=2;i++){Path leaf=new Path();leaf.moveTo(0,-.22f);leaf.quadTo(i*.20f,-.70f,i*.20f,-.76f);leaf.quadTo(i*.10f,-.31f,.08f,-.19f);fill(p,0xff36674b);c.drawPath(leaf,p);}}
++ else if(id.equals("tv_purple_door")){fill(p,0xffb295d1);c.drawRoundRect(-.58f,-.74f,.58f,.74f,.035f,.035f,p);fill(p,0xff81609f);c.drawRect(-.50f,-.65f,.50f,.65f,p);p.setStyle(Paint.Style.STROKE);p.setStrokeWidth(.065f);p.setColor(0xffefcc57);c.drawRoundRect(-.27f,-.39f,.27f,.18f,.08f,.08f,p);p.setStyle(Paint.Style.FILL);oval(c,p,0xffccb474,0,-.08f,.035f,.035f);oval(c,p,0xffd6ad4e,.34f,.37f,.055f,.055f);}
++ else if(id.equals("anime_karasuno")){fill(p,0xffe47832);c.drawRect(-.68f,-.8f,-.48f,.8f,p);c.drawRect(.48f,-.8f,.68f,.8f,p);text(c,p,"KARASUNO",-.34f,.17f,CREAM);text(c,p,"10",.43f,.79f,Color.WHITE);}
++ else{oval(c,p,0xffb68d48,0,0,.74f,.74f);oval(c,p,0xffa9d3e0,0,0,.65f,.65f);p.setStyle(Paint.Style.STROKE);p.setStrokeWidth(.025f);p.setColor(0xff536d7e);c.drawOval(-.59f,-.24f,.59f,.24f,p);c.drawOval(-.24f,-.59f,.24f,.59f,p);p.setStyle(Paint.Style.FILL);Path arrow=new Path();arrow.moveTo(-.08f,.40f);arrow.lineTo(.12f,-.46f);arrow.lineTo(.20f,.03f);arrow.lineTo(.02f,-.02f);arrow.close();fill(p,0xffcf4d57);c.drawPath(arrow,p);oval(c,p,0xffd9b96b,0,0,.08f,.08f);}
++ }
++ private static void bow(Canvas c,Paint p,float x,float y,int color){oval(c,p,color,x-.11f,y,.14f,.13f);oval(c,p,color,x+.11f,y,.14f,.13f);oval(c,p,0xffff9ec6,x,y,.075f,.075f);}
++ private static void star(Canvas c,Paint p,float x,float y,float outer,float inner,int color){Path path=new Path();for(int i=0;i<10;i++){double a=-Math.PI/2+i*Math.PI/5;float r=i%2==0?outer:inner,xx=x+(float)Math.cos(a)*r,yy=y+(float)Math.sin(a)*r;if(i==0)path.moveTo(xx,yy);else path.lineTo(xx,yy);}path.close();fill(p,color);c.drawPath(path,p);}
++}
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/EmailMemory.java b/app/src/main/java/helium314/keyboard/keyforma/EmailMemory.java
+index 5737bdd..b632b9d 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/EmailMemory.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/EmailMemory.java
+@@ -11,7 +11,7 @@ public final class EmailMemory {
+  public static synchronized void learn(String value){if(!allowed()||!valid(value))return;String v=value.toLowerCase(Locale.ROOT);int count=known.getOrDefault(v,probation.getOrDefault(v,0))+1;if(count<2){probation.put(v,count);while(probation.size()>64)probation.remove(probation.keySet().iterator().next());return;}probation.remove(v);var e=store.edit();if(known.size()>=64&&!known.containsKey(v))e.remove(known.entrySet().stream().min(Map.Entry.comparingByValue()).get().getKey());e.putInt(v,Math.min(99,count)).apply();reload();}
+  public static void learnTail(CharSequence before){if(!allowed()||before==null)return;String token=before.toString();int start=token.length();while(start>0&&!Character.isWhitespace(token.charAt(start-1)))start--;token=token.substring(start).replaceAll("[.,;:!?]+$", "");learn(token);}
+  public static boolean isKnownConnector(String prefix,int code){return (code=='.'||code=='@'||code=='-'||code=='+')&&!complete(prefix+new String(Character.toChars(code))).isEmpty();}
+- public static List<String> complete(String prefix){if(!allowed()||prefix==null||prefix.length()<3)return List.of();String p=prefix.toLowerCase(Locale.ROOT);return known.entrySet().stream().filter(e->e.getKey().startsWith(p)&&!e.getKey().equals(p)).sorted(Map.Entry.<String,Integer>comparingByValue().reversed()).map(Map.Entry::getKey).limit(2).toList();}
++ public static List<String> complete(String prefix){if(!allowed()||prefix==null||prefix.length()<2)return List.of();String p=prefix.toLowerCase(Locale.ROOT);return known.entrySet().stream().filter(e->e.getKey().startsWith(p)&&!e.getKey().equals(p)).sorted(Map.Entry.<String,Integer>comparingByValue().reversed()).map(Map.Entry::getKey).limit(2).toList();}
+  public static Map<String,Integer> entries(Context c){init(c);return new TreeMap<>(known);}
+  public static void forget(Context c,String value){init(c);probation.remove(value);store.edit().remove(value).apply();reload();}
+  public static synchronized boolean add(Context c,String value){init(c);if(!valid(value))return false;String v=value.toLowerCase(Locale.ROOT);var e=store.edit();if(known.size()>=64&&!known.containsKey(v))e.remove(known.entrySet().stream().min(Map.Entry.comparingByValue()).get().getKey());e.putInt(v,3).apply();reload();return true;}
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/KeyAntBar.java b/app/src/main/java/helium314/keyboard/keyforma/KeyAntBar.java
+index 8629134..6f1a9c0 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/KeyAntBar.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/KeyAntBar.java
+@@ -63,7 +63,7 @@ public final class KeyAntBar extends LinearLayout {
+         ink=Settings.getValues().mColors.get(ColorType.KEY_TEXT);
+         back=Settings.getValues().mColors.get(ColorType.MAIN_BACKGROUND);
+         setBackgroundColor(Settings.getValues().mColors instanceof GlassColors||KeyboardBackdrop.surface(getContext())?Color.TRANSPARENT:back);
+-        tools=new HorizontalScrollView(getContext());tools.setTag("keyant-tools");tools.setFillViewport(true);tools.setHorizontalScrollBarEnabled(false);
++        tools=new ToolbarViewport670(getContext());tools.setTag("keyant-tools");tools.setFillViewport(true);tools.setHorizontalScrollBarEnabled(false);
+         tools.setLayoutParams(new LayoutParams(-1,-1));
+         row=new LinearLayout(getContext());row.setGravity(Gravity.CENTER);row.setPadding(dp(4),0,dp(4),0);
+         tools.addView(row,new HorizontalScrollView.LayoutParams(-1,-1));
+@@ -112,6 +112,7 @@ public final class KeyAntBar extends LinearLayout {
+     public void runCommand(String action){if(presentation667!=null)presentation667.used(action);if(CustomApps.has(action)){CustomApps.open(ime,action);return;}
+         if(action.startsWith("mode_")){applyMode(action.substring(5));return;}
+         switch(action){
++            case "suggestions"->ime.showKeyAntSuggestions();
+             case "more"->quickActions();
+             case "numbers","calendar"->{refresh();ime.showKeyAntTools();View view=getRootView().findViewById(R.id.keyboard_view);if(view instanceof helium314.keyboard.keyboard.MainKeyboardView keys)keys.post(()->keys.toggleSidePanel666(action.equals("numbers")));}
+             case "rgb"->studio("effects");case "calculator","bill"->openUtility(action);case "voice"->openDictation();case "ai"->openLanguagePill(false);case "translate"->openLanguagePill(true);case "gif"->openGifs();case "theme"->studio("appearance");case "size"->studio("size");case "shortcuts"->studio("shortcuts");case "settings"->studio("home");case "mode"->showModes();
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/KeyAntGestures.java b/app/src/main/java/helium314/keyboard/keyforma/KeyAntGestures.java
+index e374b6c..ca4e347 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/KeyAntGestures.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/KeyAntGestures.java
+@@ -6,7 +6,7 @@ import helium314.keyboard.keyboard.*;import helium314.keyboard.latin.*;import he
+ public final class KeyAntGestures {
+  private final MainKeyboardView host;private final LatinIME ime;private final Handler handler=new Handler(Looper.getMainLooper());
+  private Key firstKey,spaceKey;private int firstId=-1,secondId=-1,spaceId=-1;private float x1,y1,x2,y2,lastX,lastY;private long downTime;private long lastModeTap=-1000;private boolean shortcutStream;
+- private boolean paired669, extraPointer669;
++ private boolean paired669, extraPointer669, selectionGuard670;
+  private boolean chordWaiting;private InputConnection selectionConnection;private EditorInfo selectionEditor;private int resumeAnchor=-1,resumeFocus=-1,selectionLength,selectionHash;
+  private int selectionPointer=-1;private boolean twoFingerSelection;
+  private boolean space,trackpad,selecting,swallowed;private int anchor=-1,position=-1;private long lastHaptic;
+@@ -18,7 +18,7 @@ public final class KeyAntGestures {
+  private Key keyAt(float x,float y){if(host.getKeyboard()==null)return null;for(Key k:host.getKeyboard().getSortedKeys())if(x>=k.getX()+host.getPaddingLeft()&&x<k.getX()+k.getWidth()+host.getPaddingLeft()&&y>=k.getY()+host.getPaddingTop()&&y<k.getY()+k.getHeight()+host.getPaddingTop())return k;return null;}
+  public void reset(){clearContinuation();resetStream();}
+  private void clearContinuation(){selectionConnection=null;selectionEditor=null;resumeAnchor=resumeFocus=-1;}
+- private void resetStream(){paired669=false;extraPointer669=false;chordWaiting=false;handler.removeCallbacks(hold);if(spaceKey!=null){spaceKey.onReleased();host.invalidateKey(spaceKey);}navigator.reset();nativeSelection=false;selectionPointer=-1;twoFingerSelection=false;anchor=position=-1;firstId=secondId=spaceId=-1;space=trackpad=selecting=swallowed=false;spaceKey=null;host.invalidate();}
++ private void resetStream(){selectionGuard670=false;paired669=false;extraPointer669=false;chordWaiting=false;handler.removeCallbacks(hold);if(spaceKey!=null){spaceKey.onReleased();host.invalidateKey(spaceKey);}navigator.reset();nativeSelection=false;selectionPointer=-1;twoFingerSelection=false;anchor=position=-1;firstId=secondId=spaceId=-1;space=trackpad=selecting=swallowed=false;spaceKey=null;host.invalidate();}
+  private boolean enabled(String key){return KeyAntPrefs.bool(ime,key,true);}
+  public boolean onTouch(MotionEvent e){
+   int action=e.getActionMasked();
+@@ -43,6 +43,8 @@ public final class KeyAntGestures {
+   if(action==MotionEvent.ACTION_POINTER_DOWN&&e.getPointerCount()>2){extraPointer669=true;paired669=false;secondId=-1;}
+   if(action==MotionEvent.ACTION_POINTER_DOWN&&e.getPointerCount()==2&&!extraPointer669){int ix=e.getActionIndex();secondId=e.getPointerId(ix);x2=e.getX(ix);y2=e.getY(ix);Key k=keyAt(x2,y2);
+    int firstIndex=e.findPointerIndex(firstId);if(firstIndex>=0){x1=e.getX(firstIndex);y1=e.getY(firstIndex);}
++   CharSequence selected=ime.getCurrentInputConnection()==null?null:ime.getCurrentInputConnection().getSelectedText(0);
++   if(selected!=null&&selected.length()>0){selectionGuard670=true;host.cancelAllOngoingEvents();}
+    paired669=KeyPairGesture669.matches(ime,firstKey==null?0:firstKey.getCode(),k==null?0:k.getCode());
+    if(firstKey!=null&&firstKey.getCode()==KeyCode.SHIFT&&k!=null&&k.getCode()==32&&enabled("shift_select")){host.cancelAllOngoingEvents();beginSpace(k,secondId,x2,y2,true);activate(true);return true;}
+   }
+@@ -67,10 +69,11 @@ public final class KeyAntGestures {
+     if(!actionName.equals("none")){host.cancelAllOngoingEvents();swallowed=true;GestureActions.run(ime,actionName);host.performHapticFeedback(HapticFeedbackConstants.GESTURE_END);return true;}}
+ 
+   }}
++  if(selectionGuard670){if(action==MotionEvent.ACTION_UP||action==MotionEvent.ACTION_CANCEL)resetStream();return true;}
+   if(action==MotionEvent.ACTION_UP&&firstKey!=null&&ShortcutMode.isModeKey(firstKey.getCode())&&e.getEventTime()-downTime<ViewConfiguration.getTapTimeout()+180&&Math.hypot(e.getX()-x1,e.getY()-y1)<dp(18))lastModeTap=e.getEventTime();
+   if(action==MotionEvent.ACTION_UP||action==MotionEvent.ACTION_CANCEL){handler.removeCallbacks(hold);firstId=secondId=-1;}return false;
+  }
+- public boolean ownsStream(){return trackpad||chordWaiting||swallowed;}
++ public boolean ownsStream(){return trackpad||chordWaiting||swallowed||selectionGuard670;}
+  public int pendingSpacePointer(){return space&&!trackpad?spaceId:-1;}
+  /** Both fingers must travel together; unequal travel and diagonal drift are tolerated. */
+  public static boolean coherentSwipe(float a,float b,float crossA,float crossB){return a*b>0&&Math.min(Math.abs(a),Math.abs(b))>=12&&Math.max(Math.abs(a),Math.abs(b))>=28&&(Math.abs(a)+Math.abs(b))>=44&&Math.abs(crossA)+Math.abs(crossB)<(Math.abs(a)+Math.abs(b))*.85f;}
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/MakeKeyAnt.java b/app/src/main/java/helium314/keyboard/keyforma/MakeKeyAnt.java
+index 6c070b2..cec017e 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/MakeKeyAnt.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/MakeKeyAnt.java
+@@ -20,7 +20,7 @@ public final class MakeKeyAnt {
+   JSONObject d=create(profile);try{
+    d.put("mode",p.getBoolean(Settings.PREF_THEME_DAY_NIGHT,true)?"system":dark?"dark":"light");
+    d.put("height",KeyboardGeometry.rowHeight(p,c.getResources().getConfiguration().screenWidthDp));
+-   d.put("toolbar",ToolbarVisibility.enabled(c));
++   d.put("toolbar",ToolbarVisibility.enabled(c));d.put("toolbar_display",toolbarText(c,"toolbar_display","classic"));d.put("toolbar_knob_trigger",toolbarText(c,"toolbar_knob_trigger","tap"));
+    if(!MakeKeyAnt.is(profile)){d.put("rgbMode",KeyEffects.effectiveMode(c,profile)).put("rgbPalette",KeyAntPrefs.text(c,"rgb_color_choice","").equals("playstation")?"playstation":"single").put("rgbIntensity",KeyAntPrefs.number(c,"rgb_intensity",70)).put("rgbSpeed",KeyAntPrefs.number(c,"rgb_speed",50)).put("rgbDuration",KeyAntPrefs.number(c,"rgb_duration",520)).put("rgbSpread",KeyAntPrefs.number(c,"rgb_spread",300)).put("rgbColor",String.format(java.util.Locale.ROOT,"%06X",KeyAntPrefs.number(c,"rgb_color",0xfff64b66)&0xffffff));}
+    if(!MakeKeyAnt.is(profile)){for(String key:new String[]{"suggestion_divider","suggestion_effect","suggestion_color_mode","voice_indicator","touchpad_style","touchpad_labels","touchpad_lettering","clipboard_style"})if(KeyAntPrefs.get(c).contains("ka_"+key))d.put(key,KeyAntPrefs.text(c,key,"inherit"));for(String key:new String[]{"suggestion_color","divider_strength","divider_width","divider_shadow","suggestion_strength","touchpad_opacity","touchpad_text_size","clipboard_opacity"})if(KeyAntPrefs.get(c).contains("ka_"+key))d.put(key,KeyAntPrefs.number(c,key,0));d.put("front_punctuation",KeyAntPrefs.text(c,"front_punctuation","both"));d.put("front_left_key",KeyAntPrefs.text(c,"front_left_key","comma"));d.put("toolbar_look",KeyAntPrefs.text(c,"toolbar_look","current"));d.put("toolbar_glyph",KeyAntPrefs.text(c,"toolbar_glyph","preset"));}
+    if(!MakeKeyAnt.is(profile)&&XboxAnniversary.supports(profile))d.put("backgroundOpacity",XboxAnniversary.opacity(c,profile));
+@@ -42,6 +42,7 @@ public final class MakeKeyAnt {
+  public static int ink(String id,boolean dark,int kind){String v=get(id).optString("ink","auto");String part=kind==1?"left":kind==2?"delete":kind==3?"action":kind==4?"space":"normal";return v.equals("white")?Color.WHITE:v.equals("black")?Color.BLACK:get(id).optString(part).matches("[A-Fa-f0-9]{6}")?KeyColorOverrides.ink(face(id,dark,kind)):ThemeCatalog.ink(preset(id),dark,kind);}
+  public static Typeface font(String id){return switch(get(id).optString("font","preset")){case "square","narrow"->Showroom641.typeface(get(id).optString("font"));case "mono"->Typeface.MONOSPACE;case "serif"->Typeface.SERIF;case "round"->Typeface.create("sans-serif-light",0);case "bold"->Typeface.create("sans-serif-medium",0);default->ThemeCatalog.font(preset(id));};}
+  public static JSONObject key(int code){JSONObject d=get(selected);if(d==null)return new JSONObject();JSONObject keys=d.optJSONObject("keys");return keys==null?new JSONObject():keys.optJSONObject(String.valueOf(Character.toLowerCase(code)))==null?new JSONObject():keys.optJSONObject(String.valueOf(Character.toLowerCase(code)));}
++ public static String toolbarText(Context c,String key,String fallback){JSONObject d=get(selected);String value=d==null?"inherit":d.optString(key,"inherit");return value.equals("inherit")?KeyAntPrefs.text(c,key,fallback):value;}
+  public static boolean toolbar(boolean fallback){JSONObject d=get(selected);return d==null?fallback:d.optBoolean("toolbar",true);}
+  public static int rowHeight(int fallback){JSONObject d=get(selected);return d==null?fallback:Math.max(38,Math.min(80,d.optInt("height",fallback)));}
+  public static boolean ballFlag(Context c,String key,boolean fallback){JSONObject d=get(selected);return d!=null&&d.optBoolean("ballCustom",false)?d.optBoolean(key,fallback):KeyAntPrefs.bool(c,key,fallback);}
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/MakeKeyAntSettings.kt b/app/src/main/java/helium314/keyboard/keyforma/MakeKeyAntSettings.kt
+index c0ab929..ee53d0e 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/MakeKeyAntSettings.kt
++++ b/app/src/main/java/helium314/keyboard/keyforma/MakeKeyAntSettings.kt
+@@ -254,6 +254,9 @@ import org.json.*
+ 
+       Text("Tocca un tasto nell’anteprima per cambiarne colore, larghezza o comando. Trascina le lettere nella stessa riga per scambiarle.",style=MaterialTheme.typography.bodySmall)
+       Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically){Text("Barra degli strumenti",Modifier.weight(1f));GlassSwitch(draft.optBoolean("toolbar",true),{v->change{it.put("toolbar",v)}})}
++      MakerChoice("Animazione della barra",draft.optString("toolbar_display","inherit"),listOf("inherit" to "Come nelle impostazioni")+toolbarModes670){v->change{it.put("toolbar_display",v)}}
++      ToolbarModePreview667(draft.optString("toolbar_display","inherit").takeUnless{it=="inherit"})
++      MakerChoice("Apertura strumenti",draft.optString("toolbar_knob_trigger","inherit"),listOf("inherit" to "Come nelle impostazioni","tap" to "Tocco","hold" to "Pressione lunga")){v->change{it.put("toolbar_knob_trigger",v)}}
+       MakerChoice("Stile icone della tastiera",draft.optString("toolbar_look","inherit"),listOf("inherit" to "Come nelle impostazioni")+toolbarThemes647){v->change{it.put("toolbar_look",v)}}
+       MakerChoice("Disegno delle icone",draft.optString("toolbar_glyph","inherit"),listOf("rounded" to "Morbido · estremità tonde","terminal" to "Terminale · tratti modulari","engraved" to "Inciso · tratto sottile","orbit" to "Orbitale · cornici circolari","stencil" to "Stencil · tagli aperti","duoline" to "Doppio filo","inherit" to "Quello dello stile","standard" to "Classico","mechanical" to "Industriale","silkscreen" to "Serigrafato","pixel" to "Pixel","technical" to "Tecnico")){v->change{it.put("toolbar_glyph",v)}}
+       AndroidView(factory={ToolbarSampleView(it,true)},update={it.design(draft)},modifier=Modifier.fillMaxWidth().height(68.dp))
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/MechanicalDial670.java b/app/src/main/java/helium314/keyboard/keyforma/MechanicalDial670.java
+new file mode 100644
+index 0000000..5992d1f
+--- /dev/null
++++ b/app/src/main/java/helium314/keyboard/keyforma/MechanicalDial670.java
+@@ -0,0 +1,15 @@
++// SPDX-License-Identifier: GPL-3.0-only
++package helium314.keyboard.keyforma;
++import android.graphics.*;import android.graphics.drawable.Drawable;
++/** Turned aluminium crown, recessed face and a single engraved index. Theme pigments stay live. */
++public final class MechanicalDial670 extends Drawable {
++ private final Paint p=new Paint(3);private final int ink,back;private int alpha=255;
++ public MechanicalDial670(int ink,int back){this.ink=ink;this.back=back;}
++ @Override public void draw(Canvas c){int s=c.save();c.translate(getBounds().exactCenterX(),getBounds().exactCenterY());float r=Math.min(getBounds().width(),getBounds().height())*.46f;
++ p.setStyle(Paint.Style.FILL);p.setColor(0x55000000);p.setAlpha(alpha/3);c.drawCircle(0,r*.09f,r,p);p.setAlpha(alpha);
++ p.setShader(new LinearGradient(-r,-r,r,r,new int[]{ToolSurface.mix(back,ink,.65f),back,ToolSurface.mix(back,ink,.4f)},null,Shader.TileMode.CLAMP));c.drawCircle(0,0,r*.94f,p);p.setShader(null);
++ p.setStrokeWidth(Math.max(.7f,r*.025f));for(int i=0;i<40;i++){double a=i*Math.PI/20;float x=(float)Math.cos(a),y=(float)Math.sin(a);p.setColor(i%2==0?ToolSurface.mix(back,ink,.7f):back);c.drawLine(x*r*.81f,y*r*.81f,x*r*.94f,y*r*.94f,p);}
++ p.setShader(new LinearGradient(0,-r,0,r,ToolSurface.mix(back,ink,.23f),ToolSurface.mix(back,Color.BLACK,.28f),Shader.TileMode.CLAMP));c.drawCircle(0,0,r*.78f,p);p.setShader(null);p.setStyle(Paint.Style.STROKE);p.setStrokeWidth(r*.025f);p.setColor(ToolSurface.mix(back,ink,.32f));c.drawCircle(0,0,r*.76f,p);
++ p.setStrokeCap(Paint.Cap.ROUND);p.setStrokeWidth(r*.09f);p.setColor(ink);c.drawLine(0,-r*.60f,0,-r*.34f,p);p.setStyle(Paint.Style.FILL);p.setColor(ToolSurface.mix(back,ink,.35f));c.drawCircle(0,0,r*.09f,p);c.restoreToCount(s);}
++ @Override public void setAlpha(int a){alpha=a;invalidateSelf();}@Override public void setColorFilter(ColorFilter f){p.setColorFilter(f);invalidateSelf();}@Override public int getOpacity(){return PixelFormat.TRANSLUCENT;}
++}
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/PhraseMemory.java b/app/src/main/java/helium314/keyboard/keyforma/PhraseMemory.java
+index 97e0db9..50a1c47 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/PhraseMemory.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/PhraseMemory.java
+@@ -83,17 +83,18 @@ public final class PhraseMemory {
+  private static <T>T query(Callable<T> call,T fallback){return query(call,fallback,3000);}
+  private static <T>T query(Callable<T> call,T fallback,long timeout){Future<T> future=worker.submit(call);try{return future.get(timeout,TimeUnit.MILLISECONDS);}catch(Exception e){future.cancel(false);return fallback;}}
+  public static void awaitIdle(){query(()->true,false,30000);}
++ static double recency(long last,long now){if(last<=0)return .45;double days=Math.max(0,now-last)/86400000.0;return .22+.78*Math.exp(-days/45.0);}
+  public static List<String> suggest(String prefix,String context){
+   State s=state;if(!allowed(s))return List.of();String typed=normalize(prefix),prev=tail(context,1),two=tail(context,2);
+   // Cache contains only exact context/prefix results; every learned change invalidates it.
+-  String cacheKey=typed+"\t"+prev+"\t"+two;
++  String cacheKey=typed+"\t"+prev+"\t"+two+"\t"+Math.floorDiv(clock.getAsLong(),86400000L);
+   List<String> cached=s.predictions.get(cacheKey);if(cached!=null)return cached;
+   // Suggest runs on the dictionary worker. A busy storage queue must not stall new predictions.
+   return query(()->{if(s.db==null)return List.of();Map<String,Double> scores=new HashMap<>();
+    for(int i=0;i<2;i++){String key=i==0?two:prev;if(key.isEmpty())continue;
+-    try(Cursor rows=s.db.rawQuery("SELECT word,uses FROM links WHERE context=? AND word>=? AND word<? AND uses>=3 ORDER BY uses DESC LIMIT 16",new String[]{key,typed,typed+'\uffff'})){while(rows.moveToNext())if(!rows.getString(0).equals(typed))scores.merge(rows.getString(0),Math.log1p(rows.getLong(1))*(i==0?30:12),Double::sum);}
++    try(Cursor rows=s.db.rawQuery("SELECT links.word,links.uses,words.last_used FROM links JOIN words ON links.word=words.word WHERE context=? AND links.word>=? AND links.word<? AND links.uses>=3 ORDER BY links.uses DESC LIMIT 32",new String[]{key,typed,typed+'\uffff'})){while(rows.moveToNext())if(!rows.getString(0).equals(typed))scores.merge(rows.getString(0),Math.log1p(rows.getLong(1))*(i==0?30:12)*recency(rows.getLong(2),clock.getAsLong()),Double::sum);}
+    }
+-   if(typed.length()>=2)try(Cursor rows=s.db.rawQuery("SELECT word,uses FROM words WHERE word>=? AND word<? AND "+MATURE+" ORDER BY uses DESC LIMIT 16",new String[]{typed,typed+'\uffff'})){while(rows.moveToNext())if(!rows.getString(0).equals(typed))scores.merge(rows.getString(0),Math.log1p(rows.getLong(1)),Double::sum);}
++   if(typed.length()>=2)try(Cursor rows=s.db.rawQuery("SELECT word,uses,last_used FROM words WHERE word>=? AND word<? AND "+MATURE+" ORDER BY uses DESC LIMIT 32",new String[]{typed,typed+'\uffff'})){while(rows.moveToNext())if(!rows.getString(0).equals(typed))scores.merge(rows.getString(0),Math.log1p(rows.getLong(1))*recency(rows.getLong(2),clock.getAsLong()),Double::sum);}
+    ArrayList<String> out=new ArrayList<>(scores.keySet());out.sort(Comparator.<String>comparingDouble(scores::get).reversed().thenComparing(x->x));List<String> result=List.copyOf(out.subList(0,Math.min(2,out.size())));s.predictions.put(cacheKey,result);return result;
+   },List.of(),40);
+  }
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/SelectionUndo670.java b/app/src/main/java/helium314/keyboard/keyforma/SelectionUndo670.java
+new file mode 100644
+index 0000000..358b664
+--- /dev/null
++++ b/app/src/main/java/helium314/keyboard/keyforma/SelectionUndo670.java
+@@ -0,0 +1,21 @@
++// SPDX-License-Identifier: GPL-3.0-only
++package helium314.keyboard.keyforma;
++import android.os.*;import android.view.inputmethod.*;import helium314.keyboard.latin.utils.InputTypeUtils;
++/** One local replacement, memory-only, bounded, expiring and bound to the exact editor snapshot. */
++public final class SelectionUndo670 {
++ public record Shot(String text,int offset,int start,int end){}
++ private InputConnection owner;private EditorInfo editor;private Shot before,after;private int from;private String removed,inserted;private boolean undone;
++ private final Handler handler=new Handler(Looper.getMainLooper());private final Runnable expiry=this::clear;
++ public void clear(){handler.removeCallbacks(expiry);owner=null;editor=null;before=after=null;removed=inserted=null;undone=false;}
++ static Shot read(InputConnection ic){if(ic==null)return null;ExtractedTextRequest request=new ExtractedTextRequest();request.hintMaxChars=65536;request.hintMaxLines=4096;ExtractedText e=ic.getExtractedText(request,0);if(e==null||e.text==null||e.text.length()>65536||e.partialStartOffset>=0)return null;return new Shot(e.text.toString(),e.startOffset,e.selectionStart,e.selectionEnd);}
++ public Shot begin(InputConnection ic,EditorInfo info){clear();if(info==null||InputTypeUtils.isPasswordInputType(info.inputType))return null;Shot s=read(ic);if(s==null||s.start==s.end||Math.min(s.start,s.end)<0||Math.max(s.start,s.end)>s.text.length())return null;owner=ic;editor=info;return s;}
++ public void finish(InputConnection ic,EditorInfo info,Shot old){if(old==null||ic!=owner||info!=editor)return;Shot now=read(ic);if(now==null||now.offset!=old.offset){clear();return;}int lo=Math.min(old.start,old.end),hi=Math.max(old.start,old.end);String left=old.text.substring(0,lo),right=old.text.substring(hi);
++ if(now.text.equals(old.text)||!now.text.startsWith(left)||!now.text.endsWith(right)||now.text.length()<left.length()+right.length()){clear();return;}
++ before=old;after=now;from=lo+old.offset;removed=old.text.substring(lo,hi);inserted=now.text.substring(lo,now.text.length()-right.length());handler.postDelayed(expiry,120000);
++ }
++ public int selectionStart(){Shot s=undone?before:after;return s==null?-1:s.offset+s.start;}
++ public int selectionEnd(){Shot s=undone?before:after;return s==null?-1:s.offset+s.end;}
++ public boolean apply(InputConnection ic,EditorInfo info,boolean redo){if(owner!=ic||editor!=info||before==null||undone!=redo)return false;Shot expected=redo?before:after,current=read(ic);if(current==null||current.offset!=expected.offset||!current.text.equals(expected.text)){clear();return false;}
++ String replace=redo?removed:inserted,value=redo?inserted:removed;ic.beginBatchEdit();boolean ok=false;try{ic.finishComposingText();if(ic.setSelection(from,from+replace.length())){ok=ic.commitText(value,1);if(ok){Shot target=redo?after:before;ic.setSelection(target.offset+target.start,target.offset+target.end);}}}finally{ic.endBatchEdit();}if(!ok){clear();return false;}undone=!redo;return true;
++ }
++}
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/SettingsSearch.kt b/app/src/main/java/helium314/keyboard/keyforma/SettingsSearch.kt
+index 34fb415..6a9f80d 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/SettingsSearch.kt
++++ b/app/src/main/java/helium314/keyboard/keyforma/SettingsSearch.kt
+@@ -25,7 +25,7 @@ internal fun Modifier.settingAnchor(title:String):Modifier=composed {
+ }
+ data class SettingResult @JvmOverloads constructor(val page:String,val title:String,val keywords:String=""){val path:String get()=SettingsSearch.paths[page]?:page}
+ object SettingsSearch {
+- val toolbar667=listOf(SettingResult("privacy","Pillola anche in incognito e nei login","incolla password privata appunti anonimo"),SettingResult("gestures","Gesti da una coppia di tasti","Q P due dita barra mostra nascondi scorciatoia personalizzata"),SettingResult("gestures","Primo tasto della coppia"),SettingResult("gestures","Secondo tasto della coppia"),SettingResult("gestures","Coppia · verso l’alto"),SettingResult("gestures","Coppia · verso il basso"),SettingResult("gestures","Coppia · verso sinistra"),SettingResult("gestures","Coppia · verso destra"),SettingResult("bars","Swipe verso gli strumenti","animazioni barra freccia parole gesto attiva disattiva"),SettingResult("bars","Swipe verso i suggerimenti","animazioni barra ultima icona gesto attiva disattiva"),SettingResult("edge_panels","Calendario affiancato sul Fold orizzontale","PC calendario insieme lettere"),SettingResult("bars","Visualizzazione della barra","classica manopola carosello automatica nascosta"),SettingResult("bars","Apri la manopola","tocco pressione lunga"),SettingResult("edge_panels","Gesto del tastierino","swipe immediato tieni premuto trascina numeri"),SettingResult("edge_panels","Gesto del calendario","swipe immediato ABC simboli prima icona barra"),SettingResult("themes","Luminosità del tema","chiaro scuro sistema"))
++ val toolbar667=listOf(SettingResult("bars","Zona di partenza verso le parole","ultime icone swipe inverso margine"),SettingResult("bars","Attivazione swipe barra","premi trascina immediato"),SettingResult("bars","Risposta dello swipe","morbida rapida bilanciata"),SettingResult("trackball","PIDDU","Barbie Sailor Moon Hello Kitty Kuromi My Melody rosa"),SettingResult("trackball","Volti anime","Luffy Takemichi Hinata Naruto testa miniatura rotazione"),SettingResult("maker","Animazione della barra","manopola meccanica cassetto lamelle ventaglio"),SettingResult("privacy","Pillola anche in incognito e nei login","incolla password privata appunti anonimo"),SettingResult("gestures","Gesti da una coppia di tasti","Q P due dita barra mostra nascondi scorciatoia personalizzata"),SettingResult("gestures","Primo tasto della coppia"),SettingResult("gestures","Secondo tasto della coppia"),SettingResult("gestures","Coppia · verso l’alto"),SettingResult("gestures","Coppia · verso il basso"),SettingResult("gestures","Coppia · verso sinistra"),SettingResult("gestures","Coppia · verso destra"),SettingResult("bars","Swipe verso gli strumenti","animazioni barra freccia parole gesto attiva disattiva"),SettingResult("bars","Swipe verso i suggerimenti","animazioni barra ultima icona gesto attiva disattiva"),SettingResult("edge_panels","Calendario affiancato sul Fold orizzontale","PC calendario insieme lettere"),SettingResult("bars","Visualizzazione della barra","classica manopola carosello automatica nascosta"),SettingResult("bars","Apri la manopola","tocco pressione lunga"),SettingResult("edge_panels","Gesto del tastierino","swipe immediato tieni premuto trascina numeri"),SettingResult("edge_panels","Gesto del calendario","swipe immediato ABC simboli prima icona barra"),SettingResult("themes","Luminosità del tema","chiaro scuro sistema"))
+  val selectionTitles=setOf("Effetto del perimetro","Colore del perimetro","Spessore del perimetro · dp","Intensità della luce · %")
+  val movementTitles=setOf("Precisione · dp per carattere","Accelerazione della sfera","Inerzia della sfera","Tocco singolo sulla sfera")
+  val voiceTextTitles=setOf("Punteggiatura automatica","Domande prudenti","Pausa nella dettatura · secondi","Comandi di punteggiatura","Pulizia della dettatura")
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/SpecialistWords670.java b/app/src/main/java/helium314/keyboard/keyforma/SpecialistWords670.java
+new file mode 100644
+index 0000000..931caba
+--- /dev/null
++++ b/app/src/main/java/helium314/keyboard/keyforma/SpecialistWords670.java
+@@ -0,0 +1,15 @@
++// SPDX-License-Identifier: GPL-3.0-only
++package helium314.keyboard.keyforma;
++import java.util.*;
++/** Curated offline proper names / specialist terms. Explicit suggestions only; never diagnoses. */
++public final class SpecialistWords670 {
++ private static final String[] WORDS=("""
++Alzheimer Parkinson Asperger Tourette Hashimoto Crohn Sjögren Raynaud Ménière Hodgkin endometriosi fibromialgia ipotiroidismo ipertiroidismo sclerosi psoriasi dislessia discalculia emicrania osteoporosi artrite artrosi celiachia diabete ipertensione
++Einstein Newton Galileo Galilei Tesla Darwin Curie Turing Feynman Hawking Schrödinger Heisenberg Planck Bohr Faraday Maxwell Keplero Copernico Fibonacci Pitagora Archimede Ippocrate Aristotele Platone Socrate Nietzsche Schopenhauer Dostoevskij Tolstoj Kafka Shakespeare Tolkien Asimov Lovecraft Stephen Spielberg Scorsese Tarantino Nolan Kubrick Miyazaki Kurosawa DiCaprio McConaughey Johansson Schwarzenegger Stallone Streep Zendaya Chalamet Beyoncé
++Naruto Sasuke Kakashi Sharingan Rinnegan Mangekyō Hinata Kageyama Karasuno Haikyuu Luffy Zoro Sanji Takemichi Mikey Draken Goku Vegeta Gohan Frieza Gojo Sukuna Itadori Tanjiro Nezuko Inosuke Alakazam Pikachu Charizard Bulbasaur Squirtle Eevee Mewtwo Snorlax Pokémon
++JavaScript TypeScript Kotlin Kubernetes PostgreSQL SQLite GraphQL OAuth WebSocket cybersecurity autenticazione crittografia asincrono idempotenza serializzazione deserializzazione refactoring middleware frontend backend repository pull request
++""").split("\\s+");
++ public static List<String> suggest(String typed){if(typed==null||typed.length()<3||typed.length()>40||!typed.codePoints().allMatch(Character::isLetter))return List.of();String q=typed.toLowerCase(Locale.ROOT);Map<String,Double> scores=new HashMap<>();
++ for(String word:WORDS){String w=word.toLowerCase(Locale.ROOT);if(w.equals(q))continue;if(w.startsWith(q)){scores.put(word,0.0);continue;}if(q.length()<4||!q.substring(0,2).equals(w.substring(0,2)))continue;double best=9;for(int n=Math.max(3,q.length()-1);n<=Math.min(w.length(),q.length()+1);n++)best=Math.min(best,AdaptiveTyping.distance(q,w.substring(0,n)));if(best<=1.05)scores.put(word,1+best);}
++ return scores.keySet().stream().sorted(Comparator.<String>comparingDouble(scores::get).thenComparingInt(String::length).thenComparing(x->x)).limit(2).collect(java.util.stream.Collectors.toList());}
++}
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/StripReveal.java b/app/src/main/java/helium314/keyboard/keyforma/StripReveal.java
+index 2f8b2ee..05e4eaf 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/StripReveal.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/StripReveal.java
+@@ -21,7 +21,8 @@ public final class StripReveal implements View.OnTouchListener {
+     private VelocityTracker velocity;
+     private float startX,startY,progress,travel,sign,initialProgress,releaseSpeed;
+     private boolean tracking,dragging,rejected,claimed;private long startTime;private int samples;
+-    private boolean external;private float explicitDirection;
++    private boolean external;
++    public boolean holdTrigger(){return KeyAntPrefs.text(host.getContext(),"strip_swipe_trigger","swipe").equals("hold");}private float explicitDirection;
+     /** Parent dispatch owns taps/long presses; this instance handles only the accepted drag. */
+     public StripReveal external(float direction){external=true;explicitDirection=direction;return this;}
+ 
+@@ -53,7 +54,7 @@ public final class StripReveal implements View.OnTouchListener {
+                 if(!tracking)return false;
+                 sampleVelocity(e);
+                 float dx=(e.getRawX()-startX)*sign,dy=e.getRawY()-startY;
+-                if(!dragging&&!rejected&&Math.max(Math.abs(dx),Math.abs(dy))>slop){
++                if(!dragging&&!rejected&&(!holdTrigger()||e.getEventTime()-startTime>=180)&&Math.max(Math.abs(dx),Math.abs(dy))>slop){
+                     handle.setPressed(false);
+                     if(dx>slop&&dx>Math.abs(dy)&&mount()){dragging=true;claimed=true;}else rejected=true;
+                 }
+@@ -69,7 +70,7 @@ public final class StripReveal implements View.OnTouchListener {
+                 float speed=0;
+                 if(velocity!=null){sampleVelocity(e);velocity.computeCurrentVelocity(1000);speed=velocity.getXVelocity()*sign;}
+                 float upDx=(e.getRawX()-startX)*sign,upDy=e.getRawY()-startY;
+-                if(!dragging&&!rejected&&Math.max(Math.abs(upDx),Math.abs(upDy))>slop){
++                if(!dragging&&!rejected&&(!holdTrigger()||e.getEventTime()-startTime>=180)&&Math.max(Math.abs(upDx),Math.abs(upDy))>slop){
+                     click=false;
+                     if(upDx>slop&&upDx>Math.abs(upDy)&&mount()){dragging=true;claimed=true;}else rejected=true;
+                 }
+@@ -125,9 +126,11 @@ public final class StripReveal implements View.OnTouchListener {
+         final float from=progress,target=commit?1:0;
+         final float initialVelocity=Math.max(-5,Math.min(5,releaseSpeed/Math.max(1,travel)));
+         animator=ValueAnimator.ofFloat(0,1);
+-        animator.setDuration(560);
++        String feel=KeyAntPrefs.text(host.getContext(),"strip_swipe_feel","balanced");
++        long duration=feel.equals("quick")?280:feel.equals("soft")?600:420;
++        animator.setDuration(duration);
+         animator.setInterpolator(new android.view.animation.LinearInterpolator());
+-        animator.addUpdateListener(a->{float t=(float)a.getAnimatedValue();position(t>=1?target:spring(from,target,initialVelocity,t*.56f));});
++        animator.addUpdateListener(a->{float t=(float)a.getAnimatedValue();position(t>=1?target:spring(from,target,initialVelocity,t*(feel.equals("soft")?.56f:feel.equals("quick")?.48f:.52f)));});
+         animator.addListener(new AnimatorListenerAdapter(){@Override public void onAnimationEnd(Animator a){complete(commit);}});
+         animator.start();
+     }
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/StudioActivity.kt b/app/src/main/java/helium314/keyboard/keyforma/StudioActivity.kt
+index c404748..11f4321 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/StudioActivity.kt
++++ b/app/src/main/java/helium314/keyboard/keyforma/StudioActivity.kt
+@@ -190,7 +190,7 @@ class StudioActivity : ComponentActivity() {
+  StudioCard{StripGestureControls668()}
+  Text("Barra sopra la tastiera",style=MaterialTheme.typography.titleMedium)
+  StudioCard{Toggle("Barra delle icone","toolbar",true,"Nasconde la riga dei comandi. Restano suggerimenti e pillole; tieni premuta la virgola per aprire gli strumenti.");Toggle("Tre puntini nella barra","toolbar_more",true,"Mostra Altri comandi nella barra. Se li nascondi, restano disponibili tenendo premuta la virgola.")}
+- StudioCard{Choice("Visualizzazione della barra","toolbar_display","classic",listOf("classic" to "Classica","knob" to "Manopola","carousel" to "Carosello","auto" to "Solo quando serve","auto_soft" to "Scomparsa morbida","auto_veil" to "Velo","ribbon" to "Nastro","fan" to "Ventaglio","dock" to "Dock","wave" to "Onda"));Choice("Apri la manopola","toolbar_knob_trigger","tap",listOf("tap" to "Con un tocco","hold" to "Tenendo premuto"));Note("Manopola, Nastro e Ventaglio raccolgono gli strumenti; l’ultimo resta a destra. Dock ingrandisce il centro, Onda introduce le icone in sequenza. Le modalità a scomparsa mantengono parole, pillole e accessi sicuri.");ToolbarModePreview667()}
++ StudioCard{Choice("Visualizzazione della barra","toolbar_display","classic",toolbarModes670);Choice("Apri la manopola","toolbar_knob_trigger","tap",listOf("tap" to "Con un tocco","hold" to "Tenendo premuto"));Note("Manopola, Nastro e Ventaglio raccolgono gli strumenti; l’ultimo resta a destra. Dock ingrandisce il centro, Onda introduce le icone in sequenza. Le modalità a scomparsa mantengono parole, pillole e accessi sicuri.");ToolbarModePreview667()}
+  TextButton(onClick={page="apps"}){Text("Collegamenti alle app · scegli app e icone ›")};Text("Stile delle icone",style=MaterialTheme.typography.titleMedium);ToolbarSettingsPreview();Text("Organizzazione",style=MaterialTheme.typography.titleMedium);ToolPanelSettings();StudioCard{Toggle("Icone nei riquadri degli strumenti","menu_icons",true,"Mostra i disegni sopra i nomi nel pannello dei tre puntini. Non nasconde la barra sopra la tastiera.")};Text("Icone nella barra principale",style=MaterialTheme.typography.titleMedium);ToolOrder();Text("Barra inferiore",style=MaterialTheme.typography.titleMedium);StudioCard{
+  Toggle("Barra inferiore aggiuntiva","bottom_enabled",false,"Disattivata per evitare la doppia barra con i controlli Samsung. Microfono ed emoji restano disponibili in alto.")
+  Choice("Comando in basso a sinistra","bottom_left","voice",listOf("none" to "Nessuno","voice" to "Microfono","emoji" to "Emoji","clipboard" to "Appunti","language" to "Cambia lingua"))
+@@ -571,5 +571,9 @@ private fun configureBilingual(c:android.content.Context){
+ }
+ @Composable internal fun StripGestureControls668(){
+  Toggle("Swipe verso gli strumenti","strip_swipe_tools",true,"Dalla freccia accanto ai suggerimenti. Il tocco resta disponibile anche quando disattivi lo swipe.")
+- Toggle("Swipe verso i suggerimenti","strip_swipe_words",true,"Trascina verso sinistra l’ultima icona visibile a destra, qualunque sia il comando.")
++ Toggle("Swipe verso i suggerimenti","strip_swipe_words",true,"Trascina verso sinistra dalla zona destra scelta. Il ritorno parte sempre dalla freccia, mai dalle parole.")
++ Choice("Zona di partenza verso le parole","strip_swipe_zone","1",listOf("1" to "Ultima icona","2" to "Ultime due icone","3" to "Ultime tre icone"))
++ Choice("Attivazione swipe barra","strip_swipe_trigger","swipe",listOf("swipe" to "Swipe immediato","hold" to "Premi e trascina"))
++ Choice("Risposta dello swipe","strip_swipe_feel","balanced",listOf("soft" to "Morbida","balanced" to "Bilanciata","quick" to "Rapida"))
++
+ }
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/ToolbarChoices670.kt b/app/src/main/java/helium314/keyboard/keyforma/ToolbarChoices670.kt
+new file mode 100644
+index 0000000..4306847
+--- /dev/null
++++ b/app/src/main/java/helium314/keyboard/keyforma/ToolbarChoices670.kt
+@@ -0,0 +1,3 @@
++// SPDX-License-Identifier: GPL-3.0-only
++package helium314.keyboard.keyforma
++internal val toolbarModes670=listOf("classic" to "Classica","knob" to "Manopola meccanica","carousel" to "Carosello","auto" to "Solo quando serve","auto_soft" to "Scomparsa morbida","auto_veil" to "Velo","ribbon" to "Nastro","fan" to "Ventaglio","dock" to "Dock","wave" to "Onda","drawer" to "Cassetto","shutter" to "Lamelle")
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/ToolbarEdges668.java b/app/src/main/java/helium314/keyboard/keyforma/ToolbarEdges668.java
+index 4eff516..4e3b3ef 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/ToolbarEdges668.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/ToolbarEdges668.java
+@@ -6,18 +6,17 @@ import android.view.ViewGroup;
+ /** Locate the actual visible edge command, including custom tools and alternative bar layouts. */
+ public final class ToolbarEdges668 {
+  private ToolbarEdges668(){}
+- public static boolean hit(View root,float screenX,float screenY,boolean left){
+-  Rect edge=new Rect();find(root,left,edge);
+-  return !edge.isEmpty()&&edge.contains((int)screenX,(int)screenY);
++ public static boolean hit(View root,float screenX,float screenY,boolean left){return hit(root,screenX,screenY,left,1);}
++ public static boolean hit(View root,float x,float y,boolean left,int count){
++  java.util.ArrayList<View> commands=new java.util.ArrayList<>();collect(root,commands);
++  commands.sort((a,b)->Integer.compare(rect(a).centerX(),rect(b).centerX())*(left?1:-1));
++  for(int i=0;i<Math.min(Math.max(1,Math.min(3,count)),commands.size());i++){Rect r=rect(commands.get(i));r.inset(-4,0);if(r.contains((int)x,(int)y))return true;}return false;
+  }
+- private static void find(View view,boolean left,Rect edge){
++ public static View commandAt(View root,float x,float y){java.util.ArrayList<View> list=new java.util.ArrayList<>();collect(root,list);for(View v:list)if(rect(v).contains((int)x,(int)y))return v;return null;}
++ private static Rect rect(View v){Rect r=new Rect();if(!v.getGlobalVisibleRect(r))r.setEmpty();return r;}
++ private static void collect(View view,java.util.List<View> result){
+   if(view.getVisibility()!=View.VISIBLE||view.getAlpha()<.2f)return;
+-  if(view.isClickable()&&view.isEnabled()&&view.getContentDescription()!=null){
+-   Rect visible=new Rect();
+-   if(view.getGlobalVisibleRect(visible)&&visible.width()>=Math.min(view.getWidth()*.5f,24*view.getResources().getDisplayMetrics().density)&&
+-       (edge.isEmpty()||(left?visible.centerX()<edge.centerX():visible.centerX()>edge.centerX())))edge.set(visible);
+-   return;
+-  }
+-  if(view instanceof ViewGroup group)for(int i=0;i<group.getChildCount();i++)find(group.getChildAt(i),left,edge);
++  if(view.isClickable()&&view.isEnabled()&&view.getContentDescription()!=null){Rect r=rect(view);if(r.width()>=Math.min(view.getWidth()*.5f,24*view.getResources().getDisplayMetrics().density))result.add(view);return;}
++  if(view instanceof ViewGroup group)for(int i=0;i<group.getChildCount();i++)collect(group.getChildAt(i),result);
+  }
+ }
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/ToolbarModePreview667.kt b/app/src/main/java/helium314/keyboard/keyforma/ToolbarModePreview667.kt
+index 297b5b6..f82ace6 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/ToolbarModePreview667.kt
++++ b/app/src/main/java/helium314/keyboard/keyforma/ToolbarModePreview667.kt
+@@ -16,7 +16,7 @@ import android.widget.*
+  key(revision,sample){AndroidView(factory={ctx->
+   val ink=helium314.keyboard.latin.settings.Settings.getValues().mColors.get(helium314.keyboard.latin.common.ColorType.KEY_TEXT)
+   val back=helium314.keyboard.latin.settings.Settings.getValues().mColors.get(helium314.keyboard.latin.common.ColorType.MAIN_BACKGROUND)
+-  val scroll=HorizontalScrollView(ctx);scroll.isFillViewport=true;scroll.isHorizontalScrollBarEnabled=false;scroll.setBackgroundColor(back)
++  val scroll=ToolbarViewport670(ctx);scroll.isFillViewport=true;scroll.isHorizontalScrollBarEnabled=false;scroll.setBackgroundColor(back)
+   val row=LinearLayout(ctx);row.gravity=android.view.Gravity.CENTER;scroll.addView(row,FrameLayout.LayoutParams(-1,-1))
+   var mode:ToolbarModes667?=null
+   for(id in listOf("emoji","gif","clipboard","voice","calendar","numbers")){
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/ToolbarModes667.java b/app/src/main/java/helium314/keyboard/keyforma/ToolbarModes667.java
+index 6194e79..8dcca2d 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/ToolbarModes667.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/ToolbarModes667.java
+@@ -9,7 +9,7 @@ import android.widget.*;
+ import java.util.function.Consumer;
+ /** Presentation only: every command still uses KeyAntBar's existing dispatcher. */
+ public final class ToolbarModes667 {
+- public static String mode(Context c){String mode=KeyAntPrefs.text(c,"toolbar_display","classic");return switch(mode){case "knob","carousel","auto","auto_soft","auto_veil","ribbon","fan","dock","wave"->mode;default->"classic";};}
++ public static String mode(Context c){String mode=MakeKeyAnt.toolbarText(c,"toolbar_display","classic");return switch(mode){case "knob","carousel","auto","auto_soft","auto_veil","ribbon","fan","dock","wave","drawer","shutter"->mode;default->"classic";};}
+  private final HorizontalScrollView viewport;
+  private final LinearLayout row;
+  private final ImageButton knob,last;
+@@ -25,26 +25,17 @@ public final class ToolbarModes667 {
+   commands.setGravity(Gravity.CENTER_VERTICAL);commands.setPadding(dp(6),0,dp(6),0);
+   outer.removeView(commands);outer.setFillViewport(true);
+   LinearLayout shell=new LinearLayout(c);shell.setGravity(Gravity.CENTER_VERTICAL);shell.setPadding(dp(10),dp(2),dp(10),dp(2));outer.addView(shell,new HorizontalScrollView.LayoutParams(-1,-1));
+-  // A scroll parent gives children an unbounded width. Bound this shell, letting only
+-  // the inner commands scroll, otherwise the weighted panel grows beyond the keyboard.
+-  outer.addOnLayoutChangeListener((v,l,t,r,b,ol,ot,or,ob)->{
+-   int width=r-l-outer.getPaddingLeft()-outer.getPaddingRight();
+-   if(width>0&&shell.getLayoutParams().width!=width){
+-    var params=shell.getLayoutParams();params.width=width;shell.setLayoutParams(params);
+-    shell.measure(View.MeasureSpec.makeMeasureSpec(width,View.MeasureSpec.EXACTLY),View.MeasureSpec.makeMeasureSpec(Math.max(0,b-t-outer.getPaddingTop()-outer.getPaddingBottom()),View.MeasureSpec.EXACTLY));
+-    shell.layout(shell.getLeft(),shell.getTop(),shell.getLeft()+width,shell.getTop()+shell.getMeasuredHeight());
+-    outer.scrollTo(0,0);
+-   }
+-  });
+-  knob=button("Strumenti · apri la manopola","settings");knob.setTag("keyant-knob");knob.setImageDrawable(new ToolDial668(ink));
+-  GradientDrawable ring=new GradientDrawable(GradientDrawable.Orientation.TL_BR,new int[]{ToolSurface.mix(back,ink,.16f),back});ring.setShape(GradientDrawable.OVAL);ring.setStroke(dp(1),ToolSurface.mix(back,ink,.35f));knob.setBackground(ring);knob.setPadding(dp(10),dp(10),dp(10),dp(10));knob.setScaleType(ImageView.ScaleType.FIT_CENTER);
++  if(outer instanceof ToolbarViewport670 bounded)bounded.boundShell();
++  else outer.addOnLayoutChangeListener((v,l,t,r,b,ol,ot,or,ob)->{int width=r-l;if(width>0&&shell.getLayoutParams().width!=width){var params=shell.getLayoutParams();params.width=width;shell.setLayoutParams(params);}});
++  knob=button("Strumenti · apri la manopola","settings");knob.setTag("keyant-knob");knob.setImageDrawable(new MechanicalDial670(ink,back));
++  GradientDrawable ring=new GradientDrawable(GradientDrawable.Orientation.TL_BR,new int[]{ToolSurface.mix(back,ink,.16f),back});ring.setShape(GradientDrawable.OVAL);ring.setStroke(dp(1),ToolSurface.mix(back,ink,.35f));knob.setBackground(ring);knob.setPadding(dp(1),dp(1),dp(1),dp(1));knob.setScaleType(ImageView.ScaleType.FIT_CENTER);
+   LinearLayout.LayoutParams dial=new LinearLayout.LayoutParams(dp(44),dp(44));dial.setMargins(dp(4),0,dp(4),0);shell.addView(knob,dial);
+   viewport=new HorizontalScrollView(c);viewport.setHorizontalScrollBarEnabled(false);viewport.setClipToPadding(true);viewport.setFillViewport(true);
+   viewport.setBackground(new PillSurface(c,ink));viewport.setClipToOutline(true);viewport.setOutlineProvider(new ViewOutlineProvider(){public void getOutline(View v,android.graphics.Outline out){out.setRoundRect(0,0,v.getWidth(),v.getHeight(),dp(20));}});viewport.addView(commands,new HorizontalScrollView.LayoutParams(-1,-1));
+   shell.addView(viewport,new LinearLayout.LayoutParams(0,dp(44),1));
+   last=button("Ultimo strumento","more");last.setTag("keyant-last-tool");shell.addView(last,new LinearLayout.LayoutParams(dp(48),dp(44)));
+   viewport.setVisibility(View.INVISIBLE);viewport.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS);
+-  knob.setOnClickListener(v->{if(!"hold".equals(KeyAntPrefs.text(c,"toolbar_knob_trigger","tap"))||((android.view.accessibility.AccessibilityManager)c.getSystemService(Context.ACCESSIBILITY_SERVICE)).isTouchExplorationEnabled())toggle();else knob.announceForAccessibility("Tieni premuto per aprire gli strumenti");});
++  knob.setOnClickListener(v->{if(!"hold".equals(MakeKeyAnt.toolbarText(c,"toolbar_knob_trigger","tap"))||((android.view.accessibility.AccessibilityManager)c.getSystemService(Context.ACCESSIBILITY_SERVICE)).isTouchExplorationEnabled())toggle();else knob.announceForAccessibility("Tieni premuto per aprire gli strumenti");});
+   knob.setOnLongClickListener(v->{toggle();return true;});
+   bindLast(KeyAntPrefs.text(c,"toolbar_last_command",""));
+  }
+@@ -54,13 +45,13 @@ public final class ToolbarModes667 {
+   return install(c,tools,row,ink,back,action,mode(c));
+  }
+  public static ToolbarModes667 install(Context c,HorizontalScrollView tools,LinearLayout row,int ink,int back,Consumer<String> action,String selected){
+-  if(selected.equals("knob")||selected.equals("ribbon")||selected.equals("fan")){
++  if(selected.equals("knob")||selected.equals("ribbon")||selected.equals("fan")||selected.equals("drawer")||selected.equals("shutter")){
+    ToolbarModes667 result=new ToolbarModes667(c,tools,row,ink,back,action);result.presentation=selected;
+    if(!selected.equals("knob")){result.knob.setContentDescription("Apri strumenti");result.knob.setImageDrawable(ToolbarLook.icon(c,"more",ink,dp(c,22)));GradientDrawable bg=new GradientDrawable();bg.setColor(ToolSurface.mix(back,ink,.12f));bg.setCornerRadius(dp(c,selected.equals("ribbon")?14:22));bg.setStroke(dp(c,1),ToolSurface.mix(back,ink,.28f));result.knob.setBackground(bg);}
+    return result;
+   }
+   if(selected.equals("wave")){
+-   tools.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener(){public void onViewDetachedFromWindow(View v){for(int i=0;i<row.getChildCount();i++)row.getChildAt(i).animate().cancel();}public void onViewAttachedToWindow(View v){if(!ValueAnimator.areAnimatorsEnabled()||!KeyAntPrefs.bool(c,"pill_motion",true))return;for(int i=0;i<row.getChildCount();i++){View child=row.getChildAt(i);child.setAlpha(0);child.setTranslationY(dp(c,9));child.animate().alpha(1).translationY(0).setStartDelay(Math.min(i,8)*24L).setDuration(260).start();}}});
++   tools.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener(){public void onViewDetachedFromWindow(View v){for(int i=0;i<row.getChildCount();i++){View child=row.getChildAt(i);child.animate().cancel();child.setAlpha(1);child.setTranslationY(0);}}public void onViewAttachedToWindow(View v){if(!ValueAnimator.areAnimatorsEnabled()||!KeyAntPrefs.bool(c,"pill_motion",true))return;for(int i=0;i<row.getChildCount();i++){View child=row.getChildAt(i);child.setAlpha(0);child.setTranslationY(dp(c,9));child.animate().alpha(1).translationY(0).setStartDelay(Math.min(i,8)*24L).setDuration(260).start();}}});
+   }
+   if(selected.equals("dock")){
+    row.setGravity(Gravity.CENTER_VERTICAL);for(int i=0;i<row.getChildCount();i++){View child=row.getChildAt(i);LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(dp(c,52),dp(c,44));p.setMargins(dp(c,2),0,dp(c,2),0);child.setLayoutParams(p);}
+@@ -79,20 +70,29 @@ public final class ToolbarModes667 {
+  private boolean moves(){return ValueAnimator.areAnimatorsEnabled()&&KeyAntPrefs.bool(context,"pill_motion",true);}
+  private void toggle(){setExpanded(!expanded);}
+  void setExpanded(boolean value){
+-  expanded=value;viewport.animate().cancel();knob.animate().cancel();
+-  if(presentation.equals("fan")&&moves())for(int i=0;i<row.getChildCount();i++){View child=row.getChildAt(i);child.animate().cancel();if(value){child.setTranslationY(dp(12));child.setRotation(-7);child.setAlpha(0);}child.animate().translationY(value?0:dp(12)).rotation(value?0:-7).alpha(value?1:0).setStartDelay(value?Math.min(i,7)*20L:0).setDuration(220).start();}
+-  viewport.setPivotX(0);if(presentation.equals("ribbon")){if(value)viewport.setScaleX(moves()?.75f:1);viewport.animate().scaleX(value?1:.75f);}
++  if(expanded==value&&viewport.getVisibility()==(value?View.VISIBLE:View.INVISIBLE))return;
++  expanded=value;final int token=++animationEpoch;viewport.animate().cancel();knob.animate().cancel();
++  boolean visible=viewport.getVisibility()==View.VISIBLE;
+   knob.setContentDescription(value?"Chiudi strumenti":"Apri strumenti");knob.setSelected(value);
+   viewport.setImportantForAccessibility(value?View.IMPORTANT_FOR_ACCESSIBILITY_AUTO:View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS);
+-  if(value){boolean wasVisible=viewport.getVisibility()==View.VISIBLE;viewport.setVisibility(View.VISIBLE);if(!wasVisible){viewport.setAlpha(moves()?0:1);viewport.setTranslationX(moves()?-dp(6):0);}}
+-  if(moves()){viewport.animate().alpha(value?1:0).translationX(value?0:-dp(6)).setDuration(value?280:220).setInterpolator(new android.view.animation.PathInterpolator(.22f,1,.36f,1)).withEndAction(()->{if(!expanded)viewport.setVisibility(View.INVISIBLE);}).start();knob.animate().rotation(value?90:0).setDuration(280).start();}
+-  else{viewport.setAlpha(value?1:0);viewport.setVisibility(value?View.VISIBLE:View.INVISIBLE);knob.setRotation(value?90:0);}
++  viewport.setPivotX(0);viewport.setPivotY(viewport.getHeight()/2f);
++  if(value){viewport.setVisibility(View.VISIBLE);if(!visible){viewport.setAlpha(moves()?0:1);viewport.setTranslationX(moves()?-dp(presentation.equals("drawer")?22:6):0);}}
++  for(int i=0;i<row.getChildCount();i++){View child=row.getChildAt(i);child.animate().cancel();
++   if(!moves()){child.setAlpha(1);child.setTranslationY(0);child.setTranslationX(0);child.setRotation(0);child.setScaleX(1);child.setScaleY(1);continue;}
++   if(value&&!visible){child.setAlpha(0);child.setTranslationY(presentation.equals("fan")?dp(6):0);child.setRotation(presentation.equals("fan")?-3:0);child.setScaleX(presentation.equals("shutter")?.85f:1);}
++   child.animate().alpha(1).translationY(0).rotation(0).scaleX(1).setStartDelay(value&&!visible?Math.min(i,6)*14L:0).setDuration(240).start();
++  }
++  if(moves()){viewport.animate().alpha(value?1:0).translationX(value?0:-dp(8)).scaleX(value?1:presentation.equals("ribbon")?.94f:1).setDuration(value?280:210).setInterpolator(new android.view.animation.PathInterpolator(.22f,1,.36f,1)).withEndAction(()->{if(token==animationEpoch&&!expanded)viewport.setVisibility(View.INVISIBLE);}).start();knob.animate().rotation(value?70:0).setDuration(280).start();}
++  else{viewport.setAlpha(value?1:0);viewport.setTranslationX(0);viewport.setScaleX(1);viewport.setVisibility(value?View.VISIBLE:View.INVISIBLE);knob.setRotation(value?70:0);}
+  }
++ private int animationEpoch;
++
+  private void bindLast(String id){
+   boolean valid=!id.isBlank()&&(!ToolCatalog.label(id).equals(id)||CustomApps.has(id));
+-  last.setVisibility(valid?View.VISIBLE:View.INVISIBLE);last.setEnabled(valid);
++  last.setVisibility(View.VISIBLE);last.setEnabled(true);
++  if(!valid){last.setImageDrawable(ToolbarLook.icon(context,"back",ink,dp(22)));last.setContentDescription("Parole · mostra suggerimenti");last.setOnClickListener(v->action.accept("suggestions"));}
+   if(valid){last.setImageDrawable(ToolbarLook.icon(context,id,ink,dp(22)));last.setContentDescription("Ultimo strumento · "+ToolCatalog.label(id));last.setOnClickListener(v->action.accept(id));}
+  }
+  public void used(String id){used(id,true);}
+- public void used(String id,boolean persist){if(id.equals("more")||id.startsWith("mode_"))return;if(persist)KeyAntPrefs.get(context).edit().putString("ka_toolbar_last_command",id).apply();bindLast(id);setExpanded(false);}
++ public void used(String id,boolean persist){if(id.equals("more")||id.equals("suggestions")||id.startsWith("mode_"))return;if(persist)KeyAntPrefs.get(context).edit().putString("ka_toolbar_last_command",id).apply();bindLast(id);setExpanded(false);}
+ }
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/ToolbarViewport670.java b/app/src/main/java/helium314/keyboard/keyforma/ToolbarViewport670.java
+new file mode 100644
+index 0000000..30c2503
+--- /dev/null
++++ b/app/src/main/java/helium314/keyboard/keyforma/ToolbarViewport670.java
+@@ -0,0 +1,12 @@
++// SPDX-License-Identifier: GPL-3.0-only
++package helium314.keyboard.keyforma;
++import android.content.Context;import android.view.View;import android.widget.HorizontalScrollView;
++/** Measure the shell in the actual viewport on every attach/resize, never after layout. */
++public final class ToolbarViewport670 extends HorizontalScrollView {
++ private boolean bounded;private int available;
++ public ToolbarViewport670(Context c){super(c);}
++ public void boundShell(){bounded=true;requestLayout();}
++ @Override protected void onMeasure(int w,int h){available=Math.max(0,MeasureSpec.getSize(w)-getPaddingLeft()-getPaddingRight());super.onMeasure(w,h);}
++ @Override protected void measureChild(View child,int w,int h){if(bounded)child.measure(MeasureSpec.makeMeasureSpec(available,MeasureSpec.EXACTLY),getChildMeasureSpec(h,getPaddingTop()+getPaddingBottom(),child.getLayoutParams().height));else super.measureChild(child,w,h);}
++ @Override protected void measureChildWithMargins(View child,int w,int used,int h,int usedH){if(bounded)measureChild(child,w,h);else super.measureChildWithMargins(child,w,used,h,usedH);}
++}
+diff --git a/app/src/main/java/helium314/keyboard/latin/LatinIME.java b/app/src/main/java/helium314/keyboard/latin/LatinIME.java
+index 081bc3e..0790a44 100644
+--- a/app/src/main/java/helium314/keyboard/latin/LatinIME.java
++++ b/app/src/main/java/helium314/keyboard/latin/LatinIME.java
+@@ -686,6 +686,7 @@ public class LatinIME extends InputMethodService implements
+ 
+     @Override
+     public void onDestroy() {
++        mSelectionUndo670.clear();
+         helium314.keyboard.keyforma.MediaClipboard.cancelPendingPaste(this);
+         helium314.keyboard.keyforma.TouchHeatmap.finish();
+         helium314.keyboard.keyforma.TypingMetrics.finish();
+@@ -782,6 +783,7 @@ public class LatinIME extends InputMethodService implements
+     @Override
+     public void onStartInput(final EditorInfo editorInfo, final boolean restarting) {
+         mCommandUndo665.clear();
++        mSelectionUndo670.clear();
+         mContextActions651.clear();
+         helium314.keyboard.keyforma.MediaClipboard.cancelPendingPaste(this);
+         mHandler.onStartInput(editorInfo, restarting);
+@@ -802,6 +804,7 @@ public class LatinIME extends InputMethodService implements
+ 
+     @Override
+     public void onFinishInputView(final boolean finishingInput) {
++        mSelectionUndo670.clear();
+         mContextActions651.clear();
+         StatsUtils.onFinishInputView();
+         mHandler.onFinishInputView(finishingInput);
+@@ -817,6 +820,7 @@ public class LatinIME extends InputMethodService implements
+ 
+     @Override
+     public void onFinishInput() {
++        mSelectionUndo670.clear();
+         mContextActions651.clear();
+         helium314.keyboard.keyforma.ClipboardOffer.retireBefore(this,mTypingBar.lastTyped());
+         helium314.keyboard.keyforma.MediaClipboard.cancelPendingPaste(this);
+@@ -1443,6 +1447,13 @@ public class LatinIME extends InputMethodService implements
+     // This method is public for testability of LatinIME, but also in the future it should
+     // completely replace #onCodeInput.
+     public void onEvent(@NonNull final Event event) {
++        if ((event.getKeyCode() == KeyCode.UNDO || event.getKeyCode() == KeyCode.REDO)
++                && mSelectionUndo670.apply(getCurrentInputConnection(), getCurrentInputEditorInfo(),
++                        event.getKeyCode() == KeyCode.REDO)) {
++            prepareKeyAntGesture();
++            noteKeyAntSelection(mSelectionUndo670.selectionStart(), mSelectionUndo670.selectionEnd());
++            return;
++        }
+         if(event.getKeyCode()==KeyCode.UNDO&&restoreCommand665())return;
+         if(helium314.keyboard.keyforma.ShortcutMode.handle(this,event.getCodePoint()>0?event.getCodePoint():event.getKeyCode()))return;
+         if(!helium314.keyboard.keyforma.ShortcutMode.isModeKey(event.getKeyCode())&&event.getKeyCode()!=KeyCode.SHIFT)mCommandUndo665.clear();
+@@ -1458,10 +1469,14 @@ public class LatinIME extends InputMethodService implements
+         if (KeyCode.VOICE_INPUT == event.getKeyCode()) {
+             mRichImm.switchToShortcutIme(this);
+         }
++        final boolean replacement670=event.getCodePoint()>=32||event.getKeyCode()==KeyCode.DELETE||event.getKeyCode()==KeyCode.CLIPBOARD_CUT||event.getKeyCode()==KeyCode.CLIPBOARD_PASTE;
++        final var selected670=replacement670&&mInputLogic.mConnection.hasSelection()?mSelectionUndo670.begin(getCurrentInputConnection(),getCurrentInputEditorInfo()):null;
++        if(replacement670&&selected670==null)mSelectionUndo670.clear();
+         final InputTransaction completeInputTransaction =
+                 mInputLogic.onCodeInput(mSettings.getCurrent(), event,
+                         mKeyboardSwitcher.getKeyboardShiftMode(),
+                         mKeyboardSwitcher.getCurrentKeyboardScript(), mHandler);
++        mSelectionUndo670.finish(getCurrentInputConnection(),getCurrentInputEditorInfo(),selected670);
+         updateStateAfterInputTransaction(completeInputTransaction);
+         mKeyboardSwitcher.onEvent(event, getCurrentAutoCapsState(), getCurrentRecapitalizeState());
+         if(event.getCodePoint()>=32)mClipboardHistoryManager.refreshAfterTyping();
+@@ -1474,6 +1489,7 @@ public class LatinIME extends InputMethodService implements
+         noteKeyAntSelection(start,end);return true;
+     }
+     private final helium314.keyboard.keyforma.ContextActions651 mContextActions651 = new helium314.keyboard.keyforma.ContextActions651(this);
++    private final helium314.keyboard.keyforma.SelectionUndo670 mSelectionUndo670 = new helium314.keyboard.keyforma.SelectionUndo670();
+     private final helium314.keyboard.keyforma.CommandUndo665 mCommandUndo665 = new helium314.keyboard.keyforma.CommandUndo665();
+     public CharSequence contextActionText651() {
+         var contextConnection=getCurrentInputConnection();
+@@ -1543,10 +1559,13 @@ public class LatinIME extends InputMethodService implements
+         learnKeyAntEmoji(rawText);
+         helium314.keyboard.keyforma.ClipboardOffer.typed(this,rawText.codePointCount(0,rawText.length()));
+         // TODO: have the keyboard pass the correct key code when we need it.
++        final var selected670=mInputLogic.mConnection.hasSelection()?mSelectionUndo670.begin(getCurrentInputConnection(),getCurrentInputEditorInfo()):null;
++        if(selected670==null)mSelectionUndo670.clear();
+         final Event event = Event.createSoftwareTextEvent(rawText, KeyCode.MULTIPLE_CODE_POINTS, null);
+         final InputTransaction completeInputTransaction =
+                 mInputLogic.onTextInput(mSettings.getCurrent(), event,
+                         mKeyboardSwitcher.getKeyboardShiftMode(), mHandler);
++        mSelectionUndo670.finish(getCurrentInputConnection(),getCurrentInputEditorInfo(),selected670);
+         updateStateAfterInputTransaction(completeInputTransaction);
+         mInputLogic.restartSuggestionsOnWordTouchedByCursor(mSettings.getCurrent(), mKeyboardSwitcher.getCurrentKeyboardScript());
+         mKeyboardSwitcher.onEvent(event, getCurrentAutoCapsState(), getCurrentRecapitalizeState());
+diff --git a/app/src/main/java/helium314/keyboard/latin/Suggest.kt b/app/src/main/java/helium314/keyboard/latin/Suggest.kt
+index 294be99..6c6f9a6 100644
+--- a/app/src/main/java/helium314/keyboard/latin/Suggest.kt
++++ b/app/src/main/java/helium314/keyboard/latin/Suggest.kt
+@@ -124,7 +124,8 @@ class Suggest(private val mDictionaryFacilitator: DictionaryFacilitator) {
+         )
+         val completions = (helium314.keyboard.keyforma.EmailMemory.complete(typedWordString) + helium314.keyboard.keyforma.PersonalWords.complete(typedWordString) +
+             helium314.keyboard.keyforma.PhraseMemory.suggest(typedWordString, ngramContext.extractPrevWordsContext()) +
+-            helium314.keyboard.keyforma.Loanwords.suggest(typedWordString, ngramContext.extractPrevWordsContext(), mDictionaryFacilitator.currentLocale.language)).map { personalCase(it) }.distinct().take(3)
++            helium314.keyboard.keyforma.Loanwords.suggest(typedWordString, ngramContext.extractPrevWordsContext(), mDictionaryFacilitator.currentLocale.language) +
++            helium314.keyboard.keyforma.SpecialistWords670.suggest(typedWordString)).map { personalCase(it) }.distinct().take(3)
+         val grammar = helium314.keyboard.keyforma.ItalianWriting.phrase(typedWordString, ngramContext.extractPrevWordsContext(), mDictionaryFacilitator.currentLocale.language)
+         val hasAutoCorrection = grammar == null && helium314.keyboard.keyforma.AdaptiveTyping.mayAutoCorrect(typedWordString, suggestionsContainer.firstOrNull()?.mWord, ngramContext.extractPrevWordsContext(), suggestionsContainer.firstOrNull()?.mSourceDict?.mLocale?.language, mDictionaryFacilitator.currentLocale.language) && completions.isEmpty() && (nativeAutoCorrection || ((personal != null || orthographic != null) && isCorrectionEnabled
+             && wordComposer.isComposingWord && !wordComposer.isResumed && !wordComposer.hasDigits() && !wordComposer.isMostlyCaps))
+diff --git a/app/src/main/java/helium314/keyboard/latin/suggestions/SuggestionStripView.kt b/app/src/main/java/helium314/keyboard/latin/suggestions/SuggestionStripView.kt
+index 7b8b586..926f130 100644
+--- a/app/src/main/java/helium314/keyboard/latin/suggestions/SuggestionStripView.kt
++++ b/app/src/main/java/helium314/keyboard/latin/suggestions/SuggestionStripView.kt
+@@ -283,6 +283,7 @@ class SuggestionStripView(context: Context, attrs: AttributeSet?, defStyle: Int)
+     }
+     private var candidateMenuOpen = false
+     private var candidateTouchInProgress = false
++    private var pendingUpdateIsTools670=false
+     private var pendingStripUpdate: (() -> Unit)? = null
+     private var contextAction651: helium314.keyboard.keyforma.ContextAction651.Action? = null
+     private var contextIcon652: helium314.keyboard.keyforma.ContextActionIcon652? = null
+@@ -416,8 +417,11 @@ class SuggestionStripView(context: Context, attrs: AttributeSet?, defStyle: Int)
+     private fun canStartReverse(event:MotionEvent):Boolean {
+         if(!keyAntToolsVisible || isDeviceLocked(context) || !helium314.keyboard.keyforma.ToolbarVisibility.enabled(context) ||
+             !helium314.keyboard.keyforma.KeyAntPrefs.bool(context,"strip_swipe_words",true))return false
+-        return edgeCommand(event,layoutDirection==LAYOUT_DIRECTION_RTL)
++        val tools=suggestionsStrip.getChildAt(0) ?: return false
++        val count=helium314.keyboard.keyforma.KeyAntPrefs.text(context,"strip_swipe_zone","1").toIntOrNull() ?: 1
++        return helium314.keyboard.keyforma.ToolbarEdges668.hit(tools,event.rawX,event.rawY,layoutDirection==LAYOUT_DIRECTION_RTL,count)
+     }
++    private var reverseHoldTarget670: View?=null
+     private var calendarPending668=false
+     private var calendarClaimed668=false
+     private var calendarX668=0f
+@@ -467,9 +471,9 @@ class SuggestionStripView(context: Context, attrs: AttributeSet?, defStyle: Int)
+         reverseReveal=helium314.keyboard.keyforma.StripReveal(this,findViewById(R.id.suggestions_strip_wrapper),toolbarExpandKey,
+             {keyAntToolsVisible&&!isDeviceLocked(context)}, {previewKeyAntSuggestions()}, {commit->
+                 releaseReverseWords();candidateTouchInProgress=false;reversePending=false;reverseAccepted=false
+-                val update=pendingStripUpdate;pendingStripUpdate=null
++                val update=pendingStripUpdate;val wasTools=pendingUpdateIsTools670;pendingStripUpdate=null
+                 if(commit){skipSurfaceMotion=true;try{(listener as? helium314.keyboard.latin.LatinIME)?.showKeyAntSuggestions()}finally{skipSurfaceMotion=false}}
+-                update?.invoke()
++                if(!commit||!wasTools)update?.invoke()
+             },false).external(if(layoutDirection==LAYOUT_DIRECTION_RTL)1f else -1f)
+         reversePending=true;reverseAccepted=false;candidateTouchInProgress=true
+         reverseReveal?.onTouch(toolbarExpandKey,event)
+@@ -488,10 +492,13 @@ class SuggestionStripView(context: Context, attrs: AttributeSet?, defStyle: Int)
+                 reversePending=true;reverseAccepted=true;candidateTouchInProgress=true
+                 reverseReveal?.onTouch(toolbarExpandKey,event);return true
+             }
+-            if(canStartReverse(event))beginReverse(event)
++            if(canStartReverse(event)){
++                beginReverse(event)
++                if(reverseReveal?.holdTrigger()==true){reverseHoldTarget670=helium314.keyboard.keyforma.ToolbarEdges668.commandAt(suggestionsStrip.getChildAt(0),event.rawX,event.rawY);return true}
++            }
+             else if(!isExternalSuggestionVisible)candidateTouchInProgress=true
+         }else if(reversePending){
+-            if(!reverseAccepted && event.eventTime-event.downTime>=android.view.ViewConfiguration.getLongPressTimeout()){
++            if(!reverseAccepted && reverseReveal?.holdTrigger()!=true && event.eventTime-event.downTime>=android.view.ViewConfiguration.getLongPressTimeout()){
+                 abortReverse();candidateTouchInProgress=false
+             }else{
+                 val wasActive=reverseReveal?.isActive==true
+@@ -500,7 +507,8 @@ class SuggestionStripView(context: Context, attrs: AttributeSet?, defStyle: Int)
+                     reverseAccepted=true;requestDisallowInterceptTouchEvent(true)
+                     val cancel=MotionEvent.obtain(event);cancel.action=MotionEvent.ACTION_CANCEL;super.dispatchTouchEvent(cancel);cancel.recycle()
+                 }
+-                if(reverseAccepted||wasActive){return true}
++                if(reverseAccepted||wasActive){reverseHoldTarget670=null;return true}
++                if(reverseHoldTarget670!=null){val target=reverseHoldTarget670;if(event.actionMasked==MotionEvent.ACTION_UP){reverseHoldTarget670=null;abortReverse();candidateTouchInProgress=false;target?.performClick()}else if(event.actionMasked==MotionEvent.ACTION_CANCEL){reverseHoldTarget670=null;abortReverse();candidateTouchInProgress=false};return true}
+                 if(event.actionMasked==MotionEvent.ACTION_UP||event.actionMasked==MotionEvent.ACTION_CANCEL||event.actionMasked==MotionEvent.ACTION_POINTER_DOWN){abortReverse();candidateTouchInProgress=false}
+             }
+         }
+@@ -538,6 +546,7 @@ class SuggestionStripView(context: Context, attrs: AttributeSet?, defStyle: Int)
+         val fontScale = helium314.keyboard.keyforma.KeyAntPrefs.number(context,"suggestion_text_size",87).coerceIn(70,110) / 100f
+         wordViews.forEachIndexed { i, word -> val size = wordBaseSizes[i] * fontScale; if(word.textSize != size) word.setTextSize(TypedValue.COMPLEX_UNIT_PX, size) }
+         if (candidateTouchInProgress || reveal?.isActive == true || reverseReveal?.isActive == true) {
++            pendingUpdateIsTools670=false
+             pendingStripUpdate = { setSuggestions(suggestions, isRtlLanguage) }
+             return
+         }
+@@ -561,6 +570,7 @@ class SuggestionStripView(context: Context, attrs: AttributeSet?, defStyle: Int)
+     fun setExternalSuggestionView(view: View?, addCloseButton: Boolean) {
+         if (view != null && view.parent === suggestionsStrip && isExternalSuggestionVisible && !addCloseButton) return
+         if (candidateTouchInProgress || reveal?.isActive == true || reverseReveal?.isActive == true) {
++            pendingUpdateIsTools670=view?.tag=="keyant-tools"
+             pendingStripUpdate = { setExternalSuggestionView(view, addCloseButton) }
+             return
+         }
+diff --git a/app/src/test/java/helium314/keyboard/keyforma/KeyAntGesture670Test.java b/app/src/test/java/helium314/keyboard/keyforma/KeyAntGesture670Test.java
+new file mode 100644
+index 0000000..712460e
+--- /dev/null
++++ b/app/src/test/java/helium314/keyboard/keyforma/KeyAntGesture670Test.java
+@@ -0,0 +1,11 @@
++// SPDX-License-Identifier: GPL-3.0-only
++package helium314.keyboard.keyforma;
++import android.app.Application;import android.view.*;import android.view.inputmethod.InputConnection;import org.junit.*;import org.junit.runner.RunWith;import org.robolectric.*;import org.robolectric.annotation.*;import static org.junit.Assert.*;import static org.mockito.Mockito.*;
++@RunWith(RobolectricTestRunner.class) @Config(sdk=35,application=Application.class,manifest=Config.NONE)
++public class KeyAntGesture670Test {
++ KeyAntMultiTouch636Test f;
++ @Before public void setup(){f=new KeyAntMultiTouch636Test();f.setup();}
++ @Test public void imperfectGestureWithSelectionNeverFallsThroughToLetters(){InputConnection ic=mock(InputConnection.class);when(f.ime.getCurrentInputConnection()).thenReturn(ic);when(ic.getSelectedText(0)).thenReturn("un testo molto lungo");assertFalse(f.gestures.onTouch(MotionEvent.obtain(100,100,0,35,80,0)));assertTrue(f.gestures.onTouch(f.event(115,MotionEvent.ACTION_POINTER_DOWN|256,80,80)));verify(f.host).cancelAllOngoingEvents();assertTrue(f.gestures.onTouch(f.event(160,MotionEvent.ACTION_MOVE,88,84)));assertTrue(f.gestures.onTouch(f.event(180,MotionEvent.ACTION_POINTER_UP|256,90,85)));assertTrue(f.gestures.onTouch(MotionEvent.obtain(100,200,MotionEvent.ACTION_UP,35,90,0)));verify(f.ime,never()).onCodeInput(anyInt(),anyInt(),anyInt(),anyBoolean());assertFalse(f.gestures.ownsStream());}
++ @Test public void selectedTextCanStillBeCopiedByValidDownGesture(){InputConnection ic=mock(InputConnection.class);when(f.ime.getCurrentInputConnection()).thenReturn(ic);when(ic.getSelectedText(0)).thenReturn("testo");f.gestures.onTouch(MotionEvent.obtain(100,100,0,35,60,0));f.gestures.onTouch(f.event(115,MotionEvent.ACTION_POINTER_DOWN|256,60,60));assertTrue(f.gestures.onTouch(f.event(160,MotionEvent.ACTION_MOVE,95,91)));verify(f.ime).onCodeInput(helium314.keyboard.keyboard.internal.keyboard_parser.floris.KeyCode.CLIPBOARD_COPY,-1,-1,false);}
++ @Test public void ordinaryMultitouchTypingWithoutSelectionIsUnchanged(){assertFalse(f.gestures.onTouch(MotionEvent.obtain(100,100,0,35,80,0)));assertFalse(f.gestures.onTouch(f.event(115,MotionEvent.ACTION_POINTER_DOWN|256,80,80)));assertFalse(f.gestures.onTouch(f.event(160,MotionEvent.ACTION_MOVE,82,81)));verify(f.host,never()).cancelAllOngoingEvents();}
++}
+diff --git a/app/src/test/java/helium314/keyboard/keyforma/KeyAntStrip670Test.java b/app/src/test/java/helium314/keyboard/keyforma/KeyAntStrip670Test.java
+new file mode 100644
+index 0000000..3740cac
+--- /dev/null
++++ b/app/src/test/java/helium314/keyboard/keyforma/KeyAntStrip670Test.java
+@@ -0,0 +1,15 @@
++// SPDX-License-Identifier: GPL-3.0-only
++package helium314.keyboard.keyforma;
++import android.app.Activity;import android.view.*;import org.junit.*;import org.junit.runner.RunWith;import org.robolectric.*;import org.robolectric.annotation.*;import static org.junit.Assert.*;import org.robolectric.util.ReflectionHelpers;
++@RunWith(RobolectricTestRunner.class) @Config(sdk=35,qualifiers="w400dp-h900dp-mdpi",shadows={helium314.keyboard.ShadowInputMethodManager2.class}) @GraphicsMode(GraphicsMode.Mode.NATIVE)
++public class KeyAntStrip670Test {
++ KeyAntStrip632Test f;
++ @Before public void setup(){f=new KeyAntStrip632Test();f.setup();KeyAntPrefs.get(f.c).edit().putBoolean("ka_pill_motion",false).apply();}
++ @After public void close(){f.close();}
++ long down=1000;
++ void event(int action,float x,long elapsed){if(action==MotionEvent.ACTION_DOWN)down=1000+elapsed;MotionEvent e=MotionEvent.obtain(down,1000+elapsed,action,x,24,0);f.strip.dispatchTouchEvent(e);e.recycle();}
++ @Test public void thirdVisibleIconCanStartReverseAndRoundTripRepeatedly(){try(var a=Robolectric.buildActivity(Activity.class).setup().visible()){f.attach(a.get());KeyAntPrefs.get(f.c).edit().putString("ka_strip_swipe_zone","3").apply();for(int repeat=0;repeat<4;repeat++){KeyAntV42Test.layout(f.strip,400,48);f.tools().fullScroll(View.FOCUS_RIGHT);f.idle();ViewGroup row=(ViewGroup)f.tools().getChildAt(0);View third=row.getChildAt(row.getChildCount()-3);int[] p=new int[2],s=new int[2];third.getLocationOnScreen(p);f.strip.getLocationOnScreen(s);float x=p[0]-s[0]+third.getWidth()/2f;event(0,x,repeat*500);event(2,x-130,repeat*500+90);event(1,x-130,repeat*500+110);assertFalse("words after swipe "+repeat,f.external());KeyAntV42Test.layout(f.strip,400,48);event(0,22,repeat*500+200);event(1,22,repeat*500+230);f.idle();assertTrue("icons after arrow "+repeat,f.external());}}}
++ @Test public void holdDragSurvivesLongPressTimeoutWithoutInvokingCommand(){try(var a=Robolectric.buildActivity(Activity.class).setup().visible()){f.attach(a.get());KeyAntPrefs.get(f.c).edit().putString("ka_strip_swipe_trigger","hold").apply();ViewGroup row=(ViewGroup)f.tools().getChildAt(0);int[] clicks={0};row.getChildAt(row.getChildCount()-1).setOnClickListener(v->clicks[0]++);event(0,378,0);event(2,180,600);event(1,180,650);assertFalse(f.external());assertEquals(0,clicks[0]);}}
++ @Test public void holdModeKeepsShortTapAvailable(){try(var a=Robolectric.buildActivity(Activity.class).setup().visible()){f.attach(a.get());KeyAntPrefs.get(f.c).edit().putString("ka_strip_swipe_trigger","hold").apply();ViewGroup row=(ViewGroup)f.tools().getChildAt(0);int[] clicks={0};row.getChildAt(row.getChildCount()-1).setOnClickListener(v->clicks[0]++);event(0,378,0);event(1,378,70);assertEquals(1,clicks[0]);assertTrue(f.external());}}
++ @Test public void committedReverseIgnoresStaleQueuedToolsUpdate(){try(var a=Robolectric.buildActivity(Activity.class).setup().visible()){f.attach(a.get());event(0,378,0);event(2,180,100);View tools=f.tools();((ViewGroup)tools.getParent()).removeView(tools);f.strip.setExternalSuggestionView(tools,false);event(1,180,140);assertFalse(f.external());}}
++}
+diff --git a/app/src/test/java/helium314/keyboard/keyforma/KeyAntStudio667Test.kt b/app/src/test/java/helium314/keyboard/keyforma/KeyAntStudio667Test.kt
+index 41bc4bc..22b83c8 100644
+--- a/app/src/test/java/helium314/keyboard/keyforma/KeyAntStudio667Test.kt
++++ b/app/src/test/java/helium314/keyboard/keyforma/KeyAntStudio667Test.kt
+@@ -15,7 +15,7 @@ class KeyAntStudio667Test {
+  @Test fun gesturesHaveIndependentChoicesAndSearchEntries(){
+   val c=RuntimeEnvironment.getApplication();Robolectric.buildActivity(StudioActivity::class.java,Intent(c,StudioActivity::class.java).putExtra("page","edge_panels")).setup().visible().use{controller->
+    val decor=controller.get().window.decorView;KeyAntV42Test.layout(decor,420,900);compose.waitForIdle()
+-   compose.onNodeWithText("Gesto del calendario").performScrollTo().performClick();compose.waitForIdle();compose.onNodeWithText("Swipe immediato").performClick();compose.waitForIdle()
++   compose.onNodeWithText("Gesto del calendario").performScrollTo().performClick();compose.waitForIdle();compose.onAllNodesWithText("Swipe immediato",useUnmergedTree=true).onLast().performClick();compose.waitForIdle()
+    Assert.assertEquals("swipe",KeyAntPrefs.text(c,"calendar_gesture","hold"));Assert.assertEquals("hold",KeyAntPrefs.text(c,"numbers_gesture","hold"))
+    for(title in listOf("Gesto del calendario","Gesto del tastierino","Visualizzazione della barra"))Assert.assertEquals(1,SettingsSearch.entries.count{it.title==title})
+    KeyAntV42Test.save(KeyAntV63Test.render(decor,420,900),"KeyAnt-0667-gesti-impostazioni.png")
+@@ -33,7 +33,7 @@ class KeyAntStudio667Test {
+  @Test fun toolbarModesCanBeSelectedWithoutChangingCommandOrder(){
+   val c=RuntimeEnvironment.getApplication();val before=ToolCatalog.order(c);Robolectric.buildActivity(StudioActivity::class.java,Intent(c,StudioActivity::class.java).putExtra("page","bars")).setup().visible().use{controller->
+    val decor=controller.get().window.decorView;KeyAntV42Test.layout(decor,420,900);compose.waitForIdle()
+-   compose.onNodeWithText("Visualizzazione della barra").performScrollTo().performClick();compose.waitForIdle();compose.onNodeWithText("Manopola").performClick();compose.waitForIdle()
++   compose.onNodeWithText("Visualizzazione della barra").performScrollTo().performClick();compose.waitForIdle();compose.onNodeWithText("Manopola meccanica").performClick();compose.waitForIdle()
+    Assert.assertEquals("knob",ToolbarModes667.mode(c));Assert.assertEquals(before,ToolCatalog.order(c))
+    KeyAntV42Test.save(KeyAntV63Test.render(decor,420,900),"KeyAnt-0667-barra-impostazioni.png")
+   }
+diff --git a/app/src/test/java/helium314/keyboard/keyforma/KeyAntVisual670Test.java b/app/src/test/java/helium314/keyboard/keyforma/KeyAntVisual670Test.java
+new file mode 100644
+index 0000000..e9c4b4b
+--- /dev/null
++++ b/app/src/test/java/helium314/keyboard/keyforma/KeyAntVisual670Test.java
+@@ -0,0 +1,15 @@
++// SPDX-License-Identifier: GPL-3.0-only
++package helium314.keyboard.keyforma;
++import android.view.*;import android.widget.*;import android.graphics.*;import android.app.Activity;import org.junit.*;import org.junit.runner.RunWith;import org.robolectric.*;import org.robolectric.annotation.*;import static org.junit.Assert.*;
++@RunWith(RobolectricTestRunner.class) @Config(sdk=35,qualifiers="w420dp-h900dp-mdpi",shadows={helium314.keyboard.ShadowInputMethodManager2.class}) @GraphicsMode(GraphicsMode.Mode.NATIVE)
++public class KeyAntVisual670Test {
++ KeyAntInline654Test f;
++ @Before public void setup(){f=new KeyAntInline654Test();f.setup();KeyAntPrefs.get(f.f.c).edit().putBoolean("ka_pill_motion",false).apply();}
++ @After public void close(){f.close();}
++ @Test public void shellsStayWithinViewportAfterDetachResizeAndReattach()throws Exception{for(String mode:new String[]{"knob","fan","ribbon","drawer","shutter"}){KeyAntPrefs.get(f.f.c).edit().putString("ka_toolbar_display",mode).apply();f.bar.refresh();View tools=f.bar.takeToolsView();FrameLayout host=new FrameLayout(f.f.c);host.addView(tools);for(int w:new int[]{420,320,900,420}){KeyAntV42Test.layout(host,w,48);tools.findViewWithTag("keyant-knob").performClick();KeyAntV42Test.layout(host,w,48);ViewGroup shell=(ViewGroup)((HorizontalScrollView)tools).getChildAt(0);assertEquals(w,shell.getWidth());assertTrue(shell.getChildAt(1).getRight()<=w-10);host.removeView(tools);host.addView(tools);}tools.findViewWithTag("keyant-knob").performClick();KeyAntV42Test.save(KeyAntV63Test.render(host,420,48),"KeyAnt-0670-"+mode+".png");}}
++ @Test public void newOrbsHaveDistinctFrontAndBackAndSharedCatalog()throws Exception{Bitmap sheet=Bitmap.createBitmap(900,CharacterOrbs670.IDS.length*160+180,Bitmap.Config.ARGB_8888);Canvas out=new Canvas(sheet);out.drawColor(0xff252a32);Paint p=new Paint(3);p.setColor(Color.WHITE);p.setTextSize(15);String[] ids=java.util.Arrays.copyOf(CharacterOrbs670.IDS,CharacterOrbs670.IDS.length+1);ids[ids.length-1]="sharingan";
++ for(int i=0;i<ids.length;i++){String id=ids[i];BallMaps.Surface map=BallMaps.load(f.f.c,id);assertNotNull(id,map);if(id.startsWith("head_"))assertNotEquals(map.sample(Math.PI/2,0),map.sample(-Math.PI/2,0));assertTrue(java.util.Arrays.asList(BallAppearance.IDS).contains(id));out.drawText(id,8,i*160+18,p);for(int k=0;k<5;k++){BallAppearance ball=new BallAppearance();ball.skin(id);ball.draw(out,f.f.c,140+k*165,i*160+92,64,0,k*56.1f,false,Color.MAGENTA);}}
++ KeyAntV42Test.save(sheet,"KeyAnt-0670-orbs-360.png");assertEquals("PIDDU",BallAppearance.group("piddu_kitty"));assertEquals("Volti anime",BallAppearance.group("head_hinata"));assertEquals(BallAppearance.IDS.length,BallAppearance.NAMES.length);}
++ @Test public void edgeZoneUsesVisibleLastThreeCommands(){try(var a=Robolectric.buildActivity(Activity.class).setup().visible()){LinearLayout row=new LinearLayout(a.get());for(int i=0;i<5;i++){Button b=new Button(a.get());b.setContentDescription("tool"+i);row.addView(b,new LinearLayout.LayoutParams(60,48));}a.get().setContentView(row);KeyAntV42Test.layout(row,300,48);int[] pos=new int[2];row.getLocationOnScreen(pos);assertFalse(ToolbarEdges668.hit(row,pos[0]+150,pos[1]+24,false,1));assertTrue(ToolbarEdges668.hit(row,pos[0]+150,pos[1]+24,false,3));assertFalse(ToolbarEdges668.hit(row,pos[0]+30,pos[1]+24,false,3));}}
++ @Test public void reopeningDuringCloseCannotBeHiddenByOldAnimation(){try(var a=Robolectric.buildActivity(Activity.class).setup().visible()){KeyAntPrefs.get(f.f.c).edit().putBoolean("ka_pill_motion",true).putString("ka_toolbar_display","drawer").apply();f.bar.refresh();View tools=f.bar.takeToolsView();a.get().setContentView(tools);KeyAntV42Test.layout(tools,420,48);View button=tools.findViewWithTag("keyant-knob");button.performClick();Shadows.shadowOf(android.os.Looper.getMainLooper()).idleFor(java.time.Duration.ofMillis(400));button.performClick();Shadows.shadowOf(android.os.Looper.getMainLooper()).idleFor(java.time.Duration.ofMillis(80));button.performClick();Shadows.shadowOf(android.os.Looper.getMainLooper()).idleFor(java.time.Duration.ofMillis(500));View viewport=((ViewGroup)((HorizontalScrollView)tools).getChildAt(0)).getChildAt(1);assertEquals(View.VISIBLE,viewport.getVisibility());assertEquals(1f,viewport.getAlpha(),.01);assertEquals(0f,viewport.getTranslationX(),.01);}}
++}
+diff --git a/app/src/test/java/helium314/keyboard/keyforma/KeyAntWriting670Test.java b/app/src/test/java/helium314/keyboard/keyforma/KeyAntWriting670Test.java
+new file mode 100644
+index 0000000..c23551e
+--- /dev/null
++++ b/app/src/test/java/helium314/keyboard/keyforma/KeyAntWriting670Test.java
+@@ -0,0 +1,18 @@
++// SPDX-License-Identifier: GPL-3.0-only
++package helium314.keyboard.keyforma;
++import android.content.*;import android.text.InputType;import android.view.inputmethod.*;import android.widget.EditText;import android.app.Activity;import org.junit.*;import org.junit.runner.RunWith;import org.robolectric.*;import org.robolectric.annotation.*;import static org.junit.Assert.*;import java.time.Duration;
++@RunWith(RobolectricTestRunner.class) @Config(sdk=35,shadows={helium314.keyboard.ShadowInputMethodManager2.class})
++public class KeyAntWriting670Test {
++ KeyAntCorrection641Test f;
++ @Before public void setup(){f=new KeyAntCorrection641Test();f.setup();f.settings("test.notes",InputType.TYPE_CLASS_TEXT,0,false);AdaptiveTyping.init(f.ime);}
++ @After public void close(){f.close();}
++ @Test public void dottedEmailCompletesFromTwoCharactersAndConnectorsStayInWord(){EmailMemory.add(f.ime,"a.person@example.org");assertTrue(EmailMemory.complete("a.").contains("a.person@example.org"));assertTrue(EmailMemory.isKnownConnector("a",'.'));assertTrue(EmailMemory.isKnownConnector("a.person",'@'));assertFalse(EmailMemory.isKnownConnector("unrelated",'.'));assertTrue(EmailMemory.complete("a").isEmpty());}
++ @Test public void privateFieldsNeverOfferEmailOrLearnNewAddress(){EmailMemory.add(f.ime,"b.person@example.org");f.settings("test.notes",InputType.TYPE_CLASS_TEXT,EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING,false);assertTrue(EmailMemory.complete("b.").isEmpty());EmailMemory.learn("private.person@example.org");EmailMemory.learn("private.person@example.org");assertFalse(EmailMemory.entries(f.ime).containsKey("private.person@example.org"));}
++ @Test public void namesAndSpecialistPrefixesTolerateOnePlausibleMistake(){assertTrue(SpecialistWords670.suggest("Alzh").contains("Alzheimer"));assertTrue(SpecialistWords670.suggest("Alze").contains("Alzheimer"));assertTrue(SpecialistWords670.suggest("Schro").contains("Schrödinger"));assertTrue(SpecialistWords670.suggest("Takam").contains("Takemichi"));assertTrue(SpecialistWords670.suggest("xyzabc").isEmpty());assertTrue(SpecialistWords670.suggest("Al").isEmpty());}
++ @Test public void recencyDemotesOldWordsWithoutErasingThem(){long now=1800000000000L;assertEquals(1,PhraseMemory.recency(now,now),.001);assertTrue(PhraseMemory.recency(now-90L*86400000,now)<.4);assertTrue(PhraseMemory.recency(now-900L*86400000,now)>.2);}
++ @Test public void recentHabitOutranksOldMoreFrequentHabit(){PhraseMemory.clear(f.ime);PhraseMemory.awaitIdle();long now=1800000000000L;try{PhraseMemory.clock=()->now-180L*86400000;for(int i=0;i<20;i++)PhraseMemory.confirm("saluto","amico");PhraseMemory.clock=()->now;for(int i=0;i<5;i++)PhraseMemory.confirm("saluto","amore");PhraseMemory.awaitIdle();assertEquals("amore",PhraseMemory.suggest("am","saluto").get(0));assertEquals(2,PhraseMemory.page(f.ime,"am",0).total());}finally{PhraseMemory.clock=System::currentTimeMillis;}}
++ @Test public void replacementCanUndoAndRedoWithLongTextAndEmoji(){try(var a=Robolectric.buildActivity(Activity.class).setup()){EditText e=new EditText(a.get());a.get().setContentView(e);String old="Testo lungo 👩🏽‍💻 ".repeat(70);e.setText("Prima "+old+" dopo");e.setSelection(6,6+old.length());EditorInfo info=new EditorInfo();InputConnection ic=e.onCreateInputConnection(info);SelectionUndo670 undo=new SelectionUndo670();var shot=undo.begin(ic,info);assertNotNull(shot);ic.commitText("z",1);undo.finish(ic,info,shot);assertTrue(undo.apply(ic,info,false));assertEquals("Prima "+old+" dopo",e.getText().toString());assertTrue(undo.apply(ic,info,true));assertEquals("Prima z dopo",e.getText().toString());assertTrue(undo.apply(ic,info,false));}}
++ @Test public void replacementNeverRestoresIntoAnotherEditorOrChangedText(){try(var a=Robolectric.buildActivity(Activity.class).setup()){EditText e=new EditText(a.get());a.get().setContentView(e);e.setText("molte parole");e.selectAll();EditorInfo info=new EditorInfo();InputConnection ic=e.onCreateInputConnection(info);SelectionUndo670 undo=new SelectionUndo670();var old=undo.begin(ic,info);ic.commitText("x",1);undo.finish(ic,info,old);assertFalse(undo.apply(ic,new EditorInfo(),false));ic.commitText("y",1);assertFalse(undo.apply(ic,info,false));assertEquals("xy",e.getText().toString());}}
++ @Test public void passwordAndExpiredRecoveryAreExcluded(){try(var a=Robolectric.buildActivity(Activity.class).setup()){EditText e=new EditText(a.get());a.get().setContentView(e);e.setText("riservato");e.selectAll();EditorInfo info=new EditorInfo();InputConnection ic=e.onCreateInputConnection(info);SelectionUndo670 undo=new SelectionUndo670();info.inputType=InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_VARIATION_PASSWORD;assertNull(undo.begin(ic,info));info.inputType=InputType.TYPE_CLASS_TEXT;var old=undo.begin(ic,info);ic.commitText("x",1);undo.finish(ic,info,old);Shadows.shadowOf(android.os.Looper.getMainLooper()).idleFor(Duration.ofMinutes(3));assertFalse(undo.apply(ic,info,false));}}
++ @Test public void ctrlLettersReachRecoveryBeforeNativeUndo(){try(var a=Robolectric.buildActivity(Activity.class).setup()){EditText e=new EditText(a.get());a.get().setContentView(e);e.setText("Testo da recuperare");e.selectAll();EditorInfo info=new EditorInfo();InputConnection ic=e.onCreateInputConnection(info);var ime=org.mockito.Mockito.spy(f.ime);org.mockito.Mockito.doReturn(ic).when(ime).getCurrentInputConnection();org.mockito.Mockito.doReturn(info).when(ime).getCurrentInputEditorInfo();org.mockito.Mockito.doNothing().when(ime).prepareKeyAntGesture();org.mockito.Mockito.doNothing().when(ime).noteKeyAntSelection(org.mockito.ArgumentMatchers.anyInt(),org.mockito.ArgumentMatchers.anyInt());org.mockito.Mockito.doAnswer(call->{ime.onEvent(helium314.keyboard.event.Event.createSoftwareKeypressEvent(helium314.keyboard.event.Event.NOT_A_CODE_POINT,call.getArgument(0),0,-1,-1,false));return null;}).when(ime).onCodeInput(org.mockito.ArgumentMatchers.anyInt(),org.mockito.ArgumentMatchers.anyInt(),org.mockito.ArgumentMatchers.anyInt(),org.mockito.ArgumentMatchers.anyBoolean());SelectionUndo670 undo=org.robolectric.util.ReflectionHelpers.getField(ime,"mSelectionUndo670");var old=undo.begin(ic,info);ic.commitText("x",1);undo.finish(ic,info,old);ShortcutMode.activate();try{ime.onEvent(helium314.keyboard.event.Event.createEventForCodePointFromUnknownSource('z'));assertEquals("Testo da recuperare",e.getText().toString());org.mockito.Mockito.verify(ime).noteKeyAntSelection(0,"Testo da recuperare".length());ime.onEvent(helium314.keyboard.event.Event.createEventForCodePointFromUnknownSource('y'));assertEquals("x",e.getText().toString());}finally{ShortcutMode.reset();undo.clear();}}}
++}
+diff --git a/tools/verify_0670.sh b/tools/verify_0670.sh
+new file mode 100755
+index 0000000..5ca97d8
+--- /dev/null
++++ b/tools/verify_0670.sh
+@@ -0,0 +1,41 @@
++#!/bin/sh
++set -eu
++# Use the project wrapper or provide a Gradle executable already configured for the SDK.
++runner=${KEYANT_GRADLE:-./gradlew}
++python3 tools/verify_icu_0662.py
++"$runner" --max-workers=1 -Dorg.gradle.jvmargs=-Xmx1536m -I gradle/keyant-regression.gradle :app:testDebugNoMinifyUnitTest \
++ --tests '*KeyAnt*670Test' \
++ --tests '*KeyAntStrip632Test' \
++ --tests '*KeyAntV630Test' \
++ --tests '*KeyAnt*669Test' \
++ --tests '*KeyAntMultiTouch636Test' \
++ --tests '*KeyAntToolbar667Test' \
++ --tests '*KeyAntV613Test' \
++ --tests '*KeyAntV612Test' \
++ --tests '*KeyAntStudio643Test.trialKeysAndOutsideDismissDoNotSelectTheme' \
++ --tests '*KeyAntRetirement657Test' \
++ --tests '*KeyAntGesture668Test' \
++ --tests '*KeyAntStrip668Test' \
++ --tests '*KeyAntMaterials668Test' \
++ --tests '*KeyAntStudio668Test' \
++ --tests '*KeyAntStudio667Test' \
++ --tests '*KeyAntGestureStreamTest' \
++ --tests '*KeyAntCorrection641Test' \
++ --tests '*KeyAntV62Test' \
++ --tests 'helium314.keyboard.latin.InputLogicTest' \
++ --tests '*SuggestionCase647Test' \
++ --tests '*KeyAntCalibration644Test' \
++ --tests '*KeyAntPanels666Test' \
++ --tests '*KeyAntSplit663Test' \
++ --tests '*KeyAntBehavior648Test' \
++ --tests '*KeyAntContext657Test'
++"$runner" :app:processDebugNoMinifyManifestForPackage --rerun :app:assembleDebugNoMinify
++apk=app/build/outputs/apk/debugNoMinify/KeyAnt_0.6.70-debugNoMinify.apk
++build_tools="${ANDROID_HOME:?Set ANDROID_HOME}/build-tools/36.0.0"
++badging=$("$build_tools/aapt" dump badging "$apk")
++case "$badging" in
++ *"versionCode='97' versionName='0.6.70'"*) ;;
++ *) echo 'Unexpected packaged APK version' >&2; exit 1 ;;
++esac
++"$build_tools/apksigner" verify --print-certs "$apk"
++"$build_tools/zipalign" -c -P 16 4 "$apk"
