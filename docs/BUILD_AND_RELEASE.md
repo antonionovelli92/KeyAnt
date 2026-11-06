@@ -12,7 +12,7 @@ Eseguire dalla radice:
 ```sh
 python3 tools/fetch_native_libs.py
 ./gradlew :app:assembleDebugNoMinify
-sh tools/verify_0667.sh
+sh tools/verify_0668.sh
 ```
 
 L'APK viene scritto in `app/build/outputs/apk/debugNoMinify/`. Include arm64-v8a e x86_64; Android minimo 8.0/API 26. La variante personale `debugNoMinify` non abilita il debug Android.
@@ -52,7 +52,7 @@ Le due librerie native AI precompilate sono incluse nello ZIP completo e nel bun
 
 ## Stato lint
 
-Il controllo lint completo termina con errore per 550 errori, 448 avvisi e 1 suggerimento già presenti nella 0.6.66. La suite selezionata e la compilazione APK sono controlli distinti: consultare il rapporto `VERIFICA-0.6.67.md` della release corrente. Non è stata aggiunta una soppressione globale per nascondere il debito preesistente.
+Il lint completo ha debito preesistente: nella 0.6.67 risultavano 550 errori, 448 avvisi e 1 suggerimento. Consultare VERIFICA-0.6.68.md per l'esito corrente e il confronto effettivo con la baseline. Non considerare lint superato solo perché test e APK compilano; non aggiungere una soppressione globale per nascondere il debito.
 
 
 ## 0.6.54
@@ -75,3 +75,10 @@ Eseguire tools/verify_0666.sh, poi assemblare l’APK finale e verificare versio
 ## 0.6.67
 
 Gate tools/verify_0667.sh: parser degli intervalli composti, fine esatta nel provider, esiti compatti e contrasto, gesti opzionali, modalità della barra, catalogo e classe InputLogicTest ampliata. Aggiunto EventRange667 al controllo ICU. VersionCode 94, firma invariata. Le indicazioni storiche di consegna anticipata non si applicano: il link va fornito dopo la pubblicazione e il controllo del download. Nessuna misura di FPS né prova fisica Fold/Pixel viene dedotta dai test Robolectric.
+
+
+## 0.6.68
+
+Gate tools/verify_0668.sh: aggiunge flussi reali della barra, attesa del gesto, selezione delle opzioni, hitbox delle icone visibili, affiancamento indipendente del calendario e pixel dei materiali derivati. Le prove dell'interfaccia Android devono attendere il normale dispatch dei click prima delle asserzioni. Non annidare un'anteprima interattiva nel click della scelta.
+
+VersionCode 95; certificato personale invariato. Conservare il rapporto per classe, controllo ICU e confronto lint normalizzato (ID, severità, messaggio, file; le righe possono spostarsi). Non usare i risultati di una compilazione interrotta come validazione. La pubblicazione resta distinta dalla preparazione locale; verificare gli asset scaricati prima di comunicare un link definitivo.

@@ -1,26 +1,30 @@
-# Continuità KeyAnt dopo la ripresa del 4 novembre 2026
+# Continuità KeyAnt
 
 ## Punto da cui ripartire
 
-Versione corrente: **0.6.66**, versionCode **93**. Leggere AGGIORNAMENTO_0.6.66.md, VERIFICA-0.6.66.md e TEST-RESULTS-0.6.66.json per lo stato verificato.
+Versione sorgente **0.6.68**, versionCode **95**, baseline **v0.6.67 / 51f0ef36ce017c3ec4ba82ca76095c080cd088eb**. Consultare AGGIORNAMENTO_0.6.68.md, VERIFICA-0.6.68.md e TEST-RESULTS-0.6.68.json. Questi documenti descrivono i controlli realmente eseguiti; non dedurre il completamento della pubblicazione dal solo numero di versione.
 
-La fonte completa è l’allegato **KeyAnt-0.6.66-history.bundle**, tag sorgente v0.6.66; il ramo principale GitHub contiene documentazione e non l’intero progetto Android. La configurazione Tasks è dichiarata funzionante dall’utente sul suo telefono, non verificata con un account reale in questo ambiente. Le note storiche sotto descrivono lo stato delle singole revisioni e non sostituiscono l’aggiornamento corrente.
+Il ramo principale GitHub è documentale. Il progetto completo viene conservato negli archivi sorgenti pubblici e nel bundle della cronologia. La configurazione Tasks è dichiarata funzionante dall'utente sul proprio telefono, ma non verificata con account reali nell'ambiente di build.
 
 ## Vincoli da preservare
 
-- Fluidità di apertura, chiusura e comparsa; i cambi rapidi devono ripartire dallo stato visibile.
-- Azioni dalla frase attive di default, disattivabili; rispettare una scelta già salvata.
-- Freccia nello stesso spazio, tocco per la proposta e trascinamento per gli strumenti.
-- Nessun invio automatico: conferma prima delle app esterne. Tasks ha il flusso diretto predisposto, ma OAuth Cloud è ancora da configurare (docs/GOOGLE_TASKS_SETUP.md); calendario diretto con permessi e conferma oppure editor esterno; telefono solo tastierino.
-- Nessun azzeramento di appunti, memoria personale, preferiti e calibrazione.
-- Pubblicare sorgenti, note, risultati reali e ripristino; escludere chiavi e credenziali.
+- Calendario: terzo gesto opzionale dalla prima icona visibile verso destra. Non aggiungere il gesto dei numeri sulla destra della barra.
+- Swipe tra strumenti e parole indipendenti e attivi di default; i tocchi restano utilizzabili. Controlli ripetuti nei menu usano le stesse preferenze, con un solo risultato di ricerca.
+- Calendario affiancato sul Fold orizzontale indipendente dai numeri, default OFF; split, rotazione e geometria devono rimuovere vecchie traslazioni.
+- L'icona cede spazio alla pillola e ritorna con la X, conservando il contesto. Salvataggio, conferma, destinazioni e Undo invariati.
+- Temi derivati China: conservare il materiale e il popup originali, il profilo scolpito e le personalizzazioni Maker.
+- Solidità: override reversibile, senza riscrivere opacità, colori o memoria personale.
+- Nessuna modifica al compromesso iniziale icone/suggerimenti: l'utente stava ragionando, non ha scelto un nuovo default.
+- Nessun azzeramento di appunti, statistiche, preferiti, calibrazione o account. Non pubblicare chiavi, credenziali e video personali.
+- Link APK definitivo dopo test, pubblicazione e verifica dell'asset. ROLLBACK-0.6.68.md indica il ripristino sicuro senza disinstallazione.
 
 ## Test e limiti
 
-Consultare `VERIFICA-0.6.59.md` per gli esiti di questa revisione. Eseguire `tools/verify_0659.sh` nell’ambiente descritto in `docs/BUILD_AND_RELEASE.md`. Il lint globale presenta debito preesistente: non confonderlo con un controllo superato né con una regressione automaticamente introdotta dalla nuova funzione.
+Usare tools/verify_0668.sh. Robolectric SDK 35 e rendering nativo verificano stato, eventi e pixel, non FPS né il comportamento hardware del Fold/Pixel. Le integrazioni vengono provate con provider e trasporti simulati; OAuth, sincronizzazione remota e notifiche a schermo spento richiedono il dispositivo. Il debito lint è riportato separatamente dal risultato dei test.
 
-La verifica Robolectric non misura fluidità, frame time o compatibilità delle versioni OEM sul Fold reale. Da controllare nell’uso: passaggio a Tasks/Calendar, Fold aperto e chiuso, digitazione rapida, trascinamento quando appare l’icona e ritorno alla normale freccia.
+## Cronologia
 
+Le note seguenti sono storiche e non descrivono lo stato corrente degli account o della release.
 
 ## Ripresa 0.6.54
 Scheda inline `ActionCard654` / modello editor-bound `ActionDraft654`; `ActionAccess654` solo per consenso di sistema. `TasksClient654` usa AuthorizationClient e REST, registrazione Cloud ancora non effettuata (console non accessibile). `MaterialResponse654` condiviso live/anteprima. Leggere AGGIORNAMENTO_0.6.54.md e docs/GOOGLE_TASKS_SETUP.md prima di dichiarare funzionante il collegamento reale.

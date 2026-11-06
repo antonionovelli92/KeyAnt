@@ -1,0 +1,4265 @@
+{
+  "version": "0.6.68",
+  "cases": [
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntActionPrivacy651Test",
+      "test": "rapidTypingCoalescesAndNeverLaunchesWithoutTap",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntActionPrivacy651Test",
+      "test": "hiddenActionCannotInterceptTheNormalToolbarArrow",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntActionPrivacy651Test",
+      "test": "disablingFeatureRetiresOffer",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntActionPrivacy651Test",
+      "test": "editorSwitchCancelsQueuedReadAndTapRevalidates",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntActionPrivacy651Test",
+      "test": "passwordsNoLearningFieldsAndIncognitoNeverReadText",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntActions651Test",
+      "test": "datesUseLocalZoneAndRejectInvalidOrAmbiguousInformation",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntActions651Test",
+      "test": "reviewDoesNotLaunchAnythingUntilExplicitConfirmation",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntActions651Test",
+      "test": "twelveDistinctMaterialsAreInGalleryMakerAndSearch",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntActions651Test",
+      "test": "unknownCalendarDateRequiresUserInput",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntActions651Test",
+      "test": "externalHandoffIsReviewableAndNeverAnAutomaticCall",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntActions651Test",
+      "test": "exportMaterialSheetAndPressedStates",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntActions651Test",
+      "test": "offerExpiresWithoutBeingRevivedByDictionaryCallbacks",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntActions651Test",
+      "test": "recognizesOnlyExplicitCurrentSentence",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntActions664Test",
+      "test": "neverDeletesATruncatedRead",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntActions664Test",
+      "test": "rejectDistantWordExpansionButKeepNearTypos",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntActions664Test",
+      "test": "makerPanelChoicesStayWithCreation",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntActions664Test",
+      "test": "confirmedSuffixOnlyAndOnlyInTheSameEditor",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntAgenda663Test",
+      "test": "providerChangesRefreshOpenAgendaAndCloseUnregistersObserver",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntAgenda663Test",
+      "test": "calendarPanelRequestsOnlyReadPermission",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntAgenda663Test",
+      "test": "recurringInstancesAllDayAndMidnightBoundariesAreGroupedCorrectly",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntAgenda663Test",
+      "test": "readerDoesNotRequestOrReadWithoutPermissionAndClosesCleanly",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntAgenda663Test",
+      "test": "unavailableProviderIsNotShownAsAnEmptySuccessfulAgenda",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntAgenda664Test",
+      "test": "allDayIsExcludedFromTimedColumns",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntAgenda664Test",
+      "test": "overlappingBlocksShareColumnsAndMidnightIsClipped",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntAgenda664Test",
+      "test": "timelineDrawsAndClickOnlyInsertsText",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntAppearance660Test",
+      "test": "allSculptedMaterialsHaveMatchingBarsAndSpheres",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntAppearance660Test",
+      "test": "iconsOnlyHidesPlateButRetainsThemedGlyphAndTouchBounds",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntAppearance660Test",
+      "test": "glassXboxAndMakerBecomeOpaqueWithoutChangingTheirDesign",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntAppearance660Test",
+      "test": "opaqueSwitchRestoresAllSavedValuesAndRenderedGlass",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntAppearance660Test",
+      "test": "sphereMaterialRotatesAndOpaqueOverrideIsReversible",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntAppearance660Test",
+      "test": "renderCoordinatedMaterialsAndIconsOnlyComparison",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntBackground649Test",
+      "test": "defaultThemeIsRestrainedWithOnlyDeleteCoral",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntBackground649Test",
+      "test": "footerCanBeAdjustedIndependentlyAndLinkedReversibly",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntBackground649Test",
+      "test": "solidAndTransparentModesDoNotDestroyGlassSettings",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntBackground649Test",
+      "test": "renderFourThemesAndTransparencyComparison",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntBackground649Test",
+      "test": "linkingGlassPreservesIndependentKeysAndRestoresSavedBackground",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntBackground649Test",
+      "test": "makerRetainsSatinAndUnifiedAlphaCanBeUndone",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntBackground649Test",
+      "test": "blurChangesOnlyWallpaperAndZeroMatchesTransparency",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntBehavior648Test",
+      "test": "watermarkCannotMoveBackwardsAndLegacyChoiceIsHonored",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntBehavior648Test",
+      "test": "lateMediaCannotReviveTypedCopyInAnotherEditor",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntBehavior648Test",
+      "test": "lateRepresentationOfSameRetiredEventStaysRetired",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntBehavior648Test",
+      "test": "providerKeepsOwnSurfaceAndNavigationHasAccessibleTargets",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntBehavior648Test",
+      "test": "contextIncludesItalianSingleLetterWordsWithoutWeakeningAdmission",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntCalendar653Test",
+      "test": "permissionIsRequestedOnlyOnExplicitUseAndNeverWritesOnOpen",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntCalendar653Test",
+      "test": "eventAndReminderUseOneBatchWithCorrectTimezoneAndDuration",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntCalendar653Test",
+      "test": "permissionRevocationBeforeWriteDoesNotInsert",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntCalendar653Test",
+      "test": "missingCalendarAndDeniedAccessKeepReviewAndExternalOption",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntCalendar653Test",
+      "test": "doubleTapAndRotationKeepExactlyOneSave",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntCalendar653Test",
+      "test": "recognizedDateIsSeparatedFromEditableEventTitle",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntCalendar653Test",
+      "test": "uncertainProviderResultIsNotRetried",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntCalendar653Test",
+      "test": "calendarReviewFitsShortDisplays",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntCalibration644Test",
+      "test": "trainedSharedEdgeWorksWithoutPredictionsButCentersAndPasswordsStayExact",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntCalibration644Test",
+      "test": "oneTrainedNeighborCannotStealFromAnUntrainedLetterOrSplitLayout",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntContext657Test",
+      "test": "canceledGoogleResultPreservesTheRealStatusInsteadOfGenericCancellation",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntContext657Test",
+      "test": "missingAuthorizationKeepsFailureInPreviewAndNeverWrites",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntContext657Test",
+      "test": "explicitDetailsAndInvalidDurationStayDistinctFromReminderContents",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntContext657Test",
+      "test": "explicitLocationAndDurationReachTheCalendarProvider",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntContext657Test",
+      "test": "activeTypingUpdatesContextBeyondTwentySeconds",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntContext657Test",
+      "test": "automaticPreviewCanCloseWithoutLosingContextOrReopeningOnTyping",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntContext657Test",
+      "test": "manualIconKeepsSuggestionsAndLatestTextUntilUserConfirms",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntContext665Test",
+      "test": "selectedSentenceCanBeRecognizedWithoutChangingTypingPunctuation",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntContext665Test",
+      "test": "foreignCandidateIsSuggestedButNotAutomaticallyInserted",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntContext665Test",
+      "test": "selectedAppointmentCanOmitCommandKeyword",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntContext665Test",
+      "test": "undoRefusesChangedTextOrSelection",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntContext665Test",
+      "test": "uniqueMatchingAddressKeepsVenueName",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntContext665Test",
+      "test": "ambiguousOrUnrelatedGeocodingNeverOverwrites",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntContext665Test",
+      "test": "newDrawingCollectionPreservesOriginal",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntContext665Test",
+      "test": "undoRestoresOnceAtSamePointOnly",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntDestinations664Test",
+      "test": "unavailableNativeAppFallsBackToExplicitTextShare",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntDestinations664Test",
+      "test": "calendarReminderAndEventHaveSeparateColorPreferences",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntDestinations664Test",
+      "test": "nativeReminderHandoffCarriesExactTimeAndOriginalText",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntDestinations664Test",
+      "test": "colorsBelongToSelectedAccountAndEventPalette",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntFeedback660Test",
+      "test": "deniedPermissionCannotProduceGreenOrAnAlarm",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntFeedback660Test",
+      "test": "localReminderSchedulesAndDeliversOnceWithoutGoogleOrCalendar",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntFeedback660Test",
+      "test": "temporalOnlyEventCannotSaveOrProduceSuccess",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntFeedback660Test",
+      "test": "savedTaskWithFailedAlertDoesNotShowFullSuccess",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntFeedback660Test",
+      "test": "calendarConfirmsOnlyAfterBothProviderWritesComplete",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntFeedback660Test",
+      "test": "newPhraseSurvivesOldSuccessTimeout",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntFeedback660Test",
+      "test": "confirmedLocalSaveTurnsGlassGreenThenRestoresSuggestions",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntFeedback661Test",
+      "test": "optionalRecognitionFailureDoesNotTearDownKeyboardOrLeakText",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntFeedback661Test",
+      "test": "validationIsRedAndEditingRestoresOffer",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntFeedback661Test",
+      "test": "networkUncertaintyStaysVisibleAndCannotDoublePost",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntFlow665Test",
+      "test": "closedPillRetainsCurrentContextBeyondTimeout",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntFlow665Test",
+      "test": "failedDialerPreservesNumber",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntFlow665Test",
+      "test": "allDayWritesUtcExclusiveEndAndNoMidnightAlarm",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntFlow665Test",
+      "test": "dialerHandoffConsumesOnlyAfterSuccessfulLaunch",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntFlow665Test",
+      "test": "selectedSentenceCreatesOnceAndConsumesOnlySelection",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntFlow665Test",
+      "test": "outcomeColorsAreOptInAndReadable",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntFlow667Test",
+      "test": "manualDurationOverrideReplacesParsedEnd",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntFlow667Test",
+      "test": "capsuleEntranceAndExitHaveIntermediateFrames",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntFlow667Test",
+      "test": "fullVideoRangeWritesExactEndAndConfirmsAfterProvider",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntFlow667Test",
+      "test": "incompleteEndCannotWriteOrConsumeCommand",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntGeometryTest",
+      "test": "defaultFooterIsOffAndMigrationKeepsCustomActions",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntGeometryTest",
+      "test": "compactAndWideSizesAreIndependentAndDoNotCollapse",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntGeometryTest",
+      "test": "visibleToolbarAndPanelsAreInsideWindowTouchRegion",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntGesture667Test",
+      "test": "immediateSwipeWorksFromEnterAndBothAlphabetLayers",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntGesture667Test",
+      "test": "oppositeDirectionDoesNotOpenPanel",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntGesture667Test",
+      "test": "quickTapStillDispatchesNormalKeyExactlyOnce",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntGesture667Test",
+      "test": "defaultHoldDoesNotBecomeImmediate",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntGesture668Test",
+      "test": "earlyMovementContinuesIntoHeldCalendarInsteadOfChangingLayer",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntGesture668Test",
+      "test": "visibleEdgeCommandsWorkEvenWhenMoreCommandsCanScroll",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntGesture668Test",
+      "test": "disabledCalendarCannotBeOpenedFromToolbar",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntGesture668Test",
+      "test": "toolbarModeLeavesModeKeyTapAndSwipeToNormalKeyboard",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntGesture668Test",
+      "test": "toolbarCalendarUsesRealPanelAndCancellationRestoresKeyboard",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntGestureStreamTest",
+      "test": "overlappingSecondFingerCancelsSpaceHoldWithoutSwallowingTheLetter",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntGestureStreamTest",
+      "test": "fastRepeatedSpaceTapsDoNotAccumulateHoldOrStealEvents",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntGestureStreamTest",
+      "test": "heldSpaceMovesCursorWithoutInsertingSpace",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntGestureStreamTest",
+      "test": "normalSpaceRemainsInNativeTypingPipeline",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntGlass648Test",
+      "test": "renderBothThemesWithPressedCapsAndGlassPopup",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntGlass648Test",
+      "test": "restPreservesSmokeAndPressAddsBlueWithoutChangingSavedTheme",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntHold660Test",
+      "test": "customPerKeyContentsAndColumnsDoNotChangeOtherKeys",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntHold660Test",
+      "test": "globalOffRemovesPopupsButKeepsNumericGestureAndEnterTap",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntHold660Test",
+      "test": "drawerUsesSharedCaseWithoutPaintingAnOpaqueSecondBackground",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntHold660Test",
+      "test": "functionalKeysResolveTheirOwnSettingsInsteadOfTheGenericSlot",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntHold660Test",
+      "test": "enabledEnterMenuOpensBeforeReleaseAndSwipeCancelsItsTimer",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntHold660Test",
+      "test": "upgradeTurnsOffOnlyCalendarOnce",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntInline654Test",
+      "test": "taskTimeoutIsUncertainAndCannotAutoRetry",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntInline654Test",
+      "test": "tasksStoresOnlyTheDayAndNeverPretendsToSetAlarm",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntInline654Test",
+      "test": "changedEditorCannotRestoreDraft",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntInline654Test",
+      "test": "inlineReviewAndDetailsRenderWithoutExternalDialog",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntInline654Test",
+      "test": "openingInlineReviewNeverStartsAnActivityOrWrites",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntInline654Test",
+      "test": "noTokenMeansNoNetworkAndNoSave",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntInline654Test",
+      "test": "authorizedTasksListsThenSavesOnceOnlyAfterTap",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntInline654Test",
+      "test": "taskDayWithoutTimeIsRecognized",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntInline654Test",
+      "test": "detachedCardAndDoubleTapKeepSingleCalendarWrite",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntInline654Test",
+      "test": "titleEditingConsumesKeyboardTextWithoutCommittingToEditor",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntMaterials653Test",
+      "test": "exportMaterialPressFrames",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntMaterials653Test",
+      "test": "mechanicalTravelAndSoftReturnDifferWithoutChangingHitAreas",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntMaterials653Test",
+      "test": "glowFollowsStrokesAndStopsOnHideAndReducedMotion",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntMaterials668Test",
+      "test": "allOptionalBarModesKeepCommandCountAndPreferences",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntMaterials668Test",
+      "test": "materialGalleryHasChinaWallsAtRestAndDuringPress",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntMaterials668Test",
+      "test": "iconDonatesSpaceAndReturnsWithoutLosingItsOriginalWidth",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntMaterials668Test",
+      "test": "originalAndChinaPreviewsRetainReadableBlueMaterials",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntMaterials668Test",
+      "test": "derivedMaterialsMatchOriginalRolesInkAndPopupPixels",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntMediaReliabilityTest",
+      "test": "newerClipboardDoesNotDiscardEarlierSuccessfulCapture",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntMediaReliabilityTest",
+      "test": "firstFailureDoesNotMarkImageAsAlreadyCaptured",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntMediaReliabilityTest",
+      "test": "galleryIsNotQueriedWithoutOptInOrDuringPrivateSession",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntMediaReliabilityTest",
+      "test": "missingMimeAndMultipleItemsAreCapturedFromActualBytes",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntMediaReliabilityTest",
+      "test": "shareTargetImportsScreenshotWithoutClipboardCopy",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntMediaReliabilityTest",
+      "test": "galleryScreenshotPersistsWithoutCopyAndDoesNotReimportOnReopen",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntMediaReliabilityTest",
+      "test": "sensitiveImageIsNeverReadOrPersisted",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntModes664Test",
+      "test": "themeIsDefaultAndUnifiedGradientTracksBothChoices",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntModes664Test",
+      "test": "unifiedSavesCalendarWithoutTasksEvenWhenIndividualModesAreOff",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntModes664Test",
+      "test": "customColorsRemainSeparateAndInvalidValuesFallBack",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntModes664Test",
+      "test": "unifiedPillRendersTwoColorsWithoutChangingSuccess",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntModes664Test",
+      "test": "switchesAreIndependentAndUnifiedOnlyOverridesCalendarWords",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntMotion652Test",
+      "test": "disabledRecognitionDoesNotQueueOrReadEditorText",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntMotion652Test",
+      "test": "repeatedSuggestionUpdatesReuseIconAndDisabledActionCannotCaptureTap",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntMotion652Test",
+      "test": "reviewScrollsInLandscapeAndUsesOptionalWindowMotion",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntMotion652Test",
+      "test": "retargetingKeepsCurrentPixelsAndEndsOnLatestIcon",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntMotion652Test",
+      "test": "reducedMotionAndDetachSettleWithoutLingeringFrames",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntMotion666Test",
+      "test": "releaseAndReverseNeverOvershootOrJumpAndFinishAtRest",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntMotion666Test",
+      "test": "recentLanguageIsNotOverriddenByLargeEarlierText",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntMultiTouch636Test",
+      "test": "ordinaryOverlappingTapsRemainNative",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntMultiTouch636Test",
+      "test": "twoFingerSwipeCanStartOnSpaceWithoutBecomingTouchpad",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntMultiTouch636Test",
+      "test": "flickRecognizedOnPointerUpAndRemainingFingerIsConsumed",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntPanels658Test",
+      "test": "bothPanelsDrawNonEmptyCellsAfterRepeatedWindowTraversal",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntPanels658Test",
+      "test": "modifierRubberBandIsDisabledByDefaultAndCanBeEnabled",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntPanels658Test",
+      "test": "independentTogglesPreserveTheOtherPanel",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntPanels658Test",
+      "test": "googleInternalErrorIsDistinctFromConfigurationAndDoesNotAuthorize",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntPanels659Test",
+      "test": "calendarRenderOwnerSurvivesMonthChangeAndDenseLayouts",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntPanels659Test",
+      "test": "singleRenderOwnerKeepsEveryNumericTargetVisibleAndClickable",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntPanels661Test",
+      "test": "shortcutsUseExistingDispatchAndInvalidChoiceFallsBackToEnter",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntPanels661Test",
+      "test": "staleEditorCannotReceiveSpaceOrShortcut",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntPanels661Test",
+      "test": "fiveRowsAlignAndUseTheWholeHeightAcrossFormats",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntPanels662Test",
+      "test": "allSizesKeepTheSameHitAreasAndRenderDistinctly",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntPanels662Test",
+      "test": "repeatedDeleteKeepsPanelAndRoutesEveryDeletionToEditor",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntPanels662Test",
+      "test": "reducedMotionDoesNotAddPaintTransforms",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntPanels662Test",
+      "test": "eachMotionPreservesTheJoinedEdgesAndReturnsWithoutResidualTransforms",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntPanels663Test",
+      "test": "calendarDockingIsIndependentOfNumbers",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntPanels663Test",
+      "test": "realBalancedFoldMarginsFitBothPanelsWithoutSyntheticViewMargins",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntPanels663Test",
+      "test": "dockedCalendarKeepsLettersAndReverseSwipeClosesBothSides",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntPanels663Test",
+      "test": "changingToSplitRemovesDockedPanelAndResetsTranslation",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntPanels663Test",
+      "test": "dockedNumbersRemainWhileTypingAndAllKeysStayInside",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntPanels663Test",
+      "test": "narrowLayoutActuallyUsesLessSpaceAndEnterKeepsPanelOpen",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntPanels663Test",
+      "test": "independentLightsDoNotMutateKeyboardAndInheritanceCanBeRestored",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntPanels663Test",
+      "test": "dockingRequiresWideLandscapeUnitedLayoutAndRoom",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntPanels664Test",
+      "test": "inverseGestureOnLaunchKeyWorksWithoutTouchingBlankPanel",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntPanels664Test",
+      "test": "interruptedReverseDragRestoresVisiblePanel",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntPanels665Test",
+      "test": "calendarOpensFromAbcAndMarksToday",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntPanels666Test",
+      "test": "symbolTrackballFadesWithPanelAndCannotReappearDuringLayout",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntPanels666Test",
+      "test": "todayRingSurvivesSculptedMaterialsAndHeaderContainsOnlyNavigation",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntPanels666Test",
+      "test": "toolbarShortcutsWorkWithoutGesturesAndToggleWithoutTyping",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntPhrases656Test",
+      "test": "editedPhraseCannotSubmitOldOffer",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntPhrases656Test",
+      "test": "oneConfirmationCreatesCalendarEventAndNoEditor",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntPhrases656Test",
+      "test": "timedTasksPostsOnceThenArmsLocalAlert",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntPhrases656Test",
+      "test": "dialOpensWithoutWritingOrCalling",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntPhrases656Test",
+      "test": "failingTaskPostNeverArmsAnAlert",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntPhrases656Test",
+      "test": "benchWallMovesAndAllPresetsRender",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntPhrases656Test",
+      "test": "relativeBothOrdersAndMidnight",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntPhrases656Test",
+      "test": "pillIsReusedAndRetiresCleanly",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntPhrases656Test",
+      "test": "cinemaAndPhoneAreDifferentIntents",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntPhrases656Test",
+      "test": "configuredTaskListAndMissingDestinationAreRespected",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntRecognition661Test",
+      "test": "videoRecognitionThresholdsWithLiveAnimation",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntRecovery655Test",
+      "test": "failedGoogleConsentIsShownInPillAndOffersExplicitCalendar",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntRecovery655Test",
+      "test": "exactVideoPhraseRecognizesDateTimeAndTitle",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntRecovery655Test",
+      "test": "explicitCalendarAlternativeWritesOnceWithoutGoogleToken",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntRecovery655Test",
+      "test": "pillHandleDragOpensToolsAndSurvivesPendingSuggestions",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntRecovery655Test",
+      "test": "missingDateOpensChooserInsteadOfDeadSaveButton",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntRecovery655Test",
+      "test": "pillUsesExistingSurfaceAndRendersInShortKeyboard",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntRecovery655Test",
+      "test": "completedDismissAnimationCannotReplaceNewPanel",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntRecovery655Test",
+      "test": "calendarPreferenceUsesDirectReviewWithoutTasks",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntRecovery655Test",
+      "test": "closeDuringSaveRetainsSubmissionGuard",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntRecovery655Test",
+      "test": "videoEventSavesParsedTimestampWithoutManualCorrection",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntRecovery655Test",
+      "test": "resetAfterFailedAttemptRestoresSuggestionsAndToolbarHandle",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntRecovery655Test",
+      "test": "ordinaryTypingClosesReviewAndRestoresSuggestions",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntRecovery655Test",
+      "test": "uncertainSaveCanBeClosedWithoutLosingToolbarOrRetrying",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntResponse654Test",
+      "test": "effectsStayInsideKeyAndStopAtRest",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntResponse654Test",
+      "test": "renderTemporalMaterialSequence",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntResponse654Test",
+      "test": "impulseEndsAndRapidRetouchStartsFromDisplayedPosition",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntRetirement657Test",
+      "test": "typingRetiresOnlyTheDisplayedMediaNotANewerAsyncCapture",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntRetirement657Test",
+      "test": "dismissedVideoCannotReturnAfterEditorRestartOrGalleryReimport",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntRetirement657Test",
+      "test": "typingRetirementSurvivesTheNextEditor",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntSearch666Test",
+      "test": "gifCloseWorksWhileSearchingAndKeepsQueryOutOfEditor",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntSearch666Test",
+      "test": "emojiCloseReturnsToTypingAndBackReturnsToPalette",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntSidePanels656Test",
+      "test": "numericFollowsFingerAndDeleteKeepsItOpen",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntSidePanels656Test",
+      "test": "cancelAndShortMovementNeverCommitPanel",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntSidePanels656Test",
+      "test": "reverseDragClosesWithoutInsertingTheTouchedNumber",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntSidePanels656Test",
+      "test": "landscapeAndSizeChangeRetirePanel",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntSidePanels656Test",
+      "test": "foldSplitCalendarStaysOnOneHalf",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntSidePanels656Test",
+      "test": "independentSwitchesAndUncoveredLetter",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntSlide657Test",
+      "test": "calendarUsesSameSlideInOneHandLandscapeAndFold",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntSlide657Test",
+      "test": "densePhoneMeasuresChildrenWhileFingerIsStillDownAndMovesKeyboard",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntSlide657Test",
+      "test": "typingDuringAnimatedReturnKeepsTheTouchedLetter",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntSplit661Test",
+      "test": "portraitSpreadCommitsOnlyCompactAndCancelLeavesItUnited",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntSplit661Test",
+      "test": "sculptedSpaceOpeningAndClosingRenderAllIntermediateFrames",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntSplit661Test",
+      "test": "portraitGestureIsOptInWithoutChangingWidePreferences",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntSplit661Test",
+      "test": "bothSpaceHalvesExistFromFirstFrameAndReachTheirTarget",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntSplit661Test",
+      "test": "unequalSpaceHalvesAreCompleteBeforeFingerRelease",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntSplit663Test",
+      "test": "letterShapesAtGestureEndMatchCommittedLayout",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntStrip632Test",
+      "test": "resizeAndMultitouchCannotCommitAnOldReverse",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntStrip632Test",
+      "test": "otherIconsKeepScrollingWhileVisibleEdgeCanRevealWords",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntStrip632Test",
+      "test": "reverseRtlUsesLeftEndAndRevealsTowardRight",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntStrip632Test",
+      "test": "shortDeliberateReverseFlickCompletesWithoutCrossingHalfWidth",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntStrip632Test",
+      "test": "hideDuringReverseAbortsAndReducedMotionCommitsImmediately",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntStrip632Test",
+      "test": "lastIconTapStillRunsExactlyOnce",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntStrip632Test",
+      "test": "trailingIconLongPressIsStillAvailable",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntStrip632Test",
+      "test": "fastReverseUpOnlyCannotClickTrailingIconWithReducedMotion",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntStrip632Test",
+      "test": "shortReverseAndCancelKeepToolsAndReleasePreviewParents",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntStrip632Test",
+      "test": "reverseReturnsToRealCandidatesWithoutSecondFade",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntStrip668Test",
+      "test": "disablingForwardSwipeStillAllowsArrowTap",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntStrip668Test",
+      "test": "disableReversePreservesToolbarAndCanBeReenabled",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntStrip668Test",
+      "test": "calendarFromFirstCommandDoesNotRunItsTapOrStartReverse",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntStudio620Test",
+      "test": "animatedCollectionCanBeSelectedWithoutChangingThemeByPreview",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntStudio649Test",
+      "test": "materialPickerAndLinkedControlPreserveKeyTransparency",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntStudio649Test",
+      "test": "foldBackgroundSettingsRender",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntStudio656Test",
+      "test": "homePreviewOpensThemesAndReturnsHome",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntStudio658Test",
+      "test": "switchesHaveIndependentPersistentValuesAndClearDestination",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntStudio659Test",
+      "test": "oauthHelpExpandsWithoutConnectingOrChangingReminderDestination",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntStudio660Test",
+      "test": "holdMasterAndPerKeyOptionsAreReachableAndPersistent",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntStudio660Test",
+      "test": "toolbarPickerShowsMatchingThemesAndKeepsIconsOnlySelection",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntStudio660Test",
+      "test": "localRemindersAreAnExplicitChoiceWithoutLaunchingGoogle",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntStudio660Test",
+      "test": "opaqueSwitchInTransparencyRestoresStoredTransparency",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntStudio661Test",
+      "test": "darkAppearanceNavigatesToMotionAndBack",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntStudio661Test",
+      "test": "numericShortcutPickerPersistsChoiceAndPortraitOptionStartsOff",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntStudio661Test",
+      "test": "appearanceGroupsHaveDistinctColorAndMotionDestinations",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntStudio661Test",
+      "test": "magnifierFocusesSearchWithoutSecondTap",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntStudio662Test",
+      "test": "appearanceChoicesHaveSamplesAndPersistIndependently",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntStudio663Test",
+      "test": "phonePreviewIsProportioned",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntStudio663Test",
+      "test": "oauthTesterLinkOpensAudience",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntStudio663Test",
+      "test": "sideBySideIsOptInAndSearchable",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntStudio663Test",
+      "test": "foldPortraitPreviewAndCategoriesFit",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntStudio663Test",
+      "test": "independentLightsAndActualWidthPersist",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntStudio663Test",
+      "test": "foldLandscapePreviewAndCategoriesFit",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntStudio664Test",
+      "test": "independentModesAndPillColorsKeepThemeAsDefault",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntStudio664Test",
+      "test": "searchKnowsSoundAndAlert",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntStudio664Test",
+      "test": "foldAppearanceHasClearGroups",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntStudio664Test",
+      "test": "numpadSoundAndThemeCanBeFoundAndChanged",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntStudio665Test",
+      "test": "catalogPreviewDoesNotApplyUntilExplicitButton",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntStudio665Test",
+      "test": "foldCalendarAndResultsSettingsRemainReadable",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntStudio666Test",
+      "test": "foldPanelSettingsIncludeSoundMotionSizeAndLightsInOnePage",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntStudio666Test",
+      "test": "sharedPanelControlsHaveOneSearchResultAndOneValue",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntStudio667Test",
+      "test": "toolbarModesCanBeSelectedWithoutChangingCommandOrder",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntStudio667Test",
+      "test": "foldGalleryUsesOneCatalogAndKeepsBrightnessCollapsed",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntStudio667Test",
+      "test": "gesturesHaveIndependentChoicesAndSearchEntries",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntStudio668Test",
+      "test": "sharedSwipeControlsPersistAcrossPagesAndSearchOnlyOnce",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntStudio668Test",
+      "test": "toolbarCalendarChoiceIsSeparateFromNumbersAndDocking",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntStudio68Test",
+      "test": "newSettingsPagesRenderAndVoiceIsReachable",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntStudio68Test",
+      "test": "unifiedToggleDisablesSeparateSlidersAndRestoresTheirValues",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntSurfaces666Test",
+      "test": "drawingMaterialsRenderWithSharedChinaGeometry",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntSurfaces666Test",
+      "test": "translucentDrawingCompanionsRenderWithoutOpaqueBackgroundException",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntSurfaces666Test",
+      "test": "lightSculptedThemeKeepsPillInkDarkEvenWithDarkSystem",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntSurfaces666Test",
+      "test": "chinaRedKeepsOriginalBodyAndOnlyChangesAccent",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntSurfaces666Test",
+      "test": "directUpgradeRunsAllNeededMigrationsWithoutErasingPersonalChoices",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntTasksSetup659Test",
+      "test": "modernIdentityUsesInstalledSigningCertificate",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntTasksSetup659Test",
+      "test": "legacyIdentityUsesInstalledSignature",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntTasksSetup659Test",
+      "test": "unavailableSignatureNeverInventsAReleaseIdentity",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntTime660Test",
+      "test": "explicitEndOverridesDefaultAndCrossesMidnight",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntTime660Test",
+      "test": "relativeQuantitiesAreComposedRatherThanAnExampleList",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntTime660Test",
+      "test": "eveningWordsBareHoursAndDurationShareOneInterpretation",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntTime660Test",
+      "test": "addressNumbersAndDurationDoNotBecomeStartTimes",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntTime662Test",
+      "test": "everyPrefixFromVideoIsSafeAndCompletePhrasesKeepTheirMeaning",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntTime662Test",
+      "test": "bareClockDoesNotConsumeDatesOrQuantities",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntTime664Test",
+      "test": "everydayHalfHourSpellingsAgreeAndDoNotPolluteTitle",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntTime664Test",
+      "test": "durationHalfHourAndEndAcrossMidnight",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntTime664Test",
+      "test": "doesNotGuessAnUnfinishedQuantity",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntTime664Test",
+      "test": "compositeHoursAndQuarters",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntTime664Test",
+      "test": "explicitWeekdayMustAgreeAndDateWordsLeaveTitle",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntTime665Test",
+      "test": "explicitClockPairIsEndNotMinutes",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntTime665Test",
+      "test": "allDayInclusiveListAndExclusiveEnd",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntTime665Test",
+      "test": "locationDoesNotEatTheEvent",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntTime665Test",
+      "test": "allDayRejectsGapsReversalsAndImpossibleDates",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntTime665Test",
+      "test": "timedMultiDay",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntTime665Test",
+      "test": "missingDurationIsOneHour",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntTime665Test",
+      "test": "shortDurationsAndSpelling",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntTime665Test",
+      "test": "allDayDoesNotUseLocalDstLength",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntTime665Test",
+      "test": "accentedAndPlainWeekdaysAgree",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntTime665Test",
+      "test": "triggersAreCompositional",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntTime667Test",
+      "test": "invalidOrIncompleteEndpointNeverDefaultsToAnHour",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntTime667Test",
+      "test": "incrementalVideoPhrasesNeverThrow",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntTime667Test",
+      "test": "videoRelativeStartAndTomorrowEndpoint",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntTime667Test",
+      "test": "nextMonthRollsYearAndKeepsPlace",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntTime667Test",
+      "test": "spatialDestinationIsNotAnEndDate",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntTime667Test",
+      "test": "ordinaryDurationAndMidnightIntervalsRemainValid",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntTime667Test",
+      "test": "dateEndpointUsesSpeechDayNotStartDay",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntTime667Test",
+      "test": "videoCurrentMonthEndpoint",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntToolbar667Test",
+      "test": "automaticWaitsForPointerAndRestoresBeforeEmoji",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntToolbar667Test",
+      "test": "classicRemainsDefaultAndKnobRemembersOnlyCommandId",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntToolbar667Test",
+      "test": "resultCapsuleKeepsTransparentMarginsAndLegibleControls",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntToolbar667Test",
+      "test": "unhandledTouchCannotLeaveAutomaticBarWaiting",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntToolbar667Test",
+      "test": "carouselKeepsCommandsAndExpandedKnobRenders",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntToolbar667Test",
+      "test": "newMaterialsKeepChinaGeometryAndOpaqueOverride",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntToolbar667Test",
+      "test": "knobHoldAndPreviewDoNotExecuteCommandsOrAlterHistory",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntToolbar667Test",
+      "test": "automaticHidesIdleButRestoresWordsAndExternalSuggestions",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntUpgrade650Test",
+      "test": "exportThemeAndRotationSheets",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntUpgrade650Test",
+      "test": "newMaterialsAndMakerPreserveControls",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntUpgrade650Test",
+      "test": "privatePasteIsFallbackNotDuplicate",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntUpgrade650Test",
+      "test": "italianContextPreservesCapsAndRemainsConservative",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntUpgrade650Test",
+      "test": "raysAreCachedAndRemainUnitLength",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntUpgrade650Test",
+      "test": "cachedPredictionsRespectContextLearningAndPrivacy",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntUpgrade650Test",
+      "test": "fastRepeatedPressesRemainIndependentAndSettle",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntUpgrade650Test",
+      "test": "lightEffectsHaveDistinctGeometryAndExpire",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV32Test",
+      "test": "foldModePanelOffersSplitAndFloating",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV32Test",
+      "test": "doubleTapModeLocksCtrlAndNextTapUnlocks",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV32Test",
+      "test": "verticalCursorIsUnicodeSafeAndNeverLeavesFirstOrLastLine",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV32Test",
+      "test": "gifsReflowExistingTilesAtFoldWidthWithoutStretchingLastRow",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV32Test",
+      "test": "offlineEmojiSearchFindsItalianEnglishAndAccents",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV32Test",
+      "test": "floatingFrameHasCompactWidthAndIsClampedInsideWindow",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV32Test",
+      "test": "shortcutBindingsAreConfigurableAndUnboundLettersNeverType",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV32Test",
+      "test": "lightEffectsScheduleTheirFirstFrameAndKeepOutlineIndependent",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV32Test",
+      "test": "emojiQueryNeverReachesEditorAndOnlyChosenEmojiIsInserted",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV3Test",
+      "test": "gifSearchStaysInsidePanelAndDeletesWholeCodePoints",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV44Test",
+      "test": "wideSettingsStayInOneBoundedColumn",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV44Test",
+      "test": "splitCentreButtonJoinsWithoutRemovingViews",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV44Test",
+      "test": "renderEveryThemeAndCompactNativeLayout",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV44Test",
+      "test": "incognitoNeverStoresRejectedOrConfirmedWords",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV44Test",
+      "test": "slowAndFastSameDistanceHaveDifferentGain",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV44Test",
+      "test": "flingStopsWhenEditorChangesAndDetachIsSafe",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV44Test",
+      "test": "subCharacterMotionAndReversalStayPrecise",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV44Test",
+      "test": "inertiaDecaysAndAlwaysStops",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV44Test",
+      "test": "deliberateWordsAreProtectedAcrossRestartAndCanBeForgotten",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV44Test",
+      "test": "splitKeysStayHumanSizedAndTransitionFinishes",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV44Test",
+      "test": "rgbOffIsOffEvenOnNeonAndMigrationKeepsExplicitEffects",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV44Test",
+      "test": "compactProportionsPreserveHeightAndRespectSplit",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV45Test",
+      "test": "numberIsNearestWithoutDiscardingAccents",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV45Test",
+      "test": "renderEveryThemeAndCompactNativeLayout",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV45Test",
+      "test": "delayedImageCopySurvivesASecondCopy",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV45Test",
+      "test": "screenshotRecoveryIncludesOlderImageBeyondTwoHundredOtherPhotos",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV45Test",
+      "test": "waveStartsAtActualTouchAndMovesAcrossKeys",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV45Test",
+      "test": "renderToolsAndClipboardIcons",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV45Test",
+      "test": "renderNativeTravellingWave",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV45Test",
+      "test": "genericMimeAndMultipleTextItemsAreArchived",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV45Test",
+      "test": "darkUncolouredFunctionKeysKeepReadableIcons",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV45Test",
+      "test": "renderFoldGestureAndNoVisibleJoinIcon",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV45Test",
+      "test": "foldSpreadConsumesOnlySpreadAndOrdinaryTwoThumbTapIsReplayed",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV45Test",
+      "test": "rapidTouchesHaveIndependentOriginsAndFiniteLifetime",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV45Test",
+      "test": "symmetricMarginsAndInteractiveGeometry",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV49Test",
+      "test": "translatorIgnoresLateDownloadAndClosedResults",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV49Test",
+      "test": "blurLayerIsLimitedToBodyWithoutInsetsPadding",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV49Test",
+      "test": "staleSelectionAndChangedEditorCannotBeOverwritten",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV49Test",
+      "test": "packagedAssistantIsPrivateAndScreenshotHasNoReadingOrGestureCapability",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV49Test",
+      "test": "translatorReturnsResultAndReportsPackFailure",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV49Test",
+      "test": "languagePillTypingIsIsolatedAndDefaultsSwapPersist",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV49Test",
+      "test": "closedTranslatorNeverStartsInferenceAfterDownload",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV49Test",
+      "test": "factualLookupExtractsSubjectWithoutHardcodingPeople",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV49Test",
+      "test": "actualInputTreeLeavesClearCenterAndRestoresAncestorBackgrounds",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV49Test",
+      "test": "localPromptTreatsTemplateTokensAsPlainText",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV49Test",
+      "test": "completedInwardGesturePersistsStandardLayout",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV49Test",
+      "test": "disabledJoinRemainsAvailableInTransparentMode",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV49Test",
+      "test": "translationSameLanguageNeedsNoModel",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV49Test",
+      "test": "outlineConvertsWindowCoordinatesToLocalSpace",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV49Test",
+      "test": "inwardTwoFingerTapIsReplayedWithoutJoining",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV50Test",
+      "test": "placeholderMatchesSelectedLanguage",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV50Test",
+      "test": "cutoutRequestRestoresOriginalInsetsOnDisable",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV50Test",
+      "test": "currentQuestionsDoNotBecomeEncyclopediaSummaries",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV50Test",
+      "test": "gesturesAreIndependentAndTransparentJoinIsForced",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV50Test",
+      "test": "staleTranslationAfterTypingIsIgnoredWithoutRecreatingEngine",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV50Test",
+      "test": "clipboardFingerDownNeverInvokesTypingFeedback",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV50Test",
+      "test": "researchDotsAreDistinctAndBrowserUsesCurrentHttpsPage",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV50Test",
+      "test": "installedLanguagesTranslateWithoutDownloadAndReuseClient",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV50Test",
+      "test": "missingLanguageRequestsChoiceWithoutStartingNetworkDownload",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV50Test",
+      "test": "swapMovesChipsAndOpeningWaitsForLayout",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV50Test",
+      "test": "cardsKeepCloseHeaderWhileBodyScrolls",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV50Test",
+      "test": "mobileDownloadOnlyAfterExplicitChoice",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV50Test",
+      "test": "transparentDockStillReservesEditorSpace",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV50Test",
+      "test": "stalledDownloadTimesOutAndLateResultCannotInsert",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV612Test",
+      "test": "providerQuestionsAreTemperedOnlyWithMatchingRawWords",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV612Test",
+      "test": "newerGalleryScreenshotIsNotBlockedByOlderSensitiveClipboard",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV612Test",
+      "test": "upgradePreservesClipboardAndCaptureChoices",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV612Test",
+      "test": "mediaHiddenWhileTypingReturnsInNextEditorButExplicitDismissalDoesNot",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV612Test",
+      "test": "previouslyAnimatedOutPillCanBeShownAgain",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV612Test",
+      "test": "standaloneSkinToneAndOrphanJoinerDoNotCrashOrConsumeNeighbourText",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV612Test",
+      "test": "expiredOrDeletedMediaNeverProducesBrokenPill",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV612Test",
+      "test": "sameScreenshotUriUsesExactClipboardTimestamp",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV612Test",
+      "test": "newerTextReplacesOldScreenshotAndDismissalPersists",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV612Test",
+      "test": "gifInsertionUsesGifMimeAndOnlyRetiresOnAcceptance",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV612Test",
+      "test": "delayedDuplicateCannotAgeHistoryOrReplaceNewerCopy",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV612Test",
+      "test": "unsupportedImageKeepsPillForAnotherApp",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV612Test",
+      "test": "privateSessionAndDisabledPillsRemainRespected",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV612Test",
+      "test": "videoAlwaysOpensShareSheetEvenWhenEditorAdvertisesVideo",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV613Test",
+      "test": "fastDoubleLettersAreNotDroppedInPhoneOrSplitKeyboard",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV613Test",
+      "test": "foldedOutDeviceAlsoKeepsRapidDoubleLetters",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV616Test",
+      "test": "androidGlassLightAndPopupRemainTranslucent",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV616Test",
+      "test": "videoCropFillsWideCardAndKeepsPlayAndDurationInViewport",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV616Test",
+      "test": "calibrationNeverLearnsPrivateOrAmbiguousCorrections",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV616Test",
+      "test": "paletteRestoresCustomLinkedAndConsoleAndResetIsScoped",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV616Test",
+      "test": "extendedSuggestionsRetainEveryCandidateAndSelectionAcrossThemes",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV616Test",
+      "test": "renderPillTransitionAndFullClipboardCards",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV616Test",
+      "test": "duplicateCandidatesDoNotManufactureConfidence",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV616Test",
+      "test": "renderAndroidGlassActualLayoutAndPressedKey",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV616Test",
+      "test": "androidGlassShiftLightsOnlyWhenActiveAndSymbolsStayGray",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV616Test",
+      "test": "calibrationCannotStealKeyCentersEvenAfterManySamples",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV616Test",
+      "test": "numberRowColorNeverBleedsIntoSymbolKeyboard",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV616Test",
+      "test": "cachedPastePillRestoresAfterInterruptedDismissal",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV616Test",
+      "test": "multipinKeepsCardsStableAndNormalLongPressStillPins",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV616Test",
+      "test": "calibrationNeedsExplicitConfirmationAndPersistsOnlyAggregates",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV616Test",
+      "test": "currentLegacyPaletteSurvivesFirstThemeSwitch",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV616Test",
+      "test": "pillCloseDuringOpeningHasNoScaleOrAlphaJumpAndNoStaleCompletion",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV616Test",
+      "test": "calibrationRequiresRepeatedEvidenceAndIsGeometrySpecific",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV616Test",
+      "test": "landscapePopupLiftIsSmallAndPortraitUnchanged",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV635Test",
+      "test": "nativeRgbVisibleAtFullPowerAndOffHasNoLight",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV635Test",
+      "test": "makerPersistsAnniversaryMaterialAndIndependentOpacity",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV635Test",
+      "test": "surfaceDefaultIsLocalAndUserOverridesAreHonored",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV635Test",
+      "test": "galleryAndLedPaletteRenderWithProductionMaterials",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV635Test",
+      "test": "nativeRgbAndAbxyMappingPreserveExistingTouchLayout",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV635Test",
+      "test": "transparentMaterialReallyPassesBackgroundAndRetainsReadableLegends",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV635Test",
+      "test": "ledAndBacklitAreDistinctCachedAndCanBeUsedOnAnyTheme",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV635Test",
+      "test": "actualKeyboardPreservesCellsAndRendersBothThemesAcrossFoldSizes",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV635Test",
+      "test": "themeLedDefaultsDoNotWriteOrReplaceToolbarPreferences",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV635Test",
+      "test": "makerCopyRetainsCurrentTransparencyAndFunctionColors",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV635Test",
+      "test": "ledIntensityColorAndOpacityChangeWithoutReplacingGeometry",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV635Test",
+      "test": "themesAreAddedToExistingXboxCollectionAndRoundTrip",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV635Test",
+      "test": "actualBackdropAndToolbarKeepTrueAlphaAndHitTargets",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV646Test",
+      "test": "renderEveryNewThemeInBothModes",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV646Test",
+      "test": "playPaletteWorksWithAllModesAndFixedStaysFixed",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV646Test",
+      "test": "removedSkinsStayRenderableAndNewSkinsHaveRelief",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV646Test",
+      "test": "renderImprovedOrbsAtThreeAngles",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV646Test",
+      "test": "allAnimatedThemesReactAndStop",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV646Test",
+      "test": "catalogPreservesMaterialsAndAddsTenDifferentPidduStyles",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV646Test",
+      "test": "recordRotationAndRgb",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV646Test",
+      "test": "liveBenchReflectsIntensityAndDurationWithoutSavingATheme",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV646Test",
+      "test": "makerCopiesLivePaletteAndTimingWithoutMutatingGlobalSettings",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV647Test",
+      "test": "toolbarHasBareStyleAndNerdStylesWithMakerRoundTrip",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV647Test",
+      "test": "renderNerdOrbsAndFullRotation",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV647Test",
+      "test": "brightPidduHasReadableLegendsAndPinkBackgrounds",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV647Test",
+      "test": "casePreservesAddressesAndLocale",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV647Test",
+      "test": "fallbackIsManualOnlyAndDoesNotReplacePredictions",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV647Test",
+      "test": "renderBrightPidduAndToolbarChoices",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV65Test",
+      "test": "navigationTransparencyClearsWindowButKeepsKeyboardSurface",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV65Test",
+      "test": "opacityChangesOnlyBackgroundAndRestoresSystemContrastAndDivider",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV65Test",
+      "test": "defaultDoesNotTouchSystemNavigation",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV65Test",
+      "test": "materialsRenderAtRealAndInspectionSizes",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV65Test",
+      "test": "tintIsPaintedOnlyInsideNavigationInsets",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV66Test",
+      "test": "imeCaptionIsTintedWhenNavigationInsetIsEmpty",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV66Test",
+      "test": "translucentWindowRetainsToolbarKeysAndNavigation",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV66Test",
+      "test": "overlappingInsetsDoNotDoubleHeightAndHiddenBarsStayEmpty",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV66Test",
+      "test": "blurRemainsLocalWithoutCroppingToolbarOrSystemButtons",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV67Test",
+      "test": "recentPanelLoadsAllPagesAndReopensOffline",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV68Test",
+      "test": "xboxOriginalRendersPixelIdenticalTo067",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV68Test",
+      "test": "voiceCommandsAndNamesRespectOrdinarySpeech",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV68Test",
+      "test": "missingBilingualModelsFallbackOnceAndIgnoreOldCallbacks",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV68Test",
+      "test": "newShellsKeepGeometryReadableLabelsAndAllOldIds",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV68Test",
+      "test": "unifiedWorksWithOriginallyOpaqueBaseAndFullRange",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV68Test",
+      "test": "animeSpheresHavePigmentsOnBothHemispheresAndRotate",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV68Test",
+      "test": "unifiedTransparencyIsOptInNonMultiplyingAndReversible",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV68Test",
+      "test": "unsupportedAndroidDoesNotRequestLanguageSwitch",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntV68Test",
+      "test": "bilingualRecognitionRequestsBothModelsWithoutTranslating",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntVideoTest",
+      "test": "disabledAnimationKeepsVideoBadgeStatic",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntVideoTest",
+      "test": "videoPreviewUsesBoundedFramesAndStopsWhenHiddenOrDetached",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntVideoTest",
+      "test": "completedRecordingIsRecoveredAfterClosingAndReopeningAndNotDuplicated",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.keyforma.KeyAntVideoTest",
+      "test": "disablingVideoPreviewDoesNotDisableGifAnimation",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "autospace works in URL field when starting with quotes",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "autospace still happens after \"",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "emailSubjectRejectsInlineResponse",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "autospace still happens after \" if next word is in quotes",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "no intermediate commit in URL field without protocol and with URL detection",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "noAutospaceInUrlFieldWhenPickingSuggestion",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "select whole thing except http(s) as composing word if URL detection enabled and selecting",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "trackballSelectionDeletesWithoutCollapsingFirst",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "confirmedSuggestionReplacesComposingWord",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "deleteInsideWord",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "autospace propagates over \"",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "insertLetterIntoWordWithWeirdEditor",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "mediaArrivalRefreshesDuringCompositionWithoutChangingText",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "clipboardDismissShortcutNeverEatsRealDeletions",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "double space results in period and space, and delete removes the period",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "inlineEmojiSearchString",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "dismissingAutofillDoesNotDisableItForTheNextEditor",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "no intermediate commit in URL field with protocol",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "autospaceButWithTextAfter",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "no weird space inside multi-\"",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "noAutospaceInUrlField",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "no intermediate commit in URL field with protocol and URL detection",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "delete",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "deleteHangul",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "savedCommandRestoresThroughCtrlLayerAndToolbarUndo",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "noComposingForPasswordFields",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "autospace after selecting a suggestion",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "emoji uses phantom space",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "only protocol commit in text field with protocol and URL detection",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "separatorAfterHangul",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "text input and delete",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "select whole thing except http(s) as composing word if URL detection enabled and typing",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "lateDictionaryResultCannotReplaceANewerPrefix",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "dontCommitPartialUrlBeforeFirstPeriod",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "adaptiveMemoryLearnsOnlyConfirmedChoicesAndStopsInPrivateFields",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "contextCorrectionLeavesConjunctionAndDisabledSettingAlone",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "no autospace after opening quotes",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "timestamp",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "stripSeparatorsBeforeAddingToHistoryWithURLDetection",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "dontSelectConsecutiveSeparatorsWithURLDetection",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "intermediate commit in text field without protocol and with URL detection",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "emoji is added to dictionary",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "autospace works in URL field when input isn't URL, also for multiple suggestions",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "don't accidentally detect some other text fields as URI",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "separatorUnselectsWord",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "autospace works in URL field when input isn't URL",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "selectDoesSelect",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "inlineEmojiSearchStart",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "noAutospaceForDetectedUrl",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "urlProperlySelected",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "assistantReplacementDoesNotCommitStaleComposingWord",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "emoji text input and delete",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "autospace still happens after \" if nex word is in \" and after comma",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "personalEmailLearnsRepeatedAddressAndCompletesDottedPrefix",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "don't add partial URL to history",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "suggestionsStayInWritingModeAcrossSpacesEnterAndDeletingEverything",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "insertLetterIntoOneOfSeveralWords",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "contextCopulaCorrectsPreviousWordAndBackspaceUndoes",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "emptyOrObsoleteAnswerClearsPreviousAutomaticCorrection",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "fastBurstKeepsEveryLetterAndSpaceBeforeSuggestionCallbacks",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "noAutospaceForDetectedEmail",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "intermediate commits in text field without protocol",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "insertLetterIntoWord",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "no intermediate commit in URL field without protocol",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "autospace",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "inputCode",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "URL detection does not trigger on non-words",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "urlProperlySelectedWhenNotDeletingFullTld",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "remove glide typing word on delete",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "gesturePreparationDoesNotCommitComposingWordTwice",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "emojis deleted one by one",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "don't select whole thing as composing word if URL detection disabled",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "urlDetectionThings",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "autospace in json editor",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.InputLogicTest",
+      "test": "revert autocorrect on delete",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "class": "helium314.keyboard.latin.SuggestionCase647Test",
+      "test": "learnedCompletionUsesComposerCaseAndKeepsStoredSpelling",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    }
+  ],
+  "total": 557,
+  "classes": 94,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "icu": {
+    "engine": "libicui18n.so.76",
+    "patterns_compiled": 85,
+    "legacy_error": 66308,
+    "fixed_error": 0,
+    "checks": [
+      {
+        "field": "ItalianTime660.CLOCK"
+      },
+      {
+        "field": "ItalianTime660.PART"
+      },
+      {
+        "field": "ItalianTime660.DURATION"
+      },
+      {
+        "field": "ItalianTime660.QUARTER"
+      },
+      {
+        "field": "ItalianTime660.CLOCK_PAIR"
+      },
+      {
+        "field": "ItalianTime660.END"
+      },
+      {
+        "field": "ItalianTime660.BARE"
+      },
+      {
+        "field": "ContextAction651.START"
+      },
+      {
+        "field": "ContextAction651.NEXT"
+      },
+      {
+        "field": "ContextAction651.TIME"
+      },
+      {
+        "field": "ContextAction651.DATE"
+      },
+      {
+        "field": "ContextAction651.NAMED_DATE"
+      },
+      {
+        "field": "ContextAction651.WEEKDAY"
+      },
+      {
+        "field": "PhraseTime656.RELATIVE"
+      },
+      {
+        "field": "PhraseTime656.PARTIAL"
+      },
+      {
+        "field": "PhraseTime656.EXPLICIT_TIME"
+      },
+      {
+        "field": "EventDetails657.PLACE"
+      },
+      {
+        "field": "EventDetails657.VENUE"
+      },
+      {
+        "field": "EventSpan665.ALL"
+      },
+      {
+        "field": "EventSpan665.DAYS"
+      },
+      {
+        "field": "EventSpan665.END_DATE"
+      },
+      {
+        "field": "TimeSpelling665.HALF"
+      },
+      {
+        "field": "TimeSpelling665.UNITS"
+      },
+      {
+        "field": "EventRange667.END"
+      },
+      {
+        "field": "EventRange667.MONTH_DAY"
+      },
+      {
+        "field": "EventRange667.PART"
+      },
+      {
+        "field": "EventRange667.CLOCK"
+      },
+      {
+        "file": "ItalianTime660.java",
+        "line": 12
+      },
+      {
+        "file": "ItalianTime660.java",
+        "line": 14
+      },
+      {
+        "file": "ItalianTime660.java",
+        "line": 15
+      },
+      {
+        "file": "ItalianTime660.java",
+        "line": 16
+      },
+      {
+        "file": "ItalianTime660.java",
+        "line": 20
+      },
+      {
+        "file": "ItalianTime660.java",
+        "line": 23
+      },
+      {
+        "file": "ItalianTime660.java",
+        "line": 38
+      },
+      {
+        "file": "ItalianTime660.java",
+        "line": 39
+      },
+      {
+        "file": "ItalianTime660.java",
+        "line": 40
+      },
+      {
+        "file": "ItalianTime660.java",
+        "line": 41
+      },
+      {
+        "file": "ItalianTime660.java",
+        "line": 46
+      },
+      {
+        "file": "ItalianTime660.java",
+        "line": 54
+      },
+      {
+        "file": "ItalianTime660.java",
+        "line": 55
+      },
+      {
+        "file": "ItalianTime660.java",
+        "line": 58
+      },
+      {
+        "file": "ItalianTime660.java",
+        "line": 66
+      },
+      {
+        "file": "ItalianTime660.java",
+        "line": 66
+      },
+      {
+        "file": "ItalianTime660.java",
+        "line": 66
+      },
+      {
+        "file": "ItalianTime660.java",
+        "line": 67
+      },
+      {
+        "file": "ItalianTime660.java",
+        "line": 74
+      },
+      {
+        "file": "ItalianTime660.java",
+        "line": 77
+      },
+      {
+        "file": "ItalianTime660.java",
+        "line": 83
+      },
+      {
+        "file": "ItalianTime660.java",
+        "line": 90
+      },
+      {
+        "file": "ContextAction651.java",
+        "line": 15
+      },
+      {
+        "file": "ContextAction651.java",
+        "line": 16
+      },
+      {
+        "file": "ContextAction651.java",
+        "line": 17
+      },
+      {
+        "file": "ContextAction651.java",
+        "line": 18
+      },
+      {
+        "file": "ContextAction651.java",
+        "line": 39
+      },
+      {
+        "file": "ContextAction651.java",
+        "line": 60
+      },
+      {
+        "file": "ContextAction651.java",
+        "line": 63
+      },
+      {
+        "file": "ContextAction651.java",
+        "line": 64
+      },
+      {
+        "file": "ContextAction651.java",
+        "line": 65
+      },
+      {
+        "file": "ContextAction651.java",
+        "line": 87
+      },
+      {
+        "file": "ContextAction651.java",
+        "line": 87
+      },
+      {
+        "file": "ContextAction651.java",
+        "line": 88
+      },
+      {
+        "file": "ContextAction651.java",
+        "line": 89
+      },
+      {
+        "file": "ContextAction651.java",
+        "line": 93
+      },
+      {
+        "file": "ContextAction651.java",
+        "line": 93
+      },
+      {
+        "file": "ContextAction651.java",
+        "line": 94
+      },
+      {
+        "file": "ContextAction651.java",
+        "line": 98
+      },
+      {
+        "file": "ContextAction651.java",
+        "line": 99
+      },
+      {
+        "file": "ContextAction651.java",
+        "line": 100
+      },
+      {
+        "file": "PhraseTime656.java",
+        "line": 42
+      },
+      {
+        "file": "PhraseTime656.java",
+        "line": 46
+      },
+      {
+        "file": "EventDetails657.java",
+        "line": 8
+      },
+      {
+        "file": "EventDetails657.java",
+        "line": 9
+      },
+      {
+        "file": "EventDetails657.java",
+        "line": 29
+      },
+      {
+        "file": "EventDetails657.java",
+        "line": 29
+      },
+      {
+        "file": "EventSpan665.java",
+        "line": 9
+      },
+      {
+        "file": "EventSpan665.java",
+        "line": 22
+      },
+      {
+        "file": "EventSpan665.java",
+        "line": 29
+      },
+      {
+        "file": "TimeSpelling665.java",
+        "line": 5
+      },
+      {
+        "file": "TimeSpelling665.java",
+        "line": 7
+      },
+      {
+        "file": "TimeSpelling665.java",
+        "line": 7
+      },
+      {
+        "file": "EventRange667.java",
+        "line": 10
+      },
+      {
+        "file": "EventRange667.java",
+        "line": 11
+      },
+      {
+        "file": "EventRange667.java",
+        "line": 12
+      },
+      {
+        "file": "EventRange667.java",
+        "line": 28
+      },
+      {
+        "file": "EventRange667.java",
+        "line": 28
+      }
+    ]
+  },
+  "limitations": [
+    "Robolectric SDK 35, native graphics, simulated providers and transports",
+    "No physical Fold/Pixel or FPS measurement",
+    "No real Google account or remote synchronization verification"
+  ],
+  "execution": "Full selected regression gate; latest result per test class, with any focused reruns documented in VERIFICA-0.6.68.md",
+  "apk": {
+    "package": "it.keyant.keyboard",
+    "version": "0.6.68",
+    "versionCode": 95,
+    "debuggable": false,
+    "sha256": "ce15f04a82d68e113c8c6870fb1a4128e1a6713c3e3b22e654d7dfd8ebe13c17",
+    "bytes": 144462753,
+    "certificate_sha256": "bf7bc5998c63e50de960d4506499dce857cea819468673d0ca52d31bed527aa4",
+    "zip_integrity": true,
+    "alignment_16_kib": true,
+    "abis": [
+      "arm64-v8a",
+      "x86_64"
+    ]
+  },
+  "lint": {
+    "current": {
+      "Error": 550,
+      "Warning": 448,
+      "Hint": 1
+    },
+    "baseline": {
+      "Error": 550,
+      "Warning": 448,
+      "Hint": 1
+    },
+    "added": [],
+    "removed": []
+  }
+}
