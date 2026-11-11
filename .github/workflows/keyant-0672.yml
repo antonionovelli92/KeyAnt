@@ -1,0 +1,37 @@
+name: KeyAnt 0.6.72
+on:
+  push:
+    branches: [work/keyant-0.6.72]
+    paths: ['updates/0.6.72/**']
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Restore sources and apply changes
+        run: |
+          curl -fLsS --retry 3 -o "$RUNNER_TEMP/base.bundle" https://github.com/antonionovelli92/KeyAnt/releases/download/v0.6.71/KeyAnt-0.6.71-history.bundle
+          echo "6103b9856d52fd2dc15fcccfa4a0862bdd20831b73a2eb2130eeebef3dd36cc4  $RUNNER_TEMP/base.bundle" | sha256sum -c -
+          git clone "$RUNNER_TEMP/base.bundle" source
+          cd source
+          git checkout --detach 3f91d966483c74130a8774a2996b1455dd94b1f5
+          git apply ../updates/0.6.72/changes.patch
+          cp ../updates/0.6.72/head_*.png app/src/main/assets/ball_portraits/
+      - name: Compile and test
+        working-directory: source
+        run: |
+          bash gradlew --max-workers=2 :app:assembleDebugNoMinify
+          bash gradlew --max-workers=2 -I gradle/keyant-regression.gradle :app:testDebugNoMinifyUnitTest --tests '*672Test' --tests '*671Test' --tests '*Gesture670Test'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: KeyAnt-0.6.72-build
+          path: source/app/build/outputs/apk/debugNoMinify/*.apk
