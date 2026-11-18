@@ -1,0 +1,23 @@
+KeyAntCalendar691Test: 5 checks, 0 failures
+KeyAntVisual691Test: 5 checks, 0 failures
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+KeyAntCalendar671Test: 2 checks, 0 failures
+KeyAntCalendar672Test: 7 checks, 0 failures
+KeyAntLanguage671Test: 8 checks, 0 failures
+KeyAntLanguage673Test: 3 checks, 0 failures
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+KeyAntContext665Test: 8 checks, 0 failures
+KeyAntContext657Test: 12 checks, 0 failures
+KeyAntMotion652Test: 5 checks, 0 failures
+KeyAntMotion666Test: 2 checks, 0 failures
+KeyAntTyping689Test: 1 checks, 0 failures
+KeyAntGesture689Test: 4 checks, 0 failures
+KeyAnt690Test: 3 checks, 0 failures
+KeyAntPlacement690Test: 1 checks, 0 failures
+KeyAnt687Test: 7 checks, 0 failures
+KeyAntPrediction681Test: 4 checks, 0 failures
+KeyAntTime660Test: 4 checks, 0 failures
+KeyAntTime665Test: 10 checks, 0 failures
+KeyAntTime667Test: 8 checks, 0 failures
+KeyAntFlow667Test: 4 checks, 0 failures
+TOTAL 103; FAILED 0; seconds 36

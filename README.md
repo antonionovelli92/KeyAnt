@@ -1,32 +1,19 @@
-# KeyAnt 0.6.67
+# KeyAnt 0.6.91
 
-Tastiera Android personale basata su HeliBoard, con temi, appunti, trackball e azioni locali dalla frase.
+Tastiera Android — aggiornamento del 18 novembre 2026.
 
-## Installazione
+Tre nuove raccolte: NuPhy · Scolpiti, Smalto · Satinato, iOS · Bicolore. 12 temi in modalità chiara e scura, nuovi profili nel Maker, integrazione RGB e miglioramenti dei promemoria in linguaggio naturale.
 
-Scarica **KeyAnt-0.6.67.apk** dalla [release v0.6.67](https://github.com/antonionovelli92/KeyAnt/releases/tag/v0.6.67). Installa sopra la versione esistente senza disinstallare: firma personale invariata, versionCode 94. Non occorre installare le versioni intermedie, anche su un secondo telefono. Account e permessi delle integrazioni restano personali.
+103 test superati. Firma originale conservata.
 
-## Novità
+## Download e sorgenti
 
-- Intervalli composti: inizio fra dieci minuti, fine domani o in un giorno di questo mese.
-- Esiti delle pillole più contenuti, riflesso vetro e nuove entrate/uscite.
-- Swipe immediato o pressione e trascinamento, indipendenti per numeri e calendario.
-- Barra opzionale a manopola, carosello o visibile solo quando serve; Classica resta predefinita.
-- Catalogo temi unificato, Preferiti/Usati spesso come categorie e tre nuovi materiali China.
-- Protezione da correzioni tardive riferite a una parola precedente.
+Aprire la release **v0.6.91** nella sezione Releases. Installare **KeyAnt-0.6.91.apk** come aggiornamento, senza disinstallare.
 
-[Configurazione Google Tasks](docs/GOOGLE_TASKS_SETUP.md) · [Novità e limiti](AGGIORNAMENTO_0.6.67.md) · [Verifiche](VERIFICA-0.6.67.md) · [Ripristino](ROLLBACK-0.6.67.md) · [Build e firma](docs/BUILD_AND_RELEASE.md).
+Per il progetto completo usare **KeyAnt-0.6.91-sorgenti.zip** o **KeyAnt-0.6.91.bundle** allegati alla release. Questo ramo conserva documentazione: gli archivi automatici GitHub «Source code» di questo ramo non sostituiscono lo ZIP sorgenti completo.
 
-## Sorgenti e continuità
+Il bundle contiene i checkpoint source-v0.6.90 e source-v0.6.91 e la differenza completa tra le due versioni. Le chiavi private sono escluse.
 
-Il ramo GitHub contiene la documentazione. Per il progetto Android completo scaricare **KeyAnt-0.6.67-sorgenti-pubblici.zip**, oppure **KeyAnt-0.6.67-history.bundle** per avere anche baseline 0.6.50 e revisioni 0.6.51–0.6.67. Gli archivi automatici “Source code” contengono solo questo ramo documentale.
+[Continuità e ripristino](docs/CONTINUITA-0.6.91.md) · [Test](docs/TEST-0.6.91.txt) · [File modificati](docs/DIFF-0.6.91.txt)
 
-```sh
-git clone KeyAnt-0.6.67-history.bundle KeyAnt
-cd KeyAnt
-git log --oneline --all --decorate
-```
-
-Chiavi personali, credenziali e build temporanee sono escluse. La chiave originale è necessaria per aggiornare l’installazione personale; una build con firma diversa non è compatibile come aggiornamento.
-
-Conservati sorgenti, licenze e attribuzioni della base [HeliBoard](https://github.com/Helium314/HeliBoard). Gli asset che richiamano marchi e opere mantengono i diritti dei rispettivi titolari; la licenza del codice non concede diritti aggiuntivi su tali opere.
+Commit completo dei sorgenti: `592deb56eabcce83c82fb61fa26f305d8488c20c`.
