@@ -1,0 +1,30 @@
+KeyAnt 0.6.95 / versionCode 122
+42 metodi JUnit, 0 fallimenti. Durata: 46 secondi.
+Robolectric API35 con renderer Android nativo; JDK21 / Gradle8.14 / SDK36.
+
+Ripristino verificato: i tre file della geometria sono identici alla 0.6.93.
+Render bilanciati di Xbox, Smalto, NuPhy e iOS nelle due orientazioni.
+Confronto orizzontale 0.6.94/0.6.95 alla stessa scala (800 x 208).
+Tocchi MainKeyboardView: 640/800/1200 dp, unita e divisa, con e senza numeri.
+Controlli di rotazione, geometria delle aree interattive e insets/fotocamera.
+Regressioni di materiali, menu, barra, Maker e RGB.
+Confronti visivi ispezionati. Nessuna prova sul telefono fisico o misura FPS/HDR.
+Il conteggio dei test non costituisce garanzia di assenza di bug.
+
+Build assembleDebugNoMinify riuscita. Firma originale verificata; ZIP integro;
+zipalign 16KiB verificato; debuggable=false.
+APK SHA256: a47a978b49e5705281f9b66a3e99cbd0f2fae3622e196cb29d05be9b5d8fc363
+
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+KeyAnt694Test: 7 checks, 0 failures
+KeyAntUi694Test: 1 checks, 0 failures
+KeyAntGeometryTest: 3 checks, 0 failures
+KeyAntV47Test: 12 checks, 0 failures
+GEOMETRY_CASES=10800
+LIVE_RENDERS=72
+INPUT_TAPS=936
+EXTRA_LAYOUT_RENDERS=18
+KeyAntVisual692Test: 10 checks, 0 failures
+KeyAntCoordination693Test: 3 checks, 0 failures
+KeyAntV625Test: 6 checks, 0 failures
+TOTAL 42; FAILED 0; seconds 46

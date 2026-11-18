@@ -1,0 +1,182 @@
+diff --git a/AGENTS.md b/AGENTS.md
+index f2f5511..9c8829d 100644
+--- a/AGENTS.md
++++ b/AGENTS.md
+@@ -10,5 +10,5 @@
+ - Non dichiarare HDR, fluidità o comportamento sul telefono fisico verificati senza misurazioni sul dispositivo. Mantenere fallback SDR e HDR disattivato per default.
+ - Conservare checkpoint, sorgenti e APK firmata con versione crescente. Escludere chiavi, credenziali, build e video personali dai sorgenti pubblici.
+ - Consegnare un link diretto sandbox all'APK verificata. Non sostituirlo con un link Library già segnalato come non funzionante.
+-- In orizzontale usare la larghezza utile senza la riduzione automatica al 90%; preservare insets Android e larghezze personalizzate. Verificare tap reali, numeri, split e ritorno in verticale.
++- In orizzontale mantenere le proporzioni bilanciate precedenti alla 0.6.94: il margine laterale e la riduzione al 90% sui display larghi evitano tasti eccessivamente allungati. Non eliminarli per riempire lo schermo. Preservare insets Android e regolazioni manuali; verificare Fold aperto/chiuso, tap reali, numeri, split e rotazione.
+ - Menu strumenti: fasce separate per icona ed etichetta, testo ingrandito e modalità modifica verificati. Il comando RGB coordinato deve accendere un effetto visibile e seguire il tema, con stato e anteprima.
+diff --git a/app/build.gradle.kts b/app/build.gradle.kts
+index 9fe294a..c66a763 100644
+--- a/app/build.gradle.kts
++++ b/app/build.gradle.kts
+@@ -15,8 +15,8 @@ android {
+         applicationId = "it.keyant.keyboard"
+         minSdk = 26
+         targetSdk = 35
+-        versionCode = 121
+-        versionName = "0.6.94"
++        versionCode = 122
++        versionName = "0.6.95"
+         externalNativeBuild { ndkBuild { arguments += listOf("-j2") } }
+         ndk {
+             abiFilters.clear()
+diff --git a/app/src/main/java/helium314/keyboard/keyboard/internal/KeyboardBuilder.kt b/app/src/main/java/helium314/keyboard/keyboard/internal/KeyboardBuilder.kt
+index 14701ab..2707333 100644
+--- a/app/src/main/java/helium314/keyboard/keyboard/internal/KeyboardBuilder.kt
++++ b/app/src/main/java/helium314/keyboard/keyboard/internal/KeyboardBuilder.kt
+@@ -132,7 +132,7 @@ open class KeyboardBuilder<KP : KeyboardParams>(protected val mContext: Context,
+ 
+     private fun addSplit() {
+         var spacerRelativeWidth = ((mParams.mId.mWidth / mContext.resources.displayMetrics.density - 600) / 600f + 0.15f).coerceIn(0.15f, 0.35f) * Settings.readSplitSpacerScale(helium314.keyboard.latin.utils.DeviceProtectedUtils.getSharedPreferences(mContext), mContext.resources.configuration.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE)
+-        if (helium314.keyboard.keyforma.KeyboardGeometry.balanceInWindow(mContext)) {
++        if (helium314.keyboard.keyforma.KeyAntPrefs.bool(mContext,"balanced_caps",true)) {
+             val density=mContext.resources.displayMetrics.density
+             val row=(mParams.mOccupiedHeight/density-8)/(if(mParams.mId.mNumberRowEnabled)5 else 4)
+             val targetWidth=(row-2)*1.28f*10+6
+diff --git a/app/src/main/java/helium314/keyboard/keyboard/internal/KeyboardParams.java b/app/src/main/java/helium314/keyboard/keyboard/internal/KeyboardParams.java
+index 5d0bd54..64fa9a7 100644
+--- a/app/src/main/java/helium314/keyboard/keyboard/internal/KeyboardParams.java
++++ b/app/src/main/java/helium314/keyboard/keyboard/internal/KeyboardParams.java
+@@ -236,7 +236,7 @@ public class KeyboardParams {
+                     * Settings.getValues().mSidePaddingScale);
+ 
+             mBaseWidth = mOccupiedWidth - mLeftPadding - mRightPadding;
+-            final float defaultKeyWidthFactor = width/context.getResources().getDisplayMetrics().density >= 600 && helium314.keyboard.keyforma.KeyboardGeometry.balanceInWindow(context) ? 0.9f : 1f;
++            final float defaultKeyWidthFactor = width/context.getResources().getDisplayMetrics().density >= 600 ? 0.9f : 1f;
+             final float alphaSymbolKeyWidth = keyAttr.getFraction(R.styleable.Keyboard_Key_keyWidth,
+                     1, 1, defaultKeyWidthFactor / DEFAULT_KEYBOARD_COLUMNS);
+             mDefaultKeyWidth = mId.isNumberLayout() ? 0.17f : alphaSymbolKeyWidth;
+@@ -264,7 +264,7 @@ public class KeyboardParams {
+                 final float density = context.getResources().getDisplayMetrics().density;
+                 mTopPadding = Math.round(4 * density);
+                 mBottomPadding = Math.round(4 * density * Settings.getValues().mBottomPaddingScale);
+-                mLeftPadding = mRightPadding = Math.max(Math.round(3 * density * Settings.getValues().mSidePaddingScale), helium314.keyboard.keyforma.KeyboardGeometry.balancedPadding(width,density,(height/density-8)/(mId.mNumberRowEnabled?5:4),mId.mIsSplitLayout,helium314.keyboard.keyforma.KeyboardGeometry.balanceInWindow(context),mPreviewProfile!=null?mPreviewProfile:Settings.getValues().mColors instanceof helium314.keyboard.keyforma.FormaColors fc?fc.getProfile():""));
++                mLeftPadding = mRightPadding = Math.max(Math.round(3 * density * Settings.getValues().mSidePaddingScale), helium314.keyboard.keyforma.KeyboardGeometry.balancedPadding(width,density,(height/density-8)/(mId.mNumberRowEnabled?5:4),mId.mIsSplitLayout,helium314.keyboard.keyforma.KeyAntPrefs.bool(context,"balanced_caps",true) && !helium314.keyboard.keyforma.CutoutSpace.expandCompact(context),mPreviewProfile!=null?mPreviewProfile:Settings.getValues().mColors instanceof helium314.keyboard.keyforma.FormaColors fc?fc.getProfile():""));
+                 mBaseWidth = mOccupiedWidth - mLeftPadding - mRightPadding;
+                 mHorizontalGap = Math.round((Settings.getValues().mNarrowKeyGaps ? 2 : 4) * density);
+                 mVerticalGap = Math.round(4 * density);
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/KeyboardGeometry.java b/app/src/main/java/helium314/keyboard/keyforma/KeyboardGeometry.java
+index a73e785..64c3ffd 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/KeyboardGeometry.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/KeyboardGeometry.java
+@@ -17,12 +17,6 @@ public final class KeyboardGeometry {
+         String id=ThemeCatalog.profile(prefs.getString(helium314.keyboard.latin.settings.Settings.PREF_THEME_COLORS," "));
+         return id.equals(SmokeGlassCaps.ID)?50:ReferenceCollection691.defaultRowHeight(id,width);
+     }
+-    /** Landscape fills the usable IME width; Android still owns cutout/navigation insets.
+-     * Balanced caps remain available on a portrait Fold, including explicit sizing previews. */
+-    public static boolean balanceInWindow(android.content.Context c) {
+-        return c.getResources().getConfiguration().orientation != android.content.res.Configuration.ORIENTATION_LANDSCAPE
+-                && KeyAntPrefs.bool(c,"balanced_caps",true) && !CutoutSpace.expandCompact(c);
+-    }
+     public static int balancedPadding(int width,float density,float rowDp,boolean split,boolean enabled,String profile){
+         if(!enabled||split||width/density<600||!ReferenceCollection691.supports(MakeKeyAnt.base(profile)))return balancedPadding(width,density,rowDp,split,enabled);
+         float aspect=ReferenceCollection691.scoop(profile)?.76f:ReferenceCollection691.enamel(profile)?.86f:.96f;
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/KeyboardSizePage.kt b/app/src/main/java/helium314/keyboard/keyforma/KeyboardSizePage.kt
+index 1db7173..625bd42 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/KeyboardSizePage.kt
++++ b/app/src/main/java/helium314/keyboard/keyforma/KeyboardSizePage.kt
+@@ -52,7 +52,7 @@ import helium314.keyboard.latin.utils.prefs
+   }
+  }
+  StudioCard {
+-  Toggle("Proporzioni equilibrate sul Fold","balanced_caps",true,"In verticale mantiene proporzionati i tasti sul Fold aperto. In orizzontale usa tutta la larghezza disponibile, rispettando i bordi di sistema.")
++  Toggle("Proporzioni equilibrate sul Fold","balanced_caps",true,"Mantiene i tasti proporzionati: margini laterali nella modalità unita, più spazio centrale nella divisa. Disattiva per la larghezza completa.")
+   Row(Modifier.fillMaxWidth().padding(14.dp),verticalAlignment=androidx.compose.ui.Alignment.CenterVertically){Column(Modifier.weight(1f)){Text("Tastiera divisa");Text("Per il profilo selezionato",style=MaterialTheme.typography.bodySmall)};GlassSwitch(split,{split=it;prefs.edit().putBoolean("ka_split_"+suffix,it).apply();reload()})}
+   Row(Modifier.fillMaxWidth().padding(14.dp),verticalAlignment=androidx.compose.ui.Alignment.CenterVertically){Text("Riga dei numeri",Modifier.weight(1f));GlassSwitch(numbers,{numbers=it;prefs.edit().putBoolean(Settings.PREF_SHOW_NUMBER_ROW,it).apply();reload()})}
+  }
+diff --git a/app/src/test/java/helium314/keyboard/keyforma/KeyAnt694Test.java b/app/src/test/java/helium314/keyboard/keyforma/KeyAnt694Test.java
+index b70736a..ac000bc 100644
+--- a/app/src/test/java/helium314/keyboard/keyforma/KeyAnt694Test.java
++++ b/app/src/test/java/helium314/keyboard/keyforma/KeyAnt694Test.java
+@@ -24,19 +24,18 @@ public class KeyAnt694Test {
+   ThemeRgb694.coordinate(c,id);lights.configureTheme(c,id);assertFalse(lights.custom());assertTrue(ThemeRgb694.coordinated(c));
+   assertEquals("breathe",MakeKeyAnt.get(id).optString("rgbMode"));
+  }
+- @Test public void landscapeUsesAvailableWidthAndPortraitFoldKeepsBalance()throws Exception{
++ @Test public void landscapeAndPortraitFoldKeepTheSameBalancedProportions()throws Exception{
+   for(String id:new String[]{"xbox_clear","ref91_primary","ref91_field","ref91_duo"}){
+    Bitmap comparison=Bitmap.createBitmap(800,440,Bitmap.Config.ARGB_8888);Canvas out=new Canvas(comparison);
+    for(int orientation=0;orientation<2;orientation++){
+     RuntimeEnvironment.setQualifiers(orientation==0?"w800dp-h1000dp-port-mdpi":"w800dp-h400dp-land-mdpi");theme(id,true);
+-    assertEquals(orientation==0,KeyboardGeometry.balanceInWindow(c));
+     Keyboard k=new KeyboardLayoutSet.Builder(ime,null).setKeyboardGeometry(800,208).setSubtype(RichInputMethodManager.getInstance().getCurrentSubtype()).build().getKeyboard(KeyboardId.ELEMENT_ALPHABET);
+     Key q=k.getKey('q'),p=k.getKey('p');
+-    String note=id+" orientation="+orientation+" q="+q.getX()+" pRight="+(p.getX()+p.getWidth())+" imeOrientation="+ime.getResources().getConfiguration().orientation; if(orientation==1){assertTrue(note,q.getX()<10);assertTrue(note,p.getX()+p.getWidth()>790);}else assertTrue(note,q.getX()>40);
++    String note=id+" orientation="+orientation+" q="+q.getX()+" pRight="+(p.getX()+p.getWidth())+" imeOrientation="+ime.getResources().getConfiguration().orientation; assertTrue(note,q.getX()>40); assertTrue(note,p.getX()+p.getWidth()<760);
+     var host=new KeyboardView(new android.view.ContextThemeWrapper(c,KeyboardTheme.getKeyboardTheme(c).mStyleId),null,helium314.keyboard.latin.R.attr.keyboardViewStyle,new FormaColors(true,id,c.getResources()));host.setKeyboard(k);host.setBackgroundColor(ThemeCatalog.background(id,true));
+     Bitmap frame=KeyAntV63Test.render(host,800,208);out.drawBitmap(frame,0,orientation*220,null);frame.recycle();
+    }
+-   KeyAntV42Test.save(comparison,"KeyAnt-694-width-"+id+".png");comparison.recycle();
++   KeyAntV42Test.save(comparison,"KeyAnt-695-width-"+id+".png");comparison.recycle();
+   }
+  }
+  @Test public void panelsHaveAlignedBandsAtEverySizeAndLongLabelsNeverMoveIcons()throws Exception{
+@@ -67,7 +66,7 @@ public class KeyAnt694Test {
+   ToolPanelTile694 tile=tiles(panel).get(0);assertEquals(View.GONE,tile.icon.getVisibility());assertTrue(tile.performClick());assertEquals(1,commands.size());
+   tile.performLongClick();KeyAntV42Test.layout(panel,400,1400);ToolPanelTile694 editing=tiles(panel).get(0);assertEquals(2,editing.getChildCount());View badge=editing.getChildAt(1);assertTrue(badge.getWidth()>0&&badge.getHeight()>0);badge.performClick();assertEquals(1,commands.size());
+  }
+- @Test public void landscapeRealTouchesMatchExpandedKeysIncludingSplitAndNumberRow(){
++ @Test public void landscapeRealTouchesMatchBalancedKeysIncludingSplitAndNumberRow(){
+   RuntimeEnvironment.setQualifiers("w800dp-h400dp-land-mdpi");theme("xbox_clear",true);
+   for(int width:new int[]{640,800,1200})for(boolean split:new boolean[]{false,true})for(boolean numbers:new boolean[]{false,true}){
+    KeyboardLayoutSet.onKeyboardThemeChanged();View input=ime.onCreateInputView();ime.setInputView(input);MainKeyboardView host=input.findViewById(helium314.keyboard.latin.R.id.keyboard_view);host.bindKeyAnt(ime);
+diff --git a/docs/CONTINUITA-0.6.95.md b/docs/CONTINUITA-0.6.95.md
+new file mode 100644
+index 0000000..79657bf
+--- /dev/null
++++ b/docs/CONTINUITA-0.6.95.md
+@@ -0,0 +1,13 @@
++# KeyAnt 0.6.95 — proporzioni equilibrate in orizzontale
++
++Pacchetto `it.keyant.keyboard`, versionCode 122. Base completa 0.6.94: `2686b8bd9692ea32daff05ef8cdad4f4d5077cc2`.
++
++La 0.6.94 riempiva la larghezza in orizzontale disabilitando il margine di bilanciamento e il fattore del 90% delle righe larghe. Nei video di riscontro, il tema Xbox appariva troppo allungato sia sul display esterno sia sul Fold aperto. Su richiesta dell'utente, la 0.6.95 ripristina esattamente la geometria della 0.6.93: KeyboardParams, KeyboardBuilder e KeyboardGeometry tornano alla versione precedente. Ripristinata anche la descrizione dell'opzione Proporzioni equilibrate sul Fold.
++
++Il bilanciamento dipende dalla larghezza disponibile, dall'altezza dei tasti e dal tema. Nella modalità unita usa i margini laterali; nella divisa regola lo spazio centrale. Conservati i bordi di sistema e le preferenze di dimensionamento. Nessuna migrazione azzera le regolazioni personali.
++
++Le correzioni della 0.6.94 a menu, icone, RGB coordinato, assistente e impostazioni rimangono inalterate. Il ripristino riguarda solo il dimensionamento e il testo descrittivo corrispondente.
++
++Verifiche: render Android nativi, tocco sui tasti su tre larghezze con/senza numeri e split, geometria delle aree interattive, protezione fotocamera e regressioni dei temi/menu/RGB. Il rapporto allegato riporta gli esiti effettivi. Non si dichiara una prova sul telefono fisico.
++
++APK firmata con la chiave originale, aggiornabile senza disinstallare. Sorgenti completi, bundle e patch dalla 0.6.94 allegati alla release. Il ramo GitHub principale è documentale: gli archivi automatici Source code non sostituiscono l'asset sorgenti. Chiavi, credenziali e video personali esclusi.
+diff --git a/docs/VERIFICHE-0.6.95.txt b/docs/VERIFICHE-0.6.95.txt
+new file mode 100644
+index 0000000..96f54cd
+--- /dev/null
++++ b/docs/VERIFICHE-0.6.95.txt
+@@ -0,0 +1,30 @@
++KeyAnt 0.6.95 / versionCode 122
++42 metodi JUnit, 0 fallimenti. Durata: 46 secondi.
++Robolectric API35 con renderer Android nativo; JDK21 / Gradle8.14 / SDK36.
++
++Ripristino verificato: i tre file della geometria sono identici alla 0.6.93.
++Render bilanciati di Xbox, Smalto, NuPhy e iOS nelle due orientazioni.
++Confronto orizzontale 0.6.94/0.6.95 alla stessa scala (800 x 208).
++Tocchi MainKeyboardView: 640/800/1200 dp, unita e divisa, con e senza numeri.
++Controlli di rotazione, geometria delle aree interattive e insets/fotocamera.
++Regressioni di materiali, menu, barra, Maker e RGB.
++Confronti visivi ispezionati. Nessuna prova sul telefono fisico o misura FPS/HDR.
++Il conteggio dei test non costituisce garanzia di assenza di bug.
++
++Build assembleDebugNoMinify riuscita. Firma originale verificata; ZIP integro;
++zipalign 16KiB verificato; debuggable=false.
++APK SHA256: a47a978b49e5705281f9b66a3e99cbd0f2fae3622e196cb29d05be9b5d8fc363
++
++OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
++KeyAnt694Test: 7 checks, 0 failures
++KeyAntUi694Test: 1 checks, 0 failures
++KeyAntGeometryTest: 3 checks, 0 failures
++KeyAntV47Test: 12 checks, 0 failures
++GEOMETRY_CASES=10800
++LIVE_RENDERS=72
++INPUT_TAPS=936
++EXTRA_LAYOUT_RENDERS=18
++KeyAntVisual692Test: 10 checks, 0 failures
++KeyAntCoordination693Test: 3 checks, 0 failures
++KeyAntV625Test: 6 checks, 0 failures
++TOTAL 42; FAILED 0; seconds 46

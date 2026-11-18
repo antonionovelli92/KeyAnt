@@ -1,3 +1,11 @@
+# KeyAnt 0.6.95
+
+Ripristinate le proporzioni equilibrate in orizzontale della 0.6.93, evitando l’allungamento dei tasti introdotto nella 0.6.94. Conservate le migliorie a menu, RGB e impostazioni. VersionCode 122.
+
+Vedi [continuità](docs/CONTINUITA-0.6.95.md) e [verifiche](docs/VERIFICHE-0.6.95.txt). APK firmata, confronto visivo, sorgenti completi, bundle e patch sono allegati alla release; gli archivi automatici Source code contengono il ramo documentale.
+
+---
+
 # KeyAnt 0.6.94
 
 Corretti il restringimento in orizzontale, l’allineamento del menu ⋯ e il comando RGB coordinato. Menu coerente con materiale e colori della barra; stato e anteprima RGB visibili, controlli dei temi riordinati. VersionCode 121.
