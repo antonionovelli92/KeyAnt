@@ -1,0 +1,57 @@
+KeyAnt 0.6.93 / versionCode 120
+157 metodi JUnit superati, 0 fallimenti, in 29 classi.
+JDK21 / Gradle8.14 / Robolectric Android API35 con renderer nativo.
+
+48 render: 12 nuovi temi x chiaro/scuro x barra materiale/solo icone.
+1520 combinazioni della politica barra: 380 temi x 2 modi x 2 superfici.
+Regressioni: 10800 configurazioni geometriche, 936 tap reali su MainKeyboardView,
+90 render tastiera/layout; i conteggi sono distinti e non garantiscono assenza di bug.
+Controlli UI: interruttori Temi, ritorno stock, singola anteprima completa nelle
+impostazioni barra e assenza del controllo superficie incompatibile con coordinazione.
+Controllate le modalità manopola/nastro/ventaglio/cassetto/lamelle conservando i comandi.
+Confronti ispezionati da video compresso e screenshot: nessuna identità subpixel dichiarata.
+La luminosità HDR, FPS e comportamento sul telefono fisico non sono stati misurati.
+
+Build assembleDebugNoMinify riuscita, lintVital incluso. Firma originale v2 verificata,
+ZIP integro, allineamento16KiB, debuggable=false. Pacchetto it.keyant.keyboard.
+Certificato SHA256: bf7bc5998c63e50de960d4506499dce857cea819468673d0ca52d31bed527aa4.
+APK SHA256: 172f4ae6dcb1a58b48409d537afd65183ec43a79826892b0261a9db57b1369d4
+
+KeyAntCoordinationUi693Test: 2 checks, 0 failures
+TOOLBAR_THEME_CASES=1520
+NATIVE_THEME_BAR_RENDERS=48
+KeyAntVisual693Test: 8 checks, 0 failures
+KeyAntCoordination693Test: 3 checks, 0 failures
+GEOMETRY_CASES=10800
+LIVE_RENDERS=72
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+INPUT_TAPS=936
+EXTRA_LAYOUT_RENDERS=18
+KeyAntVisual692Test: 10 checks, 0 failures
+KeyAntCalendar691Test: 5 checks, 0 failures
+KeyAntVisual691Test: 5 checks, 0 failures
+KeyAntCalendar671Test: 2 checks, 0 failures
+KeyAntCalendar672Test: 7 checks, 0 failures
+KeyAntLanguage671Test: 8 checks, 0 failures
+KeyAntLanguage673Test: 3 checks, 0 failures
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+KeyAntContext665Test: 8 checks, 0 failures
+KeyAntContext657Test: 12 checks, 0 failures
+KeyAntMotion652Test: 5 checks, 0 failures
+KeyAntMotion666Test: 2 checks, 0 failures
+KeyAntTyping689Test: 1 checks, 0 failures
+KeyAntGesture689Test: 4 checks, 0 failures
+KeyAnt690Test: 3 checks, 0 failures
+KeyAntPlacement690Test: 1 checks, 0 failures
+KeyAnt687Test: 7 checks, 0 failures
+KeyAntPrediction681Test: 4 checks, 0 failures
+KeyAntTime660Test: 4 checks, 0 failures
+KeyAntTime665Test: 10 checks, 0 failures
+KeyAntTime667Test: 8 checks, 0 failures
+KeyAntFlow667Test: 4 checks, 0 failures
+KeyAntMaterials653Test: 3 checks, 0 failures
+KeyAntMaterials668Test: 5 checks, 0 failures
+KeyAntCalibration644Test: 2 checks, 0 failures
+KeyAntV616Test: 18 checks, 0 failures
+KeyAntGeometryTest: 3 checks, 0 failures
+TOTAL 157; FAILED 0; seconds 60

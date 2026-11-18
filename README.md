@@ -1,3 +1,11 @@
+# KeyAnt 0.6.93
+
+Smalto con faccia convessa e bordo sottile, iOS Coordinata uniforme in chiaro/scuro e barra icone abbinata al tema, anche in modalità solo icone. Integrazione Maker, ricerca e assistente. VersionCode 120.
+
+Vedi [continuità e verifiche](docs/CONTINUITA-0.6.93.md) e [requisiti di qualità](AGENTS.md). APK, confronti, sorgenti completi e bundle sono asset della release. Gli archivi automatici “Source code” contengono il ramo documentale.
+
+---
+
 # KeyAnt 0.6.92
 
 Geometrie NuPhy, Smalto e iOS riviste sui riferimenti, integrazione Maker/anteprime/effetti e HDR RGB opzionale. VersionCode 119.
