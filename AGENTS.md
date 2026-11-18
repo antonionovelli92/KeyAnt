@@ -10,3 +10,5 @@
 - Non dichiarare HDR, fluidità o comportamento sul telefono fisico verificati senza misurazioni sul dispositivo. Mantenere fallback SDR e HDR disattivato per default.
 - Conservare checkpoint, sorgenti e APK firmata con versione crescente. Escludere chiavi, credenziali, build e video personali dai sorgenti pubblici.
 - Consegnare un link diretto sandbox all'APK verificata. Non sostituirlo con un link Library già segnalato come non funzionante.
+- In orizzontale usare la larghezza utile senza la riduzione automatica al 90%; preservare insets Android e larghezze personalizzate. Verificare tap reali, numeri, split e ritorno in verticale.
+- Menu strumenti: fasce separate per icona ed etichetta, testo ingrandito e modalità modifica verificati. Il comando RGB coordinato deve accendere un effetto visibile e seguire il tema, con stato e anteprima.

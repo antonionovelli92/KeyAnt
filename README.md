@@ -1,3 +1,11 @@
+# KeyAnt 0.6.94
+
+Corretti il restringimento in orizzontale, l’allineamento del menu ⋯ e il comando RGB coordinato. Menu coerente con materiale e colori della barra; stato e anteprima RGB visibili, controlli dei temi riordinati. VersionCode 121.
+
+Vedi [continuità e verifiche](docs/CONTINUITA-0.6.94.md) e [requisiti di qualità](AGENTS.md). APK firmata, confronto grafico, menu chiari/scuri, sorgenti completi e bundle sono allegati alla release. Gli archivi automatici “Source code” contengono il ramo documentale.
+
+---
+
 # KeyAnt 0.6.93
 
 Smalto con faccia convessa e bordo sottile, iOS Coordinata uniforme in chiaro/scuro e barra icone abbinata al tema, anche in modalità solo icone. Integrazione Maker, ricerca e assistente. VersionCode 120.

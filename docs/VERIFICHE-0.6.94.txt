@@ -1,0 +1,70 @@
+KeyAnt 0.6.94 / versionCode 121
+204 metodi JUnit, 0 fallimenti, 36 classi. Durata: 76 secondi.
+Robolectric API35 con renderer Android nativo, JDK21 / Gradle8.14 / SDK36.
+
+Verifiche mirate:
+- Layout orizzontale: larghezza completa delle lettere, ritorno alle proporzioni
+  del Fold verticale, render Xbox/Smalto/NuPhy/iOS; insets Android conservati.
+- Tap reali su MainKeyboardView: 3 larghezze x unita/divisa x numeri si/no,
+  incluse lettere esterne Q/P e riga numerica. Regressioni di geometria e cutout.
+- Menu: dimensioni compatta/originale/grande, font normale/150%, icone nascoste,
+  azioni, modifica, panchina e trascinamento. Bande di simboli e nomi allineate.
+- 78 render menu: 13 palette x chiaro/scuro x stock/coordinato/solo icone.
+- UI Compose: RGB realmente acceso partendo da off, selezione e stato visibili,
+  spegnimento, modalita chiara, controlli barra e navigazione Studio.
+- Comando RGB condiviso con ANT: segue il tema; conserva effetto, velocita e
+  intensita positiva; riattivazione da intensita zero ripristina luce visibile.
+- Regressioni materiali 0.6.92/93, barra/Maker, date, lingua, scrittura e gesti.
+I numeri di metodi, render e configurazioni sono distinti e non provano zero bug.
+Confronti ispezionati visivamente; nessun test sul telefono fisico, FPS o HDR misurato.
+
+Build assembleDebugNoMinify e lintVital riusciti. Firma originale v2 verificata,
+ZIP integro, allineamento16KiB, debuggable=false. Pacchetto it.keyant.keyboard.
+Certificato SHA256: bf7bc5998c63e50de960d4506499dce857cea819468673d0ca52d31bed527aa4.
+APK SHA256: 4be1d275435c9814473cb8a402fe370179f37d282a90a02f3fad317a74167c03
+
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+KeyAnt694Test: 7 checks, 0 failures
+KeyAntUi694Test: 1 checks, 0 failures
+KeyAntV620Test: 12 checks, 0 failures
+KeyAntV625Test: 6 checks, 0 failures
+KeyAnt688Test: 6 checks, 0 failures
+KeyAntStudio618Test: 3 checks, 0 failures
+KeyAntV47Test: 12 checks, 0 failures
+KeyAntCoordinationUi693Test: 2 checks, 0 failures
+TOOLBAR_THEME_CASES=1520
+NATIVE_THEME_BAR_RENDERS=48
+KeyAntVisual693Test: 8 checks, 0 failures
+KeyAntCoordination693Test: 3 checks, 0 failures
+GEOMETRY_CASES=10800
+LIVE_RENDERS=72
+INPUT_TAPS=936
+EXTRA_LAYOUT_RENDERS=18
+KeyAntVisual692Test: 10 checks, 0 failures
+KeyAntCalendar691Test: 5 checks, 0 failures
+KeyAntVisual691Test: 5 checks, 0 failures
+KeyAntCalendar671Test: 2 checks, 0 failures
+KeyAntCalendar672Test: 7 checks, 0 failures
+KeyAntLanguage671Test: 8 checks, 0 failures
+KeyAntLanguage673Test: 3 checks, 0 failures
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+KeyAntContext665Test: 8 checks, 0 failures
+KeyAntContext657Test: 12 checks, 0 failures
+KeyAntMotion652Test: 5 checks, 0 failures
+KeyAntMotion666Test: 2 checks, 0 failures
+KeyAntTyping689Test: 1 checks, 0 failures
+KeyAntGesture689Test: 4 checks, 0 failures
+KeyAnt690Test: 3 checks, 0 failures
+KeyAntPlacement690Test: 1 checks, 0 failures
+KeyAnt687Test: 7 checks, 0 failures
+KeyAntPrediction681Test: 4 checks, 0 failures
+KeyAntTime660Test: 4 checks, 0 failures
+KeyAntTime665Test: 10 checks, 0 failures
+KeyAntTime667Test: 8 checks, 0 failures
+KeyAntFlow667Test: 4 checks, 0 failures
+KeyAntMaterials653Test: 3 checks, 0 failures
+KeyAntMaterials668Test: 5 checks, 0 failures
+KeyAntCalibration644Test: 2 checks, 0 failures
+KeyAntV616Test: 18 checks, 0 failures
+KeyAntGeometryTest: 3 checks, 0 failures
+TOTAL 204; FAILED 0; seconds 76
