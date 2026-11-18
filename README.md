@@ -1,19 +1,33 @@
+# KeyAnt 0.6.92
+
+Geometrie NuPhy, Smalto e iOS riviste sui riferimenti, integrazione Maker/anteprime/effetti e HDR RGB opzionale. VersionCode 119.
+
+Vedi [continuità e limiti di verifica](docs/CONTINUITA-0.6.92.md) e [requisiti di qualità](AGENTS.md). Sorgenti completi, bundle e APK sono asset della release.
+
+---
+
 # KeyAnt 0.6.91
 
-Tastiera Android — aggiornamento del 18 novembre 2026.
+Aggiornamento del 18 novembre 2026: tre raccolte di temi (12 temi, ciascuno chiaro/scuro), nuovi profili concavi e smaltati, integrazione Maker/RGB e correzione dei riferimenti temporali nei promemoria.
 
-Tre nuove raccolte: NuPhy · Scolpiti, Smalto · Satinato, iOS · Bicolore. 12 temi in modalità chiara e scura, nuovi profili nel Maker, integrazione RGB e miglioramenti dei promemoria in linguaggio naturale.
+Vedi [continuità, verifiche e ripristino](docs/CONTINUITA-0.6.91.md). Sorgenti completi e bundle Git sono allegati alla release; la chiave di firma non è distribuita.
 
-103 test superati. Firma originale conservata.
+---
 
-## Download e sorgenti
+# KeyAnt 0.6.81
 
-Aprire la release **v0.6.91** nella sezione Releases. Installare **KeyAnt-0.6.91.apk** come aggiornamento, senza disinstallare.
+Tastiera Android personale basata su HeliBoard, con temi, appunti, trackball e azioni locali dalla frase.
 
-Per il progetto completo usare **KeyAnt-0.6.91-sorgenti.zip** o **KeyAnt-0.6.91.bundle** allegati alla release. Questo ramo conserva documentazione: gli archivi automatici GitHub «Source code» di questo ramo non sostituiscono lo ZIP sorgenti completo.
+## Installazione
 
-Il bundle contiene i checkpoint source-v0.6.90 e source-v0.6.91 e la differenza completa tra le due versioni. Le chiavi private sono escluse.
+Installa KeyAnt-0.6.81.apk sopra la versione precedente. Il pacchetto Android è it.keyant.keyboard e il codice versione è 108.
 
-[Continuità e ripristino](docs/CONTINUITA-0.6.91.md) · [Test](docs/TEST-0.6.91.txt) · [File modificati](docs/DIFF-0.6.91.txt)
+## Novità
 
-Commit completo dei sorgenti: `592deb56eabcce83c82fb61fa26f305d8488c20c`.
+Dopo spazio e Backspace, la parola riaperta resta selezionabile con la grafia esatta. Un tocco la rende disponibile per i completamenti personali. Le proposte di continuazione sfruttano anche il testo della bozza e il tipo di campo.
+
+La [continuità della 0.6.81](docs/CONTINUITA-0.6.81.md) raccoglie i percorsi nel codice, i test e il riferimento alla versione precedente. L’archivio KeyAnt-0.6.81-sorgenti.zip contiene i sorgenti completi di questa versione.
+
+Chiavi personali, credenziali e build temporanee sono escluse. La chiave originale è necessaria per aggiornare l’installazione personale; una build con firma diversa non è compatibile come aggiornamento.
+
+Conservati sorgenti, licenze e attribuzioni della base [HeliBoard](https://github.com/Helium314/HeliBoard). Gli asset che richiamano marchi e opere mantengono i diritti dei rispettivi titolari; la licenza del codice non concede diritti aggiuntivi su tali opere.

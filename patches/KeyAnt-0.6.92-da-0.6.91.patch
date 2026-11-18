@@ -1,0 +1,873 @@
+diff --git a/AGENTS.md b/AGENTS.md
+new file mode 100644
+index 0000000..c4cff11
+--- /dev/null
++++ b/AGENTS.md
+@@ -0,0 +1,10 @@
++# KeyAnt: requisiti di qualità
++
++- Le richieste grafiche vanno confrontate con i riferimenti allegati prima e dopo la modifica. Non chiamare una copia fedele un semplice cambio di palette.
++- Ogni nuova famiglia di tasti deve avere una geometria esplicita: proporzioni, spalla, incavo, raggio, profondità, ombre e tipografia. Esporla nel Maker.
++- Integrare la famiglia con RGB, luce delle lettere, risposta alla pressione, trackball coordinata, colori personalizzati, anteprime, simboli, numeri, split, Fold e altezze personalizzate. Non riutilizzare indiscriminatamente lo stesso effetto.
++- Catalogo, Maker e tastiera attiva devono condividere i renderer. Le anteprime di un tema devono usare la sua geometria, non quella del tema attivo.
++- Eseguire test significativi del comportamento e render Android reali, quindi ispezionare confronti visivi alla stessa scala. Distinguere numero di metodi, configurazioni e immagini; un grande numero non prova l'assenza di bug.
++- Non dichiarare HDR, fluidità o comportamento sul telefono fisico verificati senza misurazioni sul dispositivo. Mantenere fallback SDR e HDR disattivato per default.
++- Conservare checkpoint, sorgenti e APK firmata con versione crescente. Escludere chiavi, credenziali, build e video personali dai sorgenti pubblici.
++- Consegnare un link diretto sandbox all'APK verificata. Non sostituirlo con un link Library già segnalato come non funzionante.
+diff --git a/README.md b/README.md
+index 46b1952..48563cc 100644
+--- a/README.md
++++ b/README.md
+@@ -1,3 +1,11 @@
++# KeyAnt 0.6.92
++
++Geometrie NuPhy, Smalto e iOS riviste sui riferimenti, integrazione Maker/anteprime/effetti e HDR RGB opzionale. VersionCode 119.
++
++Vedi [continuità e limiti di verifica](docs/CONTINUITA-0.6.92.md) e [requisiti di qualità](AGENTS.md). Sorgenti completi, bundle e APK sono asset della release.
++
++---
++
+ # KeyAnt 0.6.91
+ 
+ Aggiornamento del 18 novembre 2026: tre raccolte di temi (12 temi, ciascuno chiaro/scuro), nuovi profili concavi e smaltati, integrazione Maker/RGB e correzione dei riferimenti temporali nei promemoria.
+diff --git a/app/build.gradle.kts b/app/build.gradle.kts
+index c33ed6a..a7f86ce 100644
+--- a/app/build.gradle.kts
++++ b/app/build.gradle.kts
+@@ -15,8 +15,8 @@ android {
+         applicationId = "it.keyant.keyboard"
+         minSdk = 26
+         targetSdk = 35
+-        versionCode = 118
+-        versionName = "0.6.91"
++        versionCode = 119
++        versionName = "0.6.92"
+         externalNativeBuild { ndkBuild { arguments += listOf("-j2") } }
+         ndk {
+             abiFilters.clear()
+diff --git a/app/src/main/java/helium314/keyboard/keyboard/KeyboardLayoutSet.java b/app/src/main/java/helium314/keyboard/keyboard/KeyboardLayoutSet.java
+index 68a9d28..e0db112 100644
+--- a/app/src/main/java/helium314/keyboard/keyboard/KeyboardLayoutSet.java
++++ b/app/src/main/java/helium314/keyboard/keyboard/KeyboardLayoutSet.java
+@@ -81,6 +81,7 @@ public final class KeyboardLayoutSet {
+     public static final class Params {
+         int mMode;
+         boolean mPreview;
++        String mPreviewProfile;
+         boolean mDisableTouchPositionCorrectionDataForTest; // remove
+         // TODO: Use {@link InputAttributes} instead of these variables.
+         EditorInfo mEditorInfo;
+@@ -137,6 +138,8 @@ public final class KeyboardLayoutSet {
+                 .setSplitLayoutEnabled(split).build();
+     }
+ 
++    private KeyboardParams previewParams(UniqueKeysCache keys){KeyboardParams p=new KeyboardParams(keys);p.mPreviewProfile=mParams.mPreviewProfile;return p;}
++
+     @NonNull
+     public Keyboard getKeyboard(final int baseKeyboardLayoutSetElementId) {
+         final int keyboardLayoutSetElementId;
+@@ -181,7 +184,7 @@ public final class KeyboardLayoutSet {
+ 
+         final UniqueKeysCache keys = mParams.mPreview ? UniqueKeysCache.newInstance() : sUniqueKeysCache;
+         final KeyboardBuilder<KeyboardParams> builder =
+-                new KeyboardBuilder<>(mContext, new KeyboardParams(keys));
++                new KeyboardBuilder<>(mContext, previewParams(keys));
+         keys.setEnabled(id.isAlphabetKeyboard());
+         builder.load(id);
+         if (mParams.mDisableTouchPositionCorrectionDataForTest) {
+@@ -221,6 +224,7 @@ public final class KeyboardLayoutSet {
+         private static final EditorInfo EMPTY_EDITOR_INFO = new EditorInfo();
+ 
+         public Builder forPreview() { mParams.mPreview = true; return this; }
++        public Builder forPreview(String profile) { mParams.mPreviewProfile=profile;return forPreview(); }
+ 
+         public Builder(final Context context, @Nullable final EditorInfo ei) {
+             mContext = context;
+diff --git a/app/src/main/java/helium314/keyboard/keyboard/KeyboardView.java b/app/src/main/java/helium314/keyboard/keyboard/KeyboardView.java
+index 09fad16..c74a760 100644
+--- a/app/src/main/java/helium314/keyboard/keyboard/KeyboardView.java
++++ b/app/src/main/java/helium314/keyboard/keyboard/KeyboardView.java
+@@ -559,7 +559,8 @@ if(mKeyboard!=null){float px=x-getPaddingLeft(),py=y-getPaddingTop();for(Key key
+                 : key.getIcon(keyboard.mIconsSet, params.mAnimAlpha);
+         float labelX = centerX;
+         float labelBaseline = centerY;
+-        final String label = helium314.keyboard.keyforma.ShortcutMode.isActive() && helium314.keyboard.keyforma.ShortcutMode.isModeKey(key.getCode()) ? "Ctrl" : key.getLabel();
++        String label = helium314.keyboard.keyforma.ShortcutMode.isActive() && helium314.keyboard.keyforma.ShortcutMode.isModeKey(key.getCode()) ? "Ctrl" : key.getLabel();
++        if (!(this instanceof MoreSuggestionsView)&&mColors instanceof helium314.keyboard.keyforma.FormaColors f)label=helium314.keyboard.keyforma.KeyAppearance.label(f.getProfile(),label);
+         if (label != null) {
+             paint.setTypeface(mTypeface == null ? key.selectTypeface(params) : mTypeface);
+             paint.setTextSize(key.selectTextSize(params) * mFontSizeMultiplier);
+diff --git a/app/src/main/java/helium314/keyboard/keyboard/internal/KeyboardParams.java b/app/src/main/java/helium314/keyboard/keyboard/internal/KeyboardParams.java
+index f08e45a..64fa9a7 100644
+--- a/app/src/main/java/helium314/keyboard/keyboard/internal/KeyboardParams.java
++++ b/app/src/main/java/helium314/keyboard/keyboard/internal/KeyboardParams.java
+@@ -30,6 +30,7 @@ import java.util.SortedSet;
+ import java.util.TreeSet;
+ 
+ public class KeyboardParams {
++    public String mPreviewProfile;
+     private static final int DEFAULT_KEYBOARD_COLUMNS = 10;
+     public static final int DEFAULT_KEYBOARD_ROWS = 4;
+ 
+@@ -263,7 +264,7 @@ public class KeyboardParams {
+                 final float density = context.getResources().getDisplayMetrics().density;
+                 mTopPadding = Math.round(4 * density);
+                 mBottomPadding = Math.round(4 * density * Settings.getValues().mBottomPaddingScale);
+-                mLeftPadding = mRightPadding = Math.max(Math.round(3 * density * Settings.getValues().mSidePaddingScale), helium314.keyboard.keyforma.KeyboardGeometry.balancedPadding(width,density,(height/density-8)/(mId.mNumberRowEnabled?5:4),mId.mIsSplitLayout,helium314.keyboard.keyforma.KeyAntPrefs.bool(context,"balanced_caps",true) && !helium314.keyboard.keyforma.CutoutSpace.expandCompact(context)));
++                mLeftPadding = mRightPadding = Math.max(Math.round(3 * density * Settings.getValues().mSidePaddingScale), helium314.keyboard.keyforma.KeyboardGeometry.balancedPadding(width,density,(height/density-8)/(mId.mNumberRowEnabled?5:4),mId.mIsSplitLayout,helium314.keyboard.keyforma.KeyAntPrefs.bool(context,"balanced_caps",true) && !helium314.keyboard.keyforma.CutoutSpace.expandCompact(context),mPreviewProfile!=null?mPreviewProfile:Settings.getValues().mColors instanceof helium314.keyboard.keyforma.FormaColors fc?fc.getProfile():""));
+                 mBaseWidth = mOccupiedWidth - mLeftPadding - mRightPadding;
+                 mHorizontalGap = Math.round((Settings.getValues().mNarrowKeyGaps ? 2 : 4) * density);
+                 mVerticalGap = Math.round(4 * density);
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/BallAppearance.java b/app/src/main/java/helium314/keyboard/keyforma/BallAppearance.java
+index 09e19e8..2a23532 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/BallAppearance.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/BallAppearance.java
+@@ -18,7 +18,7 @@ public final class BallAppearance {
+  }
+  private static boolean edge(double[] a,double[] b){double d=0;for(int i=0;i<3;i++)d+=(a[i]-b[i])*(a[i]-b[i]);return Math.abs(d-4)<.001;}
+  private static boolean star(double x,double y){boolean inside=false;double lx=0,ly=-.23;for(int i=1;i<=10;i++){double angle=-Math.PI/2+i*Math.PI/5,rr=i%2==0?.23:.095,nx=Math.cos(angle)*rr,ny=Math.sin(angle)*rr;if((ly>y)!=(ny>y)&&x<(nx-lx)*(y-ly)/(ny-ly)+lx)inside=!inside;lx=nx;ly=ny;}return inside;}
+- private int matchedTransmission; public void matchProfile(String profile){String id=MakeKeyAnt.base(profile); matchedTransmission=TranslucentShells.family(id)||XboxAnniversary.supports(id)?50:id.contains("glass")||id.contains("clear")||id.contains("smoke")?42:0;} private Integer themeMaterial;public void themeMaterial(int color){themeMaterial=color;}
++ private String matchedProfile="";private int matchedTransmission; public void matchProfile(String profile){String id=MakeKeyAnt.base(profile);matchedProfile=id; matchedTransmission=TranslucentShells.family(id)||XboxAnniversary.supports(id)?50:id.contains("glass")||id.contains("clear")||id.contains("smoke")?42:0;} private Integer themeMaterial;public void themeMaterial(int color){themeMaterial=color;}
+  private org.json.JSONObject configuration;public void configuration(org.json.JSONObject value){configuration=value;}
+  private String forcedSkin;public void skin(String id){forcedSkin=id;signature="";}
+  private Bitmap bitmap;private int[] pixels;private String signature="";private final Paint p=new Paint(3);private final RectF dst=new RectF();
+@@ -37,7 +37,7 @@ public final class BallAppearance {
+   if(OpaqueMode660.enabled(context)){opacity=100;transmission=0;}
+   if(mode.equals("theme")&&themeMaterial!=null)color=themeMaterial;
+   int size=Math.max(32,Math.min(320,Math.round(radius*2.4f)));int xrot=Math.round(rx*2),yrot=Math.round(ry*2);
+-  String next=id+":"+size+":"+xrot+":"+yrot+":"+color+":"+shine+":"+transmission;
++  String next=id+":"+matchedProfile+":"+size+":"+xrot+":"+yrot+":"+color+":"+shine+":"+transmission;
+   if(!next.equals(signature)){signature=next;render(context,size,id,xrot*.014,yrot*.014,color,shine/100f,transmission/100f);}
+   int layer=opacity<100?c.saveLayerAlpha(cx-radius*1.2f,cy-radius*1.2f,cx+radius*1.2f,cy+radius*1.3f,opacity*255/100):-1;
+   p.setShader(null);p.setStyle(Paint.Style.FILL);
+@@ -63,6 +63,7 @@ public final class BallAppearance {
+   boolean felt=(id.equals("tennis")||id.equals("sport_clay")),pebbled=id.equals("basket")||id.equals("sport_3x3");
+   double roughness=crystal?115:polished?74:felt?12:pebbled?20:36;
+   double specular=crystal?.95:polished?.62:felt?.045:pebbled?.13:.23;
++  if(id.equals("custom")&&ReferenceCollection691.supports(matchedProfile)){roughness=ReferenceCollection691.scoop(matchedProfile)?18:ReferenceCollection691.enamel(matchedProfile)?84:38;specular=ReferenceCollection691.scoop(matchedProfile)?.10:ReferenceCollection691.enamel(matchedProfile)?.50:.18;}
+   boolean soft=id.startsWith("sanrio_")||id.startsWith("portrait83_")||id.startsWith("head_")||id.startsWith("piddu_");
+   if(soft){roughness=18;specular=.075;}
+   boolean matchLeather=id.equals("total90")||id.equals("total90_hi_vis");
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/CapGeometry.java b/app/src/main/java/helium314/keyboard/keyforma/CapGeometry.java
+index 751b6ce..2d6373f 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/CapGeometry.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/CapGeometry.java
+@@ -42,6 +42,6 @@ public final class CapGeometry {
+   face(r,id,w,h,kind,press);float inset=PhotoCaps.supports(id)?(id.equals("charcoal_low")?1.4f:id.equals("captain_sa")?4.6f:id.equals("slate_osa")?4.8f:clear(id)?2.6f:3.4f)*Math.min(w/29f,h/44f):low(id)?.6f*u:2.2f*u;
+   r.inset(-inset,-inset*.72f);
+  }
+- public static float labelScale(String id){if(low(id))return .96f;if(id.equals("captain_sa")||id.equals("slate_osa"))return .90f;if(ThemeCatalog.round(id))return .91f;return 1;}
++ public static float labelScale(String id){if(ReferenceCollection691.supports(MakeKeyAnt.base(id)))return ReferenceCollection691.scoop(id)?.84f:ReferenceCollection691.enamel(id)?.90f:.96f;if(low(id))return .96f;if(id.equals("captain_sa")||id.equals("slate_osa"))return .90f;if(ThemeCatalog.round(id))return .91f;return 1;}
+  public static float radius(String id,float w,float h){if(ReferenceCollection691.supports(MakeKeyAnt.base(id)))return ReferenceCollection691.radius(id,w,h);if(CinemaThemes.supports(id))id=AtelierThemes.get(id).material();if(MaterialStudio651.supports(MakeKeyAnt.base(id)))return MaterialStudio651.radius(MakeKeyAnt.base(id),w,h);if(SatinCaps.supports(MakeKeyAnt.base(id)))return SatinCaps.radius(w,h);if(StudioMaterials644.supports(MakeKeyAnt.base(id)))return 5.3f*LiquidMaterial.unit(w,h);if(SeriesThemes642.supports(MakeKeyAnt.base(id)))return (SeriesThemes642.low(MakeKeyAnt.base(id))?5:3.8f)*LiquidMaterial.unit(w,h);if(Showroom641.supports(MakeKeyAnt.base(id)))return (low(id)?4.3f:clear(id)?4.7f:3.4f)*LiquidMaterial.unit(w,h);if(XboxAnniversary.supports(MakeKeyAnt.base(id)))return 6*Math.min(w/30f,h/44f);float u=Math.min(w/29f,h/44f);return ThemeCatalog.round(id)?Math.min(w,h)*.5f:PhotoCaps.supports(id)?(id.equals("captain_sa")?7.4f:id.equals("slate_osa")?3.3f:clear(id)?3.8f:4.4f)*u:ThemeCatalog.nerd(id)?3.6f*u:7*u;}
+ }
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/CapPreview.java b/app/src/main/java/helium314/keyboard/keyforma/CapPreview.java
+index 761b329..d95b750 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/CapPreview.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/CapPreview.java
+@@ -22,7 +22,7 @@ public final class CapPreview extends View {
+     private final android.view.ViewTreeObserver.OnScrollChangedListener scrollListener=()->{if(this.continuous&&getGlobalVisibleRect(visibleRect))invalidate();};
+     private float touchX=-1000,touchY=-1000;private boolean continuous;private final float[] hsv={0,.8f,1};
+     private boolean glass;private float corner=8,opacity=85;private android.animation.ValueAnimator animator;
+-    private final android.content.SharedPreferences.OnSharedPreferenceChangeListener prefsListener=(p,k)->{if("ka_rgb_finish".equals(k)){this.led.configure(getContext());invalidate();}else if("ka_illustrated_discreet_letters".equals(k)){keycapPrint=new KeycapPrint(getContext(),profile);invalidate();}else if(k!=null&&(k.equals("ka_corner")||k.equals("ka_glass_opacity")))updateGlass();else if(k!=null&&(k.equals("ka_space_decoration")||k.equals("ka_xbox25_surface_opacity")||k.startsWith("ka_background_")||k.startsWith("ka_unified_")||k.startsWith("ka_liquid_")||k.startsWith("ka_key_color_")||k.startsWith("ka_rgb")||k.equals("ka_theme_light")))invalidate();};
++    private final android.content.SharedPreferences.OnSharedPreferenceChangeListener prefsListener=(p,k)->{if("ka_rgb_finish".equals(k)||"ka_rgb_contour".equals(k)||"ka_rgb_hdr".equals(k)){this.led.configure(getContext());invalidate();}else if("ka_illustrated_discreet_letters".equals(k)){keycapPrint=new KeycapPrint(getContext(),profile);invalidate();}else if(k!=null&&(k.equals("ka_corner")||k.equals("ka_glass_opacity")))updateGlass();else if(k!=null&&(k.equals("ka_space_decoration")||k.equals("ka_xbox25_surface_opacity")||k.startsWith("ka_background_")||k.startsWith("ka_unified_")||k.startsWith("ka_liquid_")||k.startsWith("ka_key_color_")||k.startsWith("ka_rgb")||k.equals("ka_theme_light")))invalidate();};
+     private void updateGlass(){float fromCorner=corner,fromOpacity=opacity;float toCorner=KeyAntPrefs.number(getContext(),"corner",8),toOpacity=KeyAntPrefs.number(getContext(),"glass_opacity",85);if(animator!=null)animator.cancel();animator=android.animation.ValueAnimator.ofFloat(0,1);animator.setDuration(100);animator.addUpdateListener(v->{float t=(Float)v.getAnimatedValue();corner=fromCorner+(toCorner-fromCorner)*t;opacity=fromOpacity+(toOpacity-fromOpacity)*t;invalidate();});animator.start();}
+     @Override protected void onAttachedToWindow(){super.onAttachedToWindow();revealStart=android.os.SystemClock.uptimeMillis();PreviewFeedback.attach();getViewTreeObserver().addOnScrollChangedListener(scrollListener);corner=KeyAntPrefs.number(getContext(),"corner",8);opacity=KeyAntPrefs.number(getContext(),"glass_opacity",85);KeyAntPrefs.get(getContext()).registerOnSharedPreferenceChangeListener(prefsListener);}
+     @Override protected void onDetachedFromWindow(){getViewTreeObserver().removeOnScrollChangedListener(scrollListener);kinetic.stop();pressMotion.setPressed(false,android.os.SystemClock.uptimeMillis());KeyAntPrefs.get(getContext()).unregisterOnSharedPreferenceChangeListener(prefsListener);if(animator!=null)animator.cancel();PreviewFeedback.detach();super.onDetachedFromWindow();}
+@@ -36,7 +36,7 @@ private final GlassCaps glassCaps=new GlassCaps();
+     private android.graphics.drawable.Drawable shift,delete,enter;
+     private final RectF legendFace=new RectF();
+     private void legend(Canvas c,String label,float w,float h,int kind,float pressure){
+-        int color=ink(kind);float u=getWidth()/340f;
++        label=KeyAppearance.label(profile,label);int color=ink(kind);float u=getWidth()/340f;
+         android.graphics.drawable.Drawable icon=label.equals("⇧")?shift:label.equals("⌫")?delete:label.equals("↵")?enter:null;
+         CapGeometry.face(legendFace,profile,w,h,kind,pressure);float offset=legendFace.centerY()-h*.5f;
+         if(icon!=null){int size=Math.round(Math.min(22*u,h*.58f));int x=Math.round((w-size)/2),y=Math.round((h-size)/2+offset);icon.setTint(color);icon.setBounds(x,y,x+size,y+size);icon.draw(c);}
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/EffectsStudio646.kt b/app/src/main/java/helium314/keyboard/keyforma/EffectsStudio646.kt
+index a28a4d0..68d3535 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/EffectsStudio646.kt
++++ b/app/src/main/java/helium314/keyboard/keyforma/EffectsStudio646.kt
+@@ -45,7 +45,7 @@ internal fun rgbColor646(id:String):Int=when(id){"doom"->0xff37ac73;"eva"->0xffa
+ @Composable internal fun PaletteSwatch646(id:String,prefix:String=""){Row(Modifier.width(56.dp),horizontalArrangement=Arrangement.spacedBy(2.dp)){val colors=if(id=="playstation")(0..3).map{PlayPalette645.color(it)} else listOf(if(id=="theme")ThemeCatalog.accent(SearchTheme.active(LocalContext.current)) else if(id=="custom")KeyAntPrefs.number(LocalContext.current,prefix+"rgb_color",0xfff64b66.toInt()) else rgbColor646(id));colors.forEach{Box(Modifier.weight(1f).height(22.dp).clip(CircleShape).background(Color(it)))}};Spacer(Modifier.width(12.dp))}
+ @Composable internal fun EffectsStudio646(){
+  val c=LocalContext.current;val p=KeyAntPrefs.get(c);var revision by remember{mutableIntStateOf(0)}
+- DisposableEffect(p){val l=android.content.SharedPreferences.OnSharedPreferenceChangeListener{_,k->if(k?.startsWith("ka_")==true)revision++};p.registerOnSharedPreferenceChangeListener(l);onDispose{p.unregisterOnSharedPreferenceChangeListener(l)}}
++ DisposableEffect(p){val l=android.content.SharedPreferences.OnSharedPreferenceChangeListener{_,k->if(k?.startsWith("ka_")==true)revision++;if(k?.startsWith("ka_rgb")==true)OpticalHdr692.window((c as? android.app.Activity)?.window,c)};p.registerOnSharedPreferenceChangeListener(l);onDispose{p.unregisterOnSharedPreferenceChangeListener(l)}}
+  val mode=remember(revision){val chosen=KeyAntPrefs.text(c,"rgb",if(StudioMaterials644.active()=="ps30")"ps_pulse" else "fixed");if(chosen=="off")"fixed" else chosen}
+  fun useGlobalRgb(){val profile=(Settings.getValues().mColors as? FormaColors)?.profile?:return;p.edit().putString("ka_rgb_setting_profile",profile).apply()}
+  var auto by remember{mutableStateOf(true)}
+@@ -65,6 +65,8 @@ internal fun rgbColor646(id:String):Int=when(id){"doom"->0xff37ac73;"eva"->0xffa
+    if(KeyAntPrefs.text(c,"rgb_color_choice","")=="custom")CustomColor()
+    Choice("Profilo della luce sotto il tasto","rgb_contour","auto",listOf("auto" to "Adatta al materiale","line" to "Linea sotto la base","half" to "Base e metà dei lati"))
+    Choice("Finitura della luce","rgb_finish","auto",listOf("auto" to "Adatta al materiale","glow" to "Glow diffuso","intense" to "Luce intensa","led" to "LED","glass" to "Riflesso sul vetro"))
++   Choice("HDR delle luci RGB","rgb_hdr","off",listOf("off" to "Disattivato","soft" to "Delicato · 1,5×","bright" to "Luminoso · 2×")){OpticalHdr692.window((c as? android.app.Activity)?.window,c)}
++   Note("Solo le sorgenti luminose, su Android 14 o successivo e schermo HDR. Se il display non lo supporta, la luce resta normale. La resa dipende dalla luminosità disponibile.")
+   }}
+   if(maxWidth>=660.dp)Row(horizontalArrangement=Arrangement.spacedBy(16.dp)){Column(Modifier.weight(1f)){preview()};Column(Modifier.weight(1f)){controls()}}else Column(verticalArrangement=Arrangement.spacedBy(12.dp)){preview();controls()}
+  }
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/GeneratedSettingsIndex.kt b/app/src/main/java/helium314/keyboard/keyforma/GeneratedSettingsIndex.kt
+index 8acb915..46bef51 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/GeneratedSettingsIndex.kt
++++ b/app/src/main/java/helium314/keyboard/keyforma/GeneratedSettingsIndex.kt
+@@ -5,7 +5,7 @@ internal object GeneratedSettingsIndex {
+   SettingResult("advanced","Azzera calibrazione dei tocchi"),
+   SettingResult("advanced","Calibrazione personale · campioni confermati"),
+   SettingResult("advanced","Tocco predittivo · sperimentale"),
+-  SettingResult("appearance","Luminosità HDR simulata"),
++  SettingResult("appearance","Brillantezza dei colori"),
+   SettingResult("apps","Icona"),
+   SettingResult("assistant","Altezza card web · dp"),
+   SettingResult("assistant","Chat locale"),
+@@ -101,6 +101,7 @@ internal object GeneratedSettingsIndex {
+   SettingResult("effects","Estensione onda · dp"),
+   SettingResult("effects","Evidenziazione dei tasti attivi"),
+   SettingResult("effects","Finitura della luce"),
++  SettingResult("effects","HDR delle luci RGB"),
+   SettingResult("effects","Indicatore di ascolto"),
+   SettingResult("effects","Intensità RGB · %"),
+   SettingResult("effects","Intensità tasti attivi · %"),
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/KeyAppearance.java b/app/src/main/java/helium314/keyboard/keyforma/KeyAppearance.java
+index 325869c..2dade4a 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/KeyAppearance.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/KeyAppearance.java
+@@ -4,6 +4,11 @@ import android.content.Context;
+ import android.graphics.Color;
+ import androidx.core.graphics.ColorUtils;
+ public final class KeyAppearance {
++ public static String label(String profile,String label){
++  if(label==null||!ReferenceCollection691.supports(MakeKeyAnt.base(profile))||ReferenceCollection691.low(profile))return label;
++  if(label.equals("?123"))return "123";
++  return label.codePointCount(0,label.length())==1&&Character.isLetter(label.codePointAt(0))?label.toUpperCase(java.util.Locale.ROOT):label;
++ }
+  public static boolean hints(String profile,boolean fallback){var d=MakeKeyAnt.get(profile);return d!=null&&d.has("showHints")?d.optBoolean("showHints",fallback):fallback;}
+  public static int commaInk(Context c,String profile,boolean dark,Integer pigment,int fallback){
+   var d=MakeKeyAnt.get(profile);String mode=d==null?"inherit":d.optString("commaInk","inherit");
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/KeyboardBackdrop.java b/app/src/main/java/helium314/keyboard/keyforma/KeyboardBackdrop.java
+index dd2fd85..2eb5a18 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/KeyboardBackdrop.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/KeyboardBackdrop.java
+@@ -68,7 +68,7 @@ public final class KeyboardBackdrop extends Drawable {
+  private static final java.util.WeakHashMap<Window,WindowState> windows=new java.util.WeakHashMap<>();
+  private static final class WindowState{View input;Drawable original;String signature="";int format,top,bottom;ViewTreeObserver.OnPreDrawListener blurClip;java.util.IdentityHashMap<View,Drawable> backgrounds=new java.util.IdentityHashMap<>();WindowState(Drawable original){this.original=original;}}
+  public static void window(InputMethodService ime,View input){
+-  Window w=ime.getWindow().getWindow();if(w==null)return;boolean enabled=enabled(ime)||NavigationSurface.enabled(ime);
++  Window w=ime.getWindow().getWindow();if(w==null)return;OpticalHdr692.window(w,ime);boolean enabled=enabled(ime)||NavigationSurface.enabled(ime);
+   WindowState state=windows.get(w);
+   if(!enabled){if(state!=null){if(state.blurClip!=null)w.getDecorView().getViewTreeObserver().removeOnPreDrawListener(state.blurClip);if(Build.VERSION.SDK_INT>=31)w.setBackgroundBlurRadius(0);w.setBackgroundDrawable(state.original);w.setFormat(state.format);for(var entry:state.backgrounds.entrySet())entry.getKey().setBackground(entry.getValue());windows.remove(w);}return;}
+   if(state==null){state=new WindowState(w.getDecorView().getBackground());state.format=w.getAttributes().format;windows.put(w,state);WindowState tracked=state;state.blurClip=()->{clearAncestors(tracked.input,w,tracked);clipBlurLayer(w.getDecorView().getBackground(),tracked.top,tracked.bottom);return true;};w.getDecorView().getViewTreeObserver().addOnPreDrawListener(state.blurClip);}
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/KeyboardGeometry.java b/app/src/main/java/helium314/keyboard/keyforma/KeyboardGeometry.java
+index e274dc0..64c3ffd 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/KeyboardGeometry.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/KeyboardGeometry.java
+@@ -11,7 +11,17 @@ public final class KeyboardGeometry {
+     public static int rowHeight(SharedPreferences prefs, int windowWidthDp) {
+         if(prefs.getBoolean("ka_floating",false))return Math.max(38,Math.min(46,Math.round(prefs.getInt("ka_floating_width",320)*.125f)));
+         return MakeKeyAnt.rowHeight(Math.max(38, Math.min(64, prefs.getInt(
+-                windowWidthDp >= 600 ? "ka_row_wide" : "ka_row_compact", ThemeCatalog.profile(prefs.getString(helium314.keyboard.latin.settings.Settings.PREF_THEME_COLORS," ")).equals(SmokeGlassCaps.ID)?50:44))));
++                windowWidthDp >= 600 ? "ka_row_wide" : "ka_row_compact", defaultHeight(prefs,windowWidthDp)))));
++    }
++    private static int defaultHeight(SharedPreferences prefs,int width){
++        String id=ThemeCatalog.profile(prefs.getString(helium314.keyboard.latin.settings.Settings.PREF_THEME_COLORS," "));
++        return id.equals(SmokeGlassCaps.ID)?50:ReferenceCollection691.defaultRowHeight(id,width);
++    }
++    public static int balancedPadding(int width,float density,float rowDp,boolean split,boolean enabled,String profile){
++        if(!enabled||split||width/density<600||!ReferenceCollection691.supports(MakeKeyAnt.base(profile)))return balancedPadding(width,density,rowDp,split,enabled);
++        float aspect=ReferenceCollection691.scoop(profile)?.76f:ReferenceCollection691.enamel(profile)?.86f:.96f;
++        float target=((rowDp-4)*aspect+4)*10+6;
++        return Math.max(Math.round(3*density),Math.round((width-target*density)/2));
+     }
+     public static int bodyHeight(float density, int rowDp, boolean numbers) {
+         return Math.round(density * (Math.max(38, Math.min(80, rowDp)) * (numbers ? 5 : 4) + 8));
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/KeyboardLayoutPreview.java b/app/src/main/java/helium314/keyboard/keyforma/KeyboardLayoutPreview.java
+index 8d8dd42..cfb0261 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/KeyboardLayoutPreview.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/KeyboardLayoutPreview.java
+@@ -78,7 +78,16 @@ public final class KeyboardLayoutPreview extends View {
+     }
+     @Override public boolean performClick(){super.performClick();return true;}
+     private int widthForPreview(){if(deviceLayout)return Math.max(1,helium314.keyboard.latin.utils.ResourceUtils.getKeyboardWidth(getContext(),Settings.getValues()));return Math.round((floatingWidth>0?floatingWidth:wide?700:360)*getResources().getDisplayMetrics().density);}
+-    private int heightForPreview(){if(deviceLayout)return Math.max(1,helium314.keyboard.latin.utils.ResourceUtils.getKeyboardHeight(getResources(),Settings.getValues()));return KeyboardGeometry.bodyHeight(getResources().getDisplayMetrics().density,(floatingWidth>0?Math.max(38,Math.min(46,Math.round(floatingWidth*.125f))):rowDp),numbers)+Math.round(4*getResources().getDisplayMetrics().density*(Settings.getValues().mBottomPaddingScale-1f));}
++    public static int heightForTheme(Context c,String profile){
++        var settings=Settings.getValues();int height=helium314.keyboard.latin.utils.ResourceUtils.getKeyboardHeight(c.getResources(),settings);
++        if(profile==null)return Math.max(1,height);
++        float density=c.getResources().getDisplayMetrics().density;int width=Math.round(helium314.keyboard.latin.utils.ResourceUtils.getKeyboardWidth(c,settings)/density);
++        if(KeyAntPrefs.bool(c,"floating",false))return Math.max(1,height);
++        int row=KeyAntPrefs.get(c).getInt(width>=600?"ka_row_wide":"ka_row_compact",profile.equals(SmokeGlassCaps.ID)?50:ReferenceCollection691.defaultRowHeight(profile,width));
++        var draft=MakeKeyAnt.get(profile);if(draft!=null)row=draft.optInt("height",row);row=Math.max(38,Math.min(80,row));
++        return Math.max(1,height+Math.round((row-settings.mKeyAntRowHeight)*(settings.mShowsNumberRow?5:4)*density));
++    }
++    private int heightForPreview(){if(deviceLayout)return heightForTheme(getContext(),trial);return KeyboardGeometry.bodyHeight(getResources().getDisplayMetrics().density,(floatingWidth>0?Math.max(38,Math.min(46,Math.round(floatingWidth*.125f))):rowDp),numbers)+Math.round(4*getResources().getDisplayMetrics().density*(Settings.getValues().mBottomPaddingScale-1f));}
+     @Override protected void onMeasure(int w,int h){int width=MeasureSpec.getSize(w);float scale=(float)width/widthForPreview();setMeasuredDimension(width,resolveSize(Math.round((heightForPreview()+header())*scale),h));}
+     @Override protected void onSizeChanged(int w,int h,int oldw,int oldh){if(w>0)rebuild();}
+     private void rebuild(){
+@@ -93,7 +102,7 @@ public final class KeyboardLayoutPreview extends View {
+         EditorInfo editor=new EditorInfo();editor.inputType=android.text.InputType.TYPE_CLASS_TEXT;editor.imeOptions=EditorInfo.IME_ACTION_DONE;
+         var settings=Settings.getValues();
+         var layout=new KeyboardLayoutSet.Builder(themed,editor).setKeyboardGeometry(nativeWidth,nativeHeight)
+-            .forPreview().setVoiceInputKeyEnabled(settings.mShowsVoiceInputKey)
++            .forPreview(trial).setVoiceInputKeyEnabled(settings.mShowsVoiceInputKey)
+             .setSubtype(RichInputMethodManager.getInstance().getCurrentSubtype())
+             .setNumberRowEnabled(numbers).setEmojiKeyEnabled(settings.mShowsEmojiKey)
+             .setLanguageSwitchKeyEnabled(settings.isLanguageSwitchKeyEnabled())
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/LedRenderer.java b/app/src/main/java/helium314/keyboard/keyforma/LedRenderer.java
+index 47c767b..1e98ae6 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/LedRenderer.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/LedRenderer.java
+@@ -8,8 +8,8 @@ public final class LedRenderer {
+  private static final android.util.LruCache<Integer,PorterDuffColorFilter[]> FILTERS=new android.util.LruCache<>(384);
+  private static final android.util.LruCache<String,Shader> SLEEVES=new android.util.LruCache<>(384);
+  private final Path shell=new Path();
+- private String finish="auto", contour="auto";
+- public void configure(android.content.Context c){finish=KeyAntPrefs.text(c,"rgb_finish","auto");contour=KeyAntPrefs.text(c,"rgb_contour","auto");}
++ private String finish="auto", contour="auto";private float hdrRatio=1;
++ public void configure(android.content.Context c){hdrRatio=OpticalHdr692.requested(c);finish=KeyAntPrefs.text(c,"rgb_finish","auto");contour=KeyAntPrefs.text(c,"rgb_contour","auto");}
+  private boolean flat(String profile,float w,float h,float d,boolean space){
+   return "glass".equals(profile)||CapGeometry.low(profile)||CapGeometry.depth(profile,w,h,space?4:0)<2*d;
+  }
+@@ -42,13 +42,18 @@ public final class LedRenderer {
+   pixels[y*w+x]=Color.argb((int)(255*falloff),255,255,255);
+  }return Bitmap.createBitmap(pixels,w,h,Bitmap.Config.ARGB_8888);}
+  private void colour(int c){if(colourFilter!=null&&lastColour==c)return;lastColour=c;var cached=FILTERS.get(c);if(cached==null){int r=(Color.red(c)+255*3)/4,g=(Color.green(c)+255*3)/4,b=(Color.blue(c)+255*3)/4;cached=new PorterDuffColorFilter[]{new PorterDuffColorFilter(c,PorterDuff.Mode.SRC_IN),new PorterDuffColorFilter(Color.rgb(r,g,b),PorterDuff.Mode.SRC_IN)};FILTERS.put(c,cached);}colourFilter=cached[0];coreFilter=cached[1];}
+- private void bitmap(Canvas c,Bitmap image,float l,float t,float r,float b,int alpha,ColorFilter filter){paint.setColorFilter(filter);paint.setAlpha(Math.max(0,Math.min(255,alpha)));rect.set(l,t,r,b);c.drawBitmap(image,null,rect,paint);paint.setAlpha(255);paint.setColorFilter(null);}
++ private void bitmap(Canvas c,Bitmap image,float l,float t,float r,float b,int alpha,ColorFilter filter){paint.setColorFilter(filter);paint.setAlpha(Math.max(0,Math.min(255,alpha)));rect.set(l,t,r,b);if(image==EMITTER&&hdrRatio>1&&c.isHardwareAccelerated()&&android.os.Build.VERSION.SDK_INT>=34){int tint=filter==coreFilter?ToolSurface.mix(lastColour,Color.WHITE,.75f):lastColour;paint.setColorFilter(null);c.drawBitmap(OpticalHdr692.light(image,tint,hdrRatio),null,rect,paint);}else c.drawBitmap(image,null,rect,paint);paint.setAlpha(255);paint.setColorFilter(null);}
+  public void bounce(Canvas c,float w,float h,float d,int color,float amount,String profile,boolean space){
++  if(ReferenceCollection691.supports(MakeKeyAnt.base(profile))){
++   CapGeometry.rim(face,profile,w,h,space?4:0,0);colour(color);float u=ReferenceCollection691.unit(w,h);
++   bitmap(c,BOUNCE,face.left-2*u,face.bottom-2*u,face.right+2*u,Math.min(h+3*u,face.bottom+6*u),(int)(100*amount),colourFilter);return;
++  }
+   if(flat(profile,w,h,d,space))return;
+   if(ThemeCatalog.round(profile)&&!space){float size=Math.min(w,h);c.save();c.translate((w-size)/2,(h-size)/2);bounce(c,size,size,d,color,amount);c.restore();return;}
+   bounce(c,w,h,d,color,amount);
+  }
+  public void emitter(Canvas c,float w,float h,float d,int color,float amount,String profile,boolean space,float press){
++  if(ReferenceCollection691.supports(MakeKeyAnt.base(profile))){referenceEmitter(c,w,h,color,amount,profile,space,press);return;}
+   if(flat(profile,w,h,d,space)){lowerEdge(c,w,h,d,color,amount,profile,space,press);return;}
+   if(!finish.equals("auto")||!contour.equals("auto"))lowerEdge(c,w,h,d,color,amount*.8f,profile,space,press);
+   if(ThemeCatalog.round(profile)&&!space){
+@@ -58,6 +63,16 @@ public final class LedRenderer {
+   // Pressing a tall cap covers more of its emitter. Transparent sleeves retain more light.
+   emitter(c,w,h,d,color,amount*(1-press*(CapGeometry.clear(profile)?.12f:.40f)));
+  }
++ private void referenceEmitter(Canvas c,float w,float h,int color,float amount,String profile,boolean space,float press){
++  float u=ReferenceCollection691.unit(w,h);CapGeometry.rim(face,profile,w,h,space?4:0,press);colour(color);
++  boolean scoop=ReferenceCollection691.scoop(profile),enamel=ReferenceCollection691.enamel(profile);
++  float y=face.bottom+ReferenceCollection691.depth(profile,w,h)*(1-press*.7f)*.5f;
++  float strength=Math.max(0,Math.min(1,amount))*(1-press*(scoop?.60f:.28f));
++  bitmap(c,EMITTER,face.left+2*u,y-1.2f*u,face.right-2*u,y+1.5f*u,(int)(235*strength),colourFilter);
++  bitmap(c,EMITTER,face.left+4*u,y-.5f*u,face.right-4*u,y+.55f*u,(int)(160*strength),coreFilter);
++  // Satin lip receives a restrained reflection; matte scoop does not transmit light.
++  if(enamel||!contour.equals("auto")){lowerEdge(c,w,h,u,color,strength*(enamel?.32f:.20f),profile,space,press);}
++ }
+  public void bounce(Canvas c,float w,float h,float d,int color,float amount){
+   colour(color);float y=h-2.4f*d;
+   // Broad indirect spill reaches the chassis between neighbours, with a tighter saturated pool.
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/LetterLighting.java b/app/src/main/java/helium314/keyboard/keyforma/LetterLighting.java
+index 51808a0..4bac518 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/LetterLighting.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/LetterLighting.java
+@@ -12,9 +12,12 @@ public final class LetterLighting {
+     static {float[] hsv={0,.76f,1};for(int i=0;i<HUES.length;i++){hsv[0]=i;HUES[i]=Color.HSVToColor(hsv);}}
+     private int color;
+     private float density, touchX,touchY;
++    private float materialBloom=1;
+     private long time,lastTouch=-2000;
+     private Paint brightness;
+     public void configure(Context c){
++        String profile=ThemeCatalog.profile(KeyAntPrefs.get(c).getString(helium314.keyboard.latin.settings.Settings.PREF_THEME_COLORS,"forma_dark"));
++        materialBloom=ReferenceCollection691.letterBloom(profile);
+         mode=KeyAntPrefs.text(c,"letter_effect","off");
+         String source=KeyAntPrefs.text(c,"letter_source","theme");
+         theme=mode.equals("neon")||source.equals("theme");spectrum=!mode.equals("neon")&&source.equals("spectrum");
+@@ -60,6 +63,6 @@ public final class LetterLighting {
+         int alpha=p.getAlpha();
+         int active=transientColor?androidx.core.graphics.ColorUtils.blendARGB(original,tint,(float)strength):tint;
+         p.setColor(active);p.setAlpha(alpha);
+-        if(strength>0)p.setShadowLayer((float)((1+3.5*strength)*density),0,0,(active&0xffffff)|Math.round(alpha*(float)strength)<<24);
++        if(strength>0)p.setShadowLayer((float)((1+3.5*strength)*density*materialBloom),0,0,(active&0xffffff)|Math.round(alpha*(float)strength)<<24);
+     }
+ }
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/MagicBallView.java b/app/src/main/java/helium314/keyboard/keyforma/MagicBallView.java
+index f03f9eb..a45a908 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/MagicBallView.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/MagicBallView.java
+@@ -36,14 +36,14 @@ public final class MagicBallView extends View {
+     @Override protected void onDetachedFromWindow(){cancelInteraction();super.onDetachedFromWindow();}
+     public void bind(LatinIME service){if(ime!=service){selecting=false;anchor=-1;selectionTransport=0;expectedCursor=-1;}ime=service;reloadTheme();}
+     private static int blend(int a,int b,float t){return Color.rgb((int)(Color.red(a)*(1-t)+Color.red(b)*t),(int)(Color.green(a)*(1-t)+Color.green(b)*t),(int)(Color.blue(a)*(1-t)+Color.blue(b)*t));}
+-    private String appearanceId="";
++    private String appearanceId="";private boolean referenceMaterial;
+     public void reloadTheme(){
+         boolean enabled=MakeKeyAnt.ballFlag(getContext(),"ball_elastic",false);if(enabled!=elasticEnabled){stopElastic();elasticEnabled=enabled;}
+         String nextId=MakeKeyAnt.ballText(getContext(),"ball_look","theme")+":"+MakeKeyAnt.ballText(getContext(),"ball_skin","total90");if(!nextId.equals(appearanceId)){appearanceId=nextId;rotationX=rotationY=0;stopCoast();stopElastic();}
+         Object colors=helium314.keyboard.latin.settings.Settings.getValues()==null?null:helium314.keyboard.latin.settings.Settings.getValues().mColors;
+         boolean nextDark=colors instanceof FormaColors?((FormaColors)colors).getDark():colors instanceof GlassColors?((GlassColors)colors).getDark():true;
+         String profile=colors instanceof FormaColors?((FormaColors)colors).getProfile():"glass";
+-        appearance.matchProfile(profile);
++        appearance.matchProfile(profile);referenceMaterial=ReferenceCollection691.supports(MakeKeyAnt.base(profile));motion.material(profile);
+         int nextMaterial=ThemeCatalog.face(profile,nextDark,0),nextAccent=ThemeCatalog.face(profile,nextDark,1);
+         selectionRing.reload(getContext(),nextMaterial,nextAccent,nextDark);
+         if(shell==null||nextMaterial!=material||nextAccent!=accent||dark!=nextDark){material=nextMaterial;accent=nextAccent;dark=nextDark;rebuildShader();invalidate();}
+@@ -55,7 +55,7 @@ public final class MagicBallView extends View {
+         super.onDraw(c);long now=android.os.SystemClock.uptimeMillis();boolean animate=android.animation.ValueAnimator.areAnimatorsEnabled();float press=animate?motion.value(now):motion.target();
+         float cx=getWidth()*.5f,cy=getHeight()*.5f,r=Math.min(cx,cy)-dp(7);
+         if(r<=0)return;if(shell==null)rebuildShader();
+-        if(KeyAntPrefs.bool(getContext(),"ball_match_material",false)||BallAppearance.enabled(getContext())||KeyAntPrefs.number(getContext(),"ball_transmission",0)>0){appearance.themeMaterial(material);appearance.draw(c,getContext(),cx,cy+dp(1.8f)*press,r-dp(.8f)*press,-rotationY,rotationX,false,accent);if(selectionVisible())selectionRing.draw(c,cx,cy,r+dp(2),dp(1));if(animate&&motion.isMoving(now))postInvalidateOnAnimation();return;}
++        if(referenceMaterial||KeyAntPrefs.bool(getContext(),"ball_match_material",false)||BallAppearance.enabled(getContext())||KeyAntPrefs.number(getContext(),"ball_transmission",0)>0){appearance.themeMaterial(material);appearance.draw(c,getContext(),cx,cy+dp(1.8f)*press,r-dp(.8f)*press,-rotationY,rotationX,false,accent);if(selectionVisible())selectionRing.draw(c,cx,cy,r+dp(2),dp(1));if(animate&&motion.isMoving(now))postInvalidateOnAnimation();return;}
+         int opacity=OpaqueMode660.enabled(getContext())?100:Math.max(10,Math.min(100,KeyAntPrefs.number(getContext(),"ball_opacity",100)));
+         int layer=opacity<100?c.saveLayerAlpha(0,0,getWidth(),getHeight(),opacity*255/100):-1;
+         int shadow=Math.max(0,Math.min(100,KeyAntPrefs.number(getContext(),"ball_shadow",60)));
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/MakeKeyAnt.java b/app/src/main/java/helium314/keyboard/keyforma/MakeKeyAnt.java
+index 624fc9f..7295b8f 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/MakeKeyAnt.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/MakeKeyAnt.java
+@@ -13,7 +13,7 @@ public final class MakeKeyAnt {
+  public static String active(){return selected;}
+  public static String base(String id){JSONObject d=get(id);if(d==null)return id;String candidate=d.optString("style","preset").equals("preset")?d.optString("base","classic"):d.optString("style");return java.util.Arrays.asList(ThemeCatalog.IDS).contains(candidate)?candidate:"classic";}
+  public static String preset(String id){JSONObject d=get(id);if(d==null)return id;String candidate=d.optString("base","classic");return java.util.Arrays.asList(ThemeCatalog.IDS).contains(candidate)?candidate:"classic";}
+- public static JSONObject create(String base){try{JSONObject old=get(base);JSONObject d=old==null?new JSONObject().put("base",base).put("style","preset").put("mode","system").put("keys",new JSONObject()):new JSONObject(old.toString());if(old==null&&MaterialStudio651.supports(base))d.put("backgroundOpacity",97).put("toolbar_look","current");if(old==null&&SatinCaps.supports(base))d.put("backgroundOpacity",96).put("toolbar_look","plain").put("mode","dark");if(old==null&&StudioMaterials644.optical(base))d.put("backgroundOpacity",72).put("toolbar_look","luma");if(old==null&&base.equals("ps30"))d.put("toolbar_look","ps30").put("rgbMode","ps_pulse");if(old==null&&XboxAnniversary.supports(base))d.put("backgroundOpacity",28).put("mode","dark");if(old==null&&SmokeGlassCaps.ID.equals(base))d.put("height",50).put("backgroundOpacity",65).put("switches",false).put("mode","dark");return d.put("id","make_"+java.util.UUID.randomUUID().toString().replace("-","")).put("name","La mia tastiera");}catch(JSONException e){throw new IllegalStateException(e);}}
++ public static JSONObject create(String base){try{JSONObject old=get(base);JSONObject d=old==null?new JSONObject().put("base",base).put("style","preset").put("mode","system").put("keys",new JSONObject()):new JSONObject(old.toString());if(old==null&&ReferenceCollection691.supports(base))d.put("height",ReferenceCollection691.defaultRowHeight(base,400));if(old==null&&MaterialStudio651.supports(base))d.put("backgroundOpacity",97).put("toolbar_look","current");if(old==null&&SatinCaps.supports(base))d.put("backgroundOpacity",96).put("toolbar_look","plain").put("mode","dark");if(old==null&&StudioMaterials644.optical(base))d.put("backgroundOpacity",72).put("toolbar_look","luma");if(old==null&&base.equals("ps30"))d.put("toolbar_look","ps30").put("rgbMode","ps_pulse");if(old==null&&XboxAnniversary.supports(base))d.put("backgroundOpacity",28).put("mode","dark");if(old==null&&SmokeGlassCaps.ID.equals(base))d.put("height",50).put("backgroundOpacity",65).put("switches",false).put("mode","dark");return d.put("id","make_"+java.util.UUID.randomUUID().toString().replace("-","")).put("name","La mia tastiera");}catch(JSONException e){throw new IllegalStateException(e);}}
+  public static JSONObject createCurrent(Context c){
+   var p=KeyAntPrefs.get(c);String profile=ThemeCatalog.profile(p.getString(Settings.PREF_THEME_COLORS,"forma_dark"));boolean dark=p.getString(Settings.PREF_THEME_COLORS,"forma_dark").endsWith("dark");
+   if(Settings.getValues()!=null&&Settings.getValues().mColors instanceof FormaColors f){profile=f.getProfile();dark=f.getDark();}
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/MakerPalettes.kt b/app/src/main/java/helium314/keyboard/keyforma/MakerPalettes.kt
+index 01e7a52..7ae9114 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/MakerPalettes.kt
++++ b/app/src/main/java/helium314/keyboard/keyforma/MakerPalettes.kt
+@@ -16,5 +16,5 @@ internal val makerPalettes=listOf(
+ )
+ internal val makerColorParts=listOf("background" to "Sfondo","normal" to "Tasti normali","left" to "Shift e numeri","delete" to "Cancella","action" to "Invio","space" to "Spazio")
+ internal fun applyMakerPalette(d:JSONObject,id:String){val palette=makerPalettes.firstOrNull{it.id==id}?:return;d.put("palette",id);makerColorParts.forEachIndexed{i,(part,_)->if(palette.colors.isEmpty())d.remove(part)else d.put(part,palette.colors[i])}}
+-internal val makerShapes=listOf("ref91_nebula" to "Incavo · NuPhy scolpito","ref91_primary" to "Smalto · bordo satinato","liquid_satin_coral" to "Satin · piatto opaco","luma_ember" to "Braci · base ottica LED", "tonal_graphite" to "Strati · gradiente verticale", "ps30" to "Heritage · controller satinato","series_himym" to "Smalto · Manhattan","series_chuck" to "Alluminio · Intersect","series_office" to "PBT · Scranton","series_scrubs" to "Ceramica flat · Sacred Heart","preset" to "Forma del tema","show_ruby" to "Cristallo · switch visibile","show_rose" to "Acrilico satinato","show_alloy" to "Alluminio tecnico","show_ivory" to "PBT scolpito alto","show_white" to "Alluminio flat","show_comic" to "Serigrafia incorniciata","show_red" to "Lacca e stampa oro","flat" to "Piatto","carbon" to "Meccanico","milk" to "Tondo","xbox_clear" to "Plastica traslucida","xbox25_green" to "Xbox 25 · Crystal Green","xbox25_obsidian" to "Xbox 25 · Obsidian","liquid_clear" to "Vetro","liquid_smoke" to "Vetro fumé · iPhone","liquid_sapphire" to "Sapphire · fumé e riflessi azzurri","liquid_sapphire_day" to "Sapphire · perla e riflessi azzurri","liquid_switch" to "Meccanico glass","liquid_pearl" to "Tondo glass","liquid_prism" to "Cristallo","porcelain_glass" to "Porcellana")
++internal val makerShapes=listOf("ref91_nebula" to "NuPhy · incavo profondamente scolpito","ref91_primary" to "Smalto · cuscino e bordo metallico","ref91_duo" to "iOS · piatto a spigoli morbidi","liquid_satin_coral" to "Satin · piatto opaco","luma_ember" to "Braci · base ottica LED", "tonal_graphite" to "Strati · gradiente verticale", "ps30" to "Heritage · controller satinato","series_himym" to "Smalto · Manhattan","series_chuck" to "Alluminio · Intersect","series_office" to "PBT · Scranton","series_scrubs" to "Ceramica flat · Sacred Heart","preset" to "Forma del tema","show_ruby" to "Cristallo · switch visibile","show_rose" to "Acrilico satinato","show_alloy" to "Alluminio tecnico","show_ivory" to "PBT scolpito alto","show_white" to "Alluminio flat","show_comic" to "Serigrafia incorniciata","show_red" to "Lacca e stampa oro","flat" to "Piatto","carbon" to "Meccanico","milk" to "Tondo","xbox_clear" to "Plastica traslucida","xbox25_green" to "Xbox 25 · Crystal Green","xbox25_obsidian" to "Xbox 25 · Obsidian","liquid_clear" to "Vetro","liquid_smoke" to "Vetro fumé · iPhone","liquid_sapphire" to "Sapphire · fumé e riflessi azzurri","liquid_sapphire_day" to "Sapphire · perla e riflessi azzurri","liquid_switch" to "Meccanico glass","liquid_pearl" to "Tondo glass","liquid_prism" to "Cristallo","porcelain_glass" to "Porcellana")
+ internal val makerFonts=listOf("preset" to "Carattere del tema","square" to "Orbitron · geometrico","narrow" to "Rajdhani · tecnico","round" to "Leggero","bold" to "Deciso","mono" to "Monospazio","serif" to "Serif")
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/MakerPreview.java b/app/src/main/java/helium314/keyboard/keyforma/MakerPreview.java
+index 044cdef..334e06a 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/MakerPreview.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/MakerPreview.java
+@@ -31,7 +31,7 @@ public final class MakerPreview extends View {
+    float total=0;for(int code:codes)total+=weight(code,r);float usable=getWidth()-10*unit-(r==1?26*unit:0);float x=(getWidth()-usable)/2;
+    for(int code:codes){float w=usable*weight(code,r)/Math.max(.1f,total);int kind=code==-11||code==-10001?1:code==-7?2:code==10?3:code==32?4:0;String preset=MakeKeyAnt.preset(id);if(code==-10001&&(XboxAnniversary.supports(MakeKeyAnt.base(id))||ReferenceCollection691.supports(preset))&&!draft.optString("left").matches("[A-Fa-f0-9]{6}"))kind=5;if(kind==1&&!draft.optString("left").matches("[A-Fa-f0-9]{6}")&&(preset.equals("liquid_android")||code==-10001&&(preset.equals("classic")||preset.equals("graphite")||preset.equals("vintage"))))kind=0;RectF rect=new RectF(x,visualRow*rowH+2*unit,x+w-2*unit,(visualRow+1)*rowH-2*unit);hits.add(new Hit(code,r,rect));float appear=Math.max(0,Math.min(1,assembly*1.6f-(visualRow*.12f+codes.indexOf(code)*.018f)));int keyLayer=c.saveLayerAlpha(rect.left,rect.top-12*unit,rect.right,rect.bottom,(int)(255*appear));c.translate(rect.left,rect.top-(1-appear)*10*unit);
+  if(stage==1){if(draft.optBoolean("switches",true)){int col=ThemeCatalog.face(id,dark,0);try{if(draft.optString("stem").matches("[A-Fa-f0-9]{6}"))col=Color.parseColor("#"+draft.optString("stem"));}catch(Exception ignored){}float side=Math.min(rect.width(),rect.height())*.4f,cx=rect.width()/2,cy=rect.height()/2;p.setStyle(Paint.Style.FILL);p.setColor(ToolSurface.mix(col,Color.BLACK,.28f));c.drawRoundRect(cx-side,cy-side,cx+side,cy+side,3*unit,3*unit,p);p.setColor(ToolSurface.mix(col,Color.WHITE,.3f));c.drawRoundRect(cx-side*.23f,cy-side*.7f,cx+side*.23f,cy+side*.7f,unit,unit,p);c.drawRoundRect(cx-side*.7f,cy-side*.23f,cx+side*.7f,cy+side*.23f,unit,unit,p);}c.restoreToCount(keyLayer);x+=w;continue;}
+- MakerGeometry.transform(c,id,code,rect.width(),rect.height());float pressed=code==pressedCode?pressValue:0;float materialPress=MakerGeometry.materialPress(id,pressed);c.translate(0,MakerGeometry.travel(id,pressed,rect.height()));boolean lightMoving=lights.light(c,rect.left,rect.top,rect.width(),rect.height(),unit,code==32,pressed,android.os.SystemClock.uptimeMillis());if(lightMoving&&isShown())postInvalidateOnAnimation();Integer tint=null;try{String hex=key(code).optString("color");if(hex.matches("[A-Fa-f0-9]{6}"))tint=Color.parseColor("#"+hex);}catch(Exception ignored){}tint=MakerGeometry.pigment(id,ThemeCatalog.face(id,dark,kind),tint,pressed);caps.position(rect.left,rect.top,getWidth(),getHeight());caps.draw(c,rect.width(),rect.height(),id,dark,kind,materialPress,tint);if(print!=null)print.draw(c,code,rect.left,rect.top,rect.width(),rect.height(),materialPress);lights.emitter(c,rect.width(),rect.height(),unit,code==32,pressed);if(stage==2||stage==3){c.restoreToCount(keyLayer);outline(c,rect,code,unit);x+=w;continue;}p.setColor(tint==null?(ReferenceCollection691.duoLegend(id,kind)?ReferenceCollection691.duoInk(dark,rect.centerX()/getWidth(),rect.centerY()/getHeight()):ThemeCatalog.ink(id,dark,kind)):KeyColorOverrides.ink(tint));String ink=key(code).optString("ink");p.setColor(ink.matches("[A-Fa-f0-9]{6}")?Color.parseColor("#"+ink):KeyColorOverrides.legend(getContext(),id,code,kind,p.getColor()));p.setTypeface(ThemeCatalog.font(id));p.setTextScaleX(MakeKeyAnt.fontWidth(id));p.setTextSize(15*unit*(float)draft.optDouble("fontScale",1));p.setTextAlign(Paint.Align.CENTER);String label=switch(code){case -11->"⇧";case -10001->"?123";case -7->"⌫";case 10->"↵";case 32->"";case helium314.keyboard.keyboard.internal.keyboard_parser.floris.KeyCode.EMOJI->"☺";default->Character.toString(code);};String action=key(code).optString("action");if(!action.isEmpty())label=switch(action){case "clipboard"->"▤";case "voice"->"●";case "emoji"->"☺";default->"▣";};android.graphics.drawable.Drawable icon=code==-11?shift:code==-7?delete:code==10?enter:null;if(icon==null){float tx=rect.width()/2,ty=rect.height()/2-(p.ascent()+p.descent())/2;if(print!=null&&print.contains(code))print.legend(c,label,tx,ty,p);else c.drawText(label,tx,ty,p);}else{int sz=Math.round(Math.min(rect.height()*.56f,22*unit));int ix=(int)(rect.width()-sz)/2,iy=(int)(rect.height()-sz)/2;icon.setTint(p.getColor());icon.setBounds(ix,iy,ix+sz,iy+sz);icon.draw(c);}if(KeyAppearance.hints(id,helium314.keyboard.latin.settings.Settings.getValues()!=null&&helium314.keyboard.latin.settings.Settings.getValues().mShowsHints)){
++ MakerGeometry.transform(c,id,code,rect.width(),rect.height());float pressed=code==pressedCode?pressValue:0;float materialPress=MakerGeometry.materialPress(id,pressed);c.translate(0,MakerGeometry.travel(id,pressed,rect.height()));boolean lightMoving=lights.light(c,rect.left,rect.top,rect.width(),rect.height(),unit,code==32,pressed,android.os.SystemClock.uptimeMillis());if(lightMoving&&isShown())postInvalidateOnAnimation();Integer tint=null;try{String hex=key(code).optString("color");if(hex.matches("[A-Fa-f0-9]{6}"))tint=Color.parseColor("#"+hex);}catch(Exception ignored){}tint=MakerGeometry.pigment(id,ThemeCatalog.face(id,dark,kind),tint,pressed);caps.position(rect.left,rect.top,getWidth(),getHeight());caps.draw(c,rect.width(),rect.height(),id,dark,kind,materialPress,tint);if(print!=null)print.draw(c,code,rect.left,rect.top,rect.width(),rect.height(),materialPress);lights.emitter(c,rect.width(),rect.height(),unit,code==32,pressed);if(stage==2||stage==3){c.restoreToCount(keyLayer);outline(c,rect,code,unit);x+=w;continue;}p.setColor(tint==null?(ReferenceCollection691.duoLegend(id,kind)?ReferenceCollection691.duoInk(dark,rect.centerX()/getWidth(),rect.centerY()/getHeight()):ThemeCatalog.ink(id,dark,kind)):KeyColorOverrides.ink(tint));String ink=key(code).optString("ink");p.setColor(ink.matches("[A-Fa-f0-9]{6}")?Color.parseColor("#"+ink):KeyColorOverrides.legend(getContext(),id,code,kind,p.getColor()));p.setTypeface(ThemeCatalog.font(id));p.setTextScaleX(MakeKeyAnt.fontWidth(id));p.setTextSize(15*unit*CapGeometry.labelScale(id)*(float)draft.optDouble("fontScale",1));p.setTextAlign(Paint.Align.CENTER);String label=switch(code){case -11->"⇧";case -10001->"?123";case -7->"⌫";case 10->"↵";case 32->"";case helium314.keyboard.keyboard.internal.keyboard_parser.floris.KeyCode.EMOJI->"☺";default->Character.toString(code);};String action=key(code).optString("action");if(!action.isEmpty())label=switch(action){case "clipboard"->"▤";case "voice"->"●";case "emoji"->"☺";default->"▣";};android.graphics.drawable.Drawable icon=code==-11?shift:code==-7?delete:code==10?enter:null;label=KeyAppearance.label(id,label);CapGeometry.face(hintFace,id,rect.width(),rect.height(),kind,materialPress);float labelOffset=hintFace.centerY()-rect.height()*.5f;if(icon==null){float tx=rect.width()/2,ty=rect.height()/2-(p.ascent()+p.descent())/2+labelOffset;if(print!=null&&print.contains(code))print.legend(c,label,tx,ty,p);else c.drawText(label,tx,ty,p);}else{int sz=Math.round(Math.min(rect.height()*.56f,22*unit));int ix=(int)(rect.width()-sz)/2,iy=Math.round((rect.height()-sz)/2+labelOffset);icon.setTint(p.getColor());icon.setBounds(ix,iy,ix+sz,iy+sz);icon.draw(c);}if(KeyAppearance.hints(id,helium314.keyboard.latin.settings.Settings.getValues()!=null&&helium314.keyboard.latin.settings.Settings.getValues().mShowsHints)){
+  String hint=previewHint(code);if(!hint.isEmpty()){CapGeometry.face(hintFace,id,rect.width(),rect.height(),kind,materialPress);float pad=Math.max(unit,Math.min(3*unit,hintFace.width()*.1f));p.setTextScaleX(1);p.setTextSize(Math.min(6.5f*unit,rect.height()*.17f));p.setTextAlign(Paint.Align.RIGHT);p.setAlpha(165);c.drawText(hint,hintFace.right-pad,hintFace.top+pad-p.ascent(),p);p.setAlpha(255);}}
+  c.restoreToCount(keyLayer);outline(c,rect,code,unit);x+=w;}
+   }
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/OpticalHdr692.java b/app/src/main/java/helium314/keyboard/keyforma/OpticalHdr692.java
+new file mode 100644
+index 0000000..29367ce
+--- /dev/null
++++ b/app/src/main/java/helium314/keyboard/keyforma/OpticalHdr692.java
+@@ -0,0 +1,30 @@
++// SPDX-License-Identifier: GPL-3.0-only
++package helium314.keyboard.keyforma;
++import android.content.Context;
++import android.content.pm.ActivityInfo;
++import android.graphics.*;
++import android.os.Build;
++import android.view.Window;
++/** Optional HDR only for the tiny RGB light sources. The key pigment stays SDR. */
++public final class OpticalHdr692 {
++ private OpticalHdr692(){}
++ private static final android.util.LruCache<Long,Bitmap> lights=new android.util.LruCache<>(48);
++ public static float requested(Context context){return switch(KeyAntPrefs.text(context,"rgb_hdr","off")){case "soft"->1.5f;case "bright"->2f;default->1f;};}
++ public static void window(Window window,Context context){
++  if(window==null||Build.VERSION.SDK_INT<34)return;
++  boolean enabled=!KeyEffects.effectiveMode(context).equals("off")&&requested(context)>1&&window.getWindowManager().getDefaultDisplay().isHdr();
++  int mode=enabled?ActivityInfo.COLOR_MODE_HDR:ActivityInfo.COLOR_MODE_DEFAULT;
++  if(window.getColorMode()!=mode)window.setColorMode(mode);
++  if(Build.VERSION.SDK_INT>=35)window.setDesiredHdrHeadroom(enabled?requested(context):0f);
++ }
++ public static Bitmap light(Bitmap source,int color,float ratio){
++  if(Build.VERSION.SDK_INT<34||ratio<=1)return source;
++  ratio=Math.max(1,Math.min(2,ratio));long key=((long)color&0xffffffffL)|((long)Math.round(ratio*10)<<32);
++  Bitmap bitmap=lights.get(key);if(bitmap!=null)return bitmap;
++  int w=source.getWidth(),h=source.getHeight();int[] pixels=new int[w*h];source.getPixels(pixels,0,w,0,0,w,h);
++  for(int i=0;i<pixels.length;i++)pixels[i]=(pixels[i]&0xff000000)|(color&0xffffff);
++  bitmap=Bitmap.createBitmap(pixels,w,h,Bitmap.Config.ARGB_8888);
++  Bitmap gain=Bitmap.createBitmap(1,1,Bitmap.Config.ARGB_8888);gain.eraseColor(Color.WHITE);
++  Gainmap map=new Gainmap(gain);map.setRatioMin(1,1,1);map.setRatioMax(ratio,ratio,ratio);map.setGamma(1,1,1);map.setEpsilonSdr(0,0,0);map.setEpsilonHdr(0,0,0);map.setMinDisplayRatioForHdrTransition(1);map.setDisplayRatioForFullHdr(ratio);bitmap.setGainmap(map);lights.put(key,bitmap);return bitmap;
++ }
++}
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/PressMotion.java b/app/src/main/java/helium314/keyboard/keyforma/PressMotion.java
+index 40f19e3..28b83ac 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/PressMotion.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/PressMotion.java
+@@ -19,6 +19,7 @@ public final class PressMotion {
+         if(id.equals(configuredMaterial))return;
+         configuredMaterial=id;
+         attack=24;release=120;elastic=false;
++        if(ReferenceCollection691.supports(id)){attack=ReferenceCollection691.scoop(id)?20:26;release=ReferenceCollection691.scoop(id)?105:ReferenceCollection691.enamel(id)?135:85;}
+         if(MaterialStudio651.supports(id)){
+             switch(MaterialStudio651.material(id)){
+                 case "denim","candy" -> {attack=42;release=190;elastic=true;}
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/ReferenceCollection691.java b/app/src/main/java/helium314/keyboard/keyforma/ReferenceCollection691.java
+index 768d439..6c52976 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/ReferenceCollection691.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/ReferenceCollection691.java
+@@ -9,7 +9,7 @@ public final class ReferenceCollection691 {
+  new Board("ref91_nebula","Air75 · Nebula","NuPhy · Scolpiti","scoop",0xff292a2c,0xffe8e9e8,0xff64c5ac,0xffe1ba42,0xffe87958,0,0xff64c5ac),
+  new Board("ref91_bh65","BH65 · Viola e giada","NuPhy · Scolpiti","scoop",0xff25262b,0xffe9e8ef,0xff8060bf,0xff303039,0xff8060bf,0,0xff8060bf),
+  new Board("ref91_nuphy","NuPhy · Ambra","NuPhy · Scolpiti","scoop",0xff292a2b,0xffe6e8e4,0xff53bea5,0xff666a6c,0xffeb6a60,0xffe3bb3e,0xff53bea5),
+- new Board("ref91_field","Field75 · Electro","NuPhy · Scolpiti","scoop",0xff292b26,0xffe7eadf,0xffb9d86a,0xff8c9183,0xffb9d86a,0,0xffb9d86a),
++ new Board("ref91_field","Field75 · Electro","NuPhy · Scolpiti","scoop",0xff292b26,0xffe7eadf,0xffbedc63,0xff8c9183,0xffbedc63,0,0xffbedc63),
+  new Board("ref91_gem","Gem80 · Mystic Indigo","NuPhy · Scolpiti","scoop",0xff272a30,0xffdfe5ef,0xff587ecd,0xff333942,0xff587ecd,0,0xff587ecd),
+  new Board("ref91_lagoon","Halo · Blue Lagoon","NuPhy · Scolpiti","scoop",0xff205b8c,0xffd7e9f5,0xff81b9dc,0xff81b9dc,0xff81b9dc,0,0xff81b9dc),
+  new Board("ref91_node","Node75 · Ink Gray","NuPhy · Scolpiti","scoop",0xff595c5c,0xffe5e8e6,0xff777b7b,0xffdfbd64,0xffd57660,0,0xff77b9a5),
+@@ -25,12 +25,31 @@ public final class ReferenceCollection691 {
+  private static Board b(String id){return MAP.get(MakeKeyAnt.base(id));}
+  public static AtelierThemes.Spec[] additions(){return Arrays.stream(BOARDS).map(b->new AtelierThemes.Spec(b.id(),b.name(),b.group(),b.id(),b.dark(),b.light(),b.shift(),b.enter())).toArray(AtelierThemes.Spec[]::new);}
+  public static int face(String id,boolean dark,int kind){Board b=b(id);return switch(kind){case 1->b.shift();case 2->b.delete();case 3->b.enter();case 4->b.space()==0?(dark?b.dark():b.light()):b.space();case 5->b.numeric();default->dark?b.dark():b.light();};}
+- public static int ink(String id,boolean dark,int kind){if(id.equals("ref91_primary")&&kind==1)return 0xff17191a;if(id.equals("ref91_gem")&&(kind==1||kind==3||kind==5)||id.equals("ref91_node")&&kind==1||id.equals("ref91_nuphy")&&(kind==1||kind==3))return 0xfff1f4f5;if(id.equals("ref91_bh65")&&kind!=2&&kind!=4&&kind!=0)return 0xffa0daca;if(id.equals("ref91_lagoon")&&(kind==1||kind==2||kind==3||kind==5))return 0xff194e72;if(dark&&kind==0){if(id.endsWith("bh65"))return 0xff8dcdc0;if(id.endsWith("field"))return 0xffc2d986;if(id.endsWith("lagoon"))return 0xffd7e9fa;}return KeyColorOverrides.ink(face(id,dark,kind));}
++ public static int ink(String id,boolean dark,int kind){if(id.equals("ref91_primary")&&kind==1)return 0xff17191a;if(id.equals("ref91_gem")&&(kind==1||kind==3||kind==5)||id.equals("ref91_node")&&kind==1||id.equals("ref91_nuphy")&&(kind==1||kind==3))return 0xfff1f4f5;if(id.equals("ref91_bh65")&&kind!=2&&kind!=4&&kind!=0)return 0xffa0daca;if(id.equals("ref91_lagoon")&&(kind==1||kind==2||kind==3||kind==5))return 0xff194e72;if(dark&&kind==0){if(id.endsWith("bh65"))return 0xff8dcdc0;if(id.endsWith("field"))return 0xffc4db6b;if(id.endsWith("lagoon"))return 0xffd7e9fa;}return KeyColorOverrides.ink(face(id,dark,kind));}
+  public static int desk(String id,boolean dark){if(id.endsWith("gem"))return dark?0xff2d4776:0xffadc5e5;if(id.endsWith("lagoon"))return dark?0xff216092:0xffb9d9ef;if(id.endsWith("node"))return dark?0xff393c3d:0xffc6cccb;return dark?0xff141517:0xffdce0e4;}
+- public static boolean low(String id){return b(id).shape().equals("flat");}
+- public static float depth(String id,float w,float h){return (low(id)?1.1f:b(id).shape().equals("enamel")?2.6f:4.1f)*LiquidMaterial.unit(w,h);}
+- public static float radius(String id,float w,float h){return (low(id)?4.0f:b(id).shape().equals("scoop")?8.5f:6.4f)*LiquidMaterial.unit(w,h);}
+- public static void bounds(RectF r,String id,float w,float h,float press,boolean face){float u=LiquidMaterial.unit(w,h),d=depth(id,w,h),inset=face?(low(id)?.6f:2.0f)*u:0;r.set(1.0f*u+inset,1.1f*u+inset+press*d*.72f,w-1.0f*u-inset,h-1.4f*u-d-inset+press*d*.72f);}
++ public static boolean scoop(String id){Board v=b(id);return v!=null&&v.shape().equals("scoop");}
++ public static boolean enamel(String id){Board v=b(id);return v!=null&&v.shape().equals("enamel");}
++ public static boolean low(String id){Board v=b(id);return v!=null&&v.shape().equals("flat");}
++ // Width/height are the actual visible key cell, not a fixed 30x44 template.
++ // The reference's upper shoulder is broad and its inner bowl has no outline.
++ public static float unit(float w,float h){return Math.max(.01f,Math.min(w,h)/32f);}
++ public static float depth(String id,float w,float h){return (low(id)?1.3f:enamel(id)?2.2f:2.6f)*unit(w,h);}
++ public static float radius(String id,float w,float h){return (low(id)?5.2f:scoop(id)?8.0f:6.2f)*unit(w,h);}
++ public static float innerRadius(String id,float w,float h){return Math.max(unit(w,h),radius(id,w,h)-(scoop(id)?3.0f:1.8f)*unit(w,h));}
++ public static void bounds(RectF r,String id,float w,float h,float press,boolean face){
++  float u=unit(w,h),d=depth(id,w,h),travel=Math.max(0,Math.min(1,press))*d*.70f;
++  float inset=scoop(id)&&w/h<1.32f?Math.max(0,(w-h*.82f)*.5f):0;
++  r.set(.65f*u+inset,.8f*u+travel,w-.65f*u-inset,h-1.8f*u-d+travel);
++  if(face){float side=(scoop(id)?3.4f:enamel(id)?2.1f:.45f)*u;
++   r.left+=side;r.right-=side;r.top+=(scoop(id)?4.3f:enamel(id)?2.0f:.45f)*u;r.bottom-=(scoop(id)?2.0f:enamel(id)?1.8f:.45f)*u;}
++ }
++ public static int defaultRowHeight(String id,int widthDp){
++  if(!supports(MakeKeyAnt.base(id)))return 44;
++  if(low(id))return 48;
++  return Math.max(46,Math.min(64,Math.round(Math.min(widthDp,440)/10f*(scoop(id)?1.26f:1.23f))));
++ }
++ public static float boardAspect(String id){return scoop(id)?1.94f:enamel(id)?2.03f:2.12f;}
++ public static float letterBloom(String id){return scoop(id)?.48f:enamel(id)?.70f:1f;}
+  public static boolean duo(String id,int kind){
+   if(!"ref91_duo".equals(MakeKeyAnt.base(id)))return false;
+   var d=MakeKeyAnt.get(id);if(d==null)return true;
+@@ -51,17 +70,44 @@ public final class ReferenceCollection691 {
+    int save=c.save();c.clipPath(split);draw(c,id,w,h,dark?shade:light,press);c.restoreToCount(save);
+   }
+ 
+-  private final Paint p=new Paint(3);private final RectF r=new RectF();private final Matrix matrix=new Matrix();
+-  private final android.util.LruCache<Long,LinearGradient> shaders=new android.util.LruCache<>(64);
+-  private LinearGradient gradient(int color,boolean enamel){long k=((long)color&0xffffffffL)|(enamel?1L<<32:0);LinearGradient g=shaders.get(k);if(g==null){g=new LinearGradient(0,0,0,1,new int[]{ToolSurface.mix(color,Color.BLACK,enamel?.12f:.20f),ToolSurface.mix(color,Color.WHITE,enamel?.07f:.04f),ToolSurface.mix(color,Color.WHITE,enamel?.12f:.10f),ToolSurface.mix(color,Color.BLACK,.04f)},new float[]{0,.25f,.68f,1},Shader.TileMode.CLAMP);shaders.put(k,g);}return g;}
++  private final Paint p=new Paint(3);private final RectF r=new RectF(),inner=new RectF();private final Matrix matrix=new Matrix();
++  private final android.util.LruCache<Long,LinearGradient> shaders=new android.util.LruCache<>(128);
++  private LinearGradient gradient(int color,int layer){
++   long k=((long)color&0xffffffffL)|((long)layer<<32);LinearGradient g=shaders.get(k);
++   if(g==null){int[] colors;float[] stops;
++    switch(layer){
++     case 0 -> {colors=new int[]{ToolSurface.mix(color,Color.WHITE,.19f),ToolSurface.mix(color,Color.WHITE,.10f),ToolSurface.mix(color,Color.BLACK,.22f)};stops=new float[]{0,.25f,1};}
++     case 1 -> {colors=new int[]{ToolSurface.mix(color,Color.BLACK,.32f),ToolSurface.mix(color,Color.BLACK,.10f),ToolSurface.mix(color,Color.WHITE,.045f),ToolSurface.mix(color,Color.BLACK,.07f)};stops=new float[]{0,.30f,.82f,1};}
++     case 2 -> {colors=new int[]{ToolSurface.mix(color,Color.WHITE,.72f),ToolSurface.mix(color,Color.BLACK,.22f),ToolSurface.mix(color,Color.WHITE,.48f),ToolSurface.mix(color,Color.BLACK,.38f)};stops=new float[]{0,.35f,.67f,1};}
++     case 3 -> {colors=new int[]{ToolSurface.mix(color,Color.BLACK,.12f),ToolSurface.mix(color,Color.WHITE,.24f),ToolSurface.mix(color,Color.WHITE,.12f),ToolSurface.mix(color,Color.BLACK,.08f)};stops=new float[]{0,.36f,.78f,1};}
++     default -> {colors=new int[]{color,ToolSurface.mix(color,Color.BLACK,.025f)};stops=null;}
++    }
++    g=new LinearGradient(0,0,0,1,colors,stops,Shader.TileMode.CLAMP);shaders.put(k,g);
++   }return g;
++  }
++  private void fill(Canvas c,RectF box,float radius,int color,int layer){
++   LinearGradient g=gradient(color,layer);matrix.setScale(1,box.height());matrix.postTranslate(0,box.top);g.setLocalMatrix(matrix);p.setShader(g);p.setColor(Color.WHITE);c.drawRoundRect(box,radius,radius,p);p.setShader(null);
++  }
+   public void draw(Canvas c,String id,float w,float h,int color,float press){
+-   float u=LiquidMaterial.unit(w,h),radius=radius(id,w,h),d=depth(id,w,h);boolean enamel=b(id).shape().equals("enamel");
+-   bounds(r,id,w,h,press,false);p.setStyle(Paint.Style.FILL);p.setShader(null);p.setColor(0x50000000);c.drawRoundRect(r.left,r.top+2*u,r.right,r.bottom+d+1.4f*u,radius,radius,p);
+-   p.setColor(ToolSurface.mix(color,Color.BLACK,.45f));c.drawRoundRect(r.left,r.top,r.right,r.bottom+d*(1-press*.72f),radius,radius,p);
+-   p.setColor(ToolSurface.mix(color,Color.WHITE,enamel?.40f:.18f));c.drawRoundRect(r,radius,radius,p);
+-   r.inset(.75f*u,.75f*u);p.setColor(ToolSurface.mix(color,Color.BLACK,enamel?.24f:.12f));c.drawRoundRect(r,radius-.7f*u,radius-.7f*u,p);
+-   bounds(r,id,w,h,press,true);LinearGradient g=gradient(color,enamel);matrix.setScale(1,r.height());matrix.postTranslate(0,r.top);g.setLocalMatrix(matrix);p.setShader(g);c.drawRoundRect(r,radius-1.4f*u,radius-1.4f*u,p);p.setShader(null);
+-   p.setStyle(Paint.Style.STROKE);p.setStrokeWidth(.55f*u);p.setColor(ToolSurface.mix(color,Color.WHITE,enamel?.35f:.12f));c.drawRoundRect(r,radius-1.4f*u,radius-1.4f*u,p);p.setStyle(Paint.Style.FILL);
++   if(w<=0||h<=0)return;
++   float u=unit(w,h),radius=radius(id,w,h),d=depth(id,w,h);boolean enamel=enamel(id),flat=low(id);
++   bounds(r,id,w,h,press,false);p.setStyle(Paint.Style.FILL);p.setShader(null);p.setAlpha(255);
++   // Contact shadow stays under the foot. No black tube extending across neighbours.
++   p.setColor(0x23000000);c.drawRoundRect(r.left-.25f*u,r.top+u,r.right+.25f*u,r.bottom+d+1.1f*u,radius,radius,p);
++   p.setColor(ToolSurface.mix(color,Color.BLACK,flat?.25f:.38f));c.drawRoundRect(r.left,r.top,r.right,r.bottom+d*(1-press*.70f),radius,radius,p);
++   if(flat){fill(c,r,radius,color,4);return;}
++   fill(c,r,radius,color,enamel?2:0);
++   bounds(inner,id,w,h,press,true);
++   if(enamel){
++    // Separate folded metallic lip, white gasket and pillow surface.
++    r.inset(.65f*u,.65f*u);p.setColor(ToolSurface.mix(color,Color.BLACK,.25f));c.drawRoundRect(r,radius-.5f*u,radius-.5f*u,p);
++    r.inset(.45f*u,.45f*u);p.setColor(ToolSurface.mix(color,Color.WHITE,.75f));c.drawRoundRect(r,radius-u,radius-u,p);
++    fill(c,inner,innerRadius(id,w,h),color,3);
++   }else{
++    // Subpixel transition into the bowl, deliberately no hairline stroke.
++    for(int i=3;i>=1;i--){float e=i*.18f*u;r.set(inner);r.inset(-e,-e);p.setColor(ToolSurface.mix(color,Color.BLACK,.10f+(3-i)*.055f));c.drawRoundRect(r,innerRadius(id,w,h)+e,innerRadius(id,w,h)+e,p);}
++    fill(c,inner,innerRadius(id,w,h),color,1);
++   }
+   }
+  }
+ }
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/StudioActivity.kt b/app/src/main/java/helium314/keyboard/keyforma/StudioActivity.kt
+index 695a98e..387d379 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/StudioActivity.kt
++++ b/app/src/main/java/helium314/keyboard/keyforma/StudioActivity.kt
+@@ -57,6 +57,7 @@ import androidx.compose.foundation.pager.rememberPagerState
+ import kotlinx.coroutines.launch
+ 
+ class StudioActivity : ComponentActivity() {
++ override fun onResume(){super.onResume();OpticalHdr692.window(window,this)}
+  private var destination by mutableStateOf("home")
+  private var requestId by mutableIntStateOf(0)
+  override fun onNewIntent(intent:Intent){super.onNewIntent(intent);setIntent(intent);destination=intent.getStringExtra("page")?:"home";requestId++}
+@@ -141,7 +142,7 @@ class StudioActivity : ComponentActivity() {
+  "transparency"->{TransparencySettings()}
+  "appearance"->{
+  StudioHero("Dai forma alla tastiera", "Tutto l’aspetto in un posto, con anteprime accanto ai controlli.")
+- StudioCard{Choice("Luminosità HDR simulata","display_boost","off",listOf("off" to "Naturale · tema originale","1" to "1 · Leggera","2" to "2 · Luminosa","3" to "3 · Intensa","4" to "4 · Massima"))}
++ StudioCard{Choice("Brillantezza dei colori","display_boost","off",listOf("off" to "Naturale · tema originale","1" to "1 · Leggera","2" to "2 · Luminosa","3" to "3 · Intensa","4" to "4 · Massima"))}
+  val groups=listOf(
+   "Tasti e materiali" to listOf(Triple("themes","Temi","Anteprima prima di applicare"),Triple("key_style","Dettagli dei tasti","Colori, etichette e disposizione")),
+   "Luci e movimento" to listOf(Triple("effects","Luci ed effetti","RGB e risposta al tocco"),Triple("motion","Animazioni","Split, spaziatrice e cambio tema"),Triple("transparency","Trasparenze","Superfici e modalità opaca")),
+@@ -300,14 +301,15 @@ Toggle("Correzione anche nelle app che la disattivano","force_prose_correction",
+  }
+ }
+ @OptIn(androidx.compose.foundation.ExperimentalFoundationApi::class)
+-@Composable private fun themeKeyboardRatio():Float{
++@Composable private fun themeKeyboardRatio(profile:String=""):Float{
+  val context=LocalContext.current
+  val config=androidx.compose.ui.platform.LocalConfiguration.current
+  val settings=Settings.getValues()
+- return remember(context,config.screenWidthDp,config.screenHeightDp,settings){
++ return remember(context,config.screenWidthDp,config.screenHeightDp,settings,profile){
+   val width=helium314.keyboard.latin.utils.ResourceUtils.getKeyboardWidth(context,settings)
+-  val height=helium314.keyboard.latin.utils.ResourceUtils.getKeyboardHeight(context.resources,settings)
+-  width.coerceAtLeast(1).toFloat()/height.coerceAtLeast(1)
++  val height=KeyboardLayoutPreview.heightForTheme(context,profile.ifEmpty{null})
++  val ratio=width.coerceAtLeast(1).toFloat()/height.coerceAtLeast(1)
++  if(profile.isEmpty())minOf(ratio,1.65f) else ratio
+  }
+ }
+ @OptIn(androidx.compose.foundation.ExperimentalFoundationApi::class)
+@@ -315,7 +317,7 @@ Toggle("Correzione anche nelle app che la disattivano","force_prose_correction",
+  val interaction=remember{androidx.compose.foundation.interaction.MutableInteractionSource()}
+  val pressed by interaction.collectIsPressedAsState()
+  Box(Modifier.fillMaxWidth()){
+- AndroidView(factory={KeyboardLayoutPreview(it).thumbnail(id,night)},update={it.alpha=if(pressed).87f else 1f},modifier=Modifier.fillMaxWidth().aspectRatio(themeKeyboardRatio()).padding(6.dp).combinedClickable(interactionSource=interaction,indication=null,onClick=onPreview,onClickLabel="Prova il tema",onLongClick=onFavorite,onLongClickLabel=if(favorite)"Rimuovi dai Preferiti" else "Aggiungi ai Preferiti").semantics{contentDescription="Anteprima ${ThemeCatalog.NAMES[ThemeCatalog.IDS.indexOf(id)]}"})
++ AndroidView(factory={KeyboardLayoutPreview(it).thumbnail(id,night)},update={it.alpha=if(pressed).87f else 1f},modifier=Modifier.fillMaxWidth().aspectRatio(themeKeyboardRatio(id)).padding(6.dp).combinedClickable(interactionSource=interaction,indication=null,onClick=onPreview,onClickLabel="Prova il tema",onLongClick=onFavorite,onLongClickLabel=if(favorite)"Rimuovi dai Preferiti" else "Aggiungi ai Preferiti").semantics{contentDescription="Anteprima ${ThemeCatalog.NAMES[ThemeCatalog.IDS.indexOf(id)]}"})
+   androidx.compose.animation.AnimatedVisibility(favorite,modifier=Modifier.align(Alignment.TopEnd),enter=fadeIn(tween(180))+androidx.compose.animation.scaleIn(tween(220)),exit=fadeOut(tween(150))){Surface(shape=RoundedCornerShape(20.dp),color=MaterialTheme.colorScheme.primaryContainer,modifier=Modifier.padding(6.dp)){Text("★",Modifier.padding(horizontal=10.dp,vertical=4.dp),color=MaterialTheme.colorScheme.onPrimaryContainer)} }
+  }
+ 
+@@ -344,7 +346,7 @@ Toggle("Correzione anche nelle app che la disattivano","force_prose_correction",
+  val pager = key(collection,columns) { rememberPagerState(initialPage=maxOf(0,collectionIds.indexOf(targetTheme?:family))/pageSize,pageCount={ maxOf(1,(collectionIds.size+pageSize-1)/pageSize) }) }; val themeScope=rememberCoroutineScope()
+  StudioCard{
+   Row(Modifier.fillMaxWidth().settingAnchor("Catalogo temi").padding(12.dp),verticalAlignment=Alignment.CenterVertically){
+-   key(family,night){AndroidView(factory={KeyboardLayoutPreview(it).thumbnail(family,night)},modifier=Modifier.width(100.dp).aspectRatio(themeKeyboardRatio()))}
++   key(family,night){AndroidView(factory={KeyboardLayoutPreview(it).thumbnail(family,night)},modifier=Modifier.width(100.dp).aspectRatio(themeKeyboardRatio(family)))}
+    Column(Modifier.weight(1f).padding(start=12.dp)){Text("Tema attivo",style=MaterialTheme.typography.labelSmall,color=MaterialTheme.colorScheme.onSurfaceVariant);Text(ThemeCatalog.NAMES[ThemeCatalog.IDS.indexOf(family)],style=MaterialTheme.typography.titleSmall)}
+    TextButton(onClick={previewTheme=family}){Text("Prova")}
+   }
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/ThemeCatalog.java b/app/src/main/java/helium314/keyboard/keyforma/ThemeCatalog.java
+index f1cbf16..b7aa779 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/ThemeCatalog.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/ThemeCatalog.java
+@@ -69,7 +69,7 @@ if(SmokeGlassCaps.supports(id)&&!MakeKeyAnt.is(id))return LiquidMaterial.color(i
+   };
+  }
+  public static int ink(String id,boolean dark,int kind){if(ReferenceCollection691.supports(id))return ReferenceCollection691.ink(id,dark,kind);if(id.equals("refglass_brackets"))return kind==1||kind==3?0xffff854c:0xfff3bb65;String source=BenchCaps656.source(id);if(source!=null)return ThemeCatalog.ink(source,ThemeCatalog.effectiveDark(source,dark),kind);if(MaterialStudio651.supports(id))return MaterialStudio651.ink(id,kind);if(SatinCaps.supports(id))return kind==2&&!id.equals("liquid_satin_coral")?0xff202020:0xfff4f4f4;if(id.equals("piddu_shade")&&dark)return Color.WHITE;if(StudioMaterials644.supports(id))return StudioMaterials644.ink(id,dark,kind);if(XboxAnniversary.supports(id))return XboxAnniversary.ink(id,kind);if(SmokeGlassCaps.supports(id))return effectiveDark(id,dark)?0xfffafbf9:0xff202722;if(id.equals("porcelain_glass"))return 0xff222329;if(MakeKeyAnt.is(id))return MakeKeyAnt.ink(id,dark,kind);if(id.equals("art_atelier_gears")||id.equals("art_atelier_circuit")||id.equals("art_atelier_dunes"))return 0xfff8f5ee;if(AtelierThemes.get(id)!=null)return KeyColorOverrides.ink(face(id,dark,kind));if(LuminousCaps.supports(id))return dark?0xfffafcff:0xff172332;if(id.equals("liquid_android"))return Color.WHITE;if(LiquidMaterial.family(id)){int face=face(id,dark,kind);return androidx.core.graphics.ColorUtils.calculateContrast(Color.WHITE,face)>androidx.core.graphics.ColorUtils.calculateContrast(0xff121724,face)?Color.WHITE:0xff121724;}if(id.startsWith("rose_")||nerd(id)||collection(id).equals("Meccaniche")){int color=face(id,dark,kind);int ink=androidx.core.graphics.ColorUtils.calculateContrast(0xff18221e,color)>androidx.core.graphics.ColorUtils.calculateContrast(0xfff4f5ee,color)?0xff18221e:0xfff4f5ee;if(androidx.core.graphics.ColorUtils.calculateContrast(ink,color)>=4.5)return ink;return androidx.core.graphics.ColorUtils.calculateContrast(Color.BLACK,color)>androidx.core.graphics.ColorUtils.calculateContrast(Color.WHITE,color)?Color.BLACK:Color.WHITE;}if(dark&&face(id,true,kind)==face(id,true,0))return 0xfff3f4f2;if(id.equals("ceramic")&&kind==4)return 0xff41340a;if(kind==0||kind==4)return dark?0xfff3f4f2:0xff272c30;if(id.equals("neon"))return kind==5?0xff292b2b:Color.WHITE;if(id.equals("classic")||id.equals("graphite"))return kind==1||dark?Color.WHITE:0xff272c30;if(id.equals("ceramic")&&kind!=4)return Color.WHITE;return 0xff1d2926;}
+- public static Typeface font(String id){if(ReferenceCollection691.supports(MakeKeyAnt.base(id)))return SANS;if(id.equals("refglass_brackets"))return Typeface.MONOSPACE;if(ReferenceCaps.supports(id))return SANS;if(BenchCaps656.supports(id))return BenchCaps656.font(id);if(MaterialStudio651.supports(id))return MaterialStudio651.font(id);if(SatinCaps.supports(id))return SatinCaps.FONT;if(SeriesThemes642.supports(id))return SeriesThemes642.font(id);if(Showroom641.supports(id))return Showroom641.font(id);if(id.equals("porcelain_glass"))return SOFT;if(MakeKeyAnt.is(id))return MakeKeyAnt.font(id);id=AtelierThemes.material(id);if(id.equals("vintage")||id.equals("terminal")||id.equals("typewriter"))return Typeface.MONOSPACE;if(id.equals("captain_sa"))return SA;if(TranslucentShells.family(id)||id.equals("neon"))return SANS;if(CapGeometry.low(id)||id.equals("glass")||round(id))return SOFT;return PRINT;}
++ public static Typeface font(String id){if(MakeKeyAnt.is(id))return MakeKeyAnt.font(id);if(ReferenceCollection691.supports(MakeKeyAnt.base(id)))return SANS;if(id.equals("refglass_brackets"))return Typeface.MONOSPACE;if(ReferenceCaps.supports(id))return SANS;if(BenchCaps656.supports(id))return BenchCaps656.font(id);if(MaterialStudio651.supports(id))return MaterialStudio651.font(id);if(SatinCaps.supports(id))return SatinCaps.FONT;if(SeriesThemes642.supports(id))return SeriesThemes642.font(id);if(Showroom641.supports(id))return Showroom641.font(id);if(id.equals("porcelain_glass"))return SOFT;if(MakeKeyAnt.is(id))return MakeKeyAnt.font(id);id=AtelierThemes.material(id);if(id.equals("vintage")||id.equals("terminal")||id.equals("typewriter"))return Typeface.MONOSPACE;if(id.equals("captain_sa"))return SA;if(TranslucentShells.family(id)||id.equals("neon"))return SANS;if(CapGeometry.low(id)||id.equals("glass")||round(id))return SOFT;return PRINT;}
+  public static final class Caps {
+   private float refX,refY,refBoardW=340,refBoardH=184;
+   public void position(float x,float y,float w,float h){refX=x;refY=y;refBoardW=Math.max(1,w);refBoardH=Math.max(1,h);}
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/TouchFace.java b/app/src/main/java/helium314/keyboard/keyforma/TouchFace.java
+index 8e07338..2a82cda 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/TouchFace.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/TouchFace.java
+@@ -37,6 +37,7 @@ final class TouchFace {
+         if(!enabled()||amount<.01f)return;
+         CapGeometry.rim(face,profile,width,height,kind,press);
+         float radius=CapGeometry.radius(profile,width,height);
++        if(ReferenceCollection691.supports(MakeKeyAnt.base(profile))&&!mode.equals("rim")){CapGeometry.face(face,profile,width,height,kind,press);radius=ReferenceCollection691.innerRadius(profile,width,height);amount*=ReferenceCollection691.scoop(profile)?.55f:ReferenceCollection691.enamel(profile)?.78f:1f;}
+         paint.setStyle(Paint.Style.FILL);paint.setShader(null);paint.setColor(tint);
+         float unit=LiquidMaterial.unit(width,height);
+         if(!effect.equals("off")){
+diff --git a/app/src/test/java/helium314/keyboard/keyforma/KeyAntVisual692Test.java b/app/src/test/java/helium314/keyboard/keyforma/KeyAntVisual692Test.java
+new file mode 100644
+index 0000000..8befc38
+--- /dev/null
++++ b/app/src/test/java/helium314/keyboard/keyforma/KeyAntVisual692Test.java
+@@ -0,0 +1,90 @@
++// SPDX-License-Identifier: GPL-3.0-only
++package helium314.keyboard.keyforma;
++import android.content.*;import android.graphics.*;import android.view.*;
++import helium314.keyboard.keyboard.*;import helium314.keyboard.keyboard.Keyboard;import helium314.keyboard.latin.*;import helium314.keyboard.latin.settings.Settings;
++import static org.mockito.Mockito.*;import org.junit.*;import org.junit.runner.RunWith;import org.robolectric.*;import org.robolectric.annotation.*;import static org.junit.Assert.*;
++@RunWith(RobolectricTestRunner.class) @Config(sdk=35,qualifiers="w400dp-h900dp-mdpi",shadows={helium314.keyboard.ShadowInputMethodManager2.class}) @GraphicsMode(GraphicsMode.Mode.NATIVE)
++public class KeyAntVisual692Test {
++ Context c;LatinIME ime;
++ @Before public void setup(){c=RuntimeEnvironment.getApplication();KeyAntPrefs.get(c).edit().clear().putBoolean("ka_053_defaults",true).putBoolean(Settings.PREF_THEME_DAY_NIGHT,false).putBoolean("ka_theme_motion",false).putString("ka_rgb","off").apply();ime=Robolectric.setupService(LatinIME.class);ShortcutMode.reset();}
++ @After public void close(){ime.onDestroy();}
++ void theme(String id,boolean dark){KeyAntPrefs.get(c).edit().putString(Settings.PREF_THEME_COLORS,ThemeCatalog.preference(id,dark)).apply();Settings.getInstance().loadSettings(c);KeyboardLayoutSet.onKeyboardThemeChanged();}
++ @Test public void dimensionsAndPressAcross10800Configurations(){
++  RectF face=new RectF(),rim=new RectF();int count=0;
++  for(var spec:ReferenceCollection691.additions())for(float w:new float[]{20,28,36,52,110,260})for(float h:new float[]{28,38,48,64,90})for(int kind=0;kind<6;kind++)for(float press:new float[]{0,.15f,.5f,.85f,1}){
++   CapGeometry.face(face,spec.id(),w,h,kind,press);CapGeometry.rim(rim,spec.id(),w,h,kind,press);
++   assertTrue(spec.id()+" "+w+"x"+h,face.width()>0&&face.height()>0&&rim.contains(face));assertTrue(rim.left>=0&&rim.top>=0&&rim.right<=w&&rim.bottom<=h);count++;
++  }
++  System.out.println("GEOMETRY_CASES="+count);
++ }
++ @Test public void bowlAndSatinHaveDifferentPhotometryAndPressTravel(){
++  ThemeCatalog.Caps caps=new ThemeCatalog.Caps();Bitmap b=Bitmap.createBitmap(120,150,Bitmap.Config.ARGB_8888);Canvas canvas=new Canvas(b);
++  caps.draw(canvas,120,150,"ref91_field",true,0,0);int rim=b.getPixel(60,8),well=b.getPixel(60,30),lower=b.getPixel(60,112);assertTrue(Color.red(rim)>Color.red(well)+12);assertTrue(Color.red(lower)>Color.red(well));
++  assertEquals(0,Color.alpha(b.getPixel(0,0)));KeyAntV42TestSave.save(b,"KeyAnt-692-scoop-detail.png");b.recycle();
++  assertTrue(CapGeometry.depth("ref91_field",120,150,0)>CapGeometry.depth("ref91_duo",120,150,0));
++ }
++ @Test public void realKeyboardAllPalettesModesWidths()throws Exception{
++  int count=0;
++  for(String id:new String[]{"ref91_nebula","ref91_bh65","ref91_nuphy","ref91_field","ref91_gem","ref91_lagoon","ref91_node","ref91_primary","ref91_silver","ref91_amber","ref91_jade","ref91_duo"})for(boolean dark:new boolean[]{true,false}){
++   theme(id,dark);View input=ime.onCreateInputView();ime.setInputView(input);MainKeyboardView host=input.findViewById(R.id.keyboard_view);
++   for(int width:new int[]{360,440,760}){
++    int row=KeyboardGeometry.rowHeight(KeyAntPrefs.get(c),width);
++    Keyboard k=new KeyboardLayoutSet.Builder(ime,null).setKeyboardGeometry(width,KeyboardGeometry.bodyHeight(1,row,false)).setSubtype(RichInputMethodManager.getInstance().getCurrentSubtype()).build().getKeyboard(KeyboardId.ELEMENT_ALPHABET);
++    host.setKeyboard(k);host.finishLayoutMotion();KeyAntV42Test.layout(host,width,k.mOccupiedHeight);Bitmap b=Bitmap.createBitmap(width,k.mOccupiedHeight,Bitmap.Config.ARGB_8888);Canvas out=new Canvas(b);out.drawColor(ThemeCatalog.background(id,dark));host.draw(out);KeyAntV42Test.save(b,"KeyAnt-692-live-"+id+"-"+dark+"-"+width+".png");b.recycle();
++    Key q=k.getKey('q');assertNotNull(q);float ratio=q.getDrawWidth()/(float)q.getHeight();assertTrue("non-flattened "+id+" "+width+" "+ratio,ratio<1.05f);count++;
++   }
++  }
++  System.out.println("LIVE_RENDERS="+count);
++ }
++ @Test public void splitNumbersAndSymbolsKeepTouchableKeys()throws Exception{
++  int count=0;
++  for(String id:new String[]{"ref91_field","ref91_primary","ref91_duo"})for(boolean split:new boolean[]{false,true})for(int element:new int[]{KeyboardId.ELEMENT_ALPHABET,KeyboardId.ELEMENT_SYMBOLS,KeyboardId.ELEMENT_SYMBOLS_SHIFTED}){
++   theme(id,true);int width=split?760:400;View input=ime.onCreateInputView();ime.setInputView(input);MainKeyboardView host=input.findViewById(R.id.keyboard_view);
++   Keyboard keyboard=new KeyboardLayoutSet.Builder(ime,null).setKeyboardGeometry(width,290).setSplitLayoutEnabled(split).setNumberRowEnabled(true).setSubtype(RichInputMethodManager.getInstance().getCurrentSubtype()).build().getKeyboard(element);
++   assertEquals(split,keyboard.mId.mIsSplitLayout);assertNotNull(keyboard.getKey(element==KeyboardId.ELEMENT_ALPHABET?'q':element==KeyboardId.ELEMENT_SYMBOLS?'1':'['));
++   for(Key key:keyboard.getSortedKeys()){if(key.getWidth()==0)continue;assertTrue(key.getWidth()>0&&key.getHeight()>0);assertTrue(key.getX()>=0&&key.getX()+key.getWidth()<=width);}
++   host.setKeyboard(keyboard);host.finishLayoutMotion();KeyAntV42Test.layout(host,width,keyboard.mOccupiedHeight);Bitmap b=Bitmap.createBitmap(width,keyboard.mOccupiedHeight,Bitmap.Config.ARGB_8888);Canvas canvas=new Canvas(b);canvas.drawColor(ThemeCatalog.background(id,true));host.draw(canvas);KeyAntV42Test.save(b,"KeyAnt-692-layout-"+id+"-"+split+"-"+element+".png");b.recycle();host.cancelAllOngoingEvents();count++;
++  }
++  System.out.println("EXTRA_LAYOUT_RENDERS="+count);
++ }
++ @Test public void sculptedLabelsStillTypeLowercaseThroughRealTouchEvents(){
++  int taps=0;
++  for(String id:new String[]{"ref91_field","ref91_primary","ref91_duo"})for(int width:new int[]{360,760})for(boolean split:new boolean[]{false,true}){
++   theme(id,true);View input=ime.onCreateInputView();ime.setInputView(input);MainKeyboardView host=input.findViewById(R.id.keyboard_view);host.bindKeyAnt(ime);
++   int height=KeyboardGeometry.bodyHeight(1,KeyboardGeometry.rowHeight(KeyAntPrefs.get(c),width),false);
++   Keyboard keyboard=new KeyboardLayoutSet.Builder(ime,null).setKeyboardGeometry(width,height).setSplitLayoutEnabled(split).setSubtype(RichInputMethodManager.getInstance().getCurrentSubtype()).build().getKeyboard(KeyboardId.ELEMENT_ALPHABET);
++   host.setKeyboard(keyboard);host.finishLayoutMotion();KeyAntV42Test.layout(host,width,height);StringBuilder received=new StringBuilder();KeyboardActionListener listener=mock(KeyboardActionListener.class);
++   doAnswer(call->{received.appendCodePoint(call.getArgument(0));return null;}).when(listener).onCodeInput(anyInt(),anyInt(),anyInt(),anyBoolean());host.setKeyboardActionListener(listener);
++   String phrase="qwertyuiopasdfghjklzxcvbnm".repeat(3);long time=android.os.SystemClock.uptimeMillis();
++   for(char ch:phrase.toCharArray()){Key key=keyboard.getKey(ch);float x=key.getX()+key.getWidth()/2f,y=key.getY()+key.getHeight()/2f;MotionEvent down=MotionEvent.obtain(time,time,MotionEvent.ACTION_DOWN,x,y,0),up=MotionEvent.obtain(time,time+12,MotionEvent.ACTION_UP,x,y,0);host.onTouchEvent(down);host.onTouchEvent(up);down.recycle();up.recycle();time+=24;taps++;}
++   assertEquals(id+" width="+width+" split="+split,phrase,received.toString());host.cancelAllOngoingEvents();
++  }
++  System.out.println("INPUT_TAPS="+taps);
++ }
++ @Test public void catalogUsesCandidateHeightAndPaddingWithoutChangingActiveTheme(){
++  theme("classic",true);int before=KeyboardLayoutPreview.heightForTheme(c,null);int sculpted=KeyboardLayoutPreview.heightForTheme(c,"ref91_field");assertTrue(sculpted>before);assertEquals(before,KeyboardLayoutPreview.heightForTheme(c,null));
++  assertTrue(KeyboardGeometry.balancedPadding(760,1,58,false,true,"ref91_field")>KeyboardGeometry.balancedPadding(760,1,58,false,true,"classic"));
++  KeyAntPrefs.get(c).edit().putInt("ka_row_compact",58).apply();Settings.getInstance().loadSettings(c);assertEquals(KeyboardLayoutPreview.heightForTheme(c,"ref91_field"),KeyboardLayoutPreview.heightForTheme(c,"classic"));
++ }
++ @Test public void makerOverridesRetainFontPaletteAndShape()throws Exception{
++  var draft=MakeKeyAnt.create("ref91_field");draft.put("font","serif").put("normal","B04050");String id=MakeKeyAnt.preview(draft);
++  assertEquals(Typeface.SERIF,ThemeCatalog.font(id));assertEquals(0xffb04050,ThemeCatalog.face(id,true,0));
++  assertTrue(draft.getInt("height")>=50);assertTrue(ReferenceCollection691.scoop(id));
++  draft.put("style","ref91_primary");id=MakeKeyAnt.preview(draft);assertTrue(ReferenceCollection691.enamel(id));assertEquals(0xffb04050,ThemeCatalog.face(id,true,0));
++  theme("ref91_field",true);assertTrue(KeyboardGeometry.rowHeight(KeyAntPrefs.get(c),400)>44);KeyAntPrefs.get(c).edit().putInt("ka_row_compact",58).apply();assertEquals(58,KeyboardGeometry.rowHeight(KeyAntPrefs.get(c),400));
++ }
++ @Test public void hdrMetadataIsBoundedAndSdrPixelsRemainUntouched(){
++  Bitmap s=Bitmap.createBitmap(192,48,Bitmap.Config.ARGB_8888);s.eraseColor(0x80ffffff);Bitmap light=OpticalHdr692.light(s,0xff60c090,2f);
++  assertTrue(light.hasGainmap());assertArrayEquals(new float[]{2,2,2},light.getGainmap().getRatioMax(),.001f);int pixel=light.getPixel(80,20);assertEquals(128,Color.alpha(pixel));assertEquals(96,Color.red(pixel),1);assertEquals(192,Color.green(pixel),1);assertEquals(144,Color.blue(pixel),1);assertFalse(s.hasGainmap());assertSame(s,OpticalHdr692.light(s,0xff60c090,1));assertSame(light,OpticalHdr692.light(s,0xff60c090,2));
++ }
++ @Test public void engravedLabelsDoNotAlterKeysOrSymbols(){assertEquals("Q",KeyAppearance.label("ref91_field","q"));assertEquals("123",KeyAppearance.label("ref91_field","?123"));assertEquals("q",KeyAppearance.label("ref91_duo","q"));assertEquals("q",KeyAppearance.label("xbox_clear","q"));}
++ @Test public void samplesShowRgbPressAndMatchingSphere()throws Exception{
++  Bitmap b=Bitmap.createBitmap(1080,630,Bitmap.Config.ARGB_8888);Canvas out=new Canvas(b);out.drawColor(0xff17181a);Paint label=new Paint(3);label.setColor(Color.WHITE);label.setTextSize(20);
++  ThemeCatalog.Caps caps=new ThemeCatalog.Caps();LedRenderer led=new LedRenderer();led.configure(c);int row=0;
++  for(String id:new String[]{"ref91_field","ref91_primary","ref91_duo"}){label.setColor(Color.WHITE);out.drawText(id,12,row*205+24,label);for(int i=0;i<5;i++){float press=i/4f;out.save();out.translate(15+i*165,row*205+45);led.bounce(out,120,144,3,0xffa968ff,.8f,id,false);caps.draw(out,120,144,id,false,0,press);led.emitter(out,120,144,3,0xffa968ff,.8f,id,false,press);out.restore();}
++   BallAppearance ball=new BallAppearance();ball.matchProfile(id);ball.themeMaterial(ThemeCatalog.face(id,false,0));ball.draw(out,c,970,row*205+112,64,0,0,false,ThemeCatalog.accent(id));row++;}
++  KeyAntV42Test.save(b,"KeyAnt-692-material-response.png");b.recycle();
++ }
++ // Keep exception handling out of assertions while still emitting the inspected specimen.
++ static class KeyAntV42TestSave {static void save(Bitmap b,String n){try{KeyAntV42Test.save(b,n);}catch(Exception e){throw new AssertionError(e);}}}
++}
+diff --git a/docs/CONTINUITA-0.6.92.md b/docs/CONTINUITA-0.6.92.md
+new file mode 100644
+index 0000000..9dd94b2
+--- /dev/null
++++ b/docs/CONTINUITA-0.6.92.md
+@@ -0,0 +1,31 @@
++# KeyAnt 0.6.92 — geometria e resa dei riferimenti
++
++Versione Android 119, pacchetto `it.keyant.keyboard`. Base completa 0.6.91, commit locale `592deb5`. Le tre raccolte comprendono 12 palette, ciascuna chiara/scura.
++
++## Correzioni
++
++NuPhy: spalla superiore più larga, incavo profondo con gradiente continuo, profilo alto e stretto, eliminazione dei due contorni sottili della 0.6.91, proporzioni e incisioni ricalibrate. Smalto: labbro metallico e faccia a cuscino distinti dall'incavo opaco. iOS bicolore: profilo piatto, diagonale unica sul piano della tastiera. Il profilo piatto è ora selezionabile anche come forma nel Maker.
++
++Altezze predefinite specifiche, centratura della tastiera sul Fold aperto e rispetto delle altezze impostate manualmente. Catalogo e prova del tema usano l'altezza e il padding del candidato. Le scritte dei profili fisici sono maiuscole solo nel disegno: il codice digitato e lo stato Shift restano quelli Android.
++
++RGB aderente al bordo inferiore del materiale; incavo, smalto e piatto hanno reazioni diverse alla pressione. Glow delle lettere e riempimenti luminosi limitati alla faccia. Trackball coordinata con riflesso opaco/smaltato; skin scelte esplicitamente mantenute. Nel Maker il font personalizzato prevale sul font del preset, e testi/icone seguono il centro della faccia e la corsa del tasto.
++
++## HDR
++
++L'impostazione separata “HDR delle luci RGB”, disattivata per default, usa Gainmap Android API 34+ sui soli emettitori e la finestra HDR sui display che dichiarano supporto. Livelli 1,5×/2×; fallback SDR. L'opzione precedente è rinominata “Brillantezza dei colori”, perché modifica il contrasto SDR.
++
++Le immagini software e i test della gainmap verificano geometria, alpha e metadati, non la luminanza del display. La luminosità effettiva, il tone mapping OEM e la fluidità sul Fold fisico richiedono una prova sul dispositivo. Il codice non promette un numero fisso di nit o equivalenza con iOS.
++
++Riferimenti tecnici primari consultati: https://nukeyapp.com/ ; https://developer.android.com/media/grow/ultra-hdr/display ; https://developer.android.com/reference/android/graphics/Gainmap ; https://developer.android.com/reference/android/view/Window#setDesiredHdrHeadroom(float).
++
++## Scrittura e regressioni
++
++Conservati apprendimento/correzione, contesto, dettatura, calendario e pannelli della 0.6.91. La descrizione pubblica NuKey non documenta i dettagli dell'algoritmo: non viene dichiarata una sua replica. La verifica include scrittura tramite eventi touch reali e test esistenti di lingua, predizione, calendario e gesti.
++
++Il file di verifiche allegato riporta metodi eseguiti, configurazioni geometriche, tap ed immagini distintamente. Il numero dei casi non equivale a una garanzia di assenza di bug. Il confronto visivo deriva dai riferimenti video compressi forniti: non è una misura subpixel di un originale non compresso.
++
++## Continuità
++
++`AGENTS.md` fissa i requisiti grafici e di verifica per gli aggiornamenti futuri. I sorgenti completi sono nell'archivio `KeyAnt-0.6.92-sorgenti.zip`; il bundle contiene la cronologia locale, la patch le differenze dalla 0.6.91. Il ramo GitHub principale mantiene documentazione e patch; gli archivi completi sono asset della release. Non usare l'archivio automatico GitHub “Source code” come sorgente completo dell'app.
++
++La chiave originale di firma è esclusa da tutti gli archivi. Per riprodurre un aggiornamento installabile serve la stessa chiave; una firma diversa non aggiorna l'installazione esistente. Build verificata con JDK 21, Gradle 8.14, Android SDK 36, variante `debugNoMinify` con `debuggable=false`.
+diff --git a/docs/VERIFICHE-0.6.92.txt b/docs/VERIFICHE-0.6.92.txt
+new file mode 100644
+index 0000000..edfa8a1
+--- /dev/null
++++ b/docs/VERIFICHE-0.6.92.txt
+@@ -0,0 +1,43 @@
++KeyAnt 0.6.92 / versionCode 119
++JDK 21, Gradle 8.14, Robolectric Android API 35, renderer nativo.
++
++144 metodi JUnit superati; 10.800 configurazioni geometriche nel nuovo test; 936 tap tramite MainKeyboardView; 90 render di tastiere Android (72 palette/modi/larghezze + 18 layout simboli/numeri/split). Numeri distinti, non 10.800 test indipendenti.
++Build assembleDebugNoMinify riuscita; lintVital incluso.
++Firma APK v2 verificata; SHA-256 certificato identico alla 0.6.91: bf7bc5998c63e50de960d4506499dce857cea819468673d0ca52d31bed527aa4.
++Pacchetto it.keyant.keyboard; minSdk26/target35; debuggable non abilitato; allineamento16K verificato.
++Confronti grafici ispezionati: NuPhy, Smalto, risposta RGB/pressione/trackball e layout Fold.
++Nessuna prova effettuata su telefono fisico; HDR e frame pacing non misurati sul Fold.
++
++GEOMETRY_CASES=10800
++LIVE_RENDERS=72
++OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
++INPUT_TAPS=936
++EXTRA_LAYOUT_RENDERS=18
++KeyAntVisual692Test: 10 checks, 0 failures
++KeyAntCalendar691Test: 5 checks, 0 failures
++KeyAntVisual691Test: 5 checks, 0 failures
++KeyAntCalendar671Test: 2 checks, 0 failures
++KeyAntCalendar672Test: 7 checks, 0 failures
++KeyAntLanguage671Test: 8 checks, 0 failures
++KeyAntLanguage673Test: 3 checks, 0 failures
++OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
++KeyAntContext665Test: 8 checks, 0 failures
++KeyAntContext657Test: 12 checks, 0 failures
++KeyAntMotion652Test: 5 checks, 0 failures
++KeyAntMotion666Test: 2 checks, 0 failures
++KeyAntTyping689Test: 1 checks, 0 failures
++KeyAntGesture689Test: 4 checks, 0 failures
++KeyAnt690Test: 3 checks, 0 failures
++KeyAntPlacement690Test: 1 checks, 0 failures
++KeyAnt687Test: 7 checks, 0 failures
++KeyAntPrediction681Test: 4 checks, 0 failures
++KeyAntTime660Test: 4 checks, 0 failures
++KeyAntTime665Test: 10 checks, 0 failures
++KeyAntTime667Test: 8 checks, 0 failures
++KeyAntFlow667Test: 4 checks, 0 failures
++KeyAntMaterials653Test: 3 checks, 0 failures
++KeyAntMaterials668Test: 5 checks, 0 failures
++KeyAntCalibration644Test: 2 checks, 0 failures
++KeyAntV616Test: 18 checks, 0 failures
++KeyAntGeometryTest: 3 checks, 0 failures
++TOTAL 144; FAILED 0; seconds 55

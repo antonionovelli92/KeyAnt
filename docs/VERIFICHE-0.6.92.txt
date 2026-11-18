@@ -1,0 +1,43 @@
+KeyAnt 0.6.92 / versionCode 119
+JDK 21, Gradle 8.14, Robolectric Android API 35, renderer nativo.
+
+144 metodi JUnit superati; 10.800 configurazioni geometriche nel nuovo test; 936 tap tramite MainKeyboardView; 90 render di tastiere Android (72 palette/modi/larghezze + 18 layout simboli/numeri/split). Numeri distinti, non 10.800 test indipendenti.
+Build assembleDebugNoMinify riuscita; lintVital incluso.
+Firma APK v2 verificata; SHA-256 certificato identico alla 0.6.91: bf7bc5998c63e50de960d4506499dce857cea819468673d0ca52d31bed527aa4.
+Pacchetto it.keyant.keyboard; minSdk26/target35; debuggable non abilitato; allineamento16K verificato.
+Confronti grafici ispezionati: NuPhy, Smalto, risposta RGB/pressione/trackball e layout Fold.
+Nessuna prova effettuata su telefono fisico; HDR e frame pacing non misurati sul Fold.
+
+GEOMETRY_CASES=10800
+LIVE_RENDERS=72
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+INPUT_TAPS=936
+EXTRA_LAYOUT_RENDERS=18
+KeyAntVisual692Test: 10 checks, 0 failures
+KeyAntCalendar691Test: 5 checks, 0 failures
+KeyAntVisual691Test: 5 checks, 0 failures
+KeyAntCalendar671Test: 2 checks, 0 failures
+KeyAntCalendar672Test: 7 checks, 0 failures
+KeyAntLanguage671Test: 8 checks, 0 failures
+KeyAntLanguage673Test: 3 checks, 0 failures
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+KeyAntContext665Test: 8 checks, 0 failures
+KeyAntContext657Test: 12 checks, 0 failures
+KeyAntMotion652Test: 5 checks, 0 failures
+KeyAntMotion666Test: 2 checks, 0 failures
+KeyAntTyping689Test: 1 checks, 0 failures
+KeyAntGesture689Test: 4 checks, 0 failures
+KeyAnt690Test: 3 checks, 0 failures
+KeyAntPlacement690Test: 1 checks, 0 failures
+KeyAnt687Test: 7 checks, 0 failures
+KeyAntPrediction681Test: 4 checks, 0 failures
+KeyAntTime660Test: 4 checks, 0 failures
+KeyAntTime665Test: 10 checks, 0 failures
+KeyAntTime667Test: 8 checks, 0 failures
+KeyAntFlow667Test: 4 checks, 0 failures
+KeyAntMaterials653Test: 3 checks, 0 failures
+KeyAntMaterials668Test: 5 checks, 0 failures
+KeyAntCalibration644Test: 2 checks, 0 failures
+KeyAntV616Test: 18 checks, 0 failures
+KeyAntGeometryTest: 3 checks, 0 failures
+TOTAL 144; FAILED 0; seconds 55
