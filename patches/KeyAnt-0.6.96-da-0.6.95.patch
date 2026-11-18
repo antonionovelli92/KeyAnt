@@ -1,0 +1,1144 @@
+diff --git a/AGENTS.md b/AGENTS.md
+index 9c8829d..3dd7687 100644
+--- a/AGENTS.md
++++ b/AGENTS.md
+@@ -12,3 +12,7 @@
+ - Consegnare un link diretto sandbox all'APK verificata. Non sostituirlo con un link Library già segnalato come non funzionante.
+ - In orizzontale mantenere le proporzioni bilanciate precedenti alla 0.6.94: il margine laterale e la riduzione al 90% sui display larghi evitano tasti eccessivamente allungati. Non eliminarli per riempire lo schermo. Preservare insets Android e regolazioni manuali; verificare Fold aperto/chiuso, tap reali, numeri, split e rotazione.
+ - Menu strumenti: fasce separate per icona ed etichetta, testo ingrandito e modalità modifica verificati. Il comando RGB coordinato deve accendere un effetto visibile e seguire il tema, con stato e anteprima.
++- Distinguere il ruolo geometrico dei tasti funzione dalle lettere anche in RGB, Maker e anteprime: una soglia basata sul rapporto larghezza/altezza non deve restringere i comandi. Spalla e piede devono restare allineati nella riga.
++- Conservare un inventario per ogni tema con modalità effettiva, render nativo e confronto prima/dopo. Non trasformare il conteggio delle immagini in una dichiarazione di verifica manuale integrale o perfezione.
++- Smalto usa proporzioni predefinite quasi quadrate, NuPhy lettere scolpite più alte. Le altezze impostate manualmente hanno precedenza; il bilanciamento orizzontale delle altre famiglie va preservato.
++- Le anteprime riutilizzate devono ricostruire il renderer al cambio di tema/modalità. Il contrasto automatico delle icone stampate deve rispettare l'inchiostro scelto dall'utente.
+diff --git a/app/build.gradle.kts b/app/build.gradle.kts
+index c66a763..e561848 100644
+--- a/app/build.gradle.kts
++++ b/app/build.gradle.kts
+@@ -15,8 +15,8 @@ android {
+         applicationId = "it.keyant.keyboard"
+         minSdk = 26
+         targetSdk = 35
+-        versionCode = 122
+-        versionName = "0.6.95"
++        versionCode = 123
++        versionName = "0.6.96"
+         externalNativeBuild { ndkBuild { arguments += listOf("-j2") } }
+         ndk {
+             abiFilters.clear()
+diff --git a/app/src/main/java/helium314/keyboard/keyboard/KeyboardView.java b/app/src/main/java/helium314/keyboard/keyboard/KeyboardView.java
+index c74a760..903d878 100644
+--- a/app/src/main/java/helium314/keyboard/keyboard/KeyboardView.java
++++ b/app/src/main/java/helium314/keyboard/keyboard/KeyboardView.java
+@@ -625,7 +625,7 @@ if(mKeyboard!=null){float px=x-getPaddingLeft(),py=y-getPaddingTop();for(Key key
+             }
+             if (!(this instanceof MoreSuggestionsView) && mColors instanceof helium314.keyboard.keyforma.FormaColors && key.isEnabled())
+                 {paint.setColor(materialInk(key));paint.clearShadowLayer();}
+-            if(key.isEnabled()&&mColors instanceof helium314.keyboard.keyforma.GlassColors glass){Integer tint=helium314.keyboard.keyforma.KeyColorOverrides.colorForKey(getContext(),"glass",glass.getDark(),mKeyboard,key,formaKind(key));if(tint!=null)paint.setColor(helium314.keyboard.keyforma.KeyColorOverrides.ink(tint));}
++            if(key.isEnabled()&&mColors instanceof helium314.keyboard.keyforma.GlassColors glass){Integer tint=helium314.keyboard.keyforma.KeyColorOverrides.colorForKey(getContext(),"glass",glass.getDark(),mKeyboard,key,formaKind(key));paint.setColor(tint!=null?helium314.keyboard.keyforma.KeyColorOverrides.ink(tint):mColors.get(ColorType.KEY_TEXT));}
+             if(key.isEnabled()&&mKeyEffects.active.ink(key)!=null)paint.setColor(mKeyEffects.active.ink(key));
+             if(this instanceof MoreSuggestionsView pane && key.isEnabled()){paint.setColor(pane.candidateInk());paint.clearShadowLayer();}
+             if(!(this instanceof MoreSuggestionsView)&&mColors instanceof helium314.keyboard.keyforma.FormaColors f)paint.setTextScaleX(paint.getTextScaleX()*helium314.keyboard.keyforma.MakeKeyAnt.fontWidth(f.getProfile()));
+@@ -870,9 +870,12 @@ if(mKeyboard!=null){float px=x-getPaddingLeft(),py=y-getPaddingTop();for(Key key
+         }
+         Integer activeInk=mKeyEffects.active.ink(key);if(activeInk!=null){icon.setColorFilter(activeInk,PorterDuff.Mode.SRC_IN);return;}
+         if(mColors instanceof helium314.keyboard.keyforma.GlassColors glass){Integer tint=helium314.keyboard.keyforma.KeyColorOverrides.colorForKey(getContext(),"glass",glass.getDark(),mKeyboard,key,formaKind(key));if(tint!=null){icon.setColorFilter(helium314.keyboard.keyforma.KeyColorOverrides.legend(getContext(),"glass",key.getCode(),formaKind(key),helium314.keyboard.keyforma.KeyColorOverrides.ink(tint)),PorterDuff.Mode.SRC_IN);return;}}
+-        if(mColors instanceof helium314.keyboard.keyforma.GlassColors){int chosen=helium314.keyboard.keyforma.KeyColorOverrides.legend(getContext(),"glass",key.getCode(),formaKind(key),Integer.MIN_VALUE);if(chosen!=Integer.MIN_VALUE){icon.setColorFilter(chosen,PorterDuff.Mode.SRC_IN);return;}}
++        // Glass draws the action cap with the same clear material as ordinary keys.
++        // The stock white-on-accent action icon is unreadable on its light surface.
++        if(mColors instanceof helium314.keyboard.keyforma.GlassColors){int chosen=helium314.keyboard.keyforma.KeyColorOverrides.legend(getContext(),"glass",key.getCode(),formaKind(key),mColors.get(ColorType.KEY_TEXT));icon.setColorFilter(chosen,PorterDuff.Mode.SRC_IN);return;}
+         if (mColors instanceof helium314.keyboard.keyforma.FormaColors) {
+-            icon.setColorFilter(materialInk(key), PorterDuff.Mode.SRC_IN);
++            int ink=materialInk(key);if(mKeycapPrint!=null&&mKeycapPrint.contains(key.getCode()))ink=mKeycapPrint.iconInk(ink);
++            icon.setColorFilter(ink, PorterDuff.Mode.SRC_IN);
+             return;
+         }
+         if (key.hasActionKeyBackground()) {
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/BenchCaps656.java b/app/src/main/java/helium314/keyboard/keyforma/BenchCaps656.java
+index 5df73df..3c2ae00 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/BenchCaps656.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/BenchCaps656.java
+@@ -123,10 +123,10 @@ final class BenchCaps656 {
+         String source=source(material);
+         if(source!=null){
+             if(sourceCaps==null)sourceCaps=new ThemeCatalog.Caps();
+-            CapGeometry.face(sourceBounds,source,64,64,kind,press);
++            CapGeometry.face(sourceBounds,source,w,h,kind,press);
+             int save=c.save();outline.reset();outline.addRoundRect(top,radius,radius,Path.Direction.CW);c.clipPath(outline);
+             c.translate(top.left,top.top);c.scale(top.width()/sourceBounds.width(),top.height()/sourceBounds.height());c.translate(-sourceBounds.left,-sourceBounds.top);
+-            sourceCaps.draw(c,64,64,source,ThemeCatalog.effectiveDark(source,dark),kind,press,tint);c.restoreToCount(save);
++            sourceCaps.draw(c,w,h,source,ThemeCatalog.effectiveDark(source,dark),kind,press,tint);c.restoreToCount(save);
+             paint.setStyle(Paint.Style.STROKE);paint.setStrokeWidth(.65f*u);paint.setColor(edge);c.drawRoundRect(top,radius,radius,paint);paint.setStyle(Paint.Style.FILL);return;
+         }
+         plate(c,top,radius,color,edge,u);
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/CapGeometry.java b/app/src/main/java/helium314/keyboard/keyforma/CapGeometry.java
+index 2d6373f..6c40a94 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/CapGeometry.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/CapGeometry.java
+@@ -4,6 +4,8 @@ import android.graphics.RectF;
+ /** Physical face metrics shared by legends, prints, key travel and illumination. No hitbox changes. */
+ public final class CapGeometry {
+  private CapGeometry(){}
++ /** Geometry role (separate from theme-specific palette choices). */
++ public static int kind(int code){return code==32?4:code==10?3:code==-7?2:code==-11?1:code<0?5:0;}
+  public static void legend(android.graphics.Paint p,String id){
+   if("refglass_brackets".equals(MakeKeyAnt.base(id)))p.setShadowLayer(p.getTextSize()*.18f,0,0,0xe8ff9c2b);
+   else if(MakeKeyAnt.base(id).equals("liquid_studio_nixie"))p.setShadowLayer(p.getTextSize()*.13f,0,0,0xe0ff6b23);
+@@ -21,7 +23,7 @@ public final class CapGeometry {
+   float mm=switch(ThemeCatalog.materialProfile(id)){case "neon"->6.3f;case "graphite"->3.8f;case "terminal","vintage"->5.8f;case "frost"->6.4f;case "typewriter","milk","moon"->3.2f;case "eva","doom","iron","ranger","arcade"->6.1f;case "tab"->2.7f;case "mecha","shinobi"->5.3f;default->4.5f;};
+   return mm*u*(kind==0?Math.max(.55f,Math.min(1,h/Math.max(1,w))):1);
+  }
+- public static void face(RectF r,String id,float w,float h,int kind,float press){if(ReferenceCollection691.supports(MakeKeyAnt.base(id))){ReferenceCollection691.bounds(r,id,w,h,press,true);return;}if(CinemaThemes.supports(id))id=AtelierThemes.get(id).material();if(BenchCaps656.supports(MakeKeyAnt.base(id))){BenchCaps656.bounds(r,id,w,h,press);return;}if(MaterialStudio651.supports(MakeKeyAnt.base(id))){MaterialStudio651.bounds(r,MakeKeyAnt.base(id),w,h,press);return;}if(SatinCaps.supports(MakeKeyAnt.base(id))){SatinCaps.bounds(r,w,h,press);return;}if(StudioMaterials644.supports(MakeKeyAnt.base(id))){StudioMaterials644.bounds(r,MakeKeyAnt.base(id),w,h,press);return;}if(SeriesThemes642.supports(MakeKeyAnt.base(id))){SeriesThemes642.bounds(r,MakeKeyAnt.base(id),w,h,press);return;}if(Showroom641.supports(MakeKeyAnt.base(id))){Showroom641.bounds(r,MakeKeyAnt.base(id),w,h,press);return;}if(XboxAnniversary.supports(MakeKeyAnt.base(id))){XboxAnniversary.bounds(r,w,h,press);return;}if(SmokeGlassCaps.supports(id)){SmokeGlassCaps.bounds(r,id,w,h,kind,press);return;}id=AtelierThemes.material(MakeKeyAnt.base(id));
++ public static void face(RectF r,String id,float w,float h,int kind,float press){if(ReferenceCollection691.supports(MakeKeyAnt.base(id))){ReferenceCollection691.bounds(r,id,w,h,kind,press,true);return;}if(CinemaThemes.supports(id))id=AtelierThemes.get(id).material();if(BenchCaps656.supports(MakeKeyAnt.base(id))){BenchCaps656.bounds(r,id,w,h,press);return;}if(MaterialStudio651.supports(MakeKeyAnt.base(id))){MaterialStudio651.bounds(r,MakeKeyAnt.base(id),w,h,press);return;}if(SatinCaps.supports(MakeKeyAnt.base(id))){SatinCaps.bounds(r,w,h,press);return;}if(StudioMaterials644.supports(MakeKeyAnt.base(id))){StudioMaterials644.bounds(r,MakeKeyAnt.base(id),w,h,press);return;}if(SeriesThemes642.supports(MakeKeyAnt.base(id))){SeriesThemes642.bounds(r,MakeKeyAnt.base(id),w,h,press);return;}if(Showroom641.supports(MakeKeyAnt.base(id))){Showroom641.bounds(r,MakeKeyAnt.base(id),w,h,press);return;}if(XboxAnniversary.supports(MakeKeyAnt.base(id))){XboxAnniversary.bounds(r,w,h,press);return;}if(SmokeGlassCaps.supports(id)){SmokeGlassCaps.bounds(r,id,w,h,kind,press);return;}id=AtelierThemes.material(MakeKeyAnt.base(id));
+   if(LuminousCaps.supports(id)){LuminousCaps.face(r,id,w,h,press);float inset=2*LiquidMaterial.unit(w,h);r.inset(inset,inset);return;}
+   if(SmokeGlassCaps.supports(id)){SmokeGlassCaps.bounds(r,w,h,press);return;}
+   if(LiquidMaterial.family(id)){LiquidMaterial.bounds(r,w,h,press);float inset=2*LiquidMaterial.unit(w,h);r.inset(inset,inset);return;}
+@@ -32,7 +34,7 @@ public final class CapGeometry {
+   else{float inset=id.equals("neon")?(kind==0||kind==4?1.25f:3.2f)*u:2.2f*u;r.set(1.25f*u+inset,1.3f*u+inset+travel,w-1.25f*u-inset,h-2.2f*u-d-inset+travel);}
+   r.offset(ox,oy);
+  }
+- public static void rim(RectF r,String id,float w,float h,int kind,float press){if(ReferenceCollection691.supports(MakeKeyAnt.base(id))){ReferenceCollection691.bounds(r,id,w,h,press,false);return;}if(CinemaThemes.supports(id))id=AtelierThemes.get(id).material();if(BenchCaps656.supports(MakeKeyAnt.base(id))){BenchCaps656.bounds(r,id,w,h,press);return;}if(MaterialStudio651.supports(MakeKeyAnt.base(id))){MaterialStudio651.bounds(r,MakeKeyAnt.base(id),w,h,press);return;}if(SatinCaps.supports(MakeKeyAnt.base(id))){SatinCaps.bounds(r,w,h,press);return;}if(StudioMaterials644.supports(MakeKeyAnt.base(id))){StudioMaterials644.bounds(r,MakeKeyAnt.base(id),w,h,press);r.inset(-LiquidMaterial.unit(w,h),-LiquidMaterial.unit(w,h));return;}if(SeriesThemes642.supports(MakeKeyAnt.base(id))){SeriesThemes642.bounds(r,MakeKeyAnt.base(id),w,h,press);r.inset(-LiquidMaterial.unit(w,h),-LiquidMaterial.unit(w,h));return;}if(Showroom641.supports(MakeKeyAnt.base(id))){Showroom641.bounds(r,MakeKeyAnt.base(id),w,h,press);float u=LiquidMaterial.unit(w,h);r.inset(-u,-u);return;}if(XboxAnniversary.supports(MakeKeyAnt.base(id))){XboxAnniversary.bounds(r,w,h,press);return;}
++ public static void rim(RectF r,String id,float w,float h,int kind,float press){if(ReferenceCollection691.supports(MakeKeyAnt.base(id))){ReferenceCollection691.bounds(r,id,w,h,kind,press,false);return;}if(CinemaThemes.supports(id))id=AtelierThemes.get(id).material();if(BenchCaps656.supports(MakeKeyAnt.base(id))){BenchCaps656.bounds(r,id,w,h,press);return;}if(MaterialStudio651.supports(MakeKeyAnt.base(id))){MaterialStudio651.bounds(r,MakeKeyAnt.base(id),w,h,press);return;}if(SatinCaps.supports(MakeKeyAnt.base(id))){SatinCaps.bounds(r,w,h,press);return;}if(StudioMaterials644.supports(MakeKeyAnt.base(id))){StudioMaterials644.bounds(r,MakeKeyAnt.base(id),w,h,press);r.inset(-LiquidMaterial.unit(w,h),-LiquidMaterial.unit(w,h));return;}if(SeriesThemes642.supports(MakeKeyAnt.base(id))){SeriesThemes642.bounds(r,MakeKeyAnt.base(id),w,h,press);r.inset(-LiquidMaterial.unit(w,h),-LiquidMaterial.unit(w,h));return;}if(Showroom641.supports(MakeKeyAnt.base(id))){Showroom641.bounds(r,MakeKeyAnt.base(id),w,h,press);float u=LiquidMaterial.unit(w,h);r.inset(-u,-u);return;}if(XboxAnniversary.supports(MakeKeyAnt.base(id))){XboxAnniversary.bounds(r,w,h,press);return;}
+   if(SmokeGlassCaps.supports(id)){SmokeGlassCaps.bounds(r,id,w,h,kind,press);return;}
+   id=AtelierThemes.material(MakeKeyAnt.base(id));float u=LiquidMaterial.unit(w,h);
+   if(SmokeGlassCaps.supports(id)){SmokeGlassCaps.bounds(r,w,h,press);return;}
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/CapPreview.java b/app/src/main/java/helium314/keyboard/keyforma/CapPreview.java
+index d95b750..02d649c 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/CapPreview.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/CapPreview.java
+@@ -39,7 +39,7 @@ private final GlassCaps glassCaps=new GlassCaps();
+         label=KeyAppearance.label(profile,label);int color=ink(kind);float u=getWidth()/340f;
+         android.graphics.drawable.Drawable icon=label.equals("⇧")?shift:label.equals("⌫")?delete:label.equals("↵")?enter:null;
+         CapGeometry.face(legendFace,profile,w,h,kind,pressure);float offset=legendFace.centerY()-h*.5f;
+-        if(icon!=null){int size=Math.round(Math.min(22*u,h*.58f));int x=Math.round((w-size)/2),y=Math.round((h-size)/2+offset);icon.setTint(color);icon.setBounds(x,y,x+size,y+size);icon.draw(c);}
++        if(icon!=null){int size=Math.round(Math.min(22*u,h*.58f));int x=Math.round((w-size)/2),y=Math.round((h-size)/2+offset);int iconColor=keycapPrint!=null&&keycapPrint.contains(frameCode)?keycapPrint.iconInk(color):color;icon.setTint(gallery?iconColor:KeyColorOverrides.legend(getContext(),profile,frameCode,kind,iconColor));icon.setBounds(x,y,x+size,y+size);icon.draw(c);}
+         else {text.clearShadowLayer();CapGeometry.legend(text,profile);text.setColor(color);if(keycapPrint!=null&&label.length()==1&&keycapPrint.contains(label.charAt(0))){c.save();c.translate(0,offset);keycapPrint.legend(c,label,w/2,h*.5f-(text.ascent()+text.descent())*.5f,text);c.restore();}else c.drawText(label,w/2,h*.5f-(text.ascent()+text.descent())*.5f+offset,text);text.clearShadowLayer();}
+         if(frameResponse)materialResponse654.draw(c,profile,responseWidth,responseHeight,pressure,responsePhase);
+     }
+@@ -84,12 +84,12 @@ private final GlassCaps glassCaps=new GlassCaps();
+       if(framePlayPalette&&!mode.equals("ps_pulse"))colour=PlayPalette645.fromHue(x/coordinateScale*.8f+(motion&&(mode.equals("breathe")||mode.equals("aurora")||RgbMotion.continuous(mode))?phase*30:0));
+       if(frameThemePalette)colour=frameColor;
+       float strength=a*frameIntensity/100f,unit=Math.min(w/29f,h/44f);
+-      if(!mode.equals("off"))led.bounce(c,w,h,unit,colour,strength,profile,kind==4);
++      if(!mode.equals("off"))led.bounce(c,w,h,unit,colour,strength,profile,kind);
+       materials.row(y/Math.max(1,getHeight()-h));materials.position(x,y,getWidth(),getHeight());refInkX=(x+w*.5f)/getWidth();refInkY=(y+h*.5f)/getHeight();
+       Integer pigment=gallery?null:KeyColorOverrides.color(getContext(),profile,dark,frameCode,kind);
+       MaterialResponse654.deform(c,profile,w,h,localPress,Math.max(0,Math.min(1,(touchX-x)/w)),Math.max(0,Math.min(1,(touchY-y)/h)));
+       if(glass)glassCaps.draw(c,w,h,dark,localPress,corner*getWidth()/340f,Math.round(opacity*2.55f),pigment);else if(profile.equals("nova")&&pigment==null)caps.draw(c,w,h,(kind==4?0:kind),dark,localPress);else materials.draw(c,w,h,profile,dark,kind,localPress,pigment);
+-      if(!mode.equals("off"))led.emitter(c,w,h,unit,colour,strength,profile,kind==4,localPress);
++      if(!mode.equals("off"))led.emitter(c,w,h,unit,colour,strength,profile,kind,localPress);
+       frameResponse=motion&&touchX>=x&&touchX<x+w&&touchY>=y&&touchY<y+h&&MaterialResponse654.supports(profile);responsePhase=pressMotion.impulse(now);responseWidth=w;responseHeight=h;if(frameResponse&&pressMotion.responding(now))continuous=true;
+       return localPress;
+     }
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/KeyEffects.java b/app/src/main/java/helium314/keyboard/keyforma/KeyEffects.java
+index 1f984e7..7006248 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/KeyEffects.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/KeyEffects.java
+@@ -30,7 +30,7 @@ public final class KeyEffects {
+  public boolean draw(Canvas c,Key key){boolean active=drawLight(c,key);return drawOverlay(c,key)||active;}
+  public boolean drawOverlay(Canvas c,Key key){
+   long now=SystemClock.uptimeMillis();boolean moving=android.animation.ValueAnimator.areAnimatorsEnabled();float press=moving?key.formaMotion.value(now):key.formaMotion.target();
+-  if(glintAlpha>.01f)led.emitter(c,key.getDrawWidth(),key.getHeight(),Math.min(d,key.getHeight()/44f),glintColor,glintAlpha,profile,key.getCode()==32,press);
++  if(glintAlpha>.01f)led.emitter(c,key.getDrawWidth(),key.getHeight(),Math.min(d,key.getHeight()/44f),glintColor,glintAlpha,profile,CapGeometry.kind(key.getCode()),press);
+   if(neon&&key.getCode()==32&&glintAlpha>.01f){p.setShader(null);p.setStyle(Paint.Style.FILL);float width=key.getDrawWidth(),step=3*d,y=key.getHeight()-10*d+press*2*d;int count=Math.min(60,(int)((width-18*d)/step));for(int i=0;i<count;i++){p.setColor(glintColor);p.setAlpha((int)(glintAlpha*(45+70*(1+Math.sin(i*.43+press*4)))));rect.set(9*d+i*step,y,10.5f*d+i*step,y+1.3f*d);c.drawRoundRect(rect,.3f*d,.3f*d,p);}}
+   p.setShader(null);p.setColorFilter(null);p.setStyle(Paint.Style.STROKE);p.setAlpha(255);
+   if(outline&&press>.01f){p.setColor(outlineColor);p.setAlpha((int)(220*press));p.setStrokeWidth(1.3f*d);rect.set(2*d,2*d,key.getDrawWidth()-2*d,key.getHeight()-3*d);c.drawRoundRect(rect,CapGeometry.radius(profile,key.getDrawWidth(),key.getHeight()),CapGeometry.radius(profile,key.getDrawWidth(),key.getHeight()),p);}
+@@ -49,7 +49,7 @@ public final class KeyEffects {
+  public boolean drawLight(Canvas c,Key key){
+   glintAlpha=0;
+   if(key.isSpacer())return false;
+-  if(makerLights.custom()){long now=SystemClock.uptimeMillis();float press=android.animation.ValueAnimator.areAnimatorsEnabled()?key.formaMotion.value(now):key.formaMotion.target();boolean moving=makerLights.light(c,key.getX(),key.getY(),key.getDrawWidth(),key.getHeight(),Math.min(d,key.getHeight()/44f),key.getCode()==32,press,now);glintAlpha=makerLights.amount();glintColor=makerLights.color();return moving;}
++  if(makerLights.custom()){long now=SystemClock.uptimeMillis();float press=android.animation.ValueAnimator.areAnimatorsEnabled()?key.formaMotion.value(now):key.formaMotion.target();boolean moving=makerLights.light(c,key.getX(),key.getY(),key.getDrawWidth(),key.getHeight(),Math.min(d,key.getHeight()/44f),CapGeometry.kind(key.getCode()),press,now);glintAlpha=makerLights.amount();glintColor=makerLights.color();return moving;}
+   if(mode.equals("off")||intensity<=0)return false;
+   long now=SystemClock.uptimeMillis();boolean moving=android.animation.ValueAnimator.areAnimatorsEnabled();float press=moving?key.formaMotion.value(now):key.formaMotion.target();
+   boolean pulse=moving&&LightField.reactive(mode)&&pulses.active(now,duration);
+@@ -68,7 +68,7 @@ public final class KeyEffects {
+   if(mode.equals("ps_pulse"))col=PlayPalette645.fromHue(pulses.controllerHue(key.getX()+key.getWidth()/2f,key.getY()+key.getHeight()/2f,now));
+   if(themePalette)col=color;
+   glintAlpha=a*intensity/100;glintColor=col;
+-  led.bounce(c,key.getDrawWidth(),key.getHeight(),Math.min(d,key.getHeight()/44f),col,glintAlpha,profile,key.getCode()==32);
++  led.bounce(c,key.getDrawWidth(),key.getHeight(),Math.min(d,key.getHeight()/44f),col,glintAlpha,profile,CapGeometry.kind(key.getCode()));
+   p.setStyle(Paint.Style.FILL);p.setAlpha(255);return continuous||pulse||(moving&&key.formaMotion.isMoving(now));
+  }
+ }
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/KeyboardGeometry.java b/app/src/main/java/helium314/keyboard/keyforma/KeyboardGeometry.java
+index 64c3ffd..6f5bd83 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/KeyboardGeometry.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/KeyboardGeometry.java
+@@ -19,7 +19,7 @@ public final class KeyboardGeometry {
+     }
+     public static int balancedPadding(int width,float density,float rowDp,boolean split,boolean enabled,String profile){
+         if(!enabled||split||width/density<600||!ReferenceCollection691.supports(MakeKeyAnt.base(profile)))return balancedPadding(width,density,rowDp,split,enabled);
+-        float aspect=ReferenceCollection691.scoop(profile)?.76f:ReferenceCollection691.enamel(profile)?.86f:.96f;
++        float aspect=ReferenceCollection691.scoop(profile)?.76f:ReferenceCollection691.enamel(profile)?1.10f:.96f;
+         float target=((rowDp-4)*aspect+4)*10+6;
+         return Math.max(Math.round(3*density),Math.round((width-target*density)/2));
+     }
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/KeyboardLayoutPreview.java b/app/src/main/java/helium314/keyboard/keyforma/KeyboardLayoutPreview.java
+index cfb0261..ad6aed1 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/KeyboardLayoutPreview.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/KeyboardLayoutPreview.java
+@@ -45,7 +45,9 @@ public final class KeyboardLayoutPreview extends View {
+         refreshEffects(rev);invalidate();
+     }
+     public void trialTheme(String id,boolean dark){
+-        trial=id;night=ThemeCatalog.effectiveDark(id,dark);configureCurrent(0,false);
++        boolean nextNight=ThemeCatalog.effectiveDark(id,dark);
++        if(!java.util.Objects.equals(trial,id)||night!=nextNight){keyboard=null;revision=-1;}
++        trial=id;night=nextNight;configureCurrent(0,false);
+     }
+     public void trialLayer(boolean shift,boolean symbols){
+         int layer=symbols?(shift?KeyboardId.ELEMENT_SYMBOLS_SHIFTED:KeyboardId.ELEMENT_SYMBOLS):(shift?KeyboardId.ELEMENT_ALPHABET_MANUAL_SHIFTED:KeyboardId.ELEMENT_ALPHABET);
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/KeycapPrint.java b/app/src/main/java/helium314/keyboard/keyforma/KeycapPrint.java
+index 56bea51..6b2ef56 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/KeycapPrint.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/KeycapPrint.java
+@@ -8,7 +8,7 @@ import helium314.keyboard.keyboard.Keyboard;
+ 
+ /** One continuous print, clipped to four opaque key faces; never drawn in their gaps. */
+ public final class KeycapPrint {
+- private boolean discreet;private int printOpacity=235;private final org.json.JSONObject design;private final boolean personal;
++ private boolean discreet;private int appliedOpacity;private int printOpacity=235;private final org.json.JSONObject design;private final boolean personal;
+  private final String profile;private final Bitmap art;private final boolean full;private final boolean translucent;private float splitLeft,splitRight;
+  private final RectF region=new RectF(), face=new RectF(), destination=new RectF();
+  private final Paint legendOutline=new Paint();
+@@ -41,19 +41,19 @@ public final class KeycapPrint {
+   if(count!=4)region.setEmpty();
+  }
+  public void draw(Canvas canvas,int code,float x,float y,float w,float h,float press){
+-  if(!contains(code)||code==32&&!LiquidMaterial.decoratedSpace())return;
++  appliedOpacity=0;if(!contains(code)||code==32&&!LiquidMaterial.decoratedSpace())return;
+   float u=Math.min(w/29f,h/44f);
+-  CapGeometry.face(face,profile,w,h,code==32?4:0,press);
++  CapGeometry.face(face,profile,w,h,CapGeometry.kind(code),press);
+   if(face.isEmpty())return;
+   clip.rewind();float radius=ThemeCatalog.round(profile)?Math.min(face.width(),face.height())*.5f:2.3f*u;clip.addRoundRect(face,radius,radius,Path.Direction.CW);
+   // Lay the complete print over a logical 2x2 tile surface, then separate the tiles.
+   // No facial features disappear into staggered rows, sockets or wide Fold gaps.
+-  if(personal){MakerImages.destination(destination,art,region.width()-(splitRight-splitLeft),region.height(),design,"cap");destination.offset(region.left-x+(x>=splitRight?splitRight-splitLeft:0),region.top-y+CapGeometry.depth(profile,w,h,code==32?4:0)*.72f*press);canvas.save();canvas.clipPath(clip);paint.setColor(Color.WHITE);paint.setAlpha(Math.max(0,Math.min(100,design.optInt("capImageOpacity",80)))*255/100);canvas.drawBitmap(art,null,destination,paint);finish(canvas);canvas.restore();return;}
+-  if(full){float gap=splitRight-splitLeft,logicalX=x-(x>=splitRight?gap:0);destination.set(region.left-logicalX,region.top-y+CapGeometry.depth(profile,w,h,code==32?4:0)*.72f*press,region.right-gap-logicalX,region.bottom-y+CapGeometry.depth(profile,w,h,code==32?4:0)*.72f*press);
++  if(personal){MakerImages.destination(destination,art,region.width()-(splitRight-splitLeft),region.height(),design,"cap");destination.offset(region.left-x+(x>=splitRight?splitRight-splitLeft:0),region.top-y+CapGeometry.depth(profile,w,h,CapGeometry.kind(code))*.72f*press);canvas.save();canvas.clipPath(clip);paint.setColor(Color.WHITE);paint.setAlpha(Math.max(0,Math.min(100,design.optInt("capImageOpacity",80)))*255/100);appliedOpacity=paint.getAlpha();canvas.drawBitmap(art,null,destination,paint);finish(canvas);canvas.restore();return;}
++  if(full){float gap=splitRight-splitLeft,logicalX=x-(x>=splitRight?gap:0);destination.set(region.left-logicalX,region.top-y+CapGeometry.depth(profile,w,h,CapGeometry.kind(code))*.72f*press,region.right-gap-logicalX,region.bottom-y+CapGeometry.depth(profile,w,h,CapGeometry.kind(code))*.72f*press);
+    // Keep circles and faces in proportion on folded, split and landscape keyboards.
+    float scale=Math.max(destination.width()/art.getWidth(),destination.height()/art.getHeight());
+    float cx=destination.centerX(),cy=destination.centerY(),halfW=art.getWidth()*scale*.5f,halfH=art.getHeight()*scale*.5f;
+-   destination.set(cx-halfW,cy-halfH,cx+halfW,cy+halfH);canvas.save();canvas.clipPath(clip);paint.setColor(Color.WHITE);paint.setAlpha(CinemaThemes.print(profile)?printOpacity:(AtelierThemes.NEW_637.contains(profile)||profile.startsWith("art_639_")||profile.startsWith("art_646_"))&&(code<0||code==10)?0:translucent?180:235);canvas.drawBitmap(art,null,destination,paint);finish(canvas);canvas.restore();return;}
++   destination.set(cx-halfW,cy-halfH,cx+halfW,cy+halfH);canvas.save();canvas.clipPath(clip);paint.setColor(Color.WHITE);paint.setAlpha(CinemaThemes.print(profile)?printOpacity:(AtelierThemes.NEW_637.contains(profile)||profile.startsWith("art_639_")||profile.startsWith("art_646_"))&&(code<0||code==10)?0:translucent?180:235);appliedOpacity=paint.getAlpha();canvas.drawBitmap(art,null,destination,paint);finish(canvas);canvas.restore();return;}
+   float tileW=face.width(),tileH=face.height();int lower=Character.toLowerCase(code);
+   float tileX=(lower=='w'||lower=='s')?tileW:0,tileY=(lower=='a'||lower=='s')?tileH:0;
+   float scale=Math.min(2*tileW/art.getWidth(),2*tileH/art.getHeight())*(profile.equals("art_eva")?1.20f:1.08f);
+@@ -61,7 +61,19 @@ public final class KeycapPrint {
+   float dw=art.getWidth()*scale,dh=art.getHeight()*scale;
+   float left=face.left+tileW-dw/2-tileX,top=face.top+tileH-dh/2-tileY;
+   destination.set(left,top,left+dw,top+dh);
+-  canvas.save();canvas.clipPath(clip);paint.setColor(Color.WHITE);paint.setAlpha(240);canvas.drawBitmap(art,null,destination,paint);finish(canvas);canvas.restore();
++  canvas.save();canvas.clipPath(clip);paint.setColor(Color.WHITE);paint.setAlpha(240);appliedOpacity=paint.getAlpha();canvas.drawBitmap(art,null,destination,paint);finish(canvas);canvas.restore();
++ }
++ /** Icons need the same local contrast decision as printed letters. */
++ public int iconInk(int fallback){
++  if(art==null||!full||appliedOpacity<100||destination.isEmpty())return fallback;
++  int sum=0;
++  for(int ix=-1;ix<=1;ix++)for(int iy=-1;iy<=1;iy++){
++   int x=Math.max(0,Math.min(art.getWidth()-1,Math.round((face.centerX()+ix*face.width()*.12f-destination.left)/destination.width()*art.getWidth())));
++   int y=Math.max(0,Math.min(art.getHeight()-1,Math.round((face.centerY()+iy*face.height()*.12f-destination.top)/destination.height()*art.getHeight())));
++   int pixel=art.getPixel(x,y);sum+=(Color.red(pixel)*3+Color.green(pixel)*6+Color.blue(pixel))/10;
++  }
++  int tone=sum/9,background=Color.rgb(tone,tone,tone);
++  return androidx.core.graphics.ColorUtils.calculateContrast(fallback|0xff000000,background)>=4.5?fallback:tone<135?0xfffaf8f0:0xff19211e;
+  }
+  public void legend(Canvas canvas,String label,float x,float baseline,Paint text){
+   // Keep native position and weight. Add a restrained halo only where ink crosses a busy print.
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/LedRenderer.java b/app/src/main/java/helium314/keyboard/keyforma/LedRenderer.java
+index 1e98ae6..1adf53d 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/LedRenderer.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/LedRenderer.java
+@@ -10,12 +10,12 @@ public final class LedRenderer {
+  private final Path shell=new Path();
+  private String finish="auto", contour="auto";private float hdrRatio=1;
+  public void configure(android.content.Context c){hdrRatio=OpticalHdr692.requested(c);finish=KeyAntPrefs.text(c,"rgb_finish","auto");contour=KeyAntPrefs.text(c,"rgb_contour","auto");}
+- private boolean flat(String profile,float w,float h,float d,boolean space){
+-  return "glass".equals(profile)||CapGeometry.low(profile)||CapGeometry.depth(profile,w,h,space?4:0)<2*d;
++ private boolean flat(String profile,float w,float h,float d,int kind){
++  return "glass".equals(profile)||CapGeometry.low(profile)||CapGeometry.depth(profile,w,h,kind)<2*d;
+  }
+  private final RectF face=new RectF();
+- private void lowerEdge(Canvas c,float w,float h,float d,int color,float amount,String profile,boolean space,float press){
+-  CapGeometry.rim(face,profile,w,h,space?4:0,press);
++ private void lowerEdge(Canvas c,float w,float h,float d,int color,float amount,String profile,int kind,float press){
++  CapGeometry.rim(face,profile,w,h,kind,press);
+   if(face.width()<3*d||face.height()<3*d)return;
+   float bottom=Math.min(h-1.8f*d,face.bottom+.6f*d),left=face.left+1.4f*d,right=face.right-1.4f*d;
+   float radius=Math.min(CapGeometry.radius(profile,w,h),Math.min((right-left)*.2f,face.height()*.23f));
+@@ -43,35 +43,37 @@ public final class LedRenderer {
+  }return Bitmap.createBitmap(pixels,w,h,Bitmap.Config.ARGB_8888);}
+  private void colour(int c){if(colourFilter!=null&&lastColour==c)return;lastColour=c;var cached=FILTERS.get(c);if(cached==null){int r=(Color.red(c)+255*3)/4,g=(Color.green(c)+255*3)/4,b=(Color.blue(c)+255*3)/4;cached=new PorterDuffColorFilter[]{new PorterDuffColorFilter(c,PorterDuff.Mode.SRC_IN),new PorterDuffColorFilter(Color.rgb(r,g,b),PorterDuff.Mode.SRC_IN)};FILTERS.put(c,cached);}colourFilter=cached[0];coreFilter=cached[1];}
+  private void bitmap(Canvas c,Bitmap image,float l,float t,float r,float b,int alpha,ColorFilter filter){paint.setColorFilter(filter);paint.setAlpha(Math.max(0,Math.min(255,alpha)));rect.set(l,t,r,b);if(image==EMITTER&&hdrRatio>1&&c.isHardwareAccelerated()&&android.os.Build.VERSION.SDK_INT>=34){int tint=filter==coreFilter?ToolSurface.mix(lastColour,Color.WHITE,.75f):lastColour;paint.setColorFilter(null);c.drawBitmap(OpticalHdr692.light(image,tint,hdrRatio),null,rect,paint);}else c.drawBitmap(image,null,rect,paint);paint.setAlpha(255);paint.setColorFilter(null);}
+- public void bounce(Canvas c,float w,float h,float d,int color,float amount,String profile,boolean space){
++ public void bounce(Canvas c,float w,float h,float d,int color,float amount,String profile,boolean space){bounce(c,w,h,d,color,amount,profile,space?4:0);}
++ public void bounce(Canvas c,float w,float h,float d,int color,float amount,String profile,int kind){
+   if(ReferenceCollection691.supports(MakeKeyAnt.base(profile))){
+-   CapGeometry.rim(face,profile,w,h,space?4:0,0);colour(color);float u=ReferenceCollection691.unit(w,h);
++   CapGeometry.rim(face,profile,w,h,kind,0);colour(color);float u=ReferenceCollection691.unit(w,h);
+    bitmap(c,BOUNCE,face.left-2*u,face.bottom-2*u,face.right+2*u,Math.min(h+3*u,face.bottom+6*u),(int)(100*amount),colourFilter);return;
+   }
+-  if(flat(profile,w,h,d,space))return;
+-  if(ThemeCatalog.round(profile)&&!space){float size=Math.min(w,h);c.save();c.translate((w-size)/2,(h-size)/2);bounce(c,size,size,d,color,amount);c.restore();return;}
++  if(flat(profile,w,h,d,kind))return;
++  if(ThemeCatalog.round(profile)&&kind!=4){float size=Math.min(w,h);c.save();c.translate((w-size)/2,(h-size)/2);bounce(c,size,size,d,color,amount);c.restore();return;}
+   bounce(c,w,h,d,color,amount);
+  }
+- public void emitter(Canvas c,float w,float h,float d,int color,float amount,String profile,boolean space,float press){
+-  if(ReferenceCollection691.supports(MakeKeyAnt.base(profile))){referenceEmitter(c,w,h,color,amount,profile,space,press);return;}
+-  if(flat(profile,w,h,d,space)){lowerEdge(c,w,h,d,color,amount,profile,space,press);return;}
+-  if(!finish.equals("auto")||!contour.equals("auto"))lowerEdge(c,w,h,d,color,amount*.8f,profile,space,press);
+-  if(ThemeCatalog.round(profile)&&!space){
++ public void emitter(Canvas c,float w,float h,float d,int color,float amount,String profile,boolean space,float press){emitter(c,w,h,d,color,amount,profile,space?4:0,press);}
++ public void emitter(Canvas c,float w,float h,float d,int color,float amount,String profile,int kind,float press){
++  if(ReferenceCollection691.supports(MakeKeyAnt.base(profile))){referenceEmitter(c,w,h,color,amount,profile,kind,press);return;}
++  if(flat(profile,w,h,d,kind)){lowerEdge(c,w,h,d,color,amount,profile,kind,press);return;}
++  if(!finish.equals("auto")||!contour.equals("auto"))lowerEdge(c,w,h,d,color,amount*.8f,profile,kind,press);
++  if(ThemeCatalog.round(profile)&&kind!=4){
+    float size=Math.min(w,h),x=(w-size)/2,y=(h-size)/2;colour(color);paint.setShader(null);paint.setColorFilter(null);paint.setStyle(Paint.Style.STROKE);
+    for(int i=3;i>=1;i--){paint.setColor(color);paint.setAlpha((int)(amount*(i==1?255:65)));paint.setStrokeWidth(i*d);rect.set(x+2*d,y+2*d,size+x-2*d,size+y-3*d);c.drawArc(rect,8,164,false,paint);}paint.setStyle(Paint.Style.FILL);paint.setAlpha(255);return;
+   }
+   // Pressing a tall cap covers more of its emitter. Transparent sleeves retain more light.
+   emitter(c,w,h,d,color,amount*(1-press*(CapGeometry.clear(profile)?.12f:.40f)));
+  }
+- private void referenceEmitter(Canvas c,float w,float h,int color,float amount,String profile,boolean space,float press){
+-  float u=ReferenceCollection691.unit(w,h);CapGeometry.rim(face,profile,w,h,space?4:0,press);colour(color);
++ private void referenceEmitter(Canvas c,float w,float h,int color,float amount,String profile,int kind,float press){
++  float u=ReferenceCollection691.unit(w,h);CapGeometry.rim(face,profile,w,h,kind,press);colour(color);
+   boolean scoop=ReferenceCollection691.scoop(profile),enamel=ReferenceCollection691.enamel(profile);
+   float y=face.bottom+ReferenceCollection691.depth(profile,w,h)*(1-press*.7f)*.5f;
+   float strength=Math.max(0,Math.min(1,amount))*(1-press*(scoop?.60f:.28f));
+   bitmap(c,EMITTER,face.left+2*u,y-1.2f*u,face.right-2*u,y+1.5f*u,(int)(235*strength),colourFilter);
+   bitmap(c,EMITTER,face.left+4*u,y-.5f*u,face.right-4*u,y+.55f*u,(int)(160*strength),coreFilter);
+   // Satin lip receives a restrained reflection; matte scoop does not transmit light.
+-  if(enamel||!contour.equals("auto")){lowerEdge(c,w,h,u,color,strength*(enamel?.32f:.20f),profile,space,press);}
++  if(enamel||!contour.equals("auto")){lowerEdge(c,w,h,u,color,strength*(enamel?.32f:.20f),profile,kind,press);}
+  }
+  public void bounce(Canvas c,float w,float h,float d,int color,float amount){
+   colour(color);float y=h-2.4f*d;
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/MakerLights.java b/app/src/main/java/helium314/keyboard/keyforma/MakerLights.java
+index e8a512b..0339f8f 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/MakerLights.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/MakerLights.java
+@@ -31,7 +31,8 @@ public final class MakerLights {
+  public int color(){return currentColor;}
+  public float amount(){return amount;}
+  public boolean touch(float x,float y,long now){if(!LightField.reactive(mode))return false;pulses.touch(x,y,now);return true;}
+- public boolean light(Canvas c,float x,float y,float w,float h,float u,boolean space,float press,long now){
++ public boolean light(Canvas c,float x,float y,float w,float h,float u,boolean space,float press,long now){return light(c,x,y,w,h,u,space?4:0,press,now);}
++ public boolean light(Canvas c,float x,float y,float w,float h,float u,int kind,float press,long now){
+   amount=0;if(mode.equals("off")||mode.equals("inherit")||intensity<=0)return false;
+   boolean motion=android.animation.ValueAnimator.areAnimatorsEnabled();float phase=now*(.0003f+speed*.000013f);
+   boolean reactive=LightField.reactive(mode);
+@@ -48,8 +49,9 @@ public final class MakerLights {
+   if(mode.equals("wave")){hsv[0]=pulses.hue(x+w/2,y+h/2,now);hsv[0]=Math.round(hsv[0]/3)*3;col=Color.HSVToColor(hsv);}
+   col=RgbMotion.color(mode,col,phase,x/u,motion);if(playPalette)col=PlayPalette645.fromHue(x/u*.8f+(continuous?phase*30:0));
+   currentColor=mode.equals("ps_pulse")?PlayPalette645.fromHue(pulses.controllerHue(x+w/2,y+h/2,now)):col;if(themePalette)currentColor=color;amount=a*intensity/100f;
+-  if(amount>.001f)led.bounce(c,w,h,u,currentColor,amount,profile,space);
++  if(amount>.001f)led.bounce(c,w,h,u,currentColor,amount,profile,kind);
+   return continuous||pulse;
+  }
+- public void emitter(Canvas c,float w,float h,float u,boolean space,float press){if(amount>.001f)led.emitter(c,w,h,u,currentColor,amount,profile,space,press);}
++ public void emitter(Canvas c,float w,float h,float u,boolean space,float press){emitter(c,w,h,u,space?4:0,press);}
++ public void emitter(Canvas c,float w,float h,float u,int kind,float press){if(amount>.001f)led.emitter(c,w,h,u,currentColor,amount,profile,kind,press);}
+ }
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/MakerPreview.java b/app/src/main/java/helium314/keyboard/keyforma/MakerPreview.java
+index 334e06a..3fa093c 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/MakerPreview.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/MakerPreview.java
+@@ -31,7 +31,7 @@ public final class MakerPreview extends View {
+    float total=0;for(int code:codes)total+=weight(code,r);float usable=getWidth()-10*unit-(r==1?26*unit:0);float x=(getWidth()-usable)/2;
+    for(int code:codes){float w=usable*weight(code,r)/Math.max(.1f,total);int kind=code==-11||code==-10001?1:code==-7?2:code==10?3:code==32?4:0;String preset=MakeKeyAnt.preset(id);if(code==-10001&&(XboxAnniversary.supports(MakeKeyAnt.base(id))||ReferenceCollection691.supports(preset))&&!draft.optString("left").matches("[A-Fa-f0-9]{6}"))kind=5;if(kind==1&&!draft.optString("left").matches("[A-Fa-f0-9]{6}")&&(preset.equals("liquid_android")||code==-10001&&(preset.equals("classic")||preset.equals("graphite")||preset.equals("vintage"))))kind=0;RectF rect=new RectF(x,visualRow*rowH+2*unit,x+w-2*unit,(visualRow+1)*rowH-2*unit);hits.add(new Hit(code,r,rect));float appear=Math.max(0,Math.min(1,assembly*1.6f-(visualRow*.12f+codes.indexOf(code)*.018f)));int keyLayer=c.saveLayerAlpha(rect.left,rect.top-12*unit,rect.right,rect.bottom,(int)(255*appear));c.translate(rect.left,rect.top-(1-appear)*10*unit);
+  if(stage==1){if(draft.optBoolean("switches",true)){int col=ThemeCatalog.face(id,dark,0);try{if(draft.optString("stem").matches("[A-Fa-f0-9]{6}"))col=Color.parseColor("#"+draft.optString("stem"));}catch(Exception ignored){}float side=Math.min(rect.width(),rect.height())*.4f,cx=rect.width()/2,cy=rect.height()/2;p.setStyle(Paint.Style.FILL);p.setColor(ToolSurface.mix(col,Color.BLACK,.28f));c.drawRoundRect(cx-side,cy-side,cx+side,cy+side,3*unit,3*unit,p);p.setColor(ToolSurface.mix(col,Color.WHITE,.3f));c.drawRoundRect(cx-side*.23f,cy-side*.7f,cx+side*.23f,cy+side*.7f,unit,unit,p);c.drawRoundRect(cx-side*.7f,cy-side*.23f,cx+side*.7f,cy+side*.23f,unit,unit,p);}c.restoreToCount(keyLayer);x+=w;continue;}
+- MakerGeometry.transform(c,id,code,rect.width(),rect.height());float pressed=code==pressedCode?pressValue:0;float materialPress=MakerGeometry.materialPress(id,pressed);c.translate(0,MakerGeometry.travel(id,pressed,rect.height()));boolean lightMoving=lights.light(c,rect.left,rect.top,rect.width(),rect.height(),unit,code==32,pressed,android.os.SystemClock.uptimeMillis());if(lightMoving&&isShown())postInvalidateOnAnimation();Integer tint=null;try{String hex=key(code).optString("color");if(hex.matches("[A-Fa-f0-9]{6}"))tint=Color.parseColor("#"+hex);}catch(Exception ignored){}tint=MakerGeometry.pigment(id,ThemeCatalog.face(id,dark,kind),tint,pressed);caps.position(rect.left,rect.top,getWidth(),getHeight());caps.draw(c,rect.width(),rect.height(),id,dark,kind,materialPress,tint);if(print!=null)print.draw(c,code,rect.left,rect.top,rect.width(),rect.height(),materialPress);lights.emitter(c,rect.width(),rect.height(),unit,code==32,pressed);if(stage==2||stage==3){c.restoreToCount(keyLayer);outline(c,rect,code,unit);x+=w;continue;}p.setColor(tint==null?(ReferenceCollection691.duoLegend(id,kind)?ReferenceCollection691.duoInk(dark,rect.centerX()/getWidth(),rect.centerY()/getHeight()):ThemeCatalog.ink(id,dark,kind)):KeyColorOverrides.ink(tint));String ink=key(code).optString("ink");p.setColor(ink.matches("[A-Fa-f0-9]{6}")?Color.parseColor("#"+ink):KeyColorOverrides.legend(getContext(),id,code,kind,p.getColor()));p.setTypeface(ThemeCatalog.font(id));p.setTextScaleX(MakeKeyAnt.fontWidth(id));p.setTextSize(15*unit*CapGeometry.labelScale(id)*(float)draft.optDouble("fontScale",1));p.setTextAlign(Paint.Align.CENTER);String label=switch(code){case -11->"⇧";case -10001->"?123";case -7->"⌫";case 10->"↵";case 32->"";case helium314.keyboard.keyboard.internal.keyboard_parser.floris.KeyCode.EMOJI->"☺";default->Character.toString(code);};String action=key(code).optString("action");if(!action.isEmpty())label=switch(action){case "clipboard"->"▤";case "voice"->"●";case "emoji"->"☺";default->"▣";};android.graphics.drawable.Drawable icon=code==-11?shift:code==-7?delete:code==10?enter:null;label=KeyAppearance.label(id,label);CapGeometry.face(hintFace,id,rect.width(),rect.height(),kind,materialPress);float labelOffset=hintFace.centerY()-rect.height()*.5f;if(icon==null){float tx=rect.width()/2,ty=rect.height()/2-(p.ascent()+p.descent())/2+labelOffset;if(print!=null&&print.contains(code))print.legend(c,label,tx,ty,p);else c.drawText(label,tx,ty,p);}else{int sz=Math.round(Math.min(rect.height()*.56f,22*unit));int ix=(int)(rect.width()-sz)/2,iy=Math.round((rect.height()-sz)/2+labelOffset);icon.setTint(p.getColor());icon.setBounds(ix,iy,ix+sz,iy+sz);icon.draw(c);}if(KeyAppearance.hints(id,helium314.keyboard.latin.settings.Settings.getValues()!=null&&helium314.keyboard.latin.settings.Settings.getValues().mShowsHints)){
++ MakerGeometry.transform(c,id,code,rect.width(),rect.height());float pressed=code==pressedCode?pressValue:0;float materialPress=MakerGeometry.materialPress(id,pressed);c.translate(0,MakerGeometry.travel(id,pressed,rect.height()));boolean lightMoving=lights.light(c,rect.left,rect.top,rect.width(),rect.height(),unit,kind,pressed,android.os.SystemClock.uptimeMillis());if(lightMoving&&isShown())postInvalidateOnAnimation();Integer tint=null;try{String hex=key(code).optString("color");if(hex.matches("[A-Fa-f0-9]{6}"))tint=Color.parseColor("#"+hex);}catch(Exception ignored){}tint=MakerGeometry.pigment(id,ThemeCatalog.face(id,dark,kind),tint,pressed);caps.position(rect.left,rect.top,getWidth(),getHeight());caps.draw(c,rect.width(),rect.height(),id,dark,kind,materialPress,tint);if(print!=null)print.draw(c,code,rect.left,rect.top,rect.width(),rect.height(),materialPress);lights.emitter(c,rect.width(),rect.height(),unit,kind,pressed);if(stage==2||stage==3){c.restoreToCount(keyLayer);outline(c,rect,code,unit);x+=w;continue;}p.setColor(tint==null?(ReferenceCollection691.duoLegend(id,kind)?ReferenceCollection691.duoInk(dark,rect.centerX()/getWidth(),rect.centerY()/getHeight()):ThemeCatalog.ink(id,dark,kind)):KeyColorOverrides.ink(tint));String ink=key(code).optString("ink");p.setColor(ink.matches("[A-Fa-f0-9]{6}")?Color.parseColor("#"+ink):KeyColorOverrides.legend(getContext(),id,code,kind,p.getColor()));p.setTypeface(ThemeCatalog.font(id));p.setTextScaleX(MakeKeyAnt.fontWidth(id));p.setTextSize(15*unit*CapGeometry.labelScale(id)*(float)draft.optDouble("fontScale",1));p.setTextAlign(Paint.Align.CENTER);String label=switch(code){case -11->"⇧";case -10001->"?123";case -7->"⌫";case 10->"↵";case 32->"";case helium314.keyboard.keyboard.internal.keyboard_parser.floris.KeyCode.EMOJI->"☺";default->Character.toString(code);};String action=key(code).optString("action");if(!action.isEmpty())label=switch(action){case "clipboard"->"▤";case "voice"->"●";case "emoji"->"☺";default->"▣";};android.graphics.drawable.Drawable icon=code==-11?shift:code==-7?delete:code==10?enter:null;label=KeyAppearance.label(id,label);CapGeometry.face(hintFace,id,rect.width(),rect.height(),kind,materialPress);float labelOffset=hintFace.centerY()-rect.height()*.5f;if(icon==null){float tx=rect.width()/2,ty=rect.height()/2-(p.ascent()+p.descent())/2+labelOffset;if(print!=null&&print.contains(code))print.legend(c,label,tx,ty,p);else c.drawText(label,tx,ty,p);}else{int sz=Math.round(Math.min(rect.height()*.56f,22*unit));int ix=(int)(rect.width()-sz)/2,iy=Math.round((rect.height()-sz)/2+labelOffset);int iconColor=print!=null&&print.contains(code)?print.iconInk(p.getColor()):p.getColor();icon.setTint(ink.matches("[A-Fa-f0-9]{6}")?Color.parseColor("#"+ink):KeyColorOverrides.legend(getContext(),id,code,kind,iconColor));icon.setBounds(ix,iy,ix+sz,iy+sz);icon.draw(c);}if(KeyAppearance.hints(id,helium314.keyboard.latin.settings.Settings.getValues()!=null&&helium314.keyboard.latin.settings.Settings.getValues().mShowsHints)){
+  String hint=previewHint(code);if(!hint.isEmpty()){CapGeometry.face(hintFace,id,rect.width(),rect.height(),kind,materialPress);float pad=Math.max(unit,Math.min(3*unit,hintFace.width()*.1f));p.setTextScaleX(1);p.setTextSize(Math.min(6.5f*unit,rect.height()*.17f));p.setTextAlign(Paint.Align.RIGHT);p.setAlpha(165);c.drawText(hint,hintFace.right-pad,hintFace.top+pad-p.ascent(),p);p.setAlpha(255);}}
+  c.restoreToCount(keyLayer);outline(c,rect,code,unit);x+=w;}
+   }
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/ReferenceCollection691.java b/app/src/main/java/helium314/keyboard/keyforma/ReferenceCollection691.java
+index 7bf840a..4202ef2 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/ReferenceCollection691.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/ReferenceCollection691.java
+@@ -32,23 +32,27 @@ public final class ReferenceCollection691 {
+  public static boolean low(String id){Board v=b(id);return v!=null&&v.shape().equals("flat");}
+  // Width/height are the actual visible key cell, not a fixed 30x44 template.
+  // The reference's upper shoulder is broad and its inner bowl has no outline.
+- public static float unit(float w,float h){return Math.max(.01f,Math.min(w,h)/32f);}
++ // One vertical mould scale for every key in a row. Wide function keys must not
++ // acquire a taller shoulder/deeper foot merely because their cell is wider.
++ public static float unit(float w,float h){return Math.max(.01f,Math.min(w/24f,h/44f));}
+  public static float depth(String id,float w,float h){return (low(id)?1.3f:enamel(id)?.65f:2.6f)*unit(w,h);}
+- public static float radius(String id,float w,float h){return (low(id)?5.2f:scoop(id)?8.0f:5.6f)*unit(w,h);}
++ public static float radius(String id,float w,float h){return (low(id)?5.2f:8.0f)*unit(w,h);}
+  public static float innerRadius(String id,float w,float h){return Math.max(unit(w,h),radius(id,w,h)-(scoop(id)?3.0f:enamel(id)?.75f:1.8f)*unit(w,h));}
+- public static void bounds(RectF r,String id,float w,float h,float press,boolean face){
++ public static void bounds(RectF r,String id,float w,float h,int kind,float press,boolean face){
+   float u=unit(w,h),d=depth(id,w,h),travel=Math.max(0,Math.min(1,press))*d*.70f;
+-  float inset=scoop(id)&&w/h<1.32f?Math.max(0,(w-h*.82f)*.5f):0;
++  float inset=scoop(id)&&kind==0?Math.max(0,(w-h*.82f)*.5f):0;
+   r.set(.65f*u+inset,.8f*u+travel,w-.65f*u-inset,h-1.8f*u-d+travel);
+-  if(face){float side=(scoop(id)?3.4f:enamel(id)?1.2f:.45f)*u;
+-   r.left+=side;r.right-=side;r.top+=(scoop(id)?4.3f:enamel(id)?1.2f:.45f)*u;r.bottom-=(scoop(id)?2.0f:enamel(id)?1.2f:.45f)*u;}
++  if(face){float side=(scoop(id)?(kind==0?3.4f:2.2f):enamel(id)?1.2f:.45f)*u;
++   r.left+=side;r.right-=side;r.top+=(scoop(id)?(kind==0?4.3f:2.4f):enamel(id)?1.2f:.45f)*u;r.bottom-=(scoop(id)?2.0f:enamel(id)?1.2f:.45f)*u;}
+  }
+  public static int defaultRowHeight(String id,int widthDp){
+   if(!supports(MakeKeyAnt.base(id)))return 44;
+   if(low(id))return 48;
+-  return Math.max(46,Math.min(64,Math.round(Math.min(widthDp,440)/10f*(scoop(id)?1.26f:1.23f))));
++  // The enamel reference has square pillows; NuPhy has tall sculpted letters.
++  if(enamel(id))return Math.max(38,Math.min(52,Math.round(Math.min(widthDp,440)/10f*.95f)));
++  return Math.max(46,Math.min(64,Math.round(Math.min(widthDp,440)/10f*1.26f)));
+  }
+- public static float boardAspect(String id){return scoop(id)?1.94f:enamel(id)?2.03f:2.12f;}
++ public static float boardAspect(String id){return scoop(id)?1.94f:enamel(id)?2.50f:2.12f;}
+  public static float letterBloom(String id){return scoop(id)?.48f:enamel(id)?.70f:1f;}
+  // Old IDs remain readable in saved Maker presets; diagonal rendering is retired.
+  public static boolean duo(String id,int kind){return false;}
+@@ -89,18 +93,18 @@ public final class ReferenceCollection691 {
+   public void detail(Canvas c,String id,float w,float h,int kind,float press,int color){
+    if(kind!=4||!enamel(id)||id.equals("ref91_silver"))return;
+    if(weave==null){int[] tile=new int[16];tile[0]=0x10000000;tile[10]=0x10ffffff;weave=new BitmapShader(Bitmap.createBitmap(tile,4,4,Bitmap.Config.ARGB_8888),Shader.TileMode.REPEAT,Shader.TileMode.REPEAT);}
+-   bounds(inner,id,w,h,press,true);float u=unit(w,h);matrix.setScale(Math.max(.4f,u*.5f),Math.max(.4f,u*.5f));matrix.postTranslate(inner.left,inner.top);weave.setLocalMatrix(matrix);p.setColor(Color.WHITE);p.setShader(weave);c.drawRoundRect(inner,innerRadius(id,w,h),innerRadius(id,w,h),p);p.setShader(null);
++   bounds(inner,id,w,h,kind,press,true);float u=unit(w,h);matrix.setScale(Math.max(.4f,u*.5f),Math.max(.4f,u*.5f));matrix.postTranslate(inner.left,inner.top);weave.setLocalMatrix(matrix);p.setColor(Color.WHITE);p.setShader(weave);c.drawRoundRect(inner,innerRadius(id,w,h),innerRadius(id,w,h),p);p.setShader(null);
+   }
+-  public void draw(Canvas c,String id,float w,float h,int color,float press){
++  public void draw(Canvas c,String id,float w,float h,int kind,int color,float press){
+    if(w<=0||h<=0)return;
+    float u=unit(w,h),radius=radius(id,w,h),d=depth(id,w,h);boolean enamel=enamel(id),flat=low(id);
+-   bounds(r,id,w,h,press,false);p.setStyle(Paint.Style.FILL);p.setShader(null);p.setAlpha(255);
++   bounds(r,id,w,h,kind,press,false);p.setStyle(Paint.Style.FILL);p.setShader(null);p.setAlpha(255);
+    // Contact shadow stays under the foot. No black tube extending across neighbours.
+    p.setColor(enamel?0x39000000:0x23000000);c.drawRoundRect(r.left-.25f*u,r.top+.4f*u,r.right+.25f*u,r.bottom+d+(enamel?.45f:1.1f)*u,radius,radius,p);
+    p.setColor(ToolSurface.mix(color,Color.BLACK,flat?.25f:.38f));c.drawRoundRect(r.left,r.top,r.right,r.bottom+d*(1-press*.70f),radius,radius,p);
+    if(flat){fill(c,r,radius,color,4);return;}
+    fill(c,r,radius,color,enamel?2:0);
+-   bounds(inner,id,w,h,press,true);
++   bounds(inner,id,w,h,kind,press,true);
+    if(enamel){
+     // Thin rolled lip with a shallow black contact edge, no tall grey pedestal.
+     r.inset(.38f*u,.38f*u);p.setColor(ToolSurface.mix(color,Color.BLACK,.23f));c.drawRoundRect(r,radius-.3f*u,radius-.3f*u,p);
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/RgbBench646.java b/app/src/main/java/helium314/keyboard/keyforma/RgbBench646.java
+index 1cdbd59..fd37992 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/RgbBench646.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/RgbBench646.java
+@@ -15,5 +15,5 @@ public final class RgbBench646 extends View {
+  @Override public boolean onTouchEvent(MotionEvent e){if(!isClickable())return false;if(e.getActionMasked()==MotionEvent.ACTION_DOWN){float s=getWidth()/360f;pulse(e.getX()/s,e.getY()/s,SystemClock.uptimeMillis());return true;}if(e.getActionMasked()==MotionEvent.ACTION_UP)performClick();return true;}
+  @Override public boolean performClick(){super.performClick();return true;}
+  @Override protected void onDraw(Canvas c){long now=SystemClock.uptimeMillis();boolean motion=android.animation.ValueAnimator.areAnimatorsEnabled();if(auto&&motion&&now>=next){int col=COLUMNS[index++%3];pulse(col*60+30,82,now);}float scale=getWidth()/360f;c.save();c.scale(scale,scale);boolean active=false;
+- for(int row=0;row<3;row++)for(int col=0;col<6;col++){float x=col*60,y=row*55;float press=Math.abs(hx-x-30)<30&&Math.abs(hy-y-27.5f)<27.5f?Math.max(0,1-(now-hit)/320f):0;int kind=row==2&&col==0?1:row==2&&col==5?3:0;c.save();c.translate(x,y);active|=lights.light(c,x,y,60,55,1,false,press,now);caps.draw(c,60,55,profile,dark,kind,press,null);lights.emitter(c,60,55,1,false,press);p.setColor(ThemeCatalog.ink(profile,dark,kind));p.setTextAlign(Paint.Align.CENTER);p.setTextSize(18);p.setTypeface(FONT);c.drawText(LABELS[row*6+col],30,32+press,p);c.restore();}c.restore();if(motion&&isAttachedToWindow()&&isShown()&&getLocalVisibleRect(visible)){if(active||now-hit<320)postInvalidateDelayed(33);else if(auto)postInvalidateDelayed(Math.max(33,next-now));}}
++ for(int row=0;row<3;row++)for(int col=0;col<6;col++){float x=col*60,y=row*55;float press=Math.abs(hx-x-30)<30&&Math.abs(hy-y-27.5f)<27.5f?Math.max(0,1-(now-hit)/320f):0;int kind=row==2&&col==0?1:row==2&&col==5?3:0;c.save();c.translate(x,y);active|=lights.light(c,x,y,60,55,1,kind,press,now);caps.draw(c,60,55,profile,dark,kind,press,null);lights.emitter(c,60,55,1,kind,press);p.setColor(ThemeCatalog.ink(profile,dark,kind));p.setTextAlign(Paint.Align.CENTER);p.setTextSize(18);p.setTypeface(FONT);c.drawText(LABELS[row*6+col],30,32+press,p);c.restore();}c.restore();if(motion&&isAttachedToWindow()&&isShown()&&getLocalVisibleRect(visible)){if(active||now-hit<320)postInvalidateDelayed(33);else if(auto)postInvalidateDelayed(Math.max(33,next-now));}}
+ }
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/ThemeCatalog.java b/app/src/main/java/helium314/keyboard/keyforma/ThemeCatalog.java
+index f2df9bb..0b66bd2 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/ThemeCatalog.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/ThemeCatalog.java
+@@ -109,7 +109,7 @@ if(SmokeGlassCaps.supports(id)&&!MakeKeyAnt.is(id))return LiquidMaterial.color(i
+     else draw(c,w,h,mould,dark,kind,press,tone);
+     return;
+    }
+-   if(ReferenceCollection691.supports(id)){refs91.draw(c,id,w,h,pigment==null?face(id,dark,kind):pigment,press);refs91.detail(c,id,w,h,kind,press,pigment==null?face(id,dark,kind):pigment);return;}
++   if(ReferenceCollection691.supports(id)){refs91.draw(c,id,w,h,kind,pigment==null?face(id,dark,kind):pigment,press);refs91.detail(c,id,w,h,kind,press,pigment==null?face(id,dark,kind):pigment);return;}
+    if(ReferenceCaps.supports(id)){reference.draw(c,id,w,h,kind,pigment==null?face(id,dark,kind):pigment,press);return;}
+    if(XboxAnniversary.supports(id)){anniversary.draw(c,w,h,id,kind,press,pigment);return;}
+    if(id.equals("midnight_minimal")){float u=LiquidMaterial.unit(w,h);int tone=pigment==null?face(id,dark,kind):pigment;rect(c,1.2f*u,1.5f*u+press*u,w-1.2f*u,h-2*u,5*u,press>0?mix(tone,dark?Color.WHITE:Color.BLACK,.12f*press):tone);return;}
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/ToolbarLook.java b/app/src/main/java/helium314/keyboard/keyforma/ToolbarLook.java
+index 4733954..4e0fd56 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/ToolbarLook.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/ToolbarLook.java
+@@ -18,12 +18,12 @@ public final class ToolbarLook {
+   boolean coordinate=controlled&&(draftPolicy?design.optBoolean("toolbar_match_theme",false):ToolbarCoordination693.enabled(c,design));
+   stock=controlled&&!coordinate;
+   String requested=controlled?(coordinate?"match_theme":"current"):choice(c,"toolbar_look","current",key,value);
+-  String base=design!=null&&design.has("base")?(design.optString("style","preset").equals("preset")?design.optString("base","classic"):design.optString("style")):StudioMaterials644.active();
++  var settings=helium314.keyboard.latin.settings.Settings.getValues();
++  String base=design!=null&&design.has("base")?(design.optString("style","preset").equals("preset")?design.optString("base","classic"):design.optString("style")):settings!=null&&settings.mColors instanceof GlassColors?"glass":StudioMaterials644.active();
+   boolean matched=requested.equals("match_theme");
+   String profile=matched && design!=null?MakeKeyAnt.preview(design):matched?base:requested.startsWith("cap_")?requested.substring(4):"";
+   boolean cap=!profile.isEmpty()&&(MakeKeyAnt.is(profile)||java.util.Arrays.asList(ThemeCatalog.IDS).contains(profile));
+-  var settings=helium314.keyboard.latin.settings.Settings.getValues();
+-  boolean requestedDark=settings!=null&&settings.mColors instanceof FormaColors f?f.getDark():(c.getResources().getConfiguration().uiMode&48)==32;
++  boolean requestedDark=settings!=null&&settings.mColors instanceof FormaColors f?f.getDark():settings!=null&&settings.mColors instanceof GlassColors g?g.getDark():(c.getResources().getConfiguration().uiMode&48)==32;
+   if(design!=null&&!design.optString("mode","system").equals("system"))requestedDark=design.optString("mode").equals("dark");
+   materialDark=!(matched||cap)||ThemeCatalog.effectiveDark(profile,requestedDark);
+   id=stock?"current":cap?"cap_"+profile:requested.equals("current")?(Companion660.supports(base)?base:(SatinCaps.supports(base)||QuietGlass650.supports(base)||MaterialStudio651.supports(base))?"plain":base.equals("ps30")?"ps30":StudioMaterials644.optical(base)?"luma":XboxAnniversary.active(c)?"xbox_led":requested):requested;
+diff --git a/app/src/test/java/helium314/keyboard/keyforma/KeyAnt696Test.java b/app/src/test/java/helium314/keyboard/keyforma/KeyAnt696Test.java
+new file mode 100644
+index 0000000..3848637
+--- /dev/null
++++ b/app/src/test/java/helium314/keyboard/keyforma/KeyAnt696Test.java
+@@ -0,0 +1,114 @@
++// SPDX-License-Identifier: GPL-3.0-only
++package helium314.keyboard.keyforma;
++import android.graphics.*;
++import android.view.*;
++import helium314.keyboard.keyboard.*;
++import helium314.keyboard.keyboard.Keyboard;
++import helium314.keyboard.latin.*;
++import helium314.keyboard.latin.settings.Settings;
++import org.junit.*;
++import org.junit.runner.RunWith;
++import org.robolectric.*;
++import org.robolectric.annotation.*;
++import static org.junit.Assert.*;
++
++@RunWith(RobolectricTestRunner.class)
++@Config(sdk=35,qualifiers="w400dp-h900dp-mdpi",shadows={helium314.keyboard.ShadowInputMethodManager2.class})
++@GraphicsMode(GraphicsMode.Mode.NATIVE)
++public class KeyAnt696Test {
++ android.content.Context c;LatinIME ime;
++ @Before public void setup(){c=RuntimeEnvironment.getApplication();KeyAntPrefs.get(c).edit().clear().putBoolean("ka_053_defaults",true).putBoolean(Settings.PREF_THEME_DAY_NIGHT,false).putBoolean("ka_theme_motion",false).putString("ka_rgb","off").apply();ime=Robolectric.setupService(LatinIME.class);}
++ @After public void close(){ime.onDestroy();}
++ void theme(String id,boolean dark){KeyAntPrefs.get(c).edit().putString(Settings.PREF_THEME_COLORS,ThemeCatalog.preference(id,dark)).apply();Settings.getInstance().loadSettings(c);KeyboardLayoutSet.onKeyboardThemeChanged();}
++ @Test public void widerCommandsKeepTheirWidthAndRowAlignmentDuringPress(){
++  RectF letter=new RectF(),command=new RectF(),face=new RectF();
++  for(var spec:ReferenceCollection691.additions())for(float h:new float[]{38,44,52,64,80})for(float press:new float[]{0,.5f,1}){
++   float w=h*.74f;CapGeometry.rim(letter,spec.id(),w,h,0,press);
++   for(int kind=1;kind<6;kind++){
++    float commandWidth=kind==4?w*5:w*1.5f;
++    CapGeometry.rim(command,spec.id(),commandWidth,h,kind,press);CapGeometry.face(face,spec.id(),commandWidth,h,kind,press);
++    assertEquals(spec.id()+" top",letter.top,command.top,.01f);assertEquals(spec.id()+" baseline",letter.bottom,command.bottom,.01f);
++    assertTrue(spec.id()+" squeezed function",command.width()>letter.width()*(kind==4?4.8f:1.45f));
++    assertTrue(command.contains(face));assertEquals(commandWidth/2,face.centerX(),.01f);
++   }
++  }
++ }
++ @Test public void renderedFunctionAndRgbNeverCollapseAtFormerAspectThreshold()throws Exception{
++  ThemeCatalog.Caps caps=new ThemeCatalog.Caps();LedRenderer led=new LedRenderer();led.configure(c);
++  for(float ratio:new float[]{1.28f,1.31f,1.33f,1.36f}){
++   int h=96,w=Math.round(h*ratio);Bitmap b=Bitmap.createBitmap(w,h+12,Bitmap.Config.ARGB_8888);Canvas out=new Canvas(b);
++   caps.draw(out,w,h,"ref91_nuphy",true,5,0);int first=w,last=0;
++   for(int x=0;x<w;x++)if(Color.alpha(b.getPixel(x,h/2))>200){first=Math.min(first,x);last=x;}
++   assertTrue("function width at "+ratio,last-first>w*.90f);
++   b.eraseColor(Color.TRANSPARENT);led.emitter(out,w,h,2,Color.RED,1,"ref91_nuphy",5,0);
++   RectF rim=new RectF();CapGeometry.rim(rim,"ref91_nuphy",w,h,5,0);
++   assertTrue("light reaches wide command edge",Color.alpha(b.getPixel(Math.round(w*.85f),Math.round(rim.bottom+2)))>20);
++   b.recycle();
++  }
++ }
++ @Test public void reusedPreviewChangesThemeAndModeImmediately()throws Exception{
++  theme("classic",true);KeyboardLayoutPreview reused=new KeyboardLayoutPreview(c);reused.trialTheme("ref91_field",true);
++  Bitmap old=KeyAntV63Test.render(reused,400,230);reused.trialTheme("ref91_primary",false);Bitmap actual=KeyAntV63Test.render(reused,400,230);
++  KeyboardLayoutPreview fresh=new KeyboardLayoutPreview(c);fresh.trialTheme("ref91_primary",false);Bitmap expected=KeyAntV63Test.render(fresh,400,230);
++  assertFalse(old.sameAs(actual));assertTrue("cached renderer must match a fresh preview",expected.sameAs(actual));old.recycle();actual.recycle();expected.recycle();
++ }
++ @Test public void glassActionIconIsLegible()throws Exception{
++  theme("glass",false);Keyboard k=new KeyboardLayoutSet.Builder(ime,null).setKeyboardGeometry(400,184).setSubtype(RichInputMethodManager.getInstance().getCurrentSubtype()).build().getKeyboard(KeyboardId.ELEMENT_ALPHABET);
++  KeyboardView view=new KeyboardView(new ContextThemeWrapper(c,KeyboardTheme.getKeyboardTheme(c).mStyleId),null,R.attr.keyboardViewStyle,new GlassColors(false));view.setKeyboard(k);
++  Bitmap b=KeyAntV63Test.render(view,400,184);Key enter=k.getKey(10);assertNotNull(enter);int dark=0;
++  for(int x=enter.getX()+12;x<enter.getX()+enter.getWidth()-12;x++)for(int y=enter.getY()+8;y<enter.getY()+enter.getHeight()-8;y++){int color=b.getPixel(x,y);if(Color.alpha(color)>200&&Color.red(color)<70&&Color.green(color)<70)dark++;}
++  assertTrue("visible dark action glyph on light glass",dark>20);KeyAntV42Test.save(b,"KeyAnt-696-glass-action.png");b.recycle();
++ }
++ @Test public void enamelDefaultsUseSquarePillowsWhileManualHeightWins()throws Exception{
++  for(int width:new int[]{400,440,760}){
++   theme("ref91_primary",false);int row=KeyboardGeometry.rowHeight(KeyAntPrefs.get(c),width);
++   Keyboard k=new KeyboardLayoutSet.Builder(ime,null).setKeyboardGeometry(width,KeyboardGeometry.bodyHeight(1,row,false)).setSubtype(RichInputMethodManager.getInstance().getCurrentSubtype()).build().getKeyboard(KeyboardId.ELEMENT_ALPHABET);
++   Key q=k.getKey('q');float ratio=q.getDrawWidth()/(float)q.getHeight();assertTrue("square enamel "+width+" ratio="+ratio,ratio>.88f&&ratio<1.08f);
++  }
++  var draft=MakeKeyAnt.create("ref91_primary");assertTrue(draft.getInt("height")<MakeKeyAnt.create("ref91_nuphy").getInt("height"));
++  KeyAntPrefs.get(c).edit().putInt("ka_row_compact",58).putInt("ka_row_wide",60).apply();assertEquals(58,KeyboardGeometry.rowHeight(KeyAntPrefs.get(c),400));assertEquals(60,KeyboardGeometry.rowHeight(KeyAntPrefs.get(c),760));
++ }
++ @Test public void printedFunctionIconsUseLocalContrast()throws Exception{
++  theme("art_atelier_eclipse",true);KeycapPrint print=new KeycapPrint(c,"art_atelier_eclipse");print.region(0,0,400,200);
++  Bitmap b=Bitmap.createBitmap(60,44,Bitmap.Config.ARGB_8888);print.draw(new Canvas(b),-11,0,100,60,44,0);
++  assertNotEquals("black icon lost on the dark print",Color.BLACK,print.iconInk(Color.BLACK));b.recycle();
++  KeyAntPrefs.get(c).edit().putString("ka_key_colors_theme","art_atelier_eclipse").putString("ka_key_color_ink_shift","#FF00FF").apply();
++  Keyboard keyboard=new KeyboardLayoutSet.Builder(ime,null).setKeyboardGeometry(400,200).setSubtype(RichInputMethodManager.getInstance().getCurrentSubtype()).build().getKeyboard(KeyboardId.ELEMENT_ALPHABET);
++  KeyboardView view=new KeyboardView(new ContextThemeWrapper(c,KeyboardTheme.getKeyboardTheme(c).mStyleId),null,R.attr.keyboardViewStyle,new FormaColors(true,"art_atelier_eclipse",c.getResources()));view.setKeyboard(keyboard);
++  Bitmap custom=KeyAntV63Test.render(view,400,200);Key shift=keyboard.getKey(-11);int magenta=0;
++  for(int x=shift.getX();x<shift.getX()+shift.getWidth();x++)for(int y=shift.getY();y<shift.getY()+shift.getHeight();y++){int pixel=custom.getPixel(x,y);if(Color.red(pixel)>240&&Color.blue(pixel)>240&&Color.green(pixel)<20)magenta++;}
++  assertTrue("manual icon ink must override print contrast",magenta>5);custom.recycle();
++
++ }
++ @Test public void originalLayoutBalanceAndMagicBallKeepCommandHitAreas(){
++  for(String id:new String[]{"ref91_nuphy","xbox_clear","ref91_primary"})for(int width:new int[]{360,400,760})for(boolean ball:new boolean[]{false,true}){
++   KeyAntPrefs.get(c).edit().putBoolean("ka_magic_ball",ball).apply();theme(id,true);
++   Keyboard k=new KeyboardLayoutSet.Builder(ime,null).setKeyboardGeometry(width,216).setSubtype(RichInputMethodManager.getInstance().getCurrentSubtype()).build().getKeyboard(KeyboardId.ELEMENT_SYMBOLS);
++   for(Key key:k.getSortedKeys())if(!key.isSpacer()){
++    assertTrue("nonzero cell "+id,key.getWidth()>10);assertTrue(key.getX()>=0&&key.getX()+key.getWidth()<=width);
++    if(key.getCode()<0||key.getCode()==10){RectF rim=new RectF();CapGeometry.rim(rim,id,key.getDrawWidth(),key.getHeight(),CapGeometry.kind(key.getCode()),0);assertTrue(id+" cap must fill command cell",!ReferenceCollection691.supports(id)||rim.width()>key.getDrawWidth()*.9f);}
++   }
++  }
++ }
++ @Test public void wideSourceDecorationKeepsItsAspectInsteadOfStretchingASquare()throws Exception{
++  Bitmap b=Bitmap.createBitmap(240,48,Bitmap.Config.ARGB_8888);new ThemeCatalog.Caps().draw(new Canvas(b),240,48,"bench_draw_himym",true,4,0);
++  int longest=0,run=0;for(int y=7;y<40;y++){int color=b.getPixel(120,y);if(Color.red(color)>225&&Color.green(color)>220&&Color.blue(color)>210){run++;longest=Math.max(longest,run);}else run=0;}
++  assertTrue("legible logo band, not a flattened strip",longest>=7);KeyAntV42Test.save(b,"KeyAnt-696-wide-decoration.png");b.recycle();
++ }
++ @Test public void allThemeBarsHaveStockMaterialAndIconsOnlyRenders()throws Exception{
++  java.io.File dir=new java.io.File("build/keyant-artifacts/audit696-bars");dir.mkdirs();int count=0;
++  for(String id:ThemeCatalog.IDS){Bitmap sheet=Bitmap.createBitmap(400,336,Bitmap.Config.ARGB_8888);Canvas out=new Canvas(sheet);
++   for(int mode=0;mode<2;mode++){
++    boolean dark=ThemeCatalog.effectiveDark(id,mode==1);theme(id,dark);
++    for(int policy=0;policy<3;policy++){
++     KeyAntPrefs.get(c).edit().putBoolean("ka_toolbar_match_theme",policy!=0).putBoolean("ka_toolbar_theme_icons_only",policy==2).apply();
++     ToolbarLook look=new ToolbarLook(c);assertEquals(id,policy!=0,look.enabled);assertEquals(id,policy==1,look.showSurface);if(policy!=0){assertEquals(id,id,MakeKeyAnt.base(look.material));assertEquals(id,dark,look.materialDark);}
++     ToolbarSampleView bar=new ToolbarSampleView(c,false);Bitmap frame=KeyAntV63Test.render(bar,400,56);
++     out.save();out.translate(0,(mode*3+policy)*56);Paint back=new Paint();back.setColor(ThemeCatalog.background(id,dark));out.drawRect(0,0,400,56,back);out.drawBitmap(frame,0,0,null);out.restore();frame.recycle();count++;
++    }
++   }
++   try(var stream=new java.io.FileOutputStream(new java.io.File(dir,id+".png"))){sheet.compress(Bitmap.CompressFormat.PNG,100,stream);}sheet.recycle();
++  }
++  System.out.println("TOOLBAR_NATIVE_RENDERS="+count);
++ }
++}
+diff --git a/app/src/test/java/helium314/keyboard/keyforma/KeyAntAudit696Test.java b/app/src/test/java/helium314/keyboard/keyforma/KeyAntAudit696Test.java
+new file mode 100644
+index 0000000..31b34fb
+--- /dev/null
++++ b/app/src/test/java/helium314/keyboard/keyforma/KeyAntAudit696Test.java
+@@ -0,0 +1,58 @@
++// SPDX-License-Identifier: GPL-3.0-only
++package helium314.keyboard.keyforma;
++
++import android.content.*;
++import android.graphics.*;
++import android.view.ContextThemeWrapper;
++import helium314.keyboard.keyboard.*;
++import helium314.keyboard.keyboard.Keyboard;
++import helium314.keyboard.latin.*;
++import helium314.keyboard.latin.settings.Settings;
++import java.io.*;
++import org.junit.*;
++import org.junit.runner.RunWith;
++import org.robolectric.*;
++import org.robolectric.annotation.*;
++import static org.junit.Assert.*;
++
++/** Per-theme native-render inventory. Images are review evidence, not similarity assertions. */
++@RunWith(RobolectricTestRunner.class)
++@Config(sdk=35, qualifiers="w400dp-h900dp-mdpi", shadows={helium314.keyboard.ShadowInputMethodManager2.class})
++@GraphicsMode(GraphicsMode.Mode.NATIVE)
++public class KeyAntAudit696Test {
++ Context c; LatinIME ime;
++ @Before public void setup(){c=RuntimeEnvironment.getApplication();KeyAntPrefs.get(c).edit().clear().putBoolean("ka_053_defaults",true).putBoolean(Settings.PREF_THEME_DAY_NIGHT,false).putBoolean("ka_theme_motion",false).putString("ka_rgb","off").apply();ime=Robolectric.setupService(LatinIME.class);}
++ @After public void close(){ime.onDestroy();}
++ void theme(String id,boolean dark){KeyAntPrefs.get(c).edit().putString(Settings.PREF_THEME_COLORS,ThemeCatalog.preference(id,dark)).apply();Settings.getInstance().loadSettings(c);KeyboardLayoutSet.onKeyboardThemeChanged();}
++ @Test public void everyCatalogThemeBothModesAndAllLayoutFamilies() throws Exception {
++  File dir=new File("build/keyant-artifacts/audit696");dir.mkdirs();int count=0;
++  try(PrintWriter manifest=new PrintWriter(new File(dir,"manifest.tsv"))){
++   manifest.println("id\tname\tcollection\trequested_dark\teffective_dark\twidth\tsplit\tnumbers\tball\tlayer\tkeys\timage");
++   for(int index=0;index<ThemeCatalog.IDS.length;index++){
++    String id=ThemeCatalog.IDS[index];
++    Bitmap sheet=Bitmap.createBitmap(1600,1400,Bitmap.Config.ARGB_8888);Canvas out=new Canvas(sheet);out.drawColor(0xff242629);
++    Paint title=new Paint(3);title.setColor(Color.WHITE);title.setTextSize(20);out.drawText(id+" | "+ThemeCatalog.NAMES[index],12,24,title);
++    for(int mode=0;mode<2;mode++)for(int config=0;config<4;config++){
++     boolean requestedDark=mode==1,dark=ThemeCatalog.effectiveDark(id,requestedDark),split=config==3,numbers=config==2,ball=config==1;
++     int width=config>=2?760:400,layer=config==1?KeyboardId.ELEMENT_SYMBOLS:config==3?KeyboardId.ELEMENT_SYMBOLS_SHIFTED:KeyboardId.ELEMENT_ALPHABET;
++     RuntimeEnvironment.setQualifiers(config==2?"w760dp-h400dp-land-mdpi":"w400dp-h900dp-port-mdpi");
++     KeyAntPrefs.get(c).edit().putBoolean("ka_magic_ball",ball).apply();theme(id,dark);
++     int height=KeyboardGeometry.bodyHeight(1,KeyboardGeometry.rowHeight(KeyAntPrefs.get(c),width),numbers);
++     Keyboard k=new KeyboardLayoutSet.Builder(ime,null).setKeyboardGeometry(width,height).setSubtype(RichInputMethodManager.getInstance().getCurrentSubtype()).setSplitLayoutEnabled(split).setNumberRowEnabled(numbers).build().getKeyboard(layer);
++     int keys=0;for(Key key:k.getSortedKeys()){if(key.isSpacer())continue;assertTrue(id+" key="+key.getCode(),key.getWidth()>0&&key.getHeight()>0);assertTrue(id+" outside "+key.getCode(),key.getX()>=0&&key.getX()+key.getWidth()<=width+1);keys++;}
++     KeyboardView view=new KeyboardView(new ContextThemeWrapper(c,KeyboardTheme.getKeyboardTheme(c).mStyleId),null,R.attr.keyboardViewStyle,id.equals("glass")?new GlassColors(dark):new FormaColors(dark,id,c.getResources()));
++     view.setKeyboard(k);view.setBackgroundColor(ThemeCatalog.background(id,dark));
++     Bitmap warmup=KeyAntV63Test.render(view,width,height);MechanicalCaps.awaitMaterials();org.robolectric.Shadows.shadowOf(android.os.Looper.getMainLooper()).idle();view.invalidateAllKeys();warmup.recycle();
++     Bitmap render=KeyAntV63Test.render(view,width,height);String file=id+"-"+mode+"-"+config+".png";
++     try(FileOutputStream stream=new FileOutputStream(new File(dir,file))){render.compress(Bitmap.CompressFormat.PNG,100,stream);}
++     int x=(config%2)*800,y=44+mode*672+(config/2)*336;
++     out.drawBitmap(render,new Rect(0,0,width,height),new Rect(x,y,x+width,y+height),null);render.recycle();
++     manifest.println(id+"\t"+ThemeCatalog.NAMES[index]+"\t"+ThemeCatalog.collection(id)+"\t"+requestedDark+"\t"+dark+"\t"+width+"\t"+split+"\t"+numbers+"\t"+ball+"\t"+layer+"\t"+keys+"\t"+file);count++;
++    }
++    try(FileOutputStream stream=new FileOutputStream(new File(dir,id+"-sheet.png"))){sheet.compress(Bitmap.CompressFormat.PNG,100,stream);}sheet.recycle();
++    if(index%20==0)System.out.println("AUDIT_THEME="+index+"/"+ThemeCatalog.IDS.length+" "+id);
++   }
++  }
++  System.out.println("AUDIT_THEMES="+ThemeCatalog.IDS.length+" NATIVE_RENDERS="+count);
++ }
++}
+diff --git a/docs/AUDIT-TEMI-0.6.96.tsv b/docs/AUDIT-TEMI-0.6.96.tsv
+new file mode 100644
+index 0000000..3696896
+--- /dev/null
++++ b/docs/AUDIT-TEMI-0.6.96.tsv
+@@ -0,0 +1,381 @@
++id	nome	raccolta	modalita_effettive	render_layout	render_barra	frame_modificati	controllo_visivo	note
++nova	Nova / Nebula	Materiali	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++glass	Liquid Glass	Stile Apple	chiaro,scuro	8	6	8	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Invio leggibile sul vetro chiaro; inchiostro personalizzato preservato.
++classic	Classic	Stile Apple	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++ceramic	Ceramica Pop	Materiali	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++vintage	Vintage Olive	Meccaniche	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++flat	Flat	Materiali	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++tab	Tab	Materiali	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++clear	Crystal	Materiali	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++neon	Neon Circuit	Materiali	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++orange	Orange	Materiali	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++spectrum	Spectrum	Materiali	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++pastel	Pastello	Materiali	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++graphite	Graphite Orange	Meccaniche	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++cloud	Nuvola Azzurra	Materiali	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++emerald	Smeraldo	Materiali	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++eva	EVA · Unit 01	Anime e nerd	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++doom	Doom · Latveria	Anime e nerd	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++iron	Iron · Reattore	Anime e nerd	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++ranger	Ranger · Verde	Anime e nerd	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++arcade	Arcade · Neon	Anime e nerd	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++carbon	Carbon · 75	Meccaniche	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++frost	Frost · OSA	Meccaniche	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++terminal	Terminal · Retro	Meccaniche	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++typewriter	Dot · Macchina da scrivere	Meccaniche	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++milk	Milk · Tasti tondi	Meccaniche	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++sakura	Sakura · Hanami	Anime e nerd	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++shinobi	Shinobi · Alba	Anime e nerd	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++saiyan	Saiyan · Energia	Anime e nerd	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++pirate	Pirata · Grand Line	Anime e nerd	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++moon	Luna · Magica	Anime e nerd	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++mecha	Mecha · RX	Anime e nerd	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++vapor	Vapor · Tokyo	Anime e nerd	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++volley	Volley · Corvo	Anime e nerd	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++hunter	Hunter · Smeraldo	Anime e nerd	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++alchemist	Alchimia · Acciaio	Anime e nerd	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++titan	Titani · Legione	Anime e nerd	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++soul	Soul · Eclisse	Anime e nerd	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++demon	Demoni · Glicine	Anime e nerd	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++art_mecha	Mecha · Illustrato	Tasti illustrati	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Controllo contrasto icone sul disegno; mantenuta palette originale.
++art_volley	Volley · Illustrato	Tasti illustrati	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Controllo contrasto icone sul disegno; mantenuta palette originale.
++art_moon	Luna · Illustrata	Tasti illustrati	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Controllo contrasto icone sul disegno; mantenuta palette originale.
++art_shinobi	Shinobi · Illustrato	Tasti illustrati	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Controllo contrasto icone sul disegno; mantenuta palette originale.
++art_eva	EVA · Tasti illustrati	Tasti illustrati	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Controllo contrasto icone sul disegno; mantenuta palette originale.
++retro_rgb	Retro · Colori primari	Meccaniche	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++vice	Vice · Viola e turchese	Meccaniche	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++heritage	Heritage · Crema e bordeaux	Meccaniche	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++forest	Forest · Pixel	Anime e nerd	chiaro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++charcoal_high	Charcoal · Profilo alto	Meccaniche	scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++charcoal_low	Charcoal · Profilo basso	Meccaniche	scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++slate_osa	Slate · Tasti scolpiti	Meccaniche	scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++porcelain_rgb	Porcelain · Colori	Meccaniche	chiaro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++xbox_clear	Xbox · Verde traslucido	Plastica traslucida	scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++captain_sa	Captain · Navy e bordeaux	Anime e nerd	scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++latveria_ivory	Latveria · Avorio e petrolio	Anime e nerd	chiaro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++art_samurai	Samurai · Inchiostro	Tasti illustrati	chiaro	8	6	8	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Controllo contrasto icone sul disegno; mantenuta palette originale.
++emerald_graphite	Smeraldo · Grafite	Anime e nerd	scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++emerald_orange	Smeraldo · Arancio	Anime e nerd	scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++art_hinata	Haikyuu · Hinata	Tasti illustrati	chiaro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Controllo contrasto icone sul disegno; mantenuta palette originale.
++art_mikey	Tokyo Revengers · Mikey	Tasti illustrati	scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Controllo contrasto icone sul disegno; mantenuta palette originale.
++art_wind	Wind Breaker · Sakura	Tasti illustrati	chiaro	8	6	8	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Controllo contrasto icone sul disegno; mantenuta palette originale.
++art_barbie_classic	Barbie · Classica	Tasti illustrati	chiaro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Controllo contrasto icone sul disegno; mantenuta palette originale.
++art_barbie_crystal	Barbie · Cristallo rosa	Tasti illustrati	chiaro	8	6	8	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Controllo contrasto icone sul disegno; mantenuta palette originale.
++shell_grape	Grape · Viola traslucido	Plastica traslucida	scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++shell_obsidian	Obsidian · Nero traslucido	Plastica traslucida	scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++shell_tangerine	Tangerine · Arancio traslucido	Plastica traslucida	scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++shell_bondi	Bondi · Azzurro traslucido	Plastica traslucida	scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++shell_blueberry	Blueberry · Blu traslucido	Plastica traslucida	scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++shell_ruby	Ruby · Rosa traslucido	Plastica traslucida	scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++art_naruto	Naruto · Spirale	Tasti illustrati	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Controllo contrasto icone sul disegno; mantenuta palette originale.
++art_sasuke	Sasuke · Fulmine	Tasti illustrati	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Controllo contrasto icone sul disegno; mantenuta palette originale.
++art_luffy	One Piece · Luffy	Tasti illustrati	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Controllo contrasto icone sul disegno; mantenuta palette originale.
++art_killua	Hunter × Hunter · Killua	Tasti illustrati	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Controllo contrasto icone sul disegno; mantenuta palette originale.
++art_edward	Fullmetal · Edward	Tasti illustrati	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Controllo contrasto icone sul disegno; mantenuta palette originale.
++art_gojo	Jujutsu · Gojo	Tasti illustrati	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Controllo contrasto icone sul disegno; mantenuta palette originale.
++art_tanjiro	Demon Slayer · Tanjiro	Tasti illustrati	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Controllo contrasto icone sul disegno; mantenuta palette originale.
++art_kageyama	Haikyuu · Kageyama	Tasti illustrati	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Controllo contrasto icone sul disegno; mantenuta palette originale.
++shell_barbie	Barbie · Rosa traslucido	Plastica traslucida	scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++mechanic_copper	Copper · Metallo satinato	Meccaniche	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++mechanic_ice	Glacier · Ceramica scolpita	Meccaniche	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++mechanic_round	Moka · Tasti tondi	Meccaniche	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++rose_mechanical	Noir Rose · Meccanica	Meccaniche	scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++rose_flat	Noir Rose · Profilo basso	Materiali	scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++rose_round	Noir Rose · Tasti tondi	Meccaniche	scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++liquid_clear	Liquid · Cristallo	Stile Apple	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++liquid_frost	Liquid · Ghiaccio	Stile Apple	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++liquid_dark	Liquid · Fumé	Stile Apple	scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++liquid_android	Android · Vetro blu	Stile Apple	scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++liquid_slim	Aqua · Vetro piatto	Stile Apple	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++liquid_switch	Amethyst · Meccanica glass	Stile Apple	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++liquid_pearl	Rose · Perle di vetro	Stile Apple	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++liquid_prism	Amber · Cristallo in rilievo	Stile Apple	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++porcelain_glass	iPhone · Bianco porcellana	Stile Apple	chiaro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++liquid_smoke	iPhone · Liquid fumé	Stile Apple	scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++xbox25_green	Xbox 25 · Crystal Green	Plastica traslucida	scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++xbox25_obsidian	Xbox 25 · Obsidian	Plastica traslucida	scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++emerald87_apple	Smeraldo · Rame piatto	Stile Apple	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++emerald87_keys	Smeraldo · Ambra meccanica	Meccaniche	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++emerald87_glass	Smeraldo · Vetro mandarino	Vetro inciso	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++chat_xbox	Xbox · Blu balloon	Plastica traslucida	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++chat_inverse	Xbox · Blu inverso	Plastica traslucida	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++chat_ios	iOS · Messaggi blu	Stile Apple	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++chat_glass	Vetro · Cobalto	Vetro inciso	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++chat_oled	OLED · Blu notte	Stile Apple	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++refcap_cloud_blue	Porcellana · Incavo rotondo	Tasti incassati	chiaro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++refglass_brackets	Fumé · Parentesi ambra	Vetro inciso	scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++refcap_apricot	Albicocca e cielo	Tasti incassati	chiaro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++refcap_coral	Corallo su avorio	Tasti incassati	chiaro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++refcap_graphite	Grafite e ambra	Tasti incassati	scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++refglass_pearl	Vetro perla	Vetro inciso	chiaro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++refglass_ink	Vetro inchiostro	Vetro inciso	scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++atelier_midnight_aura	Midnight Aura	Vetro inciso	scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++atelier_chalk	Gesso e albicocca	Tasti incassati	chiaro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++atelier_carbone	Carbone e ottone	Tasti incassati	scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++liquid_studio_denim	Denim · Cuciture	Materie d’autore	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++liquid_studio_stone	Ossidiana · Venature oro	Materie d’autore	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++liquid_studio_candy	Candy · Menta rossa	Materie d’autore	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++liquid_studio_nixie	Nixie · Tubo ambrato	Materie d’autore	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++liquid_studio_instrument	Studio · Strumento analogico	Materie d’autore	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++liquid_studio_typewriter	Lettera · Macchina da scrivere	Materie d’autore	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++liquid_studio_letterpress	Letterpress · Cotone	Materie d’autore	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++liquid_studio_terminal	Terminal · Fosforo	Materie d’autore	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++liquid_studio_ocean	Riviera · Resina marina	Materie d’autore	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++liquid_studio_opal	Opale · Iridescenza	Materie d’autore	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++liquid_studio_arcade	Arcade · Rubino	Materie d’autore	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++liquid_studio_copper	Rame · Spazzolato	Materie d’autore	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++liquid_vela_pearl	Vela · Perla	Stile Apple	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++liquid_vela_graphite	Vela · Grafite	Stile Apple	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++liquid_vela_rose	Vela · Rosa cipria	Stile Apple	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++liquid_vela_sage	Vela · Salvia	Stile Apple	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++liquid_satin_coral	Satin · Corallo	Satin	scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++liquid_satin_amber	Satin · Ambra	Satin	scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++liquid_satin_ice	Satin · Ghiaccio	Satin	scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++liquid_satin_rose	Satin · Rosa	Satin	scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++liquid_sapphire	Sapphire · Fumé azzurro	Stile Apple	scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++liquid_sapphire_day	Sapphire · Perla azzurra	Stile Apple	chiaro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++atelier_citrus	Citrus · Resina lime	Plastica traslucida	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++atelier_fuchsia	Fuchsia · Policarbonato	Plastica traslucida	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++liquid_horizon	Horizon · Vetro turchese	Stile Apple	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++liquid_violetmist	Violet Mist · Vetro opalino	Stile Apple	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++apple_pearl	iPhone · Perla calda	Stile Apple	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++apple_spaceblue	iPhone · Blu siderale	Stile Apple	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++atelier_travertine	Travertino · Pietra chiara	Materiali	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++atelier_graphene	Grafene · Titanio blu	Materiali	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++atelier_botanical	Botanical · OSA salvia	Meccaniche	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++atelier_nord	Nord · Tasti tondi	Meccaniche	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++atelier_frieren	Frieren · Argento e ametista	Anime e nerd	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++atelier_seijoh	Seijoh · Bianco e menta	Anime e nerd	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++art_atelier_koi	Koi · Porcellana e vermiglio	Tasti illustrati	chiaro,scuro	8	6	8	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Controllo contrasto icone sul disegno; mantenuta palette originale.
++art_atelier_lantern	Kyoto · Lanterne di carta	Tasti illustrati	chiaro,scuro	8	6	8	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Controllo contrasto icone sul disegno; mantenuta palette originale.
++motion_gyroscope	Giroscopio · Anelli di rame	Animati	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++motion_vinyl	Vinile · Giradischi	Animati	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++atelier_titanium	Titanium · Spazzolato	Materiali	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++atelier_espresso	Espresso · Avorio e rame	Meccaniche	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++atelier_seaglass	Sea Glass · Resina petrolio	Plastica traslucida	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++apple_graphite	iPhone · Grafite satinata	Stile Apple	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++liquid_arctic	Arctic · Cristallo polare	Stile Apple	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++atelier_aurora	Aurora · Mecha polare	Anime e nerd	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++art_atelier_eclipse	Eclisse · Corona solare	Tasti illustrati	chiaro,scuro	8	6	8	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Controllo contrasto icone sul disegno; mantenuta palette originale.
++motion_turbine	Turbina · Metallo cinetico	Animati	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++midnight_minimal	Midnight · Minimal	Materiali	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++motion_clockwork	Clockwork · Ingranaggi	Animati	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++motion_reels	Studio · Bobine	Animati	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++motion_orbit	Planetario · Orbite	Animati	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++atelier_mint	Mint · Policarbonato	Plastica traslucida	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++atelier_honey	Honey · Resina	Plastica traslucida	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++atelier_lavender	Lavender · Resina	Plastica traslucida	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++atelier_smoke	Smoke · Policarbonato	Plastica traslucida	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++atelier_reef	Reef · Resina	Plastica traslucida	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++liquid_lagoon	Lagoon · Vetro	Stile Apple	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++liquid_opal	Opal · Perla	Stile Apple	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++liquid_cobalt	Cobalt · Vetro	Stile Apple	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++liquid_champagne	Champagne · Cristallo	Stile Apple	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++liquid_jade	Jade · Vetro	Stile Apple	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++atelier_sand	Sand · Ceramica	Materiali	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++atelier_denim	Denim · Tessuto	Materiali	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++atelier_paper	Paper · Grafite	Materiali	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++atelier_matcha	Matcha · Ceramica	Materiali	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++atelier_mauve	Mauve · Satinato	Materiali	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++atelier_observatory	Observatory · OSA	Meccaniche	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++atelier_cafe	Café · Tasti tondi	Meccaniche	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++atelier_racing	Racing · Carbonio	Meccaniche	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++atelier_sunset	Sunset · Profilo alto	Meccaniche	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++atelier_marina	Marina · Scolpita	Meccaniche	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++atelier_rx	RX · Mobile suit	Anime e nerd	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++atelier_akatsuki	Akatsuki · Nuvola rossa	Anime e nerd	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++atelier_sage	Sage · Modo eremita	Anime e nerd	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++atelier_shoyo	Shoyo · Volo	Anime e nerd	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++atelier_spirit	Spirit · Energia	Anime e nerd	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++art_atelier_fuji	Fuji · Alba	Tasti illustrati	chiaro,scuro	8	6	8	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Controllo contrasto icone sul disegno; mantenuta palette originale.
++art_atelier_orbit	Orbita · Stelle	Tasti illustrati	chiaro,scuro	8	6	8	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Controllo contrasto icone sul disegno; mantenuta palette originale.
++art_atelier_sakura	Sakura · Petali	Tasti illustrati	chiaro,scuro	8	6	8	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Controllo contrasto icone sul disegno; mantenuta palette originale.
++art_atelier_wave	Onda · Indaco	Tasti illustrati	chiaro,scuro	8	6	8	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Controllo contrasto icone sul disegno; mantenuta palette originale.
++art_atelier_city	Tokyo · Notturno	Tasti illustrati	chiaro,scuro	8	6	8	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Controllo contrasto icone sul disegno; mantenuta palette originale.
++art_atelier_gears	Orologeria · Ottone	Tasti illustrati	chiaro,scuro	8	6	8	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Controllo contrasto icone sul disegno; mantenuta palette originale.
++art_atelier_circuit	Circuito · Grafite	Tasti illustrati	chiaro,scuro	8	6	8	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Controllo contrasto icone sul disegno; mantenuta palette originale.
++art_atelier_dunes	Dune · Sabbia	Tasti illustrati	chiaro,scuro	8	6	8	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Controllo contrasto icone sul disegno; mantenuta palette originale.
++resin_malachite	Malachite · Resina minerale	Plastica traslucida	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++resin_coralline	Coralline · Resina pesca	Plastica traslucida	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++resin_quartz	Quarzo · Policarbonato fumé	Plastica traslucida	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++resin_abyss	Abisso · Resina blu	Plastica traslucida	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++resin_citrine	Citrino · Miele traslucido	Plastica traslucida	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++liquid_dew	Rugiada · Vetro salvia	Stile Apple	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++liquid_inkstone	Inkstone · Vetro inchiostro	Stile Apple	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++liquid_ametrine	Ametrina · Vetro bicolore	Stile Apple	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++liquid_pelagic	Pelago · Cristallo marino	Stile Apple	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++liquid_fireopal	Opale di fuoco · Vetro rame	Stile Apple	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++liquid_smoke_day	iPhone · Liquid perla	Stile Apple	chiaro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++liquid_smoke_auto	iPhone · Fumé e Perla · Automatico	Stile Apple	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++apple_moonstone	Moonstone · iOS pietra lunare	Stile Apple	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++apple_linen	Lino · iOS avorio	Stile Apple	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++apple_seasalt	Sale marino · iOS menta	Stile Apple	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++material_basalt	Basalto · Ceramica vulcanica	Materiali	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++material_suede	Suede · Sabbia e cacao	Materiali	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++material_kiln	Fornace · Smalto celeste	Materiali	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++material_brushed	Ottone · Metallo inciso	Materiali	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++material_moss	Muschio · Pietra levigata	Materiali	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++mech_lunaris	Lunaris · Tasti scolpiti	Meccaniche	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++mech_brassline	Brassline · Avorio e ottone	Meccaniche	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++mech_walnut	Noce · Tasti alti	Meccaniche	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++mech_cobaltica	Cobaltica · Profilo OSA	Meccaniche	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++mech_synth	Synth · Terminale viola	Meccaniche	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++nerd_nekoma	Nekoma · Circuito rosso	Anime e nerd	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++nerd_starlancer	Starlancer · Armatura celeste	Anime e nerd	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++nerd_violet	Violet · Lettere e ametista	Anime e nerd	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++nerd_foxfire	Foxfire · Sigillo ambra	Anime e nerd	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++nerd_quantum	Quantum · Console petrolio	Anime e nerd	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++art_639_reef	Corallia · Fondale	Tasti illustrati	chiaro,scuro	8	6	8	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Controllo contrasto icone sul disegno; mantenuta palette originale.
++art_639_kintsugi	Kintsugi · Fratture d’oro	Tasti illustrati	chiaro,scuro	8	6	8	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Controllo contrasto icone sul disegno; mantenuta palette originale.
++art_639_astrolabe	Astrolabio · Carta celeste	Tasti illustrati	chiaro,scuro	8	6	8	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Controllo contrasto icone sul disegno; mantenuta palette originale.
++art_639_terrace	Terrazze · Paesaggio	Tasti illustrati	chiaro,scuro	8	6	8	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Controllo contrasto icone sul disegno; mantenuta palette originale.
++art_639_origami	Origami · Gru di carta	Tasti illustrati	chiaro,scuro	8	6	8	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Controllo contrasto icone sul disegno; mantenuta palette originale.
++motion_orrery	Elios · Sistema orbitale	Animati	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++motion_escapement	Scappamento · Meccanica	Animati	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++motion_reactor	Nucleo · Reattore	Animati	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++motion_pendulum	Equilibrio · Pendolo	Animati	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++motion_helix	Elica · Cristallo cinetico	Animati	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++piddu_rosewood	Rosalia · Meccanica	PIDDU	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++piddu_noir	Velour · Nero e rosa	PIDDU	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++piddu_round	Confetto · Tasti tondi	PIDDU	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++piddu_flat	Cipria · Profilo piatto	PIDDU	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++piddu_glass	Rosalume · Vetro	PIDDU	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++piddu_metal	Rame di rosa · Satinato	PIDDU	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++piddu_optical	Fucsia · Basi luminose	PIDDU	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++piddu_shade	Sfumella · Rosa e carbone	PIDDU	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++piddu_ceramic	Marshmallow · Ceramica	PIDDU	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++piddu_type	Rosaline · Dattilo	PIDDU	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++tonal_coral646	Corallo · Alba tenue	Sfumature	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++tonal_ink646	Inchiostro · Blu notte	Sfumature	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++apple_legacy646	iOS · Classica satinata	Stile Apple	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++apple_flat646	iOS · Essenziale	Stile Apple	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++series_b99	Brooklyn 99 · Distintivo	Serie TV	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++series_community	Community · Greendale	Serie TV	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++series_himym_rain	HIMYM · Pioggia a Manhattan	Serie TV	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++series_lost_terminal	Lost · 108 minuti	Serie TV	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++series_chuck_herd	Chuck · Nerd Herd	Serie TV	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++atelier_karasuno646	Karasuno · Fly high	Anime e nerd	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++atelier_major646	Major · Diamante	Anime e nerd	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++atelier_monster646	Monster · Ombre di Praga	Anime e nerd	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++art_646_ginkgo	Ginkgo · Foglie d’oro	Tasti illustrati	chiaro,scuro	8	6	8	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Controllo contrasto icone sul disegno; mantenuta palette originale.
++art_646_lunar	Lunaria · Carta e indaco	Tasti illustrati	chiaro,scuro	8	6	8	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Controllo contrasto icone sul disegno; mantenuta palette originale.
++motion_iris646	Iride · Diaframma ottico	Animati	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++motion_foucault646	Foucault · Pendolo orbitale	Animati	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++motion_wave646	Risonanza · Nastri metallici	Animati	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++piddu_pop647	Rosapop · Console tonda	PIDDU	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++piddu_bubble647	Bubblegum · Tutto rosa	PIDDU	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++piddu_petalo647	Petalia · Piatta	PIDDU	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++piddu_flamingo647	Fenicottero · Meccanica	PIDDU	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++piddu_jelly647	Gelatina · Vetro rosa	PIDDU	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++piddu_ribbon647	Nastro · Rosa e inchiostro	PIDDU	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++piddu_sorbet647	Sorbetto · Rosa e perla	PIDDU	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++piddu_aurora647	Rosaurora · Sfumatura	PIDDU	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++show_ruby	Rubino · Scocca cristallo	Showroom	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++show_mint	Marea · PBT e menta	Showroom	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++show_graphite	Modulo · Grafite e ciano	Showroom	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++show_nebula	Ultraviolet · Acrilico arcade	Showroom	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++show_alloy	Settore 13 · Alluminio tecnico	Showroom	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++show_comic	Storyboard · Avorio stampato	Showroom	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++show_rose	Rosalite · Acrilico satinato	Showroom	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++show_red	Lacca · Vermiglio e oro	Showroom	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++show_ivory	Avorio · Profilo scolpito	Showroom	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++show_navy	Ardesia · Profilo basso	Showroom	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++show_retro	Radio · PBT crema e rosso	Showroom	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++show_white	Neve · Alluminio flat	Showroom	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++show_coral	Porto · Navy e corallo	Showroom	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++series_himym	HIMYM · Manhattan	Serie TV	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++series_lost	Lost · Hatch	Serie TV	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++series_chuck	Chuck · Intersect	Serie TV	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++series_friends	Friends · Central Perk	Serie TV	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++series_scrubs	Scrubs · Sacred Heart	Serie TV	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++series_office	The Office · Scranton	Serie TV	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++series_breaking	Breaking Bad · Albuquerque	Serie TV	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++series_haikyuu	Haikyuu!! · Match Point	Anime e nerd	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++ps30	PlayStation 30 · Heritage grey	Plastica traslucida	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++luma_ember	Braci · Ambra e grafite	Basi luminose	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++luma_ice	Boreale · Ghiaccio	Basi luminose	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++luma_orchid	Orchidea · Vetro viola	Basi luminose	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++luma_moss	Selva · Verde minerale	Basi luminose	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++luma_silver	Argon · Argento	Basi luminose	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++luma_rose	Rosetta · Rame rosa	Basi luminose	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++tonal_graphite	Strati · Grafite	Sfumature	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++tonal_cinder	Cenere · Terracotta	Sfumature	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++tonal_blush	Petalo · Rosso tenue	Sfumature	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++tonal_tide	Fondale · Petrolio	Sfumature	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++tonal_sage	Erbario · Salvia	Sfumature	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++tonal_lilac	Vespro · Malva	Sfumature	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++bench_pidu_rose	China · Tutto rosa	PIDDU	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++bench_pidu_pinkblack	China · Rosa su nero	PIDDU	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++bench_pidu_blackpink	China · Nero su rosa	PIDDU	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++bench_pidu_cup	Coppa · Petali rosa	PIDDU	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++bench_pidu_film	Pellicola · Quarzo rosa	PIDDU	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++bench_draw_twilight	China · Viola e ambra	Disegno	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Decorazione del materiale sorgente renderizzata nelle dimensioni reali; niente schiacciamento della spaziatrice.
++bench_seafoam	Lamina · Laguna	Profili scolpiti	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++bench_paper	Disegno · Carta	Profili scolpiti	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++bench_ink	Disegno · China	Profili scolpiti	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++bench_draw_noir	China · Fumé nero	Disegno	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Decorazione del materiale sorgente renderizzata nelle dimensioni reali; niente schiacciamento della spaziatrice.
++bench_draw_violet	China · Vetro viola	Disegno	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Decorazione del materiale sorgente renderizzata nelle dimensioni reali; niente schiacciamento della spaziatrice.
++bench_draw_ocean	China · Cristallo blu	Disegno	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Decorazione del materiale sorgente renderizzata nelle dimensioni reali; niente schiacciamento della spaziatrice.
++bench_draw_graphite	China · Rosso	Disegno	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Decorazione del materiale sorgente renderizzata nelle dimensioni reali; niente schiacciamento della spaziatrice.
++bench_draw_android	China · Android vetro blu	Disegno	scuro	8	6	8	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Decorazione del materiale sorgente renderizzata nelle dimensioni reali; niente schiacciamento della spaziatrice.
++bench_draw_essential	China · Essenziale	Disegno	chiaro,scuro	8	6	8	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Decorazione del materiale sorgente renderizzata nelle dimensioni reali; niente schiacciamento della spaziatrice.
++bench_draw_xbox	China · Verde traslucido	Disegno	scuro	8	6	8	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Decorazione del materiale sorgente renderizzata nelle dimensioni reali; niente schiacciamento della spaziatrice.
++bench_draw_smoke	China · Fumé e Perla	Disegno	chiaro,scuro	8	6	8	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Decorazione del materiale sorgente renderizzata nelle dimensioni reali; niente schiacciamento della spaziatrice.
++bench_draw_sapphire	China · Sapphire	Disegno	scuro	8	6	8	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Decorazione del materiale sorgente renderizzata nelle dimensioni reali; niente schiacciamento della spaziatrice.
++bench_draw_ps30	China · Heritage grey	Disegno	chiaro,scuro	8	6	8	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Decorazione del materiale sorgente renderizzata nelle dimensioni reali; niente schiacciamento della spaziatrice.
++bench_draw_himym	China · Manhattan	Disegno	chiaro,scuro	8	6	8	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Decorazione del materiale sorgente renderizzata nelle dimensioni reali; niente schiacciamento della spaziatrice.
++bench_draw_hinata	China · Hinata	Disegno	chiaro	8	6	8	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Decorazione del materiale sorgente renderizzata nelle dimensioni reali; niente schiacciamento della spaziatrice.
++bench_mint	Coppa · Menta	Profili scolpiti	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++bench_bronze	Campana · Ambra	Profili scolpiti	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++bench_slate	Campana · Ardesia	Profili scolpiti	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++bench_steel	Lamina · Acciaio	Profili scolpiti	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++bench_prism	Pellicola · Prisma	Profili scolpiti	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++bench_walnut	Intaglio · Noce	Profili scolpiti	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++vice84_socket	GTA · Incavo	Tasti incassati	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++doom84_socket	Doctor Doom · Incavo	Tasti incassati	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++vice84_etched	GTA · Vetro inciso	Vetro inciso	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++doom84_etched	Doctor Doom · Vetro inciso	Vetro inciso	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++vice84_sculpt	GTA · Coppa	Profili scolpiti	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++doom84_sculpt	Doctor Doom · Coppa	Profili scolpiti	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++vice84_ink	GTA · China	Disegno	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++doom84_ink	Doctor Doom · China	Disegno	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++vice84_atelier	GTA · Rame spazzolato	Materie d’autore	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++doom84_atelier	Doctor Doom · Rame spazzolato	Materie d’autore	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++vice84_satin	GTA · Satin	Satin	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++doom84_satin	Doctor Doom · Satin	Satin	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++vice84_glow	GTA · Retroilluminata	Basi luminose	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++doom84_glow	Doctor Doom · Retroilluminata	Basi luminose	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++vice84_fade	GTA · Sfumatura	Sfumature	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++doom84_fade	Doctor Doom · Sfumatura	Sfumature	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++vice84_show	GTA · Lega	Showroom	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++doom84_show	Doctor Doom · Lega	Showroom	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++vice84_shell	GTA · Traslucida	Plastica traslucida	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++doom84_shell	Doctor Doom · Traslucida	Plastica traslucida	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++vice84_apple	GTA · Fumé	Stile Apple	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++doom84_apple	Doctor Doom · Fumé	Stile Apple	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++vice84_stone	GTA · Smalto	Materiali	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++doom84_stone	Doctor Doom · Smalto	Materiali	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++vice84_mech	GTA · Meccanica	Meccaniche	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++doom84_mech	Doctor Doom · Meccanica	Meccaniche	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++vice84_nerd	GTA · Arcade	Anime e nerd	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++doom84_nerd	Doctor Doom · Arcade	Anime e nerd	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++vice84_cinema	GTA · Cinematica	Serie TV	chiaro,scuro	8	6	8	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++doom84_cinema	Doctor Doom · Cinematica	Serie TV	chiaro,scuro	8	6	8	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++vice84_print	GTA · Panorama	Tasti illustrati	chiaro,scuro	8	6	8	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++doom84_print	Doctor Doom · Panorama	Tasti illustrati	chiaro,scuro	8	6	8	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++vice84_kinetic	GTA · In movimento	Animati	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++doom84_kinetic	Doctor Doom · In movimento	Animati	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++vice84_piddu	GTA · Confetto	PIDDU	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++doom84_piddu	Doctor Doom · Confetto	PIDDU	chiaro,scuro	8	6	0	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Profilo e proporzioni conservati; nessun riferimento esterno specifico fornito.
++ref91_nebula	Air75 · Nebula	NuPhy · Scolpiti	chiaro,scuro	8	6	8	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Riferimenti forniti: NuPhy scolpita, Smalto quasi quadrato, iOS uniforme; verificati comandi/RGB e layout larghi.
++ref91_bh65	BH65 · Viola e giada	NuPhy · Scolpiti	chiaro,scuro	8	6	8	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Riferimenti forniti: NuPhy scolpita, Smalto quasi quadrato, iOS uniforme; verificati comandi/RGB e layout larghi.
++ref91_nuphy	NuPhy · Ambra	NuPhy · Scolpiti	chiaro,scuro	8	6	8	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Riferimenti forniti: NuPhy scolpita, Smalto quasi quadrato, iOS uniforme; verificati comandi/RGB e layout larghi.
++ref91_field	Field75 · Electro	NuPhy · Scolpiti	chiaro,scuro	8	6	8	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Riferimenti forniti: NuPhy scolpita, Smalto quasi quadrato, iOS uniforme; verificati comandi/RGB e layout larghi.
++ref91_gem	Gem80 · Mystic Indigo	NuPhy · Scolpiti	chiaro,scuro	8	6	8	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Riferimenti forniti: NuPhy scolpita, Smalto quasi quadrato, iOS uniforme; verificati comandi/RGB e layout larghi.
++ref91_lagoon	Halo · Blue Lagoon	NuPhy · Scolpiti	chiaro,scuro	8	6	8	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Riferimenti forniti: NuPhy scolpita, Smalto quasi quadrato, iOS uniforme; verificati comandi/RGB e layout larghi.
++ref91_node	Node75 · Ink Gray	NuPhy · Scolpiti	chiaro,scuro	8	6	8	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Riferimenti forniti: NuPhy scolpita, Smalto quasi quadrato, iOS uniforme; verificati comandi/RGB e layout larghi.
++ref91_primary	Smalto · Colori primari	Smalto · Satinato	chiaro,scuro	8	6	8	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Riferimenti forniti: NuPhy scolpita, Smalto quasi quadrato, iOS uniforme; verificati comandi/RGB e layout larghi.
++ref91_silver	Smalto · Argento e rubino	Smalto · Satinato	chiaro,scuro	8	6	8	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Riferimenti forniti: NuPhy scolpita, Smalto quasi quadrato, iOS uniforme; verificati comandi/RGB e layout larghi.
++ref91_amber	Smalto · Ambra e grafite	Smalto · Satinato	chiaro,scuro	8	6	8	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Riferimenti forniti: NuPhy scolpita, Smalto quasi quadrato, iOS uniforme; verificati comandi/RGB e layout larghi.
++ref91_jade	Smalto · Giada e limone	Smalto · Satinato	chiaro,scuro	8	6	8	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Riferimenti forniti: NuPhy scolpita, Smalto quasi quadrato, iOS uniforme; verificati comandi/RGB e layout larghi.
++ref91_duo	iOS · Coordinata	iOS · Chiaro e scuro	chiaro,scuro	8	6	8	Compatta chiaro/scuro: esaminata in tavole; confronto digitale degli 8 frame; dettagli mirati	Riferimenti forniti: NuPhy scolpita, Smalto quasi quadrato, iOS uniforme; verificati comandi/RGB e layout larghi.
+diff --git a/docs/CONTINUITA-0.6.96.md b/docs/CONTINUITA-0.6.96.md
+new file mode 100644
+index 0000000..fa926be
+--- /dev/null
++++ b/docs/CONTINUITA-0.6.96.md
+@@ -0,0 +1,23 @@
++# KeyAnt 0.6.96 — revisione dei temi
++
++Base: sorgente completo 0.6.95, commit 0f7d8b57defbf3aed690dfea3cc28fc13fe4e357.
++VersionCode 123, pacchetto it.keyant.keyboard, firma originale. Installare sopra la precedente senza disinstallare.
++
++## Problemi corretti
++
++- I comandi NuPhy venivano ristretti come lettere in base al rapporto larghezza/altezza. Il ruolo geometrico ora passa esplicitamente attraverso renderer, geometria, RGB, Maker e anteprime. Spalla e piede usano la stessa scala verticale nella riga.
++- Smalto aveva tasti troppo alti: proporzioni predefinite quasi quadrate e raggio più vicino al riferimento. Le altezze manuali restano prioritarie. Bilanciamento delle altre famiglie conservato.
++- Vetro chiaro: icona Invio leggibile. La barra coordinata riconosce anche GlassColors e la sua modalità effettiva, evitando superfici chiare e icone LED estranee nel tema scuro. Temi illustrati: contrasto locale delle icone, rispettando l'inchiostro manuale. Decorazioni dei materiali sorgente senza deformazione sulla spaziatrice.
++- Anteprima riutilizzata: ricostruzione del renderer quando cambiano tema o modalità.
++
++## Verifiche e limiti
++
++Inventario di 380 temi in AUDIT-TEMI-0.6.96.tsv. Render Android nativi per entrambe le modalità richieste e quattro configurazioni: lettere compatte, simboli con trackball, orizzontale largo con numeri, divisa con simboli secondari. Il manifest distingue modalità richiesta ed effettiva per le palette fisse.
++
++Tavole compatte chiaro/scuro esaminate tema per tema, confronto digitale degli otto frame rispetto alla 0.6.95 e ispezione delle differenze. Dettagli mirati sui riferimenti NuPhy/Smalto, comandi, RGB, vetro, stampe e decorazioni. Barra stock/coordinata/solo icone renderizzata per tutti i temi. Il rapporto riporta i risultati effettivi e distingue metodi, configurazioni e immagini.
++
++Non è una garanzia di identità pixel per pixel con riferimenti non forniti, né una prova sul Fold fisico o una misura FPS/HDR. Il renderer dei test non include tutti gli overlay IME: la configurazione con trackball controlla lo spazio riservato e i comandi, non simula il telefono intero.
++
++## Continuità
++
++Il ramo GitHub main conserva documenti e patch. Il progetto Android completo è nell'allegato KeyAnt-0.6.96-sorgenti.zip, la cronologia in KeyAnt-0.6.96.bundle. Non usare gli archivi automatici GitHub Source code come progetto completo. La patch è applicabile alla base 0.6.95. L'audit allegato conserva immagini native, manifest e registro per tema. Chiavi di firma, credenziali, build e video personali sono esclusi dai sorgenti pubblici.
+diff --git a/docs/VERIFICHE-0.6.96.txt b/docs/VERIFICHE-0.6.96.txt
+new file mode 100644
+index 0000000..1851ee5
+--- /dev/null
++++ b/docs/VERIFICHE-0.6.96.txt
+@@ -0,0 +1,72 @@
++KeyAnt 0.6.96 / versionCode 123
++
++Verifica finale: 60 metodi JUnit, 0 fallimenti (regressioni e audit in JVM separate).
++Robolectric API35 con renderer Android nativo e materiali attesi prima della cattura; JDK21 / Gradle8.14 / SDK36.
++380 temi inventariati singolarmente. 3040 render: 2 modalità richieste x 4 layout.
++I temi con palette fissa mantengono la loro modalità effettiva, registrata nel manifest.
++Layout: compatto lettere; compatto simboli con trackball; largo orizzontale con numeri;
++largo diviso con simboli secondari. 2280 render della barra: stock, coordinata, solo icone.
++Confronto digitale di tutti gli 8 frame per tema rispetto alla 0.6.95:
++46 temi con differenze, 334 temi identici negli 8 frame.
++Revisione visiva delle tavole compatte chiaro/scuro di tutti i temi, poi delle differenze.
++Ispezioni ravvicinate mirate di NuPhy, Smalto, vetro, decorazioni e icone stampate.
++Non è una verifica manuale pixel per pixel di ogni frame e di ogni combinazione possibile.
++
++Correzioni: comandi NuPhy non ristretti dalla geometria delle lettere; allineamento
++verticale e RGB coerenti; Smalto quasi quadrato senza cambiare le altezze manuali;
++Invio leggibile e barra coordinata corretta nel vetro chiaro/scuro; decorazioni larghe non deformate; contrasto delle
++icone stampate con precedenza all'inchiostro manuale; anteprime aggiornate al cambio tema.
++KeyboardBuilder e KeyboardParams identici alla 0.6.95; la modifica al bilanciamento
++è limitata al profilo Smalto. Conservati menu/RGB e proporzioni orizzontali precedenti.
++Regressioni incluse: geometria, tap reali nel renderer, Maker, barra, assistente e rotazione.
++
++Limiti: nessuna prova sul Fold fisico; nessuna misura FPS/HDR. Riferimenti esterni
++completi non disponibili per ogni tema. I test non garantiscono assenza di bug.
++
++Build riuscita. Firma originale, ZIP integro, zipalign 16KiB, debuggable=false.
++APK SHA256: 51f58a95ca2d3064d6cdbe29742b6dceac5d76c5b3ca5c3795612d7d92da1fa0
++
++TOOLBAR_NATIVE_RENDERS=2280
++KeyAnt696Test: 9 checks, 0 failures
++GEOMETRY_CASES=10800
++LIVE_RENDERS=72
++OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
++INPUT_TAPS=936
++EXTRA_LAYOUT_RENDERS=18
++KeyAntVisual692Test: 10 checks, 0 failures
++TOOLBAR_THEME_CASES=1520
++NATIVE_THEME_BAR_RENDERS=48
++KeyAntVisual693Test: 8 checks, 0 failures
++KeyAnt694Test: 7 checks, 0 failures
++KeyAntUi694Test: 1 checks, 0 failures
++KeyAntGeometryTest: 3 checks, 0 failures
++KeyAntV47Test: 12 checks, 0 failures
++KeyAntCoordination693Test: 3 checks, 0 failures
++KeyAntV625Test: 6 checks, 0 failures
++TOTAL 59; FAILED 0; seconds 59
++
++SEPARATE JVM RUNS: REGRESSIONS / CATALOG AUDIT
++AUDIT_THEME=0/380 nova
++AUDIT_THEME=20/380 carbon
++AUDIT_THEME=40/380 art_moon
++AUDIT_THEME=60/380 art_barbie_classic
++AUDIT_THEME=80/380 rose_mechanical
++AUDIT_THEME=100/380 chat_ios
++AUDIT_THEME=120/380 liquid_studio_terminal
++AUDIT_THEME=140/380 apple_spaceblue
++AUDIT_THEME=160/380 motion_clockwork
++AUDIT_THEME=180/380 atelier_racing
++AUDIT_THEME=200/380 resin_citrine
++AUDIT_THEME=220/380 mech_synth
++AUDIT_THEME=240/380 piddu_glass
++AUDIT_THEME=260/380 motion_iris646
++AUDIT_THEME=280/380 show_navy
++AUDIT_THEME=300/380 tonal_cinder
++AUDIT_THEME=320/380 bench_draw_xbox
++AUDIT_THEME=340/380 vice84_atelier
++AUDIT_THEME=360/380 vice84_cinema
++AUDIT_THEMES=380 NATIVE_RENDERS=3040
++KeyAntAudit696Test: 1 checks, 0 failures
++TOTAL 1; FAILED 0; seconds 207
++
++TOTAL 60; FAILED 0; seconds 340

@@ -12,3 +12,7 @@
 - Consegnare un link diretto sandbox all'APK verificata. Non sostituirlo con un link Library già segnalato come non funzionante.
 - In orizzontale mantenere le proporzioni bilanciate precedenti alla 0.6.94: il margine laterale e la riduzione al 90% sui display larghi evitano tasti eccessivamente allungati. Non eliminarli per riempire lo schermo. Preservare insets Android e regolazioni manuali; verificare Fold aperto/chiuso, tap reali, numeri, split e rotazione.
 - Menu strumenti: fasce separate per icona ed etichetta, testo ingrandito e modalità modifica verificati. Il comando RGB coordinato deve accendere un effetto visibile e seguire il tema, con stato e anteprima.
+- Distinguere il ruolo geometrico dei tasti funzione dalle lettere anche in RGB, Maker e anteprime: una soglia basata sul rapporto larghezza/altezza non deve restringere i comandi. Spalla e piede devono restare allineati nella riga.
+- Conservare un inventario per ogni tema con modalità effettiva, render nativo e confronto prima/dopo. Non trasformare il conteggio delle immagini in una dichiarazione di verifica manuale integrale o perfezione.
+- Smalto usa proporzioni predefinite quasi quadrate, NuPhy lettere scolpite più alte. Le altezze impostate manualmente hanno precedenza; il bilanciamento orizzontale delle altre famiglie va preservato.
+- Le anteprime riutilizzate devono ricostruire il renderer al cambio di tema/modalità. Il contrasto automatico delle icone stampate deve rispettare l'inchiostro scelto dall'utente.

@@ -1,3 +1,11 @@
+# KeyAnt 0.6.96
+
+Corretti i tasti funzione NuPhy, le proporzioni Smalto, l’Invio sul vetro chiaro e la barra Vetro coordinata. Migliorati contrasto delle icone stampate, decorazioni della spaziatrice e aggiornamento delle anteprime. Conservate regolazioni manuali e proporzioni orizzontali della 0.6.95. VersionCode 123.
+
+Revisione dei 380 temi con render Android, registro individuale e confronto prima/dopo. Vedi [continuità](docs/CONTINUITA-0.6.96.md), [verifiche](docs/VERIFICHE-0.6.96.txt) e [inventario](docs/AUDIT-TEMI-0.6.96.tsv). APK firmata, audit visivo, sorgenti completi, bundle e patch allegati alla release. Nessuna prova sul telefono fisico o garanzia di assenza di bug.
+
+---
+
 # KeyAnt 0.6.95
 
 Ripristinate le proporzioni equilibrate in orizzontale della 0.6.93, evitando l’allungamento dei tasti introdotto nella 0.6.94. Conservate le migliorie a menu, RGB e impostazioni. VersionCode 122.
@@ -55,3 +63,4 @@ La [continuità della 0.6.81](docs/CONTINUITA-0.6.81.md) raccoglie i percorsi ne
 Chiavi personali, credenziali e build temporanee sono escluse. La chiave originale è necessaria per aggiornare l’installazione personale; una build con firma diversa non è compatibile come aggiornamento.
 
 Conservati sorgenti, licenze e attribuzioni della base [HeliBoard](https://github.com/Helium314/HeliBoard). Gli asset che richiamano marchi e opere mantengono i diritti dei rispettivi titolari; la licenza del codice non concede diritti aggiuntivi su tali opere.
+

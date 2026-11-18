@@ -1,0 +1,3 @@
+Progetto Android completo: commit 31e8b06b6001050ff7b23b80ef7faa0db7317e94
+Base 0.6.95: 0f7d8b57defbf3aed690dfea3cc28fc13fe4e357
+Vedere gli allegati sorgenti.zip e bundle della release.

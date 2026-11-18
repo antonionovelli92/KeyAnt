@@ -1,0 +1,72 @@
+KeyAnt 0.6.96 / versionCode 123
+
+Verifica finale: 60 metodi JUnit, 0 fallimenti (regressioni e audit in JVM separate).
+Robolectric API35 con renderer Android nativo e materiali attesi prima della cattura; JDK21 / Gradle8.14 / SDK36.
+380 temi inventariati singolarmente. 3040 render: 2 modalità richieste x 4 layout.
+I temi con palette fissa mantengono la loro modalità effettiva, registrata nel manifest.
+Layout: compatto lettere; compatto simboli con trackball; largo orizzontale con numeri;
+largo diviso con simboli secondari. 2280 render della barra: stock, coordinata, solo icone.
+Confronto digitale di tutti gli 8 frame per tema rispetto alla 0.6.95:
+46 temi con differenze, 334 temi identici negli 8 frame.
+Revisione visiva delle tavole compatte chiaro/scuro di tutti i temi, poi delle differenze.
+Ispezioni ravvicinate mirate di NuPhy, Smalto, vetro, decorazioni e icone stampate.
+Non è una verifica manuale pixel per pixel di ogni frame e di ogni combinazione possibile.
+
+Correzioni: comandi NuPhy non ristretti dalla geometria delle lettere; allineamento
+verticale e RGB coerenti; Smalto quasi quadrato senza cambiare le altezze manuali;
+Invio leggibile e barra coordinata corretta nel vetro chiaro/scuro; decorazioni larghe non deformate; contrasto delle
+icone stampate con precedenza all'inchiostro manuale; anteprime aggiornate al cambio tema.
+KeyboardBuilder e KeyboardParams identici alla 0.6.95; la modifica al bilanciamento
+è limitata al profilo Smalto. Conservati menu/RGB e proporzioni orizzontali precedenti.
+Regressioni incluse: geometria, tap reali nel renderer, Maker, barra, assistente e rotazione.
+
+Limiti: nessuna prova sul Fold fisico; nessuna misura FPS/HDR. Riferimenti esterni
+completi non disponibili per ogni tema. I test non garantiscono assenza di bug.
+
+Build riuscita. Firma originale, ZIP integro, zipalign 16KiB, debuggable=false.
+APK SHA256: 51f58a95ca2d3064d6cdbe29742b6dceac5d76c5b3ca5c3795612d7d92da1fa0
+
+TOOLBAR_NATIVE_RENDERS=2280
+KeyAnt696Test: 9 checks, 0 failures
+GEOMETRY_CASES=10800
+LIVE_RENDERS=72
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+INPUT_TAPS=936
+EXTRA_LAYOUT_RENDERS=18
+KeyAntVisual692Test: 10 checks, 0 failures
+TOOLBAR_THEME_CASES=1520
+NATIVE_THEME_BAR_RENDERS=48
+KeyAntVisual693Test: 8 checks, 0 failures
+KeyAnt694Test: 7 checks, 0 failures
+KeyAntUi694Test: 1 checks, 0 failures
+KeyAntGeometryTest: 3 checks, 0 failures
+KeyAntV47Test: 12 checks, 0 failures
+KeyAntCoordination693Test: 3 checks, 0 failures
+KeyAntV625Test: 6 checks, 0 failures
+TOTAL 59; FAILED 0; seconds 59
+
+SEPARATE JVM RUNS: REGRESSIONS / CATALOG AUDIT
+AUDIT_THEME=0/380 nova
+AUDIT_THEME=20/380 carbon
+AUDIT_THEME=40/380 art_moon
+AUDIT_THEME=60/380 art_barbie_classic
+AUDIT_THEME=80/380 rose_mechanical
+AUDIT_THEME=100/380 chat_ios
+AUDIT_THEME=120/380 liquid_studio_terminal
+AUDIT_THEME=140/380 apple_spaceblue
+AUDIT_THEME=160/380 motion_clockwork
+AUDIT_THEME=180/380 atelier_racing
+AUDIT_THEME=200/380 resin_citrine
+AUDIT_THEME=220/380 mech_synth
+AUDIT_THEME=240/380 piddu_glass
+AUDIT_THEME=260/380 motion_iris646
+AUDIT_THEME=280/380 show_navy
+AUDIT_THEME=300/380 tonal_cinder
+AUDIT_THEME=320/380 bench_draw_xbox
+AUDIT_THEME=340/380 vice84_atelier
+AUDIT_THEME=360/380 vice84_cinema
+AUDIT_THEMES=380 NATIVE_RENDERS=3040
+KeyAntAudit696Test: 1 checks, 0 failures
+TOTAL 1; FAILED 0; seconds 207
+
+TOTAL 60; FAILED 0; seconds 340
