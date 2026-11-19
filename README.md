@@ -1,3 +1,11 @@
+# KeyAnt 0.6.98
+
+Angoli arrotondati riuniti in Aspetto del tema con preferenza condivisa; pannello inizialmente chiuso, anteprime aggiornate al cambio tema, categoria Scolpiti. ANT con glow leggero e suggerimenti contestuali; anteprime silenziose senza toast, caching aptico e revisione contestuale locale esplicita. VersionCode 125.
+
+[Continuità e ricostruzione](docs/CONTINUITA-0.6.98.md), [verifiche e limiti](docs/VERIFICHE-0.6.98.txt), [inventario temi](docs/AUDIT-TEMI-0.6.98.tsv). APK firmata consegnata direttamente in chat; **release binaria 0.6.98 non pubblicata**, perché il browser richiede accesso GitHub. Il codice completo è ricostruibile dai sorgenti 0.6.97 e dalla [patch completa](patches/KeyAnt-0.6.98-da-0.6.97.patch). Lint completo ancora non superato; dettagli nel rapporto.
+
+---
+
 # KeyAnt 0.6.97
 
 Corretta la larghezza NuPhy in orizzontale. Profili dimensionali separati per schermo e orientamento, ciascuno con variante trackball; ingombro totale, struttura, copritasti e scritte regolabili. Altezza uniforme predefinita. Interruttori dei temi compatti, effetti originali reversibili, sei effetti nuovi e anteprime automatiche. Maker a passaggi scorrevoli e ANT con riferimenti nel dialogo e comandi dimensionali. iOS Coordinata riunita in Stile Apple. VersionCode 124.

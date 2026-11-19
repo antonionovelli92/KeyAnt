@@ -1,0 +1,12 @@
+{
+  "version": "0.6.98",
+  "versionCode": 125,
+  "sourceCommit": "0e80459160788ad767de80b867319717380e7d75",
+  "baseSourceCommit": "aafbd29e813908ce24bedd942de92f785de5ae82",
+  "apkSha256": "15ea1a6794941406944b9dea93e0c68ed8cc4844e361f902beea95903cb7d89a",
+  "binaryReleasePublished": false,
+  "delivery": "Direct APK attachment in ChatGPT; GitHub binary upload requires browser sign-in",
+  "lintFull": "548 errors, 476 warnings, 1 hint",
+  "testsPassed": 67,
+  "auditRenderCount": 3040
+}

@@ -21,3 +21,7 @@
 - Distinguere larghezza dell’intera tastiera (comprese barre e pannelli), larghezza della struttura e scala visibile dei copritasti/caratteri. Verificare riduzione, ripristino, rotazione e centratura.
 - Effetti originali del tema: sovrapposizione reversibile alla risposta personale, senza cancellarne colori, effetti o intensità. Maker, assistente e anteprime devono applicare la stessa politica.
 - L’assistente conserva un riferimento esplicito alla funzione appena discussa per i comandi successivi. Se il riferimento è ambiguo deve chiedere quale funzione, senza agire su un argomento vecchio. Le anteprime automatiche si fermano fuori schermo e rispettano la preferenza di movimento del sistema.
+
+- Angoli arrotondati in Aspetto del tema e Trasparenze deve usare la stessa preferenza, senza riscriverla quando si apre la pagina. ANT e ricerca devono raggiungere il controllo corretto.
+- Le anteprime rispettano Suono, Silenzioso e Non disturbare senza toast ripetuti. Il feedback aptico resta indipendente e non introduce code o ritardi artificiali.
+- La revisione contestuale del testo è esplicita, locale e con anteprima. Non eseguire il modello a ogni tasto; mantenere fallback rapido e protezioni su termini personali, nomi, numeri e negazioni.

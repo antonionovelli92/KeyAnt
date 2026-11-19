@@ -1,0 +1,30 @@
+KeyAnt 0.6.98 / versionCode 125 / it.keyant.keyboard
+
+BUILD E INSTALLABILITÀ
+assembleDebugNoMinify: successo. Lint Vital: successo.
+Firma APK v2 verificata; certificato uguale alla 0.6.97.
+SHA256 certificato: bf7bc5998c63e50de960d4506499dce857cea819468673d0ca52d31bed527aa4
+ZIP integro; zipalign -c -P 16 4: successo.
+APK SHA256: 15ea1a6794941406944b9dea93e0c68ed8cc4844e361f902beea95903cb7d89a
+Nessuna installazione o prova su Fold/Pixel fisico in questa sessione.
+
+TEST
+67 metodi selezionati superati: KeyAnt698 (11), Ui698 (3), 697 (13), Ui697 (4), V62 (9), V615 (12), Writing670 (9), Correction641 (6).
+1 ulteriore metodo audit: 380 temi × 2 modalità richieste × 4 configurazioni = 3040 render Android nativi.
+Configurazioni audit: lettere 400dp; simboli con trackball 400dp; lettere e numeri landscape 760dp; simboli avanzati split 760dp. Il manifesto registra modalità effettiva e tasti.
+Verificati automaticamente larghezza/altezza positive e contenimento orizzontale dei tasti.
+Confronto pixel RGBA con l'archivio ufficiale 0.6.97: 3033/3040 identici, 7 diversi.
+I 7 render diversi sono Smalto Giada/Primari/Argento: differenze circoscritte ai pixel delle icone Invio/Cancella, esaminate affiancate; dimensioni e posizioni dei tasti restano coincidenti. Causa esatta della variazione raster non isolata.
+Questo misura conservazione del rendering precedente, non identità ai riferimenti NuKey né assenza universale di difetti.
+Controllo visivo manuale: schermate ANT chiara/scura Fold, Aspetto chiuso/aperto, categoria e anteprime NuPhy/Field/Lagoon/iOS Coordinata/Xbox. Nessuna affermazione di revisione manuale completa di ogni pixel dei 380 temi.
+
+LINT COMPLETO
+lintDebugNoMinify non supera il gate: 548 errori, 476 warning, 1 hint nel progetto complessivo.
+Nei file modificati: NewApi di KeyHaptics.primitive e quattro WrongConstant Toast in StudioActivity sono già presenti nel sorgente base 0.6.97. Non sono stati nascosti o presentati come risolti. Non è stata eseguita una comparazione completa del Lint della base.
+Il gate di build Vital è distinto dal Lint completo.
+
+LIMITI E CONTINUITÀ
+La revisione contestuale usa il modello locale già disponibile solo su richiesta e con anteprima; senza modello resta il correttore rapido. Testate selezione della modalità e protezioni, non la qualità linguistica Qwen sul telefono.
+Caching aptico verificato funzionalmente, senza misure FPS/latency fisiche.
+Riuniti angoli arrotondati in Aspetto del tema, preferenza condivisa preservata.
+Codice, patch e documentazione salvati su GitHub. Allegati release 0.6.98 non pubblicati: il browser richiede accesso GitHub. APK consegnata direttamente in chat.
