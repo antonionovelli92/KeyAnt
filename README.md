@@ -1,3 +1,11 @@
+# KeyAnt 0.6.97
+
+Corretta la larghezza NuPhy in orizzontale. Profili dimensionali separati per schermo e orientamento, ciascuno con variante trackball; ingombro totale, struttura, copritasti e scritte regolabili. Altezza uniforme predefinita. Interruttori dei temi compatti, effetti originali reversibili, sei effetti nuovi e anteprime automatiche. Maker a passaggi scorrevoli e ANT con riferimenti nel dialogo e comandi dimensionali. iOS Coordinata riunita in Stile Apple. VersionCode 124.
+
+Vedi [continuità](docs/CONTINUITA-0.6.97.md), [verifiche](docs/VERIFICHE-0.6.97.txt) e [inventario dei 380 temi](docs/AUDIT-TEMI-0.6.97.tsv). APK con firma originale, confronto visivo, audit, progetto Android completo, bundle e patch allegati alla release. Gli archivi automatici Source code contengono il ramo documentale. Nessuna prova sul telefono fisico o garanzia di assenza di bug.
+
+---
+
 # KeyAnt 0.6.96
 
 Corretti i tasti funzione NuPhy, le proporzioni Smalto, l’Invio sul vetro chiaro e la barra Vetro coordinata. Migliorati contrasto delle icone stampate, decorazioni della spaziatrice e aggiornamento delle anteprime. Conservate regolazioni manuali e proporzioni orizzontali della 0.6.95. VersionCode 123.

@@ -1,0 +1,87 @@
+KeyAnt 0.6.97 / versionCode 124
+
+Verifica finale: 77 metodi JUnit, 0 fallimenti (76 regressioni + 1 audit catalogo, JVM separate).
+Robolectric API35, renderer Android nativo e materiali attesi prima della cattura;
+JDK21 / Gradle8.14 / SDK36. 288 combinazioni nuove dei profili dimensionali,
+10800 casi geometrici della suite precedente, 936 tap simulati sul renderer.
+380 temi inventariati singolarmente: 3040 render, 2 modalità richieste x 4 layout.
+Le palette fisse mantengono la modalità effettiva, registrata nel manifest.
+Layout: compatto lettere; compatto simboli con spazio trackball; largo orizzontale
+con numeri; largo verticale diviso con simboli secondari. La sfera effettiva è
+verificata nella nuova anteprima del profilo, non sovrapposta nei frame del catalogo.
+2280 render barra: stock, coordinata, solo icone. Altri 48 render barra e 90 tastiera.
+
+Confronto digitale con la 0.6.96 dei 6 frame per tema con fixture confrontabile:
+7 temi con differenze, 373 temi identici nei 6 frame.
+Gli altri 2 frame di ogni tema usano ora risorse largo verticale esplicite e non
+sono contati come regressione pixel rispetto alla precedente fixture compatta.
+Revisione visiva delle 32 tavole compatte chiaro/scuro di tutti i 380 temi;
+confronti ravvicinati delle famiglie nuove, NuPhy orizzontale e interfaccia.
+Non è un esame manuale pixel per pixel di ogni frame e combinazione possibile.
+
+Interventi: NuPhy usa il bilanciamento comune in orizzontale; conservate geometrie
+Smalto/iOS. Altezza uniforme predefinita e riga inferiore regolabile. Quattro profili
+indipendenti, ciascuno con variante trackball. Larghezza complessiva distinta dalla
+struttura, copritasti e scritte. Ripristino e vecchie preferenze preservati.
+Interruttori del tema compatti; categoria iOS unificata in Apple. Sei effetti nuovi
+con anteprime automatiche, Maker a passaggi scorrevoli, risposta nativa reversibile.
+ANT mantiene riferimenti espliciti nel dialogo, apre impostazioni ed esegue comandi
+dimensionali supportati con limiti. Non è comprensione universale del linguaggio.
+
+Prove UI: controlli tema, telefono normale senza opzioni Fold, Fold simulato scuro,
+conversazione a più turni e navigazione. Prove di layout dell'intera tastiera,
+centratura, larghezza della barra, ripristino, socket trackball e aree di tocco.
+
+Limiti: nessuna prova sul Fold fisico; nessuna misura FPS/HDR. Riferimenti esterni
+completi non disponibili per ogni tema. I test non garantiscono assenza di bug.
+
+Build riuscita. Firma originale, ZIP integro, zipalign 16KiB, debuggable=false.
+APK SHA256: dd13309f63f2d2a813dc078f1441c24b8999ae8e5ddf20034da6a9e3a8cad532
+
+DIMENSION_CONFIGURATIONS=288
+KeyAnt697Test: 13 checks, 0 failures
+KeyAntUi697Test: 4 checks, 0 failures
+TOOLBAR_NATIVE_RENDERS=2280
+KeyAnt696Test: 9 checks, 0 failures
+GEOMETRY_CASES=10800
+LIVE_RENDERS=72
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+INPUT_TAPS=936
+EXTRA_LAYOUT_RENDERS=18
+KeyAntVisual692Test: 10 checks, 0 failures
+TOOLBAR_THEME_CASES=1520
+NATIVE_THEME_BAR_RENDERS=48
+KeyAntVisual693Test: 8 checks, 0 failures
+KeyAnt694Test: 7 checks, 0 failures
+KeyAntUi694Test: 1 checks, 0 failures
+KeyAntGeometryTest: 3 checks, 0 failures
+KeyAntV47Test: 12 checks, 0 failures
+KeyAntCoordination693Test: 3 checks, 0 failures
+KeyAntV625Test: 6 checks, 0 failures
+TOTAL 76; FAILED 0; seconds 59
+
+SEPARATE JVM RUNS: REGRESSIONS / CATALOG AUDIT
+AUDIT_THEME=0/380 nova
+AUDIT_THEME=20/380 carbon
+AUDIT_THEME=40/380 art_moon
+AUDIT_THEME=60/380 art_barbie_classic
+AUDIT_THEME=80/380 rose_mechanical
+AUDIT_THEME=100/380 chat_ios
+AUDIT_THEME=120/380 liquid_studio_terminal
+AUDIT_THEME=140/380 apple_spaceblue
+AUDIT_THEME=160/380 motion_clockwork
+AUDIT_THEME=180/380 atelier_racing
+AUDIT_THEME=200/380 resin_citrine
+AUDIT_THEME=220/380 mech_synth
+AUDIT_THEME=240/380 piddu_glass
+AUDIT_THEME=260/380 motion_iris646
+AUDIT_THEME=280/380 show_navy
+AUDIT_THEME=300/380 tonal_cinder
+AUDIT_THEME=320/380 bench_draw_xbox
+AUDIT_THEME=340/380 vice84_atelier
+AUDIT_THEME=360/380 vice84_cinema
+AUDIT_THEMES=380 NATIVE_RENDERS=3040
+KeyAntAudit697Test: 1 checks, 0 failures
+TOTAL 1; FAILED 0; seconds 202
+
+TOTAL 77; FAILED 0; seconds 265

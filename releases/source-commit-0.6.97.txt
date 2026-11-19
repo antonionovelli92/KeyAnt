@@ -1,0 +1,2 @@
+aafbd29e813908ce24bedd942de92f785de5ae82
+Full Android source in release asset KeyAnt-0.6.97-sorgenti.zip; history in KeyAnt-0.6.97.bundle.
