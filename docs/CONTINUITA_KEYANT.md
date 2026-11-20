@@ -1,3 +1,9 @@
+# Stato corrente: KeyAnt 0.6.99
+
+VersionCode 126. Il riferimento aggiornato è [CONTINUITA-0.6.99.md](CONTINUITA-0.6.99.md), con ricostruzione dei sorgenti, firma, verifiche e limiti. Le sezioni sotto sono storiche e non identificano la versione corrente.
+
+---
+
 # Continuità KeyAnt dopo la ripresa del 4 novembre 2026
 
 ## Punto da cui ripartire

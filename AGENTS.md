@@ -25,3 +25,9 @@
 - Angoli arrotondati in Aspetto del tema e Trasparenze deve usare la stessa preferenza, senza riscriverla quando si apre la pagina. ANT e ricerca devono raggiungere il controllo corretto.
 - Le anteprime rispettano Suono, Silenzioso e Non disturbare senza toast ripetuti. Il feedback aptico resta indipendente e non introduce code o ritardi artificiali.
 - La revisione contestuale del testo è esplicita, locale e con anteprima. Non eseguire il modello a ogni tasto; mantenere fallback rapido e protezioni su termini personali, nomi, numeri e negazioni.
+
+- Il jolly vuoto del layout numerico nativo è distinto dalla scorciatoia del pannello laterale: doppio tocco seleziona tutto, singolo copia solo una selezione, pressione lunga incolla. Il gesto non deve produrre spazi o aprire il touchpad; annullare azioni in attesa al cambio campo e su pressione lunga.
+- Le dimensioni distinguono anche lettere, simboli 1, simboli 2 e numeri. Conservare i profili schermo/orientamento/trackball, il ripristino personale e i valori predefiniti automatici del tema. Le celle e la mappa dei tocchi devono seguire la ridistribuzione della spaziatrice e i tasti aggiunti.
+- Il pannello strumenti può mantenere l’aspetto precedente, seguire il tema o usarne un altro. Riutilizzare il renderer dei copritasti, conservando fasce distinte per icona ed etichetta e organizzazione dei comandi.
+- Disattivare i colori personali non deve cancellare la palette salvata per il tema. Ricerca, riepilogo rapido, impostazioni dettagliate e ANT devono usare lo stesso stato.
+- La pulizia vocale mantiene sempre l’originale confrontabile. I ripensamenti numerici richiedono marcatori espliciti e un’opzione dedicata: non interpretare ogni «no» come cancellazione e non alterare citazioni, nomi o numeri non corretti esplicitamente.

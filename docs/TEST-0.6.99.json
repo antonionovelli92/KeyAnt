@@ -1,0 +1,207 @@
+{
+  "version": "0.6.99",
+  "versionCode": 126,
+  "source_commit": "cbe712ad44035b001415f322d48a9ae17be7e6a1",
+  "source_tree": "2a782172083800768d236974e83bb9cdb9efe958",
+  "source_base_tree": "65936ced1585844a50d962ab39e071a48426db03",
+  "patch_reconstruction_verified": true,
+  "test_methods_total": 97,
+  "behavioral_methods": 96,
+  "catalogue_audit_methods": 1,
+  "suites": [
+    {
+      "name": "helium314.keyboard.keyforma.KeyAnt694Test",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAnt697Test",
+      "tests": 13,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAnt698Test",
+      "tests": 11,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAnt699Test",
+      "tests": 12,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntAudit699Test",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntCorrection641Test",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntGesture669Test",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntUi697Test",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntUi698Test",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntUi699Test",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntV615Test",
+      "tests": 12,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntV62Test",
+      "tests": 9,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "helium314.keyboard.keyforma.KeyAntWriting670Test",
+      "tests": 9,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "dimension_configurations": {
+    "existing": 288,
+    "new_layers": 192
+  },
+  "catalogue": {
+    "themes": 380,
+    "requested_modes": 2,
+    "layouts_per_mode": 4,
+    "keyboard_renders": 3040,
+    "tool_tile_renders": 760,
+    "identical_to_previous": 3034,
+    "differences": [
+      {
+        "image": "ref91_amber-1-0.png",
+        "changed_pixels": 387,
+        "total_pixels": 64000,
+        "mae": 0.05556640625,
+        "bbox": [
+          357,
+          90,
+          377,
+          145
+        ]
+      },
+      {
+        "image": "ref91_amber-1-1.png",
+        "changed_pixels": 387,
+        "total_pixels": 64000,
+        "mae": 0.05555078125,
+        "bbox": [
+          288,
+          90,
+          308,
+          145
+        ]
+      },
+      {
+        "image": "ref91_jade-0-0.png",
+        "changed_pixels": 386,
+        "total_pixels": 64000,
+        "mae": 0.06615234375,
+        "bbox": [
+          357,
+          90,
+          377,
+          145
+        ]
+      },
+      {
+        "image": "ref91_jade-0-1.png",
+        "changed_pixels": 386,
+        "total_pixels": 64000,
+        "mae": 0.066140625,
+        "bbox": [
+          288,
+          90,
+          308,
+          145
+        ]
+      },
+      {
+        "image": "ref91_jade-1-0.png",
+        "changed_pixels": 386,
+        "total_pixels": 64000,
+        "mae": 0.06615234375,
+        "bbox": [
+          357,
+          90,
+          377,
+          145
+        ]
+      },
+      {
+        "image": "ref91_jade-1-1.png",
+        "changed_pixels": 386,
+        "total_pixels": 64000,
+        "mae": 0.066140625,
+        "bbox": [
+          288,
+          90,
+          308,
+          145
+        ]
+      }
+    ]
+  },
+  "apk": {
+    "file": "KeyAnt-0.6.99.apk",
+    "bytes": 202404343,
+    "sha256": "17910f9d06b2b9fe91e657d5618cf21b3c35d87a682c10178fa031210f63be7f"
+  },
+  "signing_cert_sha256": "bf7bc5998c63e50de960d4506499dce857cea819468673d0ca52d31bed527aa4",
+  "zipalign_16k": true,
+  "build": "assembleDebugNoMinify passed",
+  "lint_vital": "passed",
+  "full_lint": "not asserted; pre-existing debt",
+  "physical_device_test": false,
+  "notes": [
+    "Suite aggregate from successful latest class runs; no multiplying methods by image counts.",
+    "An earlier UI test clicked a nested horizontal list outside the vertical viewport. Fixed test scrolling and verified physical click plus preference persistence.",
+    "Test screenshot waits for recomposition after personal bookmark restore.",
+    "Six small delete/enter raster differences inspected at equal scale, no shifted cells found."
+  ]
+}

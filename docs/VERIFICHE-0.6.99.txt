@@ -1,0 +1,15 @@
+KeyAnt 0.6.99 — verifica del 20 novembre 2026
+
+Compilazione assembleDebugNoMinify e lintVital riusciti. APK originale firmata v2; certificato uguale alla versione precedente, ZIP integro, zipalign con pagine 16 KiB superato. Pacchetto it.keyant.keyboard; versionCode 126; arm64-v8a e x86_64.
+
+97 metodi unici superati nelle esecuzioni aggregate: 96 comportamentali/UI e uno di audit del catalogo. Zero errori e zero skip nei risultati finali conservati. Le 480 configurazioni geometriche (288 preesistenti + 192 nuove) sono casi interni ai metodi, non ulteriori metodi di test.
+
+380 temi, due modalità richieste e quattro layout: 3040 render nativi Android. Aggiunti 760 render dei pulsanti del menu. Confronto con audit 0.6.98: 3034 render tastiera identici; sei differenze limitate alla rasterizzazione di icone Cancella/Invio nei temi amber/jade, esaminate affiancate e ingrandite. Nessuno spostamento dei tasti rilevato nel confronto. Il manifest distingue modalità richiesta da effettiva.
+
+Verificati gesti del jolly, cancellazione al cambio campo, nessuna copia di selezione vuota, gesture precedenti, livelli dimensionali, split, trackball, spaziatrice ed extra, mappa dei tocchi, riordino numerico, palette reversibile, ANT, ripensamenti vocali circoscritti, regressioni correzione/suggerimenti e controlli reali Compose. Ispezionate le schermate native dell’editor, dei colori e del menu, oltre ai confronti grafici. L’audit completo è automatico; non viene dichiarata una verifica manuale di ogni pixel di ogni combinazione.
+
+Un controllo UI precedente non scorreva il contenitore verticale prima di cliccare una lista orizzontale annidata: corretto il test, confermati click e persistenza. La cattura successiva al ripristino attende ora il ridisegno.
+
+Limiti: Robolectric API 35 con grafica nativa, nessuna prova sul Fold/Pixel fisico. Non misurati FPS, latenza di dettatura o comportamento aptico OEM. Nessuna garanzia di assenza universale di errori. Lint globale con debito preesistente non dichiarato superato. Motore proprietario Gboard non incluso; pulizia vocale sempre confrontabile con originale, ripensamenti numerici opzionali e inizialmente disattivati.
+
+APK SHA256: 17910f9d06b2b9fe91e657d5618cf21b3c35d87a682c10178fa031210f63be7f

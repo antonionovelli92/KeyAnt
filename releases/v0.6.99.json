@@ -1,0 +1,15 @@
+{
+  "version": "0.6.99",
+  "versionCode": 126,
+  "apk": {
+    "file": "KeyAnt-0.6.99.apk",
+    "bytes": 202404343,
+    "sha256": "17910f9d06b2b9fe91e657d5618cf21b3c35d87a682c10178fa031210f63be7f"
+  },
+  "source_commit": "cbe712ad44035b001415f322d48a9ae17be7e6a1",
+  "source_tree": "2a782172083800768d236974e83bb9cdb9efe958",
+  "patch": "patches/KeyAnt-0.6.99-da-0.6.98.patch",
+  "patch_sha256": "de6df6dc0ffbcc374a3655099ae815ce3634cdd71110a74462106b3d1a366c61",
+  "signing_cert_sha256": "bf7bc5998c63e50de960d4506499dce857cea819468673d0ca52d31bed527aa4",
+  "binary_github_release_published": false
+}

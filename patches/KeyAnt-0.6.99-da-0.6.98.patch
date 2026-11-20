@@ -1,0 +1,1477 @@
+diff --git a/AGENTS.md b/AGENTS.md
+index 0cd628f..d67b15f 100644
+--- a/AGENTS.md
++++ b/AGENTS.md
+@@ -25,3 +25,9 @@
+ - Angoli arrotondati in Aspetto del tema e Trasparenze deve usare la stessa preferenza, senza riscriverla quando si apre la pagina. ANT e ricerca devono raggiungere il controllo corretto.
+ - Le anteprime rispettano Suono, Silenzioso e Non disturbare senza toast ripetuti. Il feedback aptico resta indipendente e non introduce code o ritardi artificiali.
+ - La revisione contestuale del testo è esplicita, locale e con anteprima. Non eseguire il modello a ogni tasto; mantenere fallback rapido e protezioni su termini personali, nomi, numeri e negazioni.
++
++- Il jolly vuoto del layout numerico nativo è distinto dalla scorciatoia del pannello laterale: doppio tocco seleziona tutto, singolo copia solo una selezione, pressione lunga incolla. Il gesto non deve produrre spazi o aprire il touchpad; annullare azioni in attesa al cambio campo e su pressione lunga.
++- Le dimensioni distinguono anche lettere, simboli 1, simboli 2 e numeri. Conservare i profili schermo/orientamento/trackball, il ripristino personale e i valori predefiniti automatici del tema. Le celle e la mappa dei tocchi devono seguire la ridistribuzione della spaziatrice e i tasti aggiunti.
++- Il pannello strumenti può mantenere l’aspetto precedente, seguire il tema o usarne un altro. Riutilizzare il renderer dei copritasti, conservando fasce distinte per icona ed etichetta e organizzazione dei comandi.
++- Disattivare i colori personali non deve cancellare la palette salvata per il tema. Ricerca, riepilogo rapido, impostazioni dettagliate e ANT devono usare lo stesso stato.
++- La pulizia vocale mantiene sempre l’originale confrontabile. I ripensamenti numerici richiedono marcatori espliciti e un’opzione dedicata: non interpretare ogni «no» come cancellazione e non alterare citazioni, nomi o numeri non corretti esplicitamente.
+diff --git a/AGGIORNAMENTO-0.6.99.md b/AGGIORNAMENTO-0.6.99.md
+new file mode 100644
+index 0000000..915f738
+--- /dev/null
++++ b/AGGIORNAMENTO-0.6.99.md
+@@ -0,0 +1,42 @@
++# KeyAnt 0.6.99
++
++## Jolly nel tastierino numerico
++
++Il tasto vuoto colorato nei campi numerici ha tre gesti indipendenti: doppio tocco rapido seleziona tutto, un tocco copia la selezione, pressione lunga incolla. Il tocco singolo attende il tempo Android del doppio tocco, evitando una copia prima della selezione. Non copia senza selezione; le azioni in attesa si annullano cambiando campo, premendo altri tasti o iniziando una pressione lunga. Il tasto rimane vuoto e ha una descrizione accessibile.
++
++In Aspetto dei pannelli → Jolly del tastierino numerico si assegnano copia, seleziona tutto, incolla, taglia, annulla, ripeti, spazio o nessuna azione. La scorciatoia del pannello numerico laterale mantiene la propria impostazione.
++
++## Dimensioni e disposizione
++
++L’editor mostra il renderer della tastiera attiva. Si sceglie schermo e orientamento, con o senza trackball, quindi Tutto, Lettere, Simboli 1, Simboli 2 o Numeri. I profili Fold sono visibili sui dispositivi pieghevoli. Un tocco sulla preview sceglie la parte; le maniglie ne regolano larghezza e altezza, con cursori precisi nelle sezioni sottostanti. Le dimensioni modificate in Tutto si applicano alle quattro sezioni del profilo selezionato; i singoli fronti possono essere personalizzati successivamente.
++
++La proporzione della spaziatrice redistribuisce lo spazio tra gli altri tasti. Emoji e Appunti possono essere aggiunti alla riga inferiore e l’ordine può essere cambiato. Il tastierino offre ordine telefonico e da calcolatrice. I vecchi controlli di struttura, copritasti, caratteri, larghezza complessiva, split e trackball sono mantenuti.
++
++«Annulla le modifiche» torna all’assetto di apertura. «Salva il mio assetto» conserva un punto di ritorno personale anche dopo aver chiuso la pagina. Sono disponibili ripristino per parametro, per sezione e per tutti i profili. I predefiniti conservano il bilanciamento automatico del tema, compresi i margini in orizzontale.
++
++## Aspetto e strumenti
++
++In Temi → Aspetto del tema, «Colori personali degli altri tasti» alterna originale e personalizzato senza cancellare la palette. «Punto e virgola come lettere» è una scelta rapida; Colori apre i controlli completi.
++
++In Barra delle icone → Aspetto del pannello ⋯ si sceglie Attuale, Segue la tastiera oppure Altro tema con anteprime. L’intero pulsante usa il renderer del tema, inclusa la pressione; icona ed etichetta mantengono fasce distinte. La sezione Organizza continua a permettere aggiunta, rimozione e riordino.
++
++ANT riconosce le nuove impostazioni, fornisce collegamenti e applica comandi espliciti. Esempi: «imposta il doppio tocco del jolly su incolla», «coordina il pannello strumenti», «metti punto e virgola come lettere», «imposta altezza simboli 2 al 85%», «aggiungi appunti nella riga inferiore», «salva il mio assetto».
++
++## Dettatura
++
++La pulizia leggera applica anche la protezione del vocabolario personale. L’opzione Ripensamenti numerici espliciti, disattivata inizialmente, riconosce forme circoscritte come «quattro, anzi cinque» o «14:30, volevo dire 15:30». Si applica soltanto durante una pulizia con anteprima e conserva l’originale. Un semplice «no» e le citazioni non vengono riscritti.
++
++La registrazione prolungata, il cambio italiano/inglese, i nomi personali e la revisione AI locale già presenti restano disponibili. La qualità del riconoscimento audio dipende dal servizio e dai modelli installati. Non è stato incorporato il motore proprietario di Gboard né viene promessa una trascrizione infallibile.
++
++## Ricerca utilizzata
++
++Il video allegato presenta pause, esitazioni e ripensamenti nella dettatura Yaps. Sono stati consultati anche:
++
++- Google, digitazione vocale avanzata: https://support.google.com/gboard/answer/11197787
++- Google, Rambler: https://support.google.com/gboard/answer/17468539?hl=it
++- Yaps, presentazione Android: https://www.yaps.ai/android
++- Yaps, supporto e funzionamento locale: https://www.yaps.ai/support
++
++Le pagine descrivono comportamenti e disponibilità dei rispettivi prodotti, non algoritmi liberamente copiabili. Il sito Android Yaps non dimostra che la build vista nel video abbia la stessa implementazione.
++
++La verifica automatizzata e visiva della build è registrata nel rapporto associato. I render Android non sostituiscono una prova della latenza del microfono, del tocco e delle vibrazioni sul telefono fisico.
+diff --git a/BUILD_AND_RELEASE-0.6.99.md b/BUILD_AND_RELEASE-0.6.99.md
+new file mode 100644
+index 0000000..59070e6
+--- /dev/null
++++ b/BUILD_AND_RELEASE-0.6.99.md
+@@ -0,0 +1,21 @@
++# Build KeyAnt 0.6.99
++
++Pacchetto `it.keyant.keyboard`, versionCode 126. JDK 21.0.13.1, Gradle 8.14, SDK/build-tools 36. Variante `debugNoMinify` con firma originale esterna al repository.
++
++Ricostruzione: estrarre il sorgente completo `KeyAnt-0.6.97-sorgenti.zip` dalla release v0.6.97, applicare nell’ordine le patch 0.6.98-da-0.6.97 e 0.6.99-da-0.6.98. Non usare il ramo documentale come progetto Android. Le librerie libjni_latinime.so sono quelle della APK 0.6.97 verificata, arm64-v8a e x86_64, senza modifiche C++. Il parametro keyantNativePrebuiltDir indica la cartella con le due sottocartelle ABI. La libreria AI resta quella inclusa nei sorgenti.
++
++```sh
++export JAVA_HOME=/percorso/jdk-21
++export ANDROID_HOME=/percorso/sdk
++export KEYANT_KEYSTORE=/percorso/privato/keyant-dev.jks
++gradle --no-daemon --max-workers=2 -PkeyantNativePrebuiltDir=/percorso/native :app:assembleDebugNoMinify
++gradle --no-daemon --max-workers=2 -PkeyantNativePrebuiltDir=/percorso/native -I gradle/keyant-0699.gradle :app:testDebugNoMinifyUnitTest
++# Audit separato, stesso init script:
++# -PkeyantTestClasses=KeyAntAudit699Test
++# Gesti e pannelli di regressione:
++# -PkeyantTestClasses=KeyAntGesture669Test,KeyAnt694Test
++```
++
++Usare eventuali proxy dell’ambiente senza registrarne credenziali. La chiave originale è necessaria per installare sopra l’app esistente. Non è inclusa negli allegati. Senza NDK lo strip delle librerie native è omesso: la APK è più grande. Firma v2 e allineamento ZIP 16 KiB verificati; ciò non misura le prestazioni su un dispositivo reale.
++
++`lintVitalDebugNoMinify` è superato durante la compilazione. Il lint globale ha debito preesistente documentato nelle versioni precedenti: non viene dichiarato superato in questa revisione.
+diff --git a/app/build.gradle.kts b/app/build.gradle.kts
+index 58956ea..80ba2d0 100644
+--- a/app/build.gradle.kts
++++ b/app/build.gradle.kts
+@@ -15,8 +15,8 @@ android {
+         applicationId = "it.keyant.keyboard"
+         minSdk = 26
+         targetSdk = 35
+-        versionCode = 125
+-        versionName = "0.6.98"
++        versionCode = 126
++        versionName = "0.6.99"
+         if (!providers.gradleProperty("keyantNativePrebuiltDir").isPresent) externalNativeBuild { ndkBuild { arguments += listOf("-j2") } }
+         ndk {
+             abiFilters.clear()
+diff --git a/app/src/main/java/helium314/keyboard/accessibility/KeyboardAccessibilityNodeProvider.kt b/app/src/main/java/helium314/keyboard/accessibility/KeyboardAccessibilityNodeProvider.kt
+index 15dcbb9..2a97a82 100644
+--- a/app/src/main/java/helium314/keyboard/accessibility/KeyboardAccessibilityNodeProvider.kt
++++ b/app/src/main/java/helium314/keyboard/accessibility/KeyboardAccessibilityNodeProvider.kt
+@@ -269,6 +269,7 @@ class KeyboardAccessibilityNodeProvider<KV : KeyboardView>(
+      * @return The context-specific description of the key.
+      */
+     private fun getKeyDescription(key: Key): String? {
++        if(helium314.keyboard.keyforma.NumericJolly699.matches(mKeyboard,key.code))return "Jolly numerico. Tocco: "+helium314.keyboard.keyforma.NumericJolly699.label(helium314.keyboard.keyforma.KeyAntPrefs.text(mKeyboardView.context,"jolly_tap","copy"))+". Doppio tocco: "+helium314.keyboard.keyforma.NumericJolly699.label(helium314.keyboard.keyforma.KeyAntPrefs.text(mKeyboardView.context,"jolly_double","select_all"))+". Pressione lunga: "+helium314.keyboard.keyforma.NumericJolly699.label(helium314.keyboard.keyforma.KeyAntPrefs.text(mKeyboardView.context,"jolly_hold","paste"))
+         val editorInfo = mKeyboard?.mId?.mEditorInfo
+         val shouldObscure = mAccessibilityUtils.shouldObscureInput(editorInfo)
+         val currentSettings = Settings.getValues()
+diff --git a/app/src/main/java/helium314/keyboard/keyboard/KeyboardActionListenerImpl.kt b/app/src/main/java/helium314/keyboard/keyboard/KeyboardActionListenerImpl.kt
+index 8bfd825..3412210 100644
+--- a/app/src/main/java/helium314/keyboard/keyboard/KeyboardActionListenerImpl.kt
++++ b/app/src/main/java/helium314/keyboard/keyboard/KeyboardActionListenerImpl.kt
+@@ -31,6 +31,7 @@ import kotlin.math.min
+ 
+ class KeyboardActionListenerImpl(private val latinIME: LatinIME, private val inputLogic: InputLogic) : KeyboardActionListener {
+ 
++    private val numericJolly = helium314.keyboard.keyforma.NumericJolly699(latinIME)
+     private val connection = inputLogic.mConnection
+     private val emojiAltPhysicalKeyDetector by lazy { EmojiAltPhysicalKeyDetector(latinIME.resources) }
+ 
+@@ -47,6 +48,7 @@ class KeyboardActionListenerImpl(private val latinIME: LatinIME, private val inp
+     private var subtypeSwitchCount = 0
+ 
+     override fun onPressKey(primaryCode: Int, repeatCount: Int, isSinglePointer: Boolean, hapticEvent: HapticEvent) {
++        if (!helium314.keyboard.keyforma.NumericJolly699.matches(keyboardSwitcher.keyboard, primaryCode)) numericJolly.cancel() else numericJolly.press()
+         metaOnPressKey(primaryCode)
+         keyboardSwitcher.onPressKey(primaryCode, isSinglePointer, latinIME.currentAutoCapsState, latinIME.currentRecapitalizeState)
+         // we need to use LatinIME for handling of key-down audio and haptics
+@@ -100,6 +102,8 @@ class KeyboardActionListenerImpl(private val latinIME: LatinIME, private val inp
+     }
+ 
+     override fun onCodeInput(primaryCode: Int, x: Int, y: Int, isKeyRepeat: Boolean) {
++        if (helium314.keyboard.keyforma.NumericJolly699.matches(keyboardSwitcher.keyboard, primaryCode)) { if (!isKeyRepeat) numericJolly.tap(); return }
++        numericJolly.cancel()
+         helium314.keyboard.keyforma.CommaShortcuts.action(primaryCode)?.let { latinIME.runKeyAntShortcut(it); return }
+         when (primaryCode) {
+             KeyCode.TOGGLE_AUTOCORRECT -> return settings.toggleAutoCorrect()
+@@ -134,12 +138,13 @@ class KeyboardActionListenerImpl(private val latinIME: LatinIME, private val inp
+     override fun onCancelBatchInput() = latinIME.onCancelBatchInput()
+ 
+     // User released a finger outside any key
+-    override fun onCancelInput() { }
++    override fun onCancelInput() { numericJolly.cancel() }
+ 
+     override fun onFinishSlidingInput() =
+         keyboardSwitcher.onFinishSlidingInput(latinIME.currentAutoCapsState, latinIME.currentRecapitalizeState)
+ 
+     override fun onCustomRequest(requestCode: Int): Boolean {
++        if(requestCode == helium314.keyboard.keyforma.NumericJolly699.HOLD) { numericJolly.hold(); performHapticFeedback(HapticEvent.KEY_LONG_PRESS); return true }
+         if(requestCode == helium314.keyboard.keyforma.DiscountTool.REQUEST) return helium314.keyboard.keyforma.DiscountTool.show(latinIME)
+         if (requestCode == Constants.CUSTOM_CODE_SHOW_INPUT_METHOD_PICKER) {
+             return latinIME.showInputPickerDialog()
+diff --git a/app/src/main/java/helium314/keyboard/keyboard/KeyboardLayoutSet.java b/app/src/main/java/helium314/keyboard/keyboard/KeyboardLayoutSet.java
+index c146ea1..4ee5176 100644
+--- a/app/src/main/java/helium314/keyboard/keyboard/KeyboardLayoutSet.java
++++ b/app/src/main/java/helium314/keyboard/keyboard/KeyboardLayoutSet.java
+@@ -128,7 +128,7 @@ public final class KeyboardLayoutSet {
+ 
+     public static KeyboardLayoutSet forSplit(Context context, KeyboardId source, boolean split) {
+         return new Builder(context, source.mEditorInfo)
+-                .setKeyboardGeometry(source.mWidth, source.mHeight)
++                .setKeyboardGeometry(source.mWidth, helium314.keyboard.keyforma.DimensionLayers699.splitBaseHeight(context,source))
+                 .setSubtype(source.mSubtype)
+                 .setVoiceInputKeyEnabled(source.mHasShortcutKey)
+                 .setNumberRowEnabled(source.mNumberRowEnabled)
+@@ -163,7 +163,10 @@ public final class KeyboardLayoutSet {
+         // specified as an elementKeyboard attribute in the file.
+         // The KeyboardId is an internal key for a Keyboard object.
+ 
+-        final KeyboardId id = new KeyboardId(keyboardLayoutSetElementId, mParams);
++        final int originalHeight=mParams.mKeyboardHeight;
++        if(!mParams.mPreview&&!helium314.keyboard.keyforma.KeyAntPrefs.bool(mContext,"floating",false))mParams.mKeyboardHeight=helium314.keyboard.keyforma.DimensionLayers699.height(mContext,helium314.keyboard.keyforma.DimensionProfiles697.current(mContext),keyboardLayoutSetElementId,originalHeight,mParams.mNumberRowEnabled);
++        final KeyboardId id;
++        try{id=new KeyboardId(keyboardLayoutSetElementId,mParams);}finally{mParams.mKeyboardHeight=originalHeight;}
+         try {
+             return getKeyboard(id);
+         } catch (final RuntimeException e) {
+diff --git a/app/src/main/java/helium314/keyboard/keyboard/KeyboardView.java b/app/src/main/java/helium314/keyboard/keyboard/KeyboardView.java
+index a3d9f5f..9ce3e83 100644
+--- a/app/src/main/java/helium314/keyboard/keyboard/KeyboardView.java
++++ b/app/src/main/java/helium314/keyboard/keyboard/KeyboardView.java
+@@ -133,7 +133,7 @@ public class KeyboardView extends View {
+ 
+     private String dimensionProfile;
+     public void dimensionProfile(String profile){dimensionProfile=profile;}
+-    private String sizingProfile(){return dimensionProfile!=null?dimensionProfile:helium314.keyboard.keyforma.DimensionProfiles697.current(getContext());}
++    private String sizingProfile(){return helium314.keyboard.keyforma.DimensionLayers699.profile(dimensionProfile!=null?dimensionProfile:helium314.keyboard.keyforma.DimensionProfiles697.current(getContext()),mKeyboard==null?0:mKeyboard.mId.mElementId);}
+     public KeyboardView(final Context context, final AttributeSet attrs) {
+         this(context, attrs, R.attr.keyboardViewStyle);
+     }
+@@ -543,6 +543,7 @@ if(mKeyboard!=null){float px=x-getPaddingLeft(),py=y-getPaddingTop();for(Key key
+     // Draw key top visuals.
+     protected void onDrawKeyTopVisuals(@NonNull final Key key, @NonNull final Canvas canvas,
+             @NonNull final Paint paint, @NonNull final KeyDrawParams params) {
++        if(helium314.keyboard.keyforma.NumericJolly699.matches(mKeyboard,key.getCode()))return;
+         float sx=splitMotion.horizontalScale(key,android.os.SystemClock.uptimeMillis());
+         if(Math.abs(sx-1)<.0001f){onDrawKeyTopContents663(key,canvas,paint,params,key.getDrawWidth());return;}
+         float left=mCapFace.left,right=mCapFace.right,center=key.getDrawWidth()*.5f;
+diff --git a/app/src/main/java/helium314/keyboard/keyboard/MainKeyboardView.java b/app/src/main/java/helium314/keyboard/keyboard/MainKeyboardView.java
+index e30f4f7..dd7e5d6 100644
+--- a/app/src/main/java/helium314/keyboard/keyboard/MainKeyboardView.java
++++ b/app/src/main/java/helium314/keyboard/keyboard/MainKeyboardView.java
+@@ -679,6 +679,7 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
+     }
+ 
+     public void cancelAllOngoingEvents() {
++        mKeyboardActionListener.onCancelInput();
+         mTimerHandler.cancelAllMessages();
+         PointerTracker.setReleasedKeyGraphicsToAllKeys();
+         mGestureFloatingTextDrawingPreview.dismissGestureFloatingPreviewText();
+diff --git a/app/src/main/java/helium314/keyboard/keyboard/PointerTracker.java b/app/src/main/java/helium314/keyboard/keyboard/PointerTracker.java
+index 58a5f3b..6af6f76 100644
+--- a/app/src/main/java/helium314/keyboard/keyboard/PointerTracker.java
++++ b/app/src/main/java/helium314/keyboard/keyboard/PointerTracker.java
+@@ -752,6 +752,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
+     }
+ 
+     private boolean isSwiper(final int code) {
++        if(helium314.keyboard.keyforma.NumericJolly699.matches(mKeyboard,code))return false;
+         final SettingsValues sv = Settings.getValues();
+         return switch (code) {
+             case Constants.CODE_SPACE -> sv.mSpaceSwipeHorizontal != KeyboardActionListener.SWIPE_NO_ACTION
+@@ -1138,6 +1139,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
+         if (key == null) {
+             return;
+         }
++        if(helium314.keyboard.keyforma.NumericJolly699.matches(mKeyboard,key.getCode())&&sListener.onCustomRequest(helium314.keyboard.keyforma.NumericJolly699.HOLD)){cancelKeyTracking();sListener.onReleaseKey(key.getCode(),false);return;}
+         if(!helium314.keyboard.keyforma.KeyHold660.allowed(key.getCode()))return;
+         if(!helium314.keyboard.keyforma.KeyHold660.custom(key.getCode())&&key.getCode()=='%'&&sListener.onCustomRequest(helium314.keyboard.keyforma.DiscountTool.REQUEST)){cancelKeyTracking();sListener.onReleaseKey(key.getCode(),false);return;}
+         sListener.onLongPressKey(key.getCode());
+@@ -1245,7 +1247,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
+         sTimerProxy.cancelLongPressShiftKeyTimer();
+         if (sInGesture) return;
+         if (key == null) return;
+-        if (!key.isLongPressEnabled()) return;
++        if (!key.isLongPressEnabled()&&!helium314.keyboard.keyforma.NumericJolly699.matches(mKeyboard,key.getCode())) return;
+         // Caveat: Please note that isLongPressEnabled() can be true even if the current key
+         // doesn't have its popup keys. (e.g. spacebar, globe key) If we are in the dragging finger
+         // mode, we will disable long press timer of such key.
+diff --git a/app/src/main/java/helium314/keyboard/keyboard/internal/KeyboardBuilder.kt b/app/src/main/java/helium314/keyboard/keyboard/internal/KeyboardBuilder.kt
+index 2707333..c4b7ffc 100644
+--- a/app/src/main/java/helium314/keyboard/keyboard/internal/KeyboardBuilder.kt
++++ b/app/src/main/java/helium314/keyboard/keyboard/internal/KeyboardBuilder.kt
+@@ -45,6 +45,7 @@ open class KeyboardBuilder<KP : KeyboardParams>(protected val mContext: Context,
+ 
+     fun load(id: KeyboardId): KeyboardBuilder<KP> {
+         mParams.mId = id
++        if(!id.isEmojiKeyboard)mParams.mSizingProfile=helium314.keyboard.keyforma.DimensionLayers699.profile(mParams.mSizingProfile?:helium314.keyboard.keyforma.DimensionProfiles697.current(mContext),id.mElementId)
+         if (id.isEmojiKeyboard) {
+             mParams.mAllowRedundantPopupKeys = true
+             readAttributes(R.xml.kbd_emoji)
+@@ -54,6 +55,7 @@ open class KeyboardBuilder<KP : KeyboardParams>(protected val mContext: Context,
+                 setupParams()
+                 keysInRows = KeyboardParser(mParams, mContext).parseLayout()
+                 helium314.keyboard.keyforma.MakerLayout.apply(keysInRows, mParams)
++                helium314.keyboard.keyforma.BottomLayout699.apply(mContext,keysInRows,mParams)
+                 if (keysInRows.size != 4) // that was effectively the default for OpenBoard
+                     mParams.mTouchPositionCorrection.load(mContext.resources.getStringArray(R.array.touch_position_correction_data_default))
+                 determineAbsoluteValues()
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/AntControls699.kt b/app/src/main/java/helium314/keyboard/keyforma/AntControls699.kt
+new file mode 100644
+index 0000000..3647c33
+--- /dev/null
++++ b/app/src/main/java/helium314/keyboard/keyforma/AntControls699.kt
+@@ -0,0 +1,48 @@
++// SPDX-License-Identifier: GPL-3.0-only
++package helium314.keyboard.keyforma
++import android.content.Context
++internal object AntControls699 {
++ val entries=listOf(
++  SettingResult("panel_appearance","Jolly del tastierino numerico","tasto giallo vuoto doppio tocco copia incolla seleziona tutto pressione lunga"),
++  SettingResult("bars","Aspetto del pannello ⋯","superficie strumenti coordinati tema meccanico stock anteprima"),
++  SettingResult("themes","Colori personali degli altri tasti","punto virgola colore default personalizzato lettere"),
++  SettingResult("size","Riga inferiore e tastierino","spaziatrice larghezza ridistribuire emoji appunti ordine"),
++  SettingResult("size","Salva il mio assetto","ripristina annulla dimensioni profili sezione"),
++  SettingResult("voice","Ripensamenti numerici espliciti","dettatura anzi volevo dire esitazioni Yaps Gboard")
++ )
++ fun guide(q:String):AntGuide.Answer?=when{
++  Regex("jolly|tasto giallo|tasto vuoto").containsMatchIn(q)->AntGuide.Answer("Il jolly del tastierino numerico seleziona tutto con due tocchi rapidi; un tocco copia la selezione, tenendolo premuto incolli. Puoi cambiare ogni gesto: «imposta il doppio tocco del jolly su incolla». Non cambia la spaziatrice delle lettere.",listOf(entries[0]))
++  Regex("(?:menu|pannello|strumenti|puntini).*(?:tema|material|meccanic|coordin|aspetto)|(?:coordina|tema).*(?:menu|strumenti|puntini)").containsMatchIn(q)->AntGuide.Answer("In Barra delle icone → Aspetto del pannello ⋯ scegli Attuale, Segue la tastiera oppure Altro tema con anteprime. L’ordine dei comandi resta in Organizza il pannello. Puoi chiedermi «coordina il pannello strumenti» o «ripristina il pannello stock».",listOf(entries[1]))
++  Regex("colore.*(?:punto|virgola|altri tasti)|colori personali").containsMatchIn(q)->AntGuide.Answer("Temi → Aspetto del tema contiene Colori personali degli altri tasti. Puoi spegnerli e ritrovare i colori originali senza cancellare la tua palette. «Punto e virgola come lettere» applica il colore normale del tema.",listOf(entries[2]))
++  Regex("dimension|altezza|larghezza|riga inferiore|assetto|ripristin.*profili").containsMatchIn(q)&&!Regex("card|pannell|popup|menu").containsMatchIn(q)->AntGuide.Answer("Scegli schermo, orientamento e trackball, poi Tutto, Lettere, Simboli 1, Simboli 2 o Numeri. Tocca un tasto nell’anteprima e usa le maniglie. La spaziatrice ridistribuisce la riga. Annulla le modifiche torna all’apertura; Salva il mio assetto conserva un punto di ritorno. I reset singoli tornano ai valori ereditati.",listOf(entries[3],entries[4]))
++  Regex("ripensament|yaps|gboard").containsMatchIn(q)->AntGuide.Answer("La dettatura usa il servizio vocale del telefono con pause, italiano/inglese e nomi personali. Pulizia leggera o AI locale mostrano un’anteprima: l’originale resta disponibile. Ripensamenti numerici espliciti riconosce «quattro, anzi cinque»; non interpreta un semplice «no» come ordine di cancellazione.",listOf(entries[5]))
++  else->null
++ }
++ fun submit(c:Context,text:String,previous:AntDialog.Turn?):AntDialog.Turn?{
++  val q=SettingsSearch.normal(text);if(text.trimEnd().endsWith('?')&&!q.startsWith("puoi "))return null
++  val explicit=Regex("^(?:(?:ant|ok|mi|puoi|per favore) )*(?:imposta|metti|cambia|usa|coordina|ripristina|aggiungi|rimuovi|attiva|disattiva|togli|salva|riprendi)\\b").containsMatchIn(q)
++  if(!explicit)return null
++  val p=KeyAntPrefs.get(c)
++  fun done(message:String,target:SettingResult):AntDialog.Turn{helium314.keyboard.latin.settings.Settings.getInstance().loadSettings(c);helium314.keyboard.keyboard.KeyboardLayoutSet.onKeyboardThemeChanged();helium314.keyboard.keyboard.KeyboardSwitcher.getInstance().setThemeNeedsReload();return AntDialog.Turn(text,message,target=target.title,page=target.page)}
++  if(Regex("jolly|tasto giallo|tasto vuoto").containsMatchIn(q)||previous?.target==entries[0].title){
++   val gesture=when{Regex("doppio|due tocchi").containsMatchIn(q)->"double";Regex("lung|premuto").containsMatchIn(q)->"hold";Regex("singolo|un tocco").containsMatchIn(q)->"tap";else->null}
++   val action=when{Regex("seleziona tutto|selezionare tutto").containsMatchIn(q)->"select_all";"incolla" in q->"paste";"copia" in q->"copy";"taglia" in q->"cut";"nessuna" in q->"none";"spazio" in q->"space";"annulla" in q->"undo";"ripeti" in q->"redo";else->null}
++   if(gesture!=null&&action!=null){p.edit().putString("ka_jolly_$gesture",action).apply();return done("Jolly: "+NumericJolly699.label(action)+" assegnato a "+when(gesture){"double"->"doppio tocco";"hold"->"pressione lunga";else->"tocco singolo"}+".",entries[0])}
++   if(Regex("jolly|tasto giallo|tasto vuoto").containsMatchIn(q))return AntDialog.Turn(text,"Quale gesto vuoi cambiare: singolo, doppio tocco o pressione lunga? E quale azione?",target=entries[0].title,page=entries[0].page)
++  }
++  if(Regex("pannello|menu|strumenti|puntini").containsMatchIn(q)){
++   if("coordina" in q||"segui" in q||"segue la tastiera" in q){p.edit().putString("ka_tools_surface","follow").apply();return done("Il pannello strumenti segue materiale e colori della tastiera.",entries[1])}
++   if("stock" in q||"attuale" in q||"originale" in q){p.edit().putString("ka_tools_surface","stock").apply();return done("Ripristinato l’aspetto precedente del pannello strumenti.",entries[1])}
++   if("tema" in q){val matches=ThemeCatalog.IDS.indices.filter{SettingsSearch.normal(ThemeCatalog.NAMES[it]).let{name->name.length>3&&q.contains(name)}};if(matches.size==1){p.edit().putString("ka_tools_surface","custom").putString("ka_tools_theme",ThemeCatalog.IDS[matches.single()]).apply();return done("Tema degli strumenti: "+ThemeCatalog.NAMES[matches.single()]+".",entries[1])}}
++  }
++  if("punto" in q&&"virgola" in q&&"lettere" in q){val theme=SearchTheme.active(c);KeyColorOverrides.choose(c,theme,"comma","palette_0");KeyColorOverrides.choose(c,theme,"period","palette_0");return done("Punto e virgola usano il colore dei tasti lettera.",entries[2])}
++  if("riga inferiore" in q&&Regex("appunti|emoji").containsMatchIn(q)){
++   val profile=DimensionProfiles697.current(c);val extra=DimensionLayers699.text(c,profile,"bottom_extras","").split(',').filter{it.isNotBlank()}.toMutableSet();val id=if("appunti" in q)"clipboard" else "emoji";if(Regex("rimuovi|togli|disattiva").containsMatchIn(q))extra.remove(id) else extra.add(id);p.edit().putString(DimensionProfiles697.key(profile,"bottom_extras"),extra.joinToString(",")).apply();return done("Riga inferiore aggiornata nel profilo attuale. Le proporzioni si adattano ai tasti presenti.",entries[3])
++  }
++  if("assetto" in q){
++   if(q.startsWith("salva")){p.edit().putString("ka_size_bookmark",org.json.JSONObject(DimensionLayers699.snapshot(c)).toString()).apply();return done("Assetto personale delle dimensioni salvato.",entries[4])}
++   if(q.startsWith("riprendi")||q.startsWith("ripristina")){if(!p.contains("ka_size_bookmark"))return AntDialog.Turn(text,"Non hai ancora salvato un assetto personale.",target=entries[4].title,page="size");DimensionLayers699.restore(c,DimensionLayers699.decode(p.getString("ka_size_bookmark","{}")!!));return done("Assetto personale ripristinato.",entries[4])}
++  }
++  return null
++ }
++}
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/AntDialog.kt b/app/src/main/java/helium314/keyboard/keyforma/AntDialog.kt
+index 95d83ab..d0d94e3 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/AntDialog.kt
++++ b/app/src/main/java/helium314/keyboard/keyforma/AntDialog.kt
+@@ -24,6 +24,7 @@ internal object AntDialog {
+    if(previous?.page?.isNotEmpty()==true)return Turn(text,"Apro "+previous.target+".",target=previous.target,page=previous.page,navigate=true)
+    return Turn(text,"Quale impostazione vuoi aprire? Scrivimi il suo nome.")
+   }
++  AntControls699.submit(c,text,previous)?.let{return it}
+   AntSizing697.submit(c,text,previous)?.let{return it}
+ 
+   val recentDraft=history.asReversed().firstNotNullOfOrNull{read(it).draft.takeIf(String::isNotEmpty)}
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/AntGuide.kt b/app/src/main/java/helium314/keyboard/keyforma/AntGuide.kt
+index 3dedc02..1581eb2 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/AntGuide.kt
++++ b/app/src/main/java/helium314/keyboard/keyforma/AntGuide.kt
+@@ -12,6 +12,7 @@ internal object AntGuide {
+  data class Answer(val text:String,val links:List<SettingResult>,val themes:List<SettingResult> = emptyList())
+  fun answer(c:Context,question:String,previous:String=""):Answer{
+   val raw=SettingsSearch.normal(question)
++  AntControls699.guide(raw)?.let{return it}
+   if(Regex("revisione contestuale|correzione del paragrafo").containsMatchIn(raw))return Answer("Nel comando Correggi, Revisione contestuale locale usa il modello già scaricato per rileggere l’intero testo. Non lavora a ogni tasto: prima di inserire puoi controllare il risultato. Senza modello, o spegnendola, resta il correttore rapido. Nomi, numeri e negazioni vengono controllati prima di accettare la revisione.",listOf(SettingResult("typing","Revisione contestuale locale")))
+   if(Regex("angoli arrotondati|angoli tondi|stondatura").containsMatchIn(raw))return Answer("Trovi Angoli arrotondati in Temi → Aspetto del tema. È la stessa stondatura già disponibile in Trasparenze: cambiare uno dei due interruttori aggiorna anche l’altro.",listOf(SettingResult("themes","Angoli arrotondati")))
+   if(Regex("effetti (?:originali|nativi|del tema)|risposta originale").containsMatchIn(raw))return Answer("Effetti originali del tema usa la pressione e il materiale previsti dalla tastiera. Spegnendolo tornano i tuoi effetti personali, conservati in memoria. RGB, suono e vibrazione restano separati.",listOf(SettingResult("effects","Effetti originali del tema")))
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/AntSizing697.kt b/app/src/main/java/helium314/keyboard/keyforma/AntSizing697.kt
+index 09c0ac2..6002c90 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/AntSizing697.kt
++++ b/app/src/main/java/helium314/keyboard/keyforma/AntSizing697.kt
+@@ -10,7 +10,7 @@ internal object AntSizing697 {
+  fun submit(c:Context,text:String,previous:AntDialog.Turn?):AntDialog.Turn?{
+   val q=SettingsSearch.normal(text)
+   if(!Regex("^(?:(?:ant|mi|puoi|potresti|per favore|ok) )*(?:imposta|porta|metti|regola|cambia) ").containsMatchIn(q)||text.trimEnd().endsWith("?")&&!q.startsWith("puoi "))return null
+-  val amount=Regex("\\b(\\d{1,3})\\b").find(q)?.value?.toInt()?:return null
++  val amount=(Regex("""\b(?:al|a|di) (\d{1,3})\b""").find(q)?.groupValues?.get(1) ?: Regex("""(\d{1,3})\s*%""").find(q)?.groupValues?.get(1) ?: Regex("""\b(\d{1,3})\b""").find(q)?.value)?.toInt()?:return null
+   val dimensional=Regex("larghezza|altezza|dimensione|diametro").containsMatchIn(q)
+   if(!dimensional)return null
+   val current=DimensionProfiles697.current(c)
+@@ -18,7 +18,9 @@ internal object AntSizing697 {
+   if("fold" in q&&!DimensionProfiles697.foldable(c))return AntDialog.Turn(text,"Su questo dispositivo non è disponibile un profilo Fold. Puoi regolare Telefono verticale e orizzontale.",target="Dimensioni",page="size")
+   val landscape=when{"orizzontale" in q->true;"verticale" in q->false;else->current.contains("landscape")}
+   val ball=when{"senza trackball" in q||"senza sfera" in q->false;"trackball" in q||"sfera" in q||"pallina" in q->true;else->current.endsWith("_ball")}
+-  val profile=(if(wide)"wide" else "compact")+"_"+(if(landscape)"landscape" else "portrait")+(if(ball)"_ball" else "")
++  val commonProfile=(if(wide)"wide" else "compact")+"_"+(if(landscape)"landscape" else "portrait")+(if(ball)"_ball" else "")
++  val layer=when{"tastierino" in q->"numeric";"simboli 2" in q||"secondo fronte" in q->"symbols2";"simboli 1" in q||"primo fronte" in q->"symbols";"solo lettere" in q->"letters";else->"all"}
++  val profile=DimensionLayers699.profile(commonProfile,layer)
+   val group=when{ "spaziatrice" in q->"space";"funzion" in q->"functions";"numer" in q->"numbers";"simbol" in q->"punctuation";else->"letters" }
+   val field:String;val min:Int;val max:Int;val title:String
+   when{
+@@ -27,14 +29,17 @@ internal object AntSizing697 {
+    "altezza base" in q||"altezza righe" in q->{field="row";min=32;max=80;title="Altezza base delle righe · dp"}
+    "copritast" in q->{field=group+if("larghezza" in q)"_width" else "_height";min=55;max=100;title="Dimensione copritasti · %"}
+    "dimensione" in q&&Regex("letter|simbol|scritt|icon").containsMatchIn(q)->{field=group+"_ink";min=70;max=135;title="Dimensione lettere e simboli · %"}
++   "larghezza" in q&&"spaziatrice" in q->{field="space_share";min=50;max=160;title="Proporzione spaziatrice · %"}
+    "larghezza" in q&&Regex("riga|letter|funzion|spaziatrice|numer").containsMatchIn(q)->{field="section_"+if(Regex("inferiore|quinta|comandi").containsMatchIn(q))"bottom" else group;min=60;max=100;title="Larghezza sezione · %"}
+    "larghezza" in q&&"struttura" in q->{field="width";min=60;max=100;title="Larghezza della struttura · %"}
++   layer!="all"&&"larghezza" in q->{field="width";min=60;max=100;title="Larghezza della sezione · %"}
++   layer!="all"&&"altezza" in q->{field="height";min=70;max=130;title="Altezza della sezione · %"}
+    "larghezza" in q&&"tastiera" in q->{field="outer_width";min=60;max=100;title="Larghezza complessiva · %"}
+    "altezza" in q&&"tastiera" in q->{field="height";min=70;max=130;title="Altezza complessiva · %"}
+    else->return null
+   }
+   if(amount !in min..max)return AntDialog.Turn(text,"Per $title scegli un valore da $min a $max. Non ho modificato il profilo.",target="Dimensioni",page="size")
+-  KeyAntPrefs.get(c).edit().putInt(DimensionProfiles697.key(profile,field),amount).apply()
++  DimensionLayers699.putSize(c,profile,field,amount)
+   Settings.getInstance().loadSettings(c);KeyboardLayoutSet.onKeyboardThemeChanged();KeyboardSwitcher.getInstance().setThemeNeedsReload()
+   return AntDialog.Turn(text,"$title: $amount. Profilo: "+DimensionProfiles697.label(profile)+". Gli altri profili restano invariati.",target="Dimensioni",page="size")
+  }
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/AntSwitches.kt b/app/src/main/java/helium314/keyboard/keyforma/AntSwitches.kt
+index 99369f9..109a1b3 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/AntSwitches.kt
++++ b/app/src/main/java/helium314/keyboard/keyforma/AntSwitches.kt
+@@ -9,6 +9,8 @@ import helium314.keyboard.keyboard.KeyboardSwitcher
+ /** Labels and preference keys shared with Studio's boolean controls. */
+ internal object AntSwitches {
+  val keys:Map<String,String> by lazy { mapOf(
++  "Ripensamenti numerici espliciti" to "ka_voice_explicit_repairs",
++  "Colori personali degli altri tasti" to "ka_key_color_enabled",
+   "Effetti originali del tema" to "ka_theme_touch_effects",
+   "Colore RGB dal tema" to "ka_rgb_theme_overlay",
+   "Coordina barra icone" to "ka_toolbar_match_theme",
+@@ -177,6 +179,7 @@ internal object AntSwitches {
+   return target?.let{Request(it,on)}
+  }
+  fun apply(c:Context,request:Request):String{
++  if(request.target=="Colori personali degli altri tasti")KeyColorOverrides.selectTheme(c,SearchTheme.active(c))
+   val key=if(request.target=="Tastiera divisa")DimensionProfiles697.splitKey(c) else keys.getValue(request.target)
+   val edit=KeyAntPrefs.get(c).edit().putBoolean(key,request.on)
+   if(request.target=="Tastiera divisa" && request.on)edit.putBoolean("ka_floating",false)
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/BottomLayout699.kt b/app/src/main/java/helium314/keyboard/keyforma/BottomLayout699.kt
+new file mode 100644
+index 0000000..a10d787
+--- /dev/null
++++ b/app/src/main/java/helium314/keyboard/keyforma/BottomLayout699.kt
+@@ -0,0 +1,35 @@
++// SPDX-License-Identifier: GPL-3.0-only
++package helium314.keyboard.keyforma
++import android.content.Context
++import helium314.keyboard.keyboard.Key
++import helium314.keyboard.keyboard.KeyboardId
++import helium314.keyboard.keyboard.internal.KeyboardParams
++import helium314.keyboard.keyboard.internal.keyboard_parser.floris.KeyCode
++/** Runs before absolute hit rectangles and split geometry; total row width is invariant. */
++object BottomLayout699 {
++ @JvmStatic fun apply(c:Context,rows:List<ArrayList<Key.KeyParams>>,p:KeyboardParams){
++  val profile=p.mSizingProfile?:DimensionLayers699.profile(DimensionProfiles697.current(c),p.mId.mElementId)
++  if(p.mId.isNumberLayout){
++   if(DimensionLayers699.text(c,profile,"numeric_order","phone")=="calculator"){
++    rows.flatten().forEach{k->if(k.mCode in 49..51||k.mCode in 55..57){val code=if(k.mCode<55)k.mCode+6 else k.mCode-6;val row=rows.first{it.contains(k)};val i=row.indexOf(k);row[i]=Key.KeyParams(code.toChar().toString(),code,p,k.mWidth,0,k.mBackgroundType,null).also{it.mHeight=k.mHeight}}}
++   };return
++  }
++  if(!p.mId.isAlphaOrSymbolKeyboard)return
++  val row=rows.lastOrNull()?:return
++  val space=row.firstOrNull{it.mCode==32}?:return
++  val total=row.sumOf{it.mWidth.toDouble()}.toFloat()
++  val extras=DimensionLayers699.text(c,profile,"bottom_extras","").split(',').filter{it in setOf("emoji","clipboard")}.distinct()
++  for(extra in extras){val code=if(extra=="emoji")KeyCode.EMOJI else KeyCode.CLIPBOARD;if(row.any{it.mCode==code})continue
++   val k=Key.KeyParams(if(extra=="emoji")"!icon/emoji_normal_key" else "!icon/clipboard_normal_key",code,p,.09f,0,Key.BACKGROUND_TYPE_FUNCTIONAL,null);k.mHeight=space.mHeight
++   row.add(if(extra=="emoji")row.indexOf(space) else (row.indexOfFirst{it.mCode==10}.takeIf{it>=0}?:row.size),k)
++  }
++  val savedOrder=DimensionLayers699.text(c,profile,"bottom_order","").split(',').mapNotNull{it.toIntOrNull()}
++  if(savedOrder.isNotEmpty()){val ranked=savedOrder.withIndex().associate{it.value to it.index};row.sortBy{ranked[it.mCode]?:Int.MAX_VALUE}}
++  val percent=DimensionProfiles697.value(c,profile,"space_share",100).coerceIn(50,160)
++  if(percent==100&&extras.isEmpty())return
++  val desired=(space.mWidth*percent/100f).coerceIn(total*.18f,total*.65f)
++  val rest=row.filter{it!==space};val sum=rest.sumOf{it.mWidth.toDouble()}.toFloat()
++  if(sum<=0)return
++  space.mWidth=desired;rest.forEach{it.mWidth=it.mWidth*(total-desired)/sum}
++ }
++}
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/BottomOrder699.kt b/app/src/main/java/helium314/keyboard/keyforma/BottomOrder699.kt
+new file mode 100644
+index 0000000..42a3913
+--- /dev/null
++++ b/app/src/main/java/helium314/keyboard/keyforma/BottomOrder699.kt
+@@ -0,0 +1,16 @@
++// SPDX-License-Identifier: GPL-3.0-only
++package helium314.keyboard.keyforma
++import androidx.compose.runtime.*
++import androidx.compose.foundation.layout.*
++import androidx.compose.material3.*
++import androidx.compose.ui.Modifier
++import androidx.compose.ui.platform.LocalContext
++import helium314.keyboard.keyboard.internal.keyboard_parser.floris.KeyCode
++@Composable internal fun BottomOrder699(profile:String,revision:Int,reload:()->Unit){
++ val c=LocalContext.current;val p=KeyAntPrefs.get(c)
++ val defaults=listOf(KeyCode.SYMBOL_ALPHA,44,KeyCode.EMOJI,32,46,KeyCode.CLIPBOARD,10)
++ val order=remember(profile,revision){DimensionLayers699.text(c,profile,"bottom_order","").split(',').mapNotNull{it.toIntOrNull()}.takeIf{it.isNotEmpty()}?:defaults}
++ fun label(code:Int)=when(code){32->"Spazio";44->"Virgola";46->"Punto";10->"Invio";KeyCode.EMOJI->"Emoji";KeyCode.CLIPBOARD->"Appunti";else->"?123"}
++ Text("Ordine della riga · si spostano solo i tasti presenti",style=MaterialTheme.typography.labelLarge)
++ order.forEachIndexed{i,code->Row(Modifier.fillMaxWidth(),verticalAlignment=androidx.compose.ui.Alignment.CenterVertically){Text(label(code),Modifier.weight(1f));TextButton(enabled=i>0,onClick={val next=order.toMutableList();java.util.Collections.swap(next,i,i-1);p.edit().putString(DimensionProfiles697.key(profile,"bottom_order"),next.joinToString(",")).apply();reload()}){Text("←")};TextButton(enabled=i<order.lastIndex,onClick={val next=order.toMutableList();java.util.Collections.swap(next,i,i+1);p.edit().putString(DimensionProfiles697.key(profile,"bottom_order"),next.joinToString(",")).apply();reload()}){Text("→")}}}
++}
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/DimensionLayers699.java b/app/src/main/java/helium314/keyboard/keyforma/DimensionLayers699.java
+new file mode 100644
+index 0000000..9e629ee
+--- /dev/null
++++ b/app/src/main/java/helium314/keyboard/keyforma/DimensionLayers699.java
+@@ -0,0 +1,25 @@
++// SPDX-License-Identifier: GPL-3.0-only
++package helium314.keyboard.keyforma;
++import android.content.*;
++import helium314.keyboard.keyboard.KeyboardId;
++/** Layer keys extend display/orientation/trackball profiles and inherit common dimensions. */
++public final class DimensionLayers699 {
++ private DimensionLayers699(){}
++ public static String root(String profile){int i=profile.indexOf("_layer_");return i<0?profile:profile.substring(0,i);}
++ public static String layer(int element){return switch(element){case KeyboardId.ELEMENT_NUMBER,KeyboardId.ELEMENT_NUMPAD,KeyboardId.ELEMENT_PHONE,KeyboardId.ELEMENT_PHONE_SYMBOLS->"numeric";case KeyboardId.ELEMENT_SYMBOLS->"symbols";case KeyboardId.ELEMENT_SYMBOLS_SHIFTED->"symbols2";default->"letters";};}
++ public static String profile(String profile,int element){return root(profile)+"_layer_"+layer(element);}
++ public static String profile(String profile,String layer){return layer.equals("all")?root(profile):root(profile)+"_layer_"+layer;}
++ public static int splitBaseHeight(Context c,KeyboardId source){if(KeyAntPrefs.bool(c,"floating",false)||height(c,DimensionProfiles697.current(c),source.mElementId,-1,source.mNumberRowEnabled)==-1)return source.mHeight;return helium314.keyboard.latin.utils.ResourceUtils.getKeyboardHeight(c.getResources(),helium314.keyboard.latin.settings.Settings.getValues());}
++ public static int height(Context c,String profile,int element,int original,boolean numbers){
++  String specific=profile(profile,element);SharedPreferences p=KeyAntPrefs.get(c);
++  if(!p.contains(DimensionProfiles697.key(specific,"row"))&&!p.contains(DimensionProfiles697.key(specific,"height"))&&!p.contains(DimensionProfiles697.key(DimensionProfiles697.base(specific),"row"))&&!p.contains(DimensionProfiles697.key(DimensionProfiles697.base(specific),"height")))return original;
++  return DimensionProfiles697.height(c,specific,DimensionProfiles697.row(c,specific,SearchTheme.active(c)),numbers);
++ }
++ public static java.util.Map<String,Object> snapshot(Context c){java.util.Map<String,Object> out=new java.util.HashMap<>();for(var e:KeyAntPrefs.get(c).getAll().entrySet())if(e.getKey().startsWith("ka_dim_"))out.put(e.getKey(),e.getValue());return out;}
++ public static void restore(Context c,java.util.Map<String,Object> saved){var p=KeyAntPrefs.get(c);var e=p.edit();for(String k:p.getAll().keySet())if(k.startsWith("ka_dim_"))e.remove(k);for(var v:saved.entrySet()){if(v.getValue() instanceof Integer n)e.putInt(v.getKey(),n);else if(v.getValue() instanceof Boolean b)e.putBoolean(v.getKey(),b);else if(v.getValue() instanceof String s)e.putString(v.getKey(),s);}e.apply();}
++ public static java.util.Map<String,Object> decode(String json){java.util.Map<String,Object> result=new java.util.HashMap<>();try{org.json.JSONObject o=new org.json.JSONObject(json);for(var it=o.keys();it.hasNext();){String k=it.next();if(k.startsWith("ka_dim_")){Object v=o.get(k);if(v instanceof Number n)v=n.intValue();result.put(k,v);}}}catch(org.json.JSONException ignored){}return result;}
++ public static void defaults(Context c,String profile){DimensionProfiles697.reset(c,profile);var e=KeyAntPrefs.get(c).edit();String[] fields={"height","outer_width","width","bottom_height","space_share","section_letters","section_functions","section_numbers","section_space","section_punctuation","section_bottom","letters_width","letters_height","letters_ink","functions_width","functions_height","functions_ink","space_width","space_height","space_ink","numbers_width","numbers_height","numbers_ink","punctuation_width","punctuation_height","punctuation_ink"};for(String field:fields)e.putInt(DimensionProfiles697.key(profile,field),100);e.putInt(DimensionProfiles697.key(profile,"row"),0).putInt(DimensionProfiles697.key(profile,"width"),0);if(!profile.contains("_layer_")&&!profile.endsWith("_ball"))e.putBoolean(DimensionProfiles697.key(DimensionProfiles697.base(profile),"split"),false);e.putInt(DimensionProfiles697.key(profile,"ball_size"),82).putString(DimensionProfiles697.key(profile,"bottom_extras"),"").putString(DimensionProfiles697.key(profile,"bottom_order"),"").putString(DimensionProfiles697.key(profile,"numeric_order"),"phone").apply();}
++ public static void putSize(Context c,String profile,String field,int value){var e=KeyAntPrefs.get(c).edit();if(value==Integer.MIN_VALUE)e.remove(DimensionProfiles697.key(profile,field));else e.putInt(DimensionProfiles697.key(profile,field),value);if(!profile.contains("_layer_"))for(String layer:new String[]{"letters","symbols","symbols2","numeric"})e.remove(DimensionProfiles697.key(profile(profile,layer),field));e.apply();}
++ public static void resetField(Context c,String profile,String field){KeyAntPrefs.get(c).edit().remove(DimensionProfiles697.key(profile,field)).apply();}
++ public static String text(Context c,String profile,String field,String fallback){var p=KeyAntPrefs.get(c);String key=DimensionProfiles697.key(profile,field);if(p.contains(key))return p.getString(key,fallback);String parent=DimensionProfiles697.base(profile);if(!parent.equals(profile)&&p.contains(DimensionProfiles697.key(parent,field)))return p.getString(DimensionProfiles697.key(parent,field),fallback);return profile.contains("_layer_")?text(c,root(profile),field,fallback):fallback;}
++}
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/DimensionProfiles697.java b/app/src/main/java/helium314/keyboard/keyforma/DimensionProfiles697.java
+index 5a95f20..0c2c56e 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/DimensionProfiles697.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/DimensionProfiles697.java
+@@ -31,17 +31,21 @@ public final class DimensionProfiles697 {
+  public static int value(Context c,String profile,String field,int fallback){return value(KeyAntPrefs.get(c),profile,field,fallback);}
+  public static int value(SharedPreferences p,String profile,String field,int fallback){
+   String key=key(profile,field);if(p.contains(key))return p.getInt(key,fallback);
+-  return p.getInt(key(base(profile),field),fallback);
++  if(profile.contains("_layer_")&&DimensionLayers699.root(profile).endsWith("_ball")){String shared=key(DimensionLayers699.root(profile),field);if(p.contains(shared))return p.getInt(shared,fallback);}
++  String parent=key(base(profile),field);if(p.contains(parent))return p.getInt(parent,fallback);
++  return profile.contains("_layer_")?value(p,DimensionLayers699.root(profile),field,fallback):fallback;
+  }
+  public static String splitKey(Context c){return key(base(current(c)),"split");}
+  public static boolean split(Context c){return split(c,current(c));}
+- public static boolean split(Context c,String profile){return KeyAntPrefs.get(c).getBoolean(key(base(profile),"split"),KeyAntPrefs.bool(c,legacyWide(profile)?"split_wide":"split_compact",false));}
++ public static boolean split(Context c,String profile){return KeyAntPrefs.get(c).getBoolean(key(DimensionLayers699.root(base(profile)),"split"),KeyAntPrefs.bool(c,legacyWide(profile)?"split_wide":"split_compact",false));}
+  public static int row(Context c,String profile,String theme){
+   Configuration config=c.getResources().getConfiguration();int width=legacyWide(profile)?700:Math.min(config.screenWidthDp,config.screenHeightDp);if(width<200)width=400;
+   int fallback=theme.equals(SmokeGlassCaps.ID)?50:ReferenceCollection691.defaultRowHeight(theme,width);
++  int natural=fallback;
+   SharedPreferences p=KeyAntPrefs.get(c);
+   fallback=p.getInt(legacyWide(profile)?"ka_row_wide":"ka_row_compact",fallback);var draft=MakeKeyAnt.get(theme);if(draft!=null)fallback=draft.optInt("height",fallback);
+-  return Math.max(32,Math.min(80,value(p,profile,"row",fallback)));
++  int selected=value(p,profile,"row",fallback);if(selected==0)selected=draft!=null?draft.optInt("height",natural):natural;
++  return Math.max(32,Math.min(80,selected));
+  }
+  public static int height(Context c,String profile,int row,boolean numbers){
+   int percent=Math.max(70,Math.min(130,value(c,profile,"height",100)));
+@@ -50,8 +54,10 @@ public final class DimensionProfiles697 {
+  public static int outerWidth(Context c,String profile,int available){return Math.max(1,Math.round(available*Math.max(60,Math.min(100,value(c,profile,"outer_width",100)))/100f));}
+  public static int padding(Context c,String profile,int width,int natural){
+   SharedPreferences p=KeyAntPrefs.get(c);String field=key(profile,"width"),parent=key(base(profile),"width");
+-  if(!p.contains(field)&&!p.contains(parent))return natural;
+-  float fraction=Math.max(60,Math.min(100,value(p,profile,"width",100)))/100f;
++  String common=DimensionLayers699.root(profile);
++  if(!p.contains(field)&&!p.contains(parent)&&!p.contains(key(common,"width"))&&!p.contains(key(base(common),"width")))return natural;
++  int selected=value(p,profile,"width",100);if(selected==0)return natural;
++  float fraction=Math.max(60,Math.min(100,selected))/100f;
+   return Math.max(Math.round(3*c.getResources().getDisplayMetrics().density),Math.round(width*(1-fraction)/2));
+  }
+  public static int section(Context c,String profile,String group){
+@@ -61,6 +67,7 @@ public final class DimensionProfiles697 {
+  public static float shape(Context c,String profile,int code,String axis){return Math.max(55,Math.min(100,value(c,profile,MakerGeometry.group(code)+"_"+axis,100)))/100f;}
+  public static float ink(Context c,String profile,int code){return Math.max(70,Math.min(135,value(c,profile,MakerGeometry.group(code)+"_ink",100)))/100f;}
+  public static void transform(Context c,Canvas canvas,String profile,int code,float w,float h){canvas.scale(shape(c,profile,code,"width"),shape(c,profile,code,"height"),w/2,h/2);}
+- public static void reset(Context c,String profile){SharedPreferences p=KeyAntPrefs.get(c);SharedPreferences.Editor e=p.edit();String prefix=key(profile,"");for(String key:p.getAll().keySet())if(key.startsWith(prefix)&&(!key.startsWith(prefix+"ball_")||profile.endsWith("_ball")))e.remove(key);e.apply();}
++ public static void reset(Context c,String profile){SharedPreferences p=KeyAntPrefs.get(c);SharedPreferences.Editor e=p.edit();String prefix=key(profile,"");for(String key:p.getAll().keySet())if(key.startsWith(prefix)){String field=key.substring(prefix.length());if(field.startsWith("layer_")||field.startsWith("ball_")&&!field.equals("ball_size"))continue;e.remove(key);}e.apply();}
++
+  public static String label(String p){return (p.startsWith("wide")?"Schermo ampio":"Telefono")+" · "+(p.contains("landscape")?"orizzontale":"verticale")+(p.endsWith("_ball")?" · trackball":"");}
+ }
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/KeyAntGestures.java b/app/src/main/java/helium314/keyboard/keyforma/KeyAntGestures.java
+index 9548328..9c68624 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/KeyAntGestures.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/KeyAntGestures.java
+@@ -63,7 +63,7 @@ public final class KeyAntGestures {
+    if(firstKey!=null&&ShortcutMode.isModeKey(firstKey.getCode())&&KeyAntPrefs.bool(ime,"shortcuts",true)){
+     if(ShortcutMode.isActive()||e.getEventTime()-lastModeTap<ViewConfiguration.getDoubleTapTimeout()){boolean wasActive=ShortcutMode.isActive();ShortcutMode.reset();host.cancelAllOngoingEvents();ime.prepareKeyAntGesture();ime.onCodeInput(KeyCode.ALPHA,-1,-1,false);if(!wasActive)ShortcutMode.activate();host.performHapticFeedback(HapticFeedbackConstants.CONFIRM);shortcutStream=true;lastModeTap=-1000;host.invalidateAllKeys();return true;}
+    }else lastModeTap=-1000;
+-   if(firstKey!=null&&firstKey.getCode()==32&&enabled("touchpad")&&!ime.isKeyAntChatOpen()){beginSpace(firstKey,firstId,x1,y1,false);return false;}return false;
++   if(firstKey!=null&&firstKey.getCode()==32&&!NumericJolly699.matches(host.getKeyboard(),32)&&enabled("touchpad")&&!ime.isKeyAntChatOpen()){beginSpace(firstKey,firstId,x1,y1,false);return false;}return false;
+   }
+   if(chordWaiting&&(action==MotionEvent.ACTION_UP||action==MotionEvent.ACTION_CANCEL)){resetStream();return true;}
+   if(chordWaiting&&action==MotionEvent.ACTION_MOVE)return true;
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/KeyColorOverrides.java b/app/src/main/java/helium314/keyboard/keyforma/KeyColorOverrides.java
+index bd7fdac..cf37259 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/KeyColorOverrides.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/KeyColorOverrides.java
+@@ -30,8 +30,9 @@ public final class KeyColorOverrides {
+   }catch(org.json.JSONException ignored){}
+   e.putString("ka_key_colors_theme",profile).apply();
+  }
++ public static boolean enabled(Context c,String profile){return profile.equals(KeyAntPrefs.text(c,"key_colors_theme",""))&&KeyAntPrefs.get(c).getBoolean("ka_key_color_enabled",KeyAntPrefs.get(c).getAll().keySet().stream().anyMatch(k->k.startsWith("ka_key_color_")&&!k.equals("ka_key_color_enabled")));}
+  public static void reset(Context c){var p=KeyAntPrefs.get(c);var e=p.edit();for(String k:p.getAll().keySet())if(k.startsWith("ka_key_color_"))e.remove(k);e.remove("ka_saved_key_palette_"+p.getString("ka_key_colors_theme","")).apply();}
+- public static void choose(Context c,String profile,String slot,String choice){selectTheme(c,profile);KeyAntPrefs.get(c).edit().putString("ka_key_color_"+slot,choice).apply();}
++ public static void choose(Context c,String profile,String slot,String choice){selectTheme(c,profile);KeyAntPrefs.get(c).edit().putString("ka_key_color_"+slot,choice).putBoolean("ka_key_color_enabled",true).apply();}
+  public static Integer colorForKey(Context c,String profile,boolean dark,helium314.keyboard.keyboard.Keyboard keyboard,helium314.keyboard.keyboard.Key key,int kind){
+   if(keyboard instanceof helium314.keyboard.keyboard.PopupKeysKeyboard popup && popup.mCommaShortcuts && KeyAntPrefs.bool(c,"comma_match_color",true)){
+    Integer tint=color(c,profile,dark,44,0);
+@@ -43,7 +44,7 @@ public final class KeyColorOverrides {
+  }
+  public static Integer color(Context c,String profile,boolean dark,int code,int kind){
+   if(MakeKeyAnt.is(profile)){var design=MakeKeyAnt.get(profile);var keys=design.optJSONObject("keys");var key=keys==null?null:keys.optJSONObject(String.valueOf(Character.toLowerCase(code)));if(key!=null&&key.optString("color").matches("[A-Fa-f0-9]{6}"))return Color.parseColor("#"+key.optString("color"));}
+-  if(!profile.equals(KeyAntPrefs.text(c,"key_colors_theme","")))return null;
++  if(!enabled(c,profile))return null;
+   String slot=slot(code,kind);if(slot.isEmpty())return null;
+   String choice=KeyAntPrefs.text(c,"key_color_"+slot,"auto");
+   if(choice.equals("original"))return null;
+@@ -59,7 +60,7 @@ public final class KeyColorOverrides {
+  }
+  public static int legend(Context c,String profile,int code,int kind,int fallback){
+   if(MakeKeyAnt.is(profile)){var keys=MakeKeyAnt.get(profile).optJSONObject("keys");var key=keys==null?null:keys.optJSONObject(String.valueOf(Character.toLowerCase(code)));if(key!=null&&MakeKeyAnt.get(profile).optString("ink","auto").equals("auto")&&key.optString("ink").matches("[A-Fa-f0-9]{6}"))fallback=Color.parseColor("#"+key.optString("ink"));}
+-  if(!profile.equals(KeyAntPrefs.text(c,"key_colors_theme","")))return fallback;
++  if(!enabled(c,profile))return fallback;
+   String value=KeyAntPrefs.text(c,"key_color_ink_"+slot(code,kind),"auto");if(value.matches("#[A-Fa-f0-9]{6}"))return Color.parseColor(value);if(value.startsWith("palette_")){try{int index=Integer.parseInt(value.substring(8));if(index>=0&&index<=3)return ThemeCatalog.face(profile,helium314.keyboard.latin.settings.Settings.getValues()!=null&&helium314.keyboard.latin.settings.Settings.getValues().mColors instanceof FormaColors f&&f.getDark(),index);}catch(Exception ignored){}}return switch(value){case "white"->Color.WHITE;case "black"->Color.BLACK;default->fallback;};
+  }
+  public static int ink(int color){return androidx.core.graphics.ColorUtils.calculateLuminance(color)>.179?Color.BLACK:Color.WHITE;}
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/KeyColorSettings.kt b/app/src/main/java/helium314/keyboard/keyforma/KeyColorSettings.kt
+index 12aa754..6b2ac47 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/KeyColorSettings.kt
++++ b/app/src/main/java/helium314/keyboard/keyforma/KeyColorSettings.kt
+@@ -39,7 +39,7 @@ import helium314.keyboard.keyboard.internal.keyboard_parser.floris.KeyCode
+    Row(Modifier.padding(horizontal=16.dp,vertical=8.dp),horizontalArrangement=Arrangement.spacedBy(8.dp)){palette.forEach{k->val color=ThemeCatalog.face(profile,dark,k);FilledTonalButton(onClick={KeyColorOverrides.choose(c,profile,slot,"palette_$k")},contentPadding=PaddingValues(8.dp),modifier=Modifier.weight(1f).semantics{contentDescription="Usa il colore "+String.format("#%06X",color and 0xffffff)+" per "+title}){Box(Modifier.size(22.dp).background(Color(color),CircleShape))}}}
+    if(current=="custom")Box(Modifier.padding(horizontal=14.dp,vertical=6.dp)){
+     val hex=String.format("%06X",KeyAntPrefs.number(c,"key_color_custom_"+slot,ThemeCatalog.face(profile,dark,kind)) and 0xffffff)
+-    MakerColor("Scegli il colore del tasto",hex,resetToTheme=false){v->p.edit().putInt("ka_key_color_custom_"+slot,(0xff000000L or v.toLong(16)).toInt()).apply()}
++    MakerColor("Scegli il colore del tasto",hex,resetToTheme=false){v->p.edit().putBoolean("ka_key_color_enabled",true).putInt("ka_key_color_custom_"+slot,(0xff000000L or v.toLong(16)).toInt()).apply()}
+    }
+   }
+  }
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/KeyboardLayoutPreview.java b/app/src/main/java/helium314/keyboard/keyforma/KeyboardLayoutPreview.java
+index a51d5f2..3a98f1d 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/KeyboardLayoutPreview.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/KeyboardLayoutPreview.java
+@@ -30,6 +30,7 @@ public final class KeyboardLayoutPreview extends View {
+       if(changed){revision=rev;keyboard=null;if(getWidth()>0)rebuild();requestLayout();invalidate();}
+     }
+     private final android.content.SharedPreferences.OnSharedPreferenceChangeListener geometryListener=(prefs,key)->{
++        if(sizingProfile!=null)return; // The dimension editor batches its own preview refresh.
+         if((key!=null&&(key.startsWith("ka_section_")||key.startsWith("ka_dim_")))||"ka_balanced_caps".equals(key)||"ka_front_punctuation".equals(key)||"ka_front_left_key".equals(key)){KeyboardLayoutSet.onKeyboardThemeChanged();if(getWidth()>0)rebuild();requestLayout();invalidate();KeyboardSwitcher.getInstance().setThemeNeedsReload();}
+     };
+     @Override protected void onAttachedToWindow(){super.onAttachedToWindow();PreviewFeedback.attach();KeyAntPrefs.get(getContext()).registerOnSharedPreferenceChangeListener(geometryListener);}
+@@ -37,6 +38,34 @@ public final class KeyboardLayoutPreview extends View {
+     public java.util.function.IntConsumer pick;private float downX,downY;private boolean moved;
+     private int revision=-1;private Key pressed;private MagicBallView ballPreview;
+     private final Paint paint=new Paint(Paint.ANTI_ALIAS_FLAG);
++    private String selectedGroup="letters";private boolean handles;private int handleAxis;private float handleX,handleY,startHandleX,startHandleY;private int startAmount,dragAmount;private long lastResize;
++    private final android.graphics.RectF selectedBounds=new android.graphics.RectF();
++    public java.util.function.BiConsumer<String,Integer> resize;
++    public void handles(String group){selectedGroup=group;handles=true;invalidate();}
++    private String widthField(){return selectedGroup.equals("space")&&element!=KeyboardId.ELEMENT_NUMBER?"space_share":"section_"+selectedGroup;}
++    private String heightField(){return selectedGroup.equals("space")&&element!=KeyboardId.ELEMENT_NUMBER?"bottom_height":selectedGroup+"_height";}
++    private boolean resizeTouch(android.view.MotionEvent e){
++      if(!handles||resize==null||selectedBounds.isEmpty())return false;
++      float d=getResources().getDisplayMetrics().density;
++      if(e.getActionMasked()==android.view.MotionEvent.ACTION_DOWN){
++       int axis=Math.hypot(e.getX()-selectedBounds.right,e.getY()-selectedBounds.centerY())<24*d?1:Math.hypot(e.getX()-selectedBounds.centerX(),e.getY()-selectedBounds.bottom)<24*d?2:0;
++       if(axis==0)return false;handleAxis=axis;startHandleX=e.getX();startHandleY=e.getY();startAmount=DimensionProfiles697.value(getContext(),sizingProfile,axis==1?widthField():heightField(),100);dragAmount=startAmount;lastResize=0;
++       if(getParent()!=null)getParent().requestDisallowInterceptTouchEvent(true);return true;
++      }
++      if(handleAxis==0)return false;
++      if(e.getActionMasked()==android.view.MotionEvent.ACTION_MOVE){float delta=handleAxis==1?(e.getX()-startHandleX)/Math.max(60*d,selectedBounds.width())*100:(e.getY()-startHandleY)/Math.max(50*d,selectedBounds.height())*100;int min=handleAxis==1?(selectedGroup.equals("space")&&element!=KeyboardId.ELEMENT_NUMBER?50:60):(selectedGroup.equals("space")&&element!=KeyboardId.ELEMENT_NUMBER?65:55);int max=selectedGroup.equals("space")&&element!=KeyboardId.ELEMENT_NUMBER?(handleAxis==1?160:130):100;dragAmount=Math.max(min,Math.min(max,Math.round(startAmount+delta)));if(e.getEventTime()-lastResize>=120){lastResize=e.getEventTime();resize.accept(handleAxis==1?widthField():heightField(),dragAmount);}invalidate();return true;}
++      if(e.getActionMasked()==android.view.MotionEvent.ACTION_UP||e.getActionMasked()==android.view.MotionEvent.ACTION_CANCEL){resize.accept(handleAxis==1?widthField():heightField(),e.getActionMasked()==android.view.MotionEvent.ACTION_CANCEL?startAmount:dragAmount);handleAxis=0;if(getParent()!=null)getParent().requestDisallowInterceptTouchEvent(false);performClick();invalidate();}return true;
++    }
++    private void drawHandles(Canvas c){
++     if(!handles||keyboard==null)return;float scale=scale(),d=getResources().getDisplayMetrics().density;selectedBounds.setEmpty();
++     for(Key k:keyboard.getKeyboard().getSortedKeys())if(!k.isSpacer()&&MakerGeometry.group(k.getCode()).equals(selectedGroup)){android.graphics.RectF b=new android.graphics.RectF(k.getX(),k.getY(),k.getX()+k.getWidth(),k.getY()+k.getHeight());if(selectedBounds.isEmpty())selectedBounds.set(b);else selectedBounds.union(b);}
++     if(selectedBounds.isEmpty())return;
++     selectedBounds.offset(keyboard.getPaddingLeft(),keyboard.getPaddingTop()+header());selectedBounds.set(selectedBounds.left*scale+(getWidth()-nativeWidth*scale)/2,selectedBounds.top*scale,selectedBounds.right*scale+(getWidth()-nativeWidth*scale)/2,selectedBounds.bottom*scale);
++     selectedBounds.right=Math.min(getWidth()-12*d,selectedBounds.right);selectedBounds.bottom=Math.min(getHeight()-12*d,selectedBounds.bottom);
++     paint.setColor(0xffb49aff);paint.setStyle(Paint.Style.STROKE);paint.setStrokeWidth(1.5f*d);c.drawRoundRect(selectedBounds,8*d,8*d,paint);paint.setStyle(Paint.Style.FILL);
++     c.drawCircle(selectedBounds.right,selectedBounds.centerY(),10*d,paint);c.drawCircle(selectedBounds.centerX(),selectedBounds.bottom,10*d,paint);
++     paint.setColor(0xff231637);paint.setTextSize(14*d);paint.setTextAlign(Paint.Align.CENTER);c.drawText("↔",selectedBounds.right,selectedBounds.centerY()+5*d,paint);c.drawText("↕",selectedBounds.centerX(),selectedBounds.bottom+5*d,paint);
++    }
+     public KeyboardLayoutPreview(Context c) {super(c);setContentDescription("Anteprima della tastiera alle dimensioni scelte");}
+     public void configure(int row, boolean wide, boolean split, boolean numbers) {
+         if(keyboard!=null && this.rowDp==row && this.wide==wide && this.split==split && this.numbers==numbers)return;
+@@ -61,6 +90,7 @@ public final class KeyboardLayoutPreview extends View {
+         if(!java.util.Objects.equals(trial,id)||night!=nextNight){keyboard=null;revision=-1;}
+         trial=id;night=nextNight;configureCurrent(0,false);
+     }
++    public void sizingLayer(String layer){int next=switch(layer){case "numeric"->KeyboardId.ELEMENT_NUMBER;case "symbols"->KeyboardId.ELEMENT_SYMBOLS;case "symbols2"->KeyboardId.ELEMENT_SYMBOLS_SHIFTED;default->KeyboardId.ELEMENT_ALPHABET;};if(element!=next){element=next;keyboard=null;if(getWidth()>0)rebuild();requestLayout();invalidate();}}
+     public void trialLayer(boolean shift,boolean symbols){
+         int layer=symbols?(shift?KeyboardId.ELEMENT_SYMBOLS_SHIFTED:KeyboardId.ELEMENT_SYMBOLS):(shift?KeyboardId.ELEMENT_ALPHABET_MANUAL_SHIFTED:KeyboardId.ELEMENT_ALPHABET);
+         if(layer!=element){element=layer;if(getWidth()>0)rebuild();invalidate();}
+@@ -68,7 +98,7 @@ public final class KeyboardLayoutPreview extends View {
+     public KeyboardLayoutPreview thumbnail(String id,boolean dark){
+         passive=true;trialTheme(id,dark);setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO);return this;
+     }
+-    private float header(){return deviceLayout?0:48*getResources().getDisplayMetrics().density;}
++    private float header(){return deviceLayout||sizingProfile!=null?0:48*getResources().getDisplayMetrics().density;}
+     private float scale(){return Math.min((float)getWidth()/nativeWidth,getHeight()/(nativeHeight+header()));}
+     private void demoPulse(long now){
+         if(demoKey!=null && (now>=releaseDemo||!demo)){demoKey.onReleased();keyboard.invalidateKey(demoKey);demoKey=null;}
+@@ -83,6 +113,7 @@ public final class KeyboardLayoutPreview extends View {
+     }
+     public void refreshEffects(int revision){if(this.revision==revision)return;this.revision=revision;if(keyboard!=null){if(trial==null&&previewColors!=Settings.getValues().mColors){keyboard=null;rebuild();}else keyboard.setKeyboard(keyboard.getKeyboard());}invalidate();}
+     @Override public boolean onTouchEvent(android.view.MotionEvent e){
++        if(resizeTouch(e))return true;
+         if(passive||keyboard==null)return false;
+         float scale=scale();
+         if(e.getActionMasked()==android.view.MotionEvent.ACTION_DOWN){nextPulse=e.getEventTime()+1800;if(demo)postInvalidateDelayed(1810);downX=e.getX();downY=e.getY();moved=false;float x=(e.getX()-(getWidth()-nativeWidth*scale)/2)/scale-keyboard.getPaddingLeft(),y=e.getY()/scale-header()-keyboard.getPaddingTop();for(Key k:keyboard.getKeyboard().getSortedKeys())if(!k.isSpacer()&&x>=k.getX()&&x<k.getX()+k.getWidth()&&y>=k.getY()&&y<k.getY()+k.getHeight()){pressed=k;PreviewFeedback.play(getContext(),k.getCode());keyboard.notifyLightTouch(x+keyboard.getPaddingLeft(),y+keyboard.getPaddingTop(),e.getEventTime());k.onPressed();keyboard.invalidateKey(k);if(getParent()!=null)getParent().requestDisallowInterceptTouchEvent(true);break;}}
+@@ -112,7 +143,7 @@ public final class KeyboardLayoutPreview extends View {
+             keyboard.setMaterialListener(this::postInvalidateOnAnimation);
+             setBackground(null);previewColors.setBackground(this,ColorType.MAIN_BACKGROUND);
+         }
+-        EditorInfo editor=new EditorInfo();editor.inputType=android.text.InputType.TYPE_CLASS_TEXT;editor.imeOptions=EditorInfo.IME_ACTION_DONE;
++        EditorInfo editor=new EditorInfo();editor.inputType=element==KeyboardId.ELEMENT_NUMBER?android.text.InputType.TYPE_CLASS_NUMBER|android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL:android.text.InputType.TYPE_CLASS_TEXT;editor.imeOptions=EditorInfo.IME_ACTION_DONE;
+         var settings=Settings.getValues();
+         var layout=new KeyboardLayoutSet.Builder(themed,editor).setKeyboardGeometry(nativeWidth,nativeHeight)
+             .forPreview(trial).forDimensions(sizingProfile).setVoiceInputKeyEnabled(settings.mShowsVoiceInputKey)
+@@ -136,6 +167,7 @@ public final class KeyboardLayoutPreview extends View {
+         android.graphics.Rect socket=keyboard.getKeyboard().mMagicBallBounds;
+         if(socket!=null){if(ballPreview==null)ballPreview=new MagicBallView(getContext());ballPreview.reloadTheme();ballPreview.measure(MeasureSpec.makeMeasureSpec(socket.width(),MeasureSpec.EXACTLY),MeasureSpec.makeMeasureSpec(socket.height(),MeasureSpec.EXACTLY));ballPreview.layout(0,0,socket.width(),socket.height());c.save();c.translate(socket.left+keyboard.getPaddingLeft(),socket.top+keyboard.getPaddingTop());ballPreview.draw(c);c.restore();}
+         c.restore();
++        drawHandles(c);
+         if(getLocalVisibleRect(visible)&&(keyboard.hasActiveKeyAntAnimation()||(pressed!=null&&pressed.formaMotion.isMoving(android.os.SystemClock.uptimeMillis()))))postInvalidateOnAnimation();
+     }
+ }
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/KeyboardSizePage.kt b/app/src/main/java/helium314/keyboard/keyforma/KeyboardSizePage.kt
+index 3f69c4b..dff6440 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/KeyboardSizePage.kt
++++ b/app/src/main/java/helium314/keyboard/keyforma/KeyboardSizePage.kt
+@@ -5,6 +5,8 @@ import androidx.compose.material3.*
+ import androidx.compose.runtime.*
+ import androidx.compose.runtime.saveable.rememberSaveable
+ import androidx.compose.ui.Modifier
++import androidx.compose.ui.semantics.semantics
++import androidx.compose.ui.semantics.contentDescription
+ import androidx.compose.ui.platform.LocalContext
+ import androidx.compose.ui.platform.LocalConfiguration
+ import androidx.compose.ui.unit.dp
+@@ -20,33 +22,61 @@ import helium314.keyboard.latin.settings.Settings
+  var orientation by rememberSaveable{mutableStateOf(if(config.orientation==2)"landscape" else "portrait")}
+  var ball by rememberSaveable{mutableStateOf(KeyAntPrefs.bool(c,"magic_ball",false))}
+  var revision by remember{mutableIntStateOf(0)}
+- val profile=display+"_"+orientation+if(ball)"_ball" else ""
++ val screenProfile=display+"_"+orientation+if(ball)"_ball" else ""
++ var layer by rememberSaveable{mutableStateOf("all")}
++ val profile=DimensionLayers699.profile(screenProfile,layer)
++ var previewLayer by rememberSaveable{mutableStateOf("letters")}
+  var group by rememberSaveable{mutableStateOf("letters")}
++ val initial by rememberSaveable{mutableStateOf(org.json.JSONObject(DimensionLayers699.snapshot(c)).toString())}
++ var resetDialog by remember{mutableStateOf(false)}
++ var savedNotice by remember{mutableStateOf("")}
++
+  fun reload(){revision++;KeyboardLayoutSet.onKeyboardThemeChanged();Settings.getInstance().loadSettings(c);KeyboardSwitcher.getInstance().setThemeNeedsReload()}
+- fun set(field:String,v:Int){p.edit().putInt(DimensionProfiles697.key(profile,field),v).apply();reload()}
++ fun set(field:String,v:Int){DimensionLayers699.putSize(c,profile,field,v);reload()}
+  val current=DimensionProfiles697.current(c)
+- StudioHero("Dimensioni", "Scegli il profilo, poi regola ingombro, righe e dettagli. Ogni modifica resta nel profilo selezionato.")
++ StudioHero("Dimensioni", "Tocca un tasto e trascina le maniglie. Puoi regolare tutto insieme oppure una sola sezione.")
+  if(fold)StudioTabs697(display,listOf("compact" to "Fold chiuso","wide" to "Fold aperto")){display=it}
+  else Text(if(tablet)"Schermo ampio" else "Telefono",style=MaterialTheme.typography.labelLarge)
+  StudioTabs697(orientation,listOf("portrait" to "Verticale","landscape" to "Orizzontale")){orientation=it}
+  StudioTabs697(if(ball)"ball" else "normal",listOf("normal" to "Senza trackball","ball" to "Con trackball")){ball=it=="ball"}
+- Text(if(profile==current)"Stai regolando il profilo in uso" else "Anteprima di un altro profilo · la tastiera attuale non cambia",style=MaterialTheme.typography.bodySmall,color=MaterialTheme.colorScheme.primary)
++ Text(if(screenProfile==current)"Stai regolando il profilo in uso" else "Anteprima di un altro profilo · la tastiera attuale non cambia",style=MaterialTheme.typography.bodySmall,color=MaterialTheme.colorScheme.primary)
+  if(ball)Text("Le regolazioni della trackball ereditano quelle senza trackball finché non le personalizzi. Il diametro e lo spazio riservato seguono questo profilo.",style=MaterialTheme.typography.bodySmall)
++ Text("Applica le modifiche a",style=MaterialTheme.typography.labelLarge)
++ StudioTabs697(layer,listOf("all" to "Tutto","letters" to "Lettere","symbols" to "Simboli 1","symbols2" to "Simboli 2","numeric" to "Numeri")){layer=it;if(it!="all"){previewLayer=it;group=if(it=="numeric")"numbers" else "letters"}}
++ Text(if(layer=="all")"Ogni dimensione modificata qui si applica alle quattro sezioni" else "Solo questa sezione · eredita i valori comuni finché non la modifichi",style=MaterialTheme.typography.bodySmall)
++ if(layer=="all")Text("Mostra in anteprima",style=MaterialTheme.typography.labelSmall)
++ if(layer=="all")StudioTabs697(previewLayer,listOf("letters" to "ABC","symbols" to "?123","symbols2" to "=\\<","numeric" to "123")){previewLayer=it;group=if(it=="numeric")"numbers" else "letters"}
+  StudioCard{
+-  AndroidView(factory={KeyboardLayoutPreview(it)},update={it.dimensions(profile,revision);it.trialLayer(false,ball)},modifier=Modifier.fillMaxWidth())
+-  Text("Anteprima del renderer della tastiera · ridotta per entrare nella scheda",Modifier.padding(8.dp),style=MaterialTheme.typography.labelSmall)
++  AndroidView(factory={KeyboardLayoutPreview(it)},update={view->view.sizingLayer(previewLayer);view.dimensions(DimensionLayers699.profile(screenProfile,previewLayer),revision);view.handles(group);view.pick=java.util.function.IntConsumer{group=MakerGeometry.group(it)};view.resize=java.util.function.BiConsumer{field,value->set(field,value)}},modifier=Modifier.fillMaxWidth())
++  Text("${sections.firstOrNull{it.first==group}?.second?:group} · ↔ larghezza · ↕ altezza",Modifier.padding(8.dp),style=MaterialTheme.typography.labelLarge)
++  Text("Tocca per scegliere la parte. La maniglia della spaziatrice ridistribuisce la riga. Puoi anche usare i cursori precisi sotto.",Modifier.padding(8.dp),style=MaterialTheme.typography.bodySmall)
++ }
++ StudioFold697("Riga inferiore e tastierino","Spaziatrice, tasti aggiuntivi e disposizione",false){
++  if(previewLayer=="numeric"){
++   val order=DimensionLayers699.text(c,profile,"numeric_order","phone")
++   Text("Ordine dei numeri · prima riga",style=MaterialTheme.typography.labelLarge)
++   StudioTabs697(order,listOf("phone" to "1–2–3","calculator" to "7–8–9")){p.edit().putString(DimensionProfiles697.key(profile,"numeric_order"),it).apply();reload()}
++   NumericJollySettings699()
++  }else{
++   ProfileRange697(profile,"space_share","Larghezza spaziatrice · proporzione",100,50,160,revision){set("space_share",it)}
++   val extra=DimensionLayers699.text(c,profile,"bottom_extras","").split(',').filter{it.isNotBlank()}.toSet()
++   listOf("emoji" to "Emoji nella riga","clipboard" to "Appunti nella riga").forEach{(id,title)->StudioSwitch697(title,"I tasti si riproporzionano senza allargare la tastiera",id in extra){on->p.edit().putString(DimensionProfiles697.key(profile,"bottom_extras"),(if(on)extra+id else extra-id).joinToString(",")).apply();reload()}}
++   TextButton(onClick={c.startActivity(android.content.Intent(c,StudioActivity::class.java).putExtra("page","layout"))}){Text("Punto, virgola e altri tasti ›")}
++   BottomOrder699(profile,revision){reload()}
++  }
+  }
++
+  StudioFold697("Ingombro della tastiera","Altezza, larghezza e disposizione",true){
+   ProfileRange697(profile,"row","Altezza base delle righe · dp",DimensionProfiles697.row(c,profile,SearchTheme.active(c)),32,80,revision){set("row",it)}
+   ProfileRange697(profile,"height","Altezza complessiva · %",100,70,130,revision){set("height",it)}
+-  ProfileRange697(profile,"outer_width","Larghezza complessiva · %",100,60,100,revision){set("outer_width",it)}
++  if(layer=="all")ProfileRange697(profile,"outer_width","Larghezza complessiva · %",100,60,100,revision){set("outer_width",it)}
+   ProfileRange697(profile,"width","Larghezza della struttura · %",100,60,100,revision){set("width",it)}
+   Text("La larghezza complessiva include barre e pannelli. La larghezza della struttura regola solo l’area dei tasti e sostituisce il bilanciamento automatico di questo profilo. Ripristina per tornare al valore del tema.",Modifier.padding(horizontal=12.dp),style=MaterialTheme.typography.bodySmall)
+-  if(!ball)StudioSwitch697("Tastiera divisa","Per questo schermo e orientamento",DimensionProfiles697.split(c,profile)){p.edit().putBoolean(DimensionProfiles697.key(profile,"split"),it).apply();reload()}
++  if(!ball&&layer=="all")StudioSwitch697("Tastiera divisa","Per questo schermo e orientamento",DimensionProfiles697.split(c,profile)){p.edit().putBoolean(DimensionProfiles697.key(profile,"split"),it).apply();reload()}
+  }
+  StudioFold697("Righe e struttura","Lettere, numeri e riga inferiore"){
+   ProfileRange697(profile,"bottom_height","Altezza riga inferiore · %",100,65,130,revision){set("bottom_height",it)}
+-  listOf("letters" to "Lettere","bottom" to "Riga inferiore","numbers" to "Numeri","functions" to "Funzioni","space" to "Spaziatrice").forEach{(id,title)->ProfileRange697(profile,"section_$id","Larghezza · $title",DimensionProfiles697.section(c,profile,id),60,100,revision){set("section_$id",it)}}
++  listOf("letters" to "Lettere","bottom" to "Riga inferiore","numbers" to "Numeri","functions" to "Funzioni","space" to "Spaziatrice").forEach{(id,title)->ProfileRange697(profile,"section_$id","Riduzione della cella · $title",DimensionProfiles697.section(c,profile,id),60,100,revision){set("section_$id",it)}}
+   Text("La riga inferiore può essere più bassa. Le aree di tocco seguono la struttura; l’altezza complessiva resta quella scelta sopra.",Modifier.padding(12.dp),style=MaterialTheme.typography.bodySmall)
+  }
+  StudioFold697("Copritasti e scritte","Forma visibile e dimensione del contenuto"){
+@@ -60,14 +90,33 @@ import helium314.keyboard.latin.settings.Settings
+  StudioCard{
+   var text by rememberSaveable{mutableStateOf("")}
+   OutlinedTextField(text,{text=it},modifier=Modifier.fillMaxWidth(),label={Text("Prova il profilo in uso")},minLines=2)
+-  TextButton(onClick={DimensionProfiles697.reset(c,profile);reload()}){Text("Ripristina solo questo profilo")}
++  Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceEvenly){
++   TextButton(onClick={DimensionLayers699.restore(c,DimensionLayers699.decode(initial));reload();savedNotice="Ripristinate le dimensioni che avevi all’apertura"}){Text("Annulla le modifiche")}
++   TextButton(onClick={resetDialog=true}){Text("Predefiniti…")}
++  }
++  Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceEvenly){
++   TextButton(onClick={p.edit().putString("ka_size_bookmark",org.json.JSONObject(DimensionLayers699.snapshot(c)).toString()).apply();savedNotice="Assetto salvato";revision++}){Text("Salva il mio assetto")}
++   TextButton(enabled=p.contains("ka_size_bookmark"),onClick={DimensionLayers699.restore(c,DimensionLayers699.decode(p.getString("ka_size_bookmark","{}")!!));reload();savedNotice="Assetto personale ripristinato"}){Text("Riprendi assetto")}
++  }
++  if(savedNotice.isNotEmpty())Text(savedNotice,style=MaterialTheme.typography.bodySmall)
+  }
++ if(resetDialog)AlertDialog(
++  onDismissRequest={resetDialog=false},
++  title={Text("Ripristina dimensioni")},
++  text={Text("Ripristina questa sezione o tutti i profili. Puoi ancora annullare le modifiche e tornare all’assetto iniziale.")},
++  confirmButton={TextButton(onClick={DimensionLayers699.defaults(c,profile);resetDialog=false;reload()}){Text("Questa sezione")}},
++  dismissButton={Row{
++   TextButton(onClick={resetDialog=false}){Text("Annulla")}
++   TextButton(onClick={DimensionLayers699.restore(c,emptyMap());listOf("compact_portrait","compact_landscape","wide_portrait","wide_landscape").forEach{DimensionLayers699.defaults(c,it)};resetDialog=false;reload()}){Text("Tutti i profili")}
++  }}
++ )
++
+ }
+ @Composable internal fun ProfileRange697(profile:String,field:String,label:String,default:Int,min:Int,max:Int,revision:Int,save:(Int)->Unit){
+  val c=LocalContext.current
+- var amount by remember(profile,field,revision){mutableFloatStateOf(DimensionProfiles697.value(c,profile,field,default).coerceIn(min,max).toFloat())}
++ var amount by remember(profile,field,revision){mutableFloatStateOf((if(field=="row")DimensionProfiles697.row(c,profile,SearchTheme.active(c)) else DimensionProfiles697.value(c,profile,field,default).let{if(field=="width"&&it==0)100 else it}).coerceIn(min,max).toFloat())}
+  Column(Modifier.padding(horizontal=12.dp).settingAnchor(label)){
+-  Text("$label · ${amount.toInt()}",style=MaterialTheme.typography.labelLarge)
++  Row(verticalAlignment=androidx.compose.ui.Alignment.CenterVertically){Text("$label · ${amount.toInt()}",Modifier.weight(1f),style=MaterialTheme.typography.labelLarge);TextButton(onClick={DimensionLayers699.resetField(c,profile,field);amount=DimensionProfiles697.value(c,profile,field,default).toFloat();save(Int.MIN_VALUE)}){Text("↺",modifier=Modifier.semantics{contentDescription="Ripristina $label"})}}
+   Slider(amount,{amount=it},valueRange=min.toFloat()..max.toFloat(),onValueChangeFinished={save(amount.toInt())})
+  }
+ }
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/LanguagePill.java b/app/src/main/java/helium314/keyboard/keyforma/LanguagePill.java
+index 4805e6f..9c450ff 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/LanguagePill.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/LanguagePill.java
+@@ -122,8 +122,9 @@ public final class LanguagePill {
+   String cleanMode=KeyAntPrefs.text(ime,"voice_cleanup","off");
+   if(cleanMode.equals("off")){result=source;insert();return;}
+   voiceOriginal=source;
+-  if(cleanMode.equals("light")){voiceCleaned=VoiceCleanup.light(source);voiceNotice="Pulizia leggera · puoi confrontare e inserire l’originale.";result=voiceCleaned;render();showResult();}
+-  else {busy=true;phase="Pulizia sul telefono…";render();String requested=source;cleanup.run(ime,source,(value,notice)->{if(closed||!source.equals(requested))return;busy=false;voiceCleaned=value;voiceNotice=notice;result=value;render();showResult();});}
++  String prepared=KeyAntPrefs.bool(ime,"voice_explicit_repairs",false)?VoiceRepairs699.apply(source):source;
++  if(cleanMode.equals("light")){voiceCleaned=VoiceCleanup.light(ime,prepared);voiceNotice="Pulizia leggera · puoi confrontare e inserire l’originale.";result=voiceCleaned;render();showResult();}
++  else {busy=true;phase="Pulizia sul telefono…";render();String requested=source;cleanup.run(ime,prepared,(value,notice)->{if(closed||!source.equals(requested))return;busy=false;voiceCleaned=value;voiceNotice=notice;result=value;render();showResult();});}
+  }else{submit();render();}}
+  static android.content.Intent browserIntent(String url){if(url==null)return null;android.net.Uri uri=android.net.Uri.parse(url);if(!"https".equalsIgnoreCase(uri.getScheme())||uri.getHost()==null)return null;return new android.content.Intent(android.content.Intent.ACTION_VIEW,uri).addCategory(android.content.Intent.CATEGORY_BROWSABLE).addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK);}
+  private void openBrowser(String url){android.content.Intent intent=browserIntent(url);if(intent==null){Toast.makeText(ime,"Attendi il caricamento della pagina",Toast.LENGTH_SHORT).show();return;}try{ime.startActivity(intent);}catch(android.content.ActivityNotFoundException|SecurityException e){Toast.makeText(ime,"Nessun browser disponibile per questa pagina",Toast.LENGTH_SHORT).show();}}
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/MagicBallLayout.java b/app/src/main/java/helium314/keyboard/keyforma/MagicBallLayout.java
+index 018dbdc..870a831 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/MagicBallLayout.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/MagicBallLayout.java
+@@ -9,7 +9,7 @@ import java.util.*;
+ public final class MagicBallLayout {
+  public static void reserve(Context c,KeyboardParams p){
+   String sizing=p.mSizingProfile!=null?p.mSizingProfile:DimensionProfiles697.current(c);
+-  if(!(p.mSizingProfile!=null?sizing.endsWith("_ball"):KeyAntPrefs.bool(c,"magic_ball",false))||p.mMagicBallBounds!=null||p.mId==null||
++  if(!(p.mSizingProfile!=null?DimensionLayers699.root(sizing).endsWith("_ball"):KeyAntPrefs.bool(c,"magic_ball",false))||p.mMagicBallBounds!=null||p.mId==null||
+    (p.mId.mElementId!=KeyboardId.ELEMENT_SYMBOLS&&p.mId.mElementId!=KeyboardId.ELEMENT_SYMBOLS_SHIFTED))return;
+   TreeMap<Integer,List<Key>> rows=new TreeMap<>();for(Key k:p.mSortedKeys)if(!k.isSpacer())rows.computeIfAbsent(k.getY(),y->new ArrayList<>()).add(k);
+   if(rows.size()<3)return;
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/NumericJolly699.java b/app/src/main/java/helium314/keyboard/keyforma/NumericJolly699.java
+new file mode 100644
+index 0000000..a602578
+--- /dev/null
++++ b/app/src/main/java/helium314/keyboard/keyforma/NumericJolly699.java
+@@ -0,0 +1,43 @@
++// SPDX-License-Identifier: GPL-3.0-only
++package helium314.keyboard.keyforma;
++
++import android.os.Handler;
++import android.os.Looper;
++import android.view.ViewConfiguration;
++import android.view.inputmethod.InputConnection;
++import helium314.keyboard.latin.LatinIME;
++import helium314.keyboard.keyboard.Keyboard;
++import helium314.keyboard.keyboard.KeyboardId;
++
++/** A separate gesture contract for the blank space key of the native numeric layout. */
++public final class NumericJolly699 {
++ public static final int HOLD=69901;
++ public static final String[] ACTIONS={"copy","select_all","paste","cut","undo","redo","space","none"};
++ public static String label(String id){return switch(id){case "copy"->"Copia selezione";case "select_all"->"Seleziona tutto";case "paste"->"Incolla";case "cut"->"Taglia selezione";case "undo"->"Annulla";case "redo"->"Ripeti";case "space"->"Spazio";default->"Nessuna azione";};}
++ public static boolean matches(Keyboard keyboard,int code){return code==32&&keyboard!=null&&(keyboard.mId.mElementId==KeyboardId.ELEMENT_NUMBER||keyboard.mId.mElementId==KeyboardId.ELEMENT_NUMPAD);}
++ private final LatinIME ime;
++ private final Handler handler=new Handler(Looper.getMainLooper());
++ private Runnable pending;
++ private InputConnection owner;
++ private Object editor;
++ public NumericJolly699(LatinIME ime){this.ime=ime;}
++ public void cancel(){if(pending!=null)handler.removeCallbacks(pending);pending=null;owner=null;editor=null;}
++ public void press(){if(pending!=null)handler.removeCallbacks(pending);}
++ public void tap(){
++  InputConnection ic=ime.getCurrentInputConnection();Object info=ime.getCurrentInputEditorInfo();
++  if(ic==null){cancel();return;}
++  if(pending!=null&&owner==ic&&editor==info){cancel();perform(ic,KeyAntPrefs.text(ime,"jolly_double","select_all"));return;}
++  cancel();owner=ic;editor=info;
++  pending=()->{boolean same=ime.getCurrentInputConnection()==ic&&ime.getCurrentInputEditorInfo()==info&&ime.isInputViewShown();cancel();if(same)perform(ic,KeyAntPrefs.text(ime,"jolly_tap","copy"));};
++  handler.postDelayed(pending,ViewConfiguration.getDoubleTapTimeout());
++ }
++ public void hold(){cancel();perform(ime.getCurrentInputConnection(),KeyAntPrefs.text(ime,"jolly_hold","paste"));}
++ private void perform(InputConnection ic,String action){if(ic!=null)apply(ic,action);}
++ public static boolean apply(InputConnection ic,String action){
++  // Copy/cut must never turn an empty selection into an implicit select-all.
++  if((action.equals("copy")||action.equals("cut"))&&android.text.TextUtils.isEmpty(ic.getSelectedText(0)))return false;
++  int id=switch(action){case "copy"->android.R.id.copy;case "select_all"->android.R.id.selectAll;case "paste"->android.R.id.paste;case "cut"->android.R.id.cut;case "undo"->android.R.id.undo;case "redo"->android.R.id.redo;default->0;};
++  if(id!=0)return ic.performContextMenuAction(id);
++  return action.equals("space")&&ic.commitText(" ",1);
++ }
++}
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/NumericJollySettings699.kt b/app/src/main/java/helium314/keyboard/keyforma/NumericJollySettings699.kt
+new file mode 100644
+index 0000000..e5095f0
+--- /dev/null
++++ b/app/src/main/java/helium314/keyboard/keyforma/NumericJollySettings699.kt
+@@ -0,0 +1,13 @@
++// SPDX-License-Identifier: GPL-3.0-only
++package helium314.keyboard.keyforma
++import androidx.compose.runtime.Composable
++@Composable internal fun NumericJollySettings699(){
++ StudioFold697("Jolly del tastierino numerico","Tasto vuoto · tocco, doppio tocco e pressione lunga"){
++  Note("Il tasto colorato del tastierino nei campi numerici. Seleziona tutto con due tocchi rapidi, poi tocca una volta per copiare. Tieni premuto per incollare. La copia attende il tempo del doppio tocco; senza selezione non copia nulla.")
++  val options=NumericJolly699.ACTIONS.map{it to NumericJolly699.label(it)}
++  Choice("Jolly · tocco singolo","jolly_tap","copy",options)
++  Choice("Jolly · doppio tocco","jolly_double","select_all",options)
++  Choice("Jolly · pressione lunga","jolly_hold","paste",options)
++  Note("Resta senza icona. I comandi disponibili dipendono dal campo dell’app; il tasto del pannello laterale ha una scelta separata.")
++ }
++}
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/PanelStudio663.kt b/app/src/main/java/helium314/keyboard/keyforma/PanelStudio663.kt
+index 09498f7..15fadb3 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/PanelStudio663.kt
++++ b/app/src/main/java/helium314/keyboard/keyforma/PanelStudio663.kt
+@@ -27,6 +27,7 @@ import androidx.compose.ui.viewinterop.AndroidView
+   }
+   if(includeMotion)Choice("Animazione pannelli laterali","panel_motion","silk",PanelAppearance662.MOTIONS.map{it to PanelAppearance662.label(it)})
+  }
++ NumericJollySettings699()
+  PanelShortcutSettings()
+  if(showHero)StudioHero("Aspetto dei pannelli","Contenuti laterali, click e personalizzazione del tastierino.")
+  StudioCard{
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/SettingsSearch.kt b/app/src/main/java/helium314/keyboard/keyforma/SettingsSearch.kt
+index 3ce485c..5fa0567 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/SettingsSearch.kt
++++ b/app/src/main/java/helium314/keyboard/keyforma/SettingsSearch.kt
+@@ -28,9 +28,9 @@ object SettingsSearch {
+  val toolbar667=listOf(SettingResult("themes","Coordina barra icone","abbina materiale colori tastiera barra stock coordinata"),SettingResult("themes","Solo icone coordinate","senza tasti dietro superficie contorno barra coordinata"),SettingResult("bars","Ordine degli strumenti","ANT chat assistente locale icona collegamento barra puntini"),SettingResult("effects","Profilo della luce sotto il tasto","rgb lineetta base metà perimetro lati luce sotto la tastiera"),SettingResult("effects","Effetto aggiuntivo al tocco","superficie tasti alone riflesso dito impulso"),SettingResult("key_style","Decorazione della barra spaziatrice","barra spazio pulita rimuovere loghi Doom Iron disegno simbolo"),SettingResult("effects","Finitura della luce","RGB vetro LED glow luminosità luce intensa"),SettingResult("effects","Effetto sulle lettere","neon illumina caratteri colore originale lettere al tocco"),SettingResult("privacy","Dimensione dei riquadri","appunti griglia piccoli grandi fold cronologia"),SettingResult("trackball","Abbina al tema della tastiera","sfera trackball materiale colore xbox"),SettingResult("bars","Indicatore sulla barra spaziatrice","ritmo velocità scrittura punti volume"),SettingResult("effects","Luce sulla superficie dei tasti","colore pieno LED vetro contorno anteprima tocco"),SettingResult("size","Larghezza per sezione","maniglie palette lettere funzioni spazio numeri simboli"),SettingResult("panel_appearance","Larghezza del calendario","compatto standard mese"),SettingResult("bars","Zona di partenza verso le parole","ultime icone swipe inverso margine"),SettingResult("bars","Attivazione swipe barra","premi trascina immediato"),SettingResult("bars","Risposta dello swipe","morbida rapida bilanciata"),SettingResult("trackball","PIDDU","Barbie Sailor Moon Hello Kitty Kuromi My Melody rosa"),SettingResult("trackball","Volti anime","Luffy Takemichi Hinata Naruto testa miniatura rotazione"),SettingResult("maker","Animazione della barra","manopola meccanica cassetto lamelle ventaglio"),SettingResult("privacy","Pillola anche in incognito e nei login","incolla password privata appunti anonimo"),SettingResult("gestures","Gesti da una coppia di tasti","Q P due dita barra mostra nascondi scorciatoia personalizzata"),SettingResult("gestures","Primo tasto della coppia"),SettingResult("gestures","Secondo tasto della coppia"),SettingResult("gestures","Coppia · verso l’alto"),SettingResult("gestures","Coppia · verso il basso"),SettingResult("gestures","Coppia · verso sinistra"),SettingResult("gestures","Coppia · verso destra"),SettingResult("bars","Swipe verso gli strumenti","animazioni barra freccia parole gesto attiva disattiva"),SettingResult("bars","Swipe verso i suggerimenti","animazioni barra ultima icona gesto attiva disattiva"),SettingResult("edge_panels","Affianca il pannello sinistro sul Fold","PC calendario insieme lettere"),SettingResult("bars","Visualizzazione della barra","classica manopola carosello automatica nascosta"),SettingResult("bars","Apri la manopola","tocco pressione lunga"),SettingResult("edge_panels","Gesto sul tasto Invio","swipe immediato tieni premuto trascina numeri"),SettingResult("edge_panels","Gesto sul tasto ?123 / ABC","swipe immediato ABC simboli prima icona barra"),SettingResult("themes","Luminosità del tema","chiaro scuro sistema"))
+  val selectionTitles=setOf("Effetto del perimetro","Colore del perimetro","Spessore del perimetro · dp","Intensità della luce · %")
+  val movementTitles=setOf("Precisione · dp per carattere","Accelerazione della sfera","Inerzia della sfera","Tocco singolo sulla sfera")
+- val voiceTextTitles=setOf("Punteggiatura automatica","Domande prudenti","Pausa nella dettatura · secondi","Comandi di punteggiatura","Pulizia della dettatura")
++ val voiceTextTitles=setOf("Ripensamenti numerici espliciti","Punteggiatura automatica","Domande prudenti","Pausa nella dettatura · secondi","Comandi di punteggiatura","Pulizia della dettatura")
+  val voiceMemoryTitles=setOf("I tuoi nomi e termini","Nomi e marchi","Correzioni vocali personali","Usa i nomi appresi nella dettatura")
+- val entries:List<SettingResult> by lazy { (AntGuide.destinations+listOf(SettingResult("panel_appearance","Suono del tastierino","audio click numeri volume"),SettingResult("panel_appearance","Tema del tastierino","materiale numeri indipendente"),SettingResult("context_actions","Avviso all’orario con KeyAnt","notifica Tasks ora promemoria"),SettingResult("edge_panels","Numeri affiancati sul Fold orizzontale","PC numeri calendario insieme lettere aperto orizzontale persistente"),SettingResult("panel_appearance","Larghezza del tastierino","stretto compatto pannello numerico"),SettingResult("panel_appearance","Luci come la tastiera","RGB indipendenti numeri LED"),SettingResult("panel_appearance","Luce del tastierino","fissa al tocco spenta effetti"),SettingResult("context_actions","Accesso bloccato? Apri Utenti di test","403 access_denied OAuth Google tester Pubblico Audience"))+toolbar667+legacyEntries+GeneratedSettingsIndex.entries+ThemeCatalog.IDS.indices.map{SettingResult("themes",ThemeCatalog.NAMES[it],"tema "+ThemeCatalog.collection(ThemeCatalog.IDS[it]))}+BallAppearance.IDS.indices.map{SettingResult("trackball",BallAppearance.NAMES[it],"tema sfera "+BallAppearance.group(BallAppearance.IDS[it]))}).map{canonical(it)}.distinctBy{Triple(it.page,it.title,it.themeId)} }
++ val entries:List<SettingResult> by lazy { (AntControls699.entries+AntGuide.destinations+listOf(SettingResult("panel_appearance","Suono del tastierino","audio click numeri volume"),SettingResult("panel_appearance","Tema del tastierino","materiale numeri indipendente"),SettingResult("context_actions","Avviso all’orario con KeyAnt","notifica Tasks ora promemoria"),SettingResult("edge_panels","Numeri affiancati sul Fold orizzontale","PC numeri calendario insieme lettere aperto orizzontale persistente"),SettingResult("panel_appearance","Larghezza del tastierino","stretto compatto pannello numerico"),SettingResult("panel_appearance","Luci come la tastiera","RGB indipendenti numeri LED"),SettingResult("panel_appearance","Luce del tastierino","fissa al tocco spenta effetti"),SettingResult("context_actions","Accesso bloccato? Apri Utenti di test","403 access_denied OAuth Google tester Pubblico Audience"))+toolbar667+legacyEntries+GeneratedSettingsIndex.entries+ThemeCatalog.IDS.indices.map{SettingResult("themes",ThemeCatalog.NAMES[it],"tema "+ThemeCatalog.collection(ThemeCatalog.IDS[it]))}+BallAppearance.IDS.indices.map{SettingResult("trackball",BallAppearance.NAMES[it],"tema sfera "+BallAppearance.group(BallAppearance.IDS[it]))}).map{canonical(it)}.distinctBy{Triple(it.page,it.title,it.themeId)} }
+ 
+  val paths=mapOf("panel_appearance" to "Gesti e strumenti › Pannelli laterali","key_style" to "Aspetto › Tasti", "motion" to "Aspetto › Animazioni","holds" to "Gesti e strumenti › Pressione lunga dei tasti","edge_panels" to "Gesti e strumenti › Pannelli laterali","advanced" to "Avanzate › Precisione del tocco","maker" to "Aspetto › MakerAnt","apps" to "Aspetto › Barra delle icone › Collegamenti app","statistics" to "Statistiche di scrittura","keycolors" to "Aspetto › Temi › Colori dei tasti","voice" to "Scrittura e voce › Dettatura", "typing" to "Scrittura e voce › Correzione e tocco", "themes" to "Aspetto › Temi", "effects" to "Aspetto › Luci ed effetti", "transparency" to "Aspetto › Sfondo e trasparenza", "trackball" to "Aspetto › Trackball", "sounds" to "Scrittura e voce › Suoni e vibrazione", "bars" to "Aspetto › Barra delle icone","suggestions" to "Scrittura e voce › Suggerimenti","comma" to "Gesti e strumenti › Menu della virgola","touchpad" to "Gesti e strumenti › Touchpad", "gestures" to "Gesti e strumenti › Gesti e selezione", "size" to "Aspetto › Dimensioni", "privacy" to "Appunti e codici", "layout" to "Aspetto › Disposizione", "media" to "Gesti e strumenti › Emoji e GIF", "assistant" to "Gesti e strumenti › Web e assistente", "shortcuts" to "Gesti e strumenti › Scorciatoie Ctrl", "words" to "Scrittura e voce › Memoria personale", "maker_library" to "Aspetto › Le mie tastiere")
+  private val legacyEntries=listOf(
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/StudioActivity.kt b/app/src/main/java/helium314/keyboard/keyforma/StudioActivity.kt
+index 3456bf7..bc26e2c 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/StudioActivity.kt
++++ b/app/src/main/java/helium314/keyboard/keyforma/StudioActivity.kt
+@@ -296,7 +296,7 @@ Toggle("Correzione anche nelle app che la disattivano","force_prose_correction",
+   androidx.compose.foundation.lazy.LazyColumn(Modifier.fillMaxWidth().heightIn(max=480.dp).padding(horizontal=12.dp)){
+    val choices=if(key=="rgb"||key=="numbers_rgb")items.sortedByDescending{it.first==v} else items
+    items(choices.size,key={choices[it].first}){index->val (id,name)=choices[index];Surface(shape=RoundedCornerShape(18.dp),color=if(v==id)MaterialTheme.colorScheme.secondaryContainer.copy(alpha=.8f) else MaterialTheme.colorScheme.surfaceContainerHigh,border=BorderStroke(1.dp,if(v==id)MaterialTheme.colorScheme.primary.copy(alpha=.6f) else MaterialTheme.colorScheme.outlineVariant.copy(alpha=.3f)),modifier=Modifier.fillMaxWidth().padding(vertical=4.dp)){
+-    Column{Row(Modifier.fillMaxWidth().heightIn(min=56.dp).clickable{v=id;p.edit().putString("ka_"+key,id).apply();changed(id);open=false}.padding(horizontal=12.dp,vertical=8.dp),verticalAlignment=Alignment.CenterVertically){OptionSample(key,id);Column(Modifier.weight(1f)){Text(name,style=MaterialTheme.typography.bodyMedium);if(key=="rgb")Text(rgbExplanation646(id),style=MaterialTheme.typography.bodySmall,color=MaterialTheme.colorScheme.onSurfaceVariant)};RadioButton(v==id,null)};if(key=="toolbar_display")ToolbarModePreview667(id)}
++    Column{Row(Modifier.fillMaxWidth().heightIn(min=56.dp).clickable{v=id;p.edit().putString("ka_"+key,id).apply();if(key.startsWith("key_color_"))p.edit().putBoolean("ka_key_color_enabled",true).apply();changed(id);open=false}.padding(horizontal=12.dp,vertical=8.dp),verticalAlignment=Alignment.CenterVertically){OptionSample(key,id);Column(Modifier.weight(1f)){Text(name,style=MaterialTheme.typography.bodyMedium);if(key=="rgb")Text(rgbExplanation646(id),style=MaterialTheme.typography.bodySmall,color=MaterialTheme.colorScheme.onSurfaceVariant)};RadioButton(v==id,null)};if(key=="toolbar_display")ToolbarModePreview667(id)}
+    }}
+   };Spacer(Modifier.height(24.dp))
+  }
+@@ -636,6 +636,7 @@ private fun configureBilingual(c:android.content.Context){
+ @Composable internal fun AssistantMicrophonePermission(){val c=LocalContext.current;var granted by remember{mutableStateOf(c.checkSelfPermission(android.Manifest.permission.RECORD_AUDIO)==android.content.pm.PackageManager.PERMISSION_GRANTED)};val launcher=androidx.activity.compose.rememberLauncherForActivityResult(androidx.activity.result.contract.ActivityResultContracts.RequestPermission()){granted=it};Column(Modifier.padding(12.dp)){Text(if(granted)"Microfono attivo per la dettatura" else "Dettatura nella pillola");Text("Preferisce il riconoscimento sul dispositivo; se non disponibile usa il servizio vocale del telefono, che può elaborare l’audio online. Parte solo quando tocchi il microfono.",style=MaterialTheme.typography.bodySmall);if(!granted)TextButton(onClick={launcher.launch(android.Manifest.permission.RECORD_AUDIO)}){Text("Abilita microfono")}}}
+ 
+ @Composable private fun ToolPanelSettings(){
++ ToolMenuSettings699()
+  Toggle("Mostra ingranaggio nel menu ⋯","tool_grid_gear",false)
+  Choice("Dimensione riquadri del menu ⋯","tool_grid_size","compact",listOf("compact" to "Compatta","original" to "Originale","large" to "Grande"))
+  var open by remember{mutableStateOf(false)}
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/StudioControls697.kt b/app/src/main/java/helium314/keyboard/keyforma/StudioControls697.kt
+index dd09ec1..4c26ed1 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/StudioControls697.kt
++++ b/app/src/main/java/helium314/keyboard/keyforma/StudioControls697.kt
+@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.dp
+ @Composable internal fun StudioFold697(title:String,description:String,initial:Boolean=false,content:@Composable ColumnScope.()->Unit){
+  var expanded by rememberSaveable(title){mutableStateOf(initial)}
+  val target=LocalSettingTarget.current
+- LaunchedEffect(target){if(target==title || title=="Aspetto del tema" && target in setOf("Coordina barra icone","Solo icone coordinate","Angoli arrotondati","Effetti originali del tema","RGB","Colore RGB dal tema","Suono","Vibrazione"))expanded=true}
++ LaunchedEffect(target){if(target==title || title=="Aspetto del tema" && target in setOf("Colori personali degli altri tasti","Coordina barra icone","Solo icone coordinate","Angoli arrotondati","Effetti originali del tema","RGB","Colore RGB dal tema","Suono","Vibrazione"))expanded=true}
+  StudioCard{
+   Surface(onClick={expanded=!expanded},color=androidx.compose.ui.graphics.Color.Transparent,modifier=Modifier.fillMaxWidth().settingAnchor(title)){
+    Row(Modifier.padding(12.dp),verticalAlignment=Alignment.CenterVertically){Column(Modifier.weight(1f)){Text(title,style=MaterialTheme.typography.titleSmall);Text(description,style=MaterialTheme.typography.bodySmall,color=MaterialTheme.colorScheme.onSurfaceVariant)};Text(if(expanded)"−" else "+",style=MaterialTheme.typography.titleLarge)}
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/ThemeAppearance697.kt b/app/src/main/java/helium314/keyboard/keyforma/ThemeAppearance697.kt
+index 662e384..488ede9 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/ThemeAppearance697.kt
++++ b/app/src/main/java/helium314/keyboard/keyforma/ThemeAppearance697.kt
+@@ -19,6 +19,11 @@ import helium314.keyboard.latin.settings.Settings
+  StudioFold697("Aspetto del tema","Barra, angoli, effetti e feedback",false){
+   StudioSwitch697("Coordina barra icone",if(bool("ka_toolbar_match_theme"))"Materiale e colori del tema" else "Barra stock",bool("ka_toolbar_match_theme")){change("ka_toolbar_match_theme",it)}
+   if(bool("ka_toolbar_match_theme"))StudioSwitch697("Solo icone coordinate","Conserva il colore, senza copritasti",bool("ka_toolbar_theme_icons_only")){change("ka_toolbar_theme_icons_only",it)}
++  StudioSwitch697("Colori personali degli altri tasti",if(KeyColorOverrides.enabled(c,profile))"Personalizzato · virgola, punto e funzioni" else "Colori originali del tema",KeyColorOverrides.enabled(c,profile)){KeyColorOverrides.selectTheme(c,profile);change("ka_key_color_enabled",it)}
++  Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceEvenly){
++   TextButton(onClick={KeyColorOverrides.choose(c,profile,"comma","palette_0");KeyColorOverrides.choose(c,profile,"period","palette_0");change("ka_key_color_enabled",true)}){Text("Punto e virgola come lettere")}
++   TextButton(onClick={c.startActivity(Intent(c,StudioActivity::class.java).putExtra("page","keycolors"))}){Text("Colori ›")}
++  }
+   StudioSwitch697("Angoli arrotondati","Stondatura del bordo della tastiera",bool("ka_rounded_keyboard")){change("ka_rounded_keyboard",it)}
+   StudioSwitch697("Effetti originali del tema",if(ThemeEffects697.enabled(c,profile))ThemeEffects697.description(profile) else "Usa i tuoi effetti personali",ThemeEffects697.enabled(c,profile)){change("ka_theme_touch_effects",it)}
+   Text("Disattivando gli effetti originali ritrovi le tue regolazioni. RGB, suono e vibrazione restano indipendenti.",Modifier.padding(horizontal=12.dp),style=MaterialTheme.typography.bodySmall)
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/ToolMenuSettings699.kt b/app/src/main/java/helium314/keyboard/keyforma/ToolMenuSettings699.kt
+new file mode 100644
+index 0000000..bb2a500
+--- /dev/null
++++ b/app/src/main/java/helium314/keyboard/keyforma/ToolMenuSettings699.kt
+@@ -0,0 +1,32 @@
++// SPDX-License-Identifier: GPL-3.0-only
++package helium314.keyboard.keyforma
++import androidx.compose.runtime.*
++import androidx.compose.foundation.clickable
++import androidx.compose.foundation.layout.*
++import androidx.compose.foundation.lazy.LazyColumn
++import androidx.compose.foundation.lazy.items
++import androidx.compose.material3.*
++import androidx.compose.ui.Modifier
++import androidx.compose.ui.platform.LocalContext
++import androidx.compose.ui.unit.dp
++import androidx.compose.ui.viewinterop.AndroidView
++import androidx.compose.ui.graphics.toArgb
++@Composable internal fun ToolMenuSettings699(){
++ val c=LocalContext.current;val p=KeyAntPrefs.get(c);var revision by remember{mutableIntStateOf(0)};var picker by remember{mutableStateOf(false)}
++ DisposableEffect(p){val l=android.content.SharedPreferences.OnSharedPreferenceChangeListener{_,key->if(key?.startsWith("ka_tools_")==true)revision++};p.registerOnSharedPreferenceChangeListener(l);onDispose{p.unregisterOnSharedPreferenceChangeListener(l)}}
++ val mode=remember(revision){KeyAntPrefs.text(c,"tools_surface","stock")}
++ StudioFold697("Aspetto del pannello ⋯","Attuale, coordinato o un altro tema",true){
++  Choice("Superficie degli strumenti","tools_surface","stock",listOf("stock" to "Attuale","follow" to "Segue la tastiera","custom" to "Altro tema"))
++  if(mode=="custom")TextButton(onClick={picker=true}){Text("Scegli tema con anteprima ›")}
++  key(revision,SearchTheme.active(c)){ToolMenuSample699(ToolMenuSurface699.theme(c))}
++  Note("Il materiale e il click seguono il tema scelto. Attuale ripristina l’aspetto precedente. Per aggiungere o riordinare usa Organizza il pannello qui sotto.")
++ }
++ if(picker){var query by remember{mutableStateOf("")};AlertDialog(onDismissRequest={picker=false},title={Text("Tema degli strumenti")},text={Column{
++  OutlinedTextField(query,{query=it},singleLine=true,label={Text("Cerca tema")},modifier=Modifier.fillMaxWidth())
++  LazyColumn(Modifier.heightIn(max=440.dp)){items(ThemeCatalog.IDS.indices.filter{query.isBlank()||SettingsSearch.normal(ThemeCatalog.NAMES[it]).contains(SettingsSearch.normal(query))}){i->Column(Modifier.clickable{p.edit().putString("ka_tools_theme",ThemeCatalog.IDS[i]).putString("ka_tools_surface","custom").apply();picker=false}.padding(vertical=8.dp)){Text(ThemeCatalog.NAMES[i],style=MaterialTheme.typography.labelLarge);ToolMenuSample699(ThemeCatalog.IDS[i],false)}}}
++ }},confirmButton={TextButton(onClick={picker=false}){Text("Chiudi")}})}
++}
++@Composable internal fun ToolMenuSample699(theme:String?,interactive:Boolean=true){
++ val ink=MaterialTheme.colorScheme.onSurface.toArgb();val bg=MaterialTheme.colorScheme.surface.toArgb()
++ key(theme,ink,bg){AndroidView(factory={c->android.widget.LinearLayout(c).apply{orientation=android.widget.LinearLayout.HORIZONTAL;listOf("clipboard","calculator","settings").forEach{id->addView(ToolPanelTile694(c,id,ink,bg,"original",true,theme).apply{isClickable=interactive;if(interactive)setOnClickListener{PreviewFeedback.play(c,32)}},android.widget.LinearLayout.LayoutParams(0,-1,1f).apply{setMargins(2,2,2,2)})}}},modifier=Modifier.fillMaxWidth().height(100.dp))}
++}
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/ToolMenuSurface699.java b/app/src/main/java/helium314/keyboard/keyforma/ToolMenuSurface699.java
+new file mode 100644
+index 0000000..6c0dd00
+--- /dev/null
++++ b/app/src/main/java/helium314/keyboard/keyforma/ToolMenuSurface699.java
+@@ -0,0 +1,18 @@
++// SPDX-License-Identifier: GPL-3.0-only
++package helium314.keyboard.keyforma;
++import android.content.Context;
++import android.graphics.*;
++import android.graphics.drawable.Drawable;
++/** Entire tool tile uses the catalogue cap renderer. No duplicated material approximations. */
++public final class ToolMenuSurface699 extends Drawable {
++ private final ThemeCatalog.Caps caps=new ThemeCatalog.Caps();
++ private final String theme;private final boolean dark;private float press;private android.animation.ValueAnimator motion;
++ public static String theme(Context c){String mode=KeyAntPrefs.text(c,"tools_surface","stock");return mode.equals("follow")?SearchTheme.active(c):mode.equals("custom")?KeyAntPrefs.text(c,"tools_theme",SearchTheme.active(c)):null;}
++ public static boolean dark(Context c,String theme){var colors=helium314.keyboard.latin.settings.Settings.getValues().mColors;boolean night=colors instanceof FormaColors f?f.getDark():(c.getResources().getConfiguration().uiMode&48)==32;return ThemeCatalog.effectiveDark(theme,night);}
++ public ToolMenuSurface699(String theme,boolean dark){this.theme=theme;this.dark=dark;}
++ @Override public boolean isStateful(){return true;}
++ @Override protected boolean onStateChange(int[] states){boolean pushed=false;for(int state:states)if(state==android.R.attr.state_pressed)pushed=true;float end=pushed?1:0;if(motion!=null)motion.cancel();if(!android.animation.ValueAnimator.areAnimatorsEnabled()){press=end;invalidateSelf();return true;}motion=android.animation.ValueAnimator.ofFloat(press,end);motion.setDuration(pushed?65:130);motion.addUpdateListener(a->{press=(Float)a.getAnimatedValue();invalidateSelf();});motion.start();return true;}
++ @Override public void jumpToCurrentState(){if(motion!=null)motion.end();}
++ @Override public void draw(Canvas c){Rect b=getBounds();int save=c.save();c.translate(b.left,b.top);caps.draw(c,b.width(),b.height(),theme,dark,0,press);c.restoreToCount(save);}
++ @Override public void setAlpha(int alpha){}@Override public void setColorFilter(ColorFilter filter){}@Override public int getOpacity(){return PixelFormat.TRANSLUCENT;}
++}
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/ToolPanelEditor.java b/app/src/main/java/helium314/keyboard/keyforma/ToolPanelEditor.java
+index 327f279..9b47757 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/ToolPanelEditor.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/ToolPanelEditor.java
+@@ -70,7 +70,7 @@ public final class ToolPanelEditor extends LinearLayout {
+    if(i%cols==0){row=new LinearLayout(getContext());grid.addView(row,new LayoutParams(-1,tileHeight+dp(compact?4:8)));}
+    String id=ids.get(i);ToolPanelTile694 tile=new ToolPanelTile694(getContext(),id,ink,back,density,icons);
+    View body=tile;
+-   body.setContentDescription(ToolCatalog.label(id));body.setOnClickListener(v->{if(editing){ToolPanelState.show(getContext(),id,!active);render();}else run.accept(id);});body.setOnLongClickListener(v->{if(!editing){editing=true;performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);render();return true;}return v.startDragAndDrop(ClipData.newPlainText("Strumento KeyAnt",id),new View.DragShadowBuilder(tile),new Drag(id),0);});
++   body.setContentDescription(ToolCatalog.label(id));body.setOnClickListener(v->{if(editing){ToolPanelState.show(getContext(),id,!active);render();}else {if(!KeyAntPrefs.text(getContext(),"tools_surface","stock").equals("stock"))PreviewFeedback.play(getContext(),32);run.accept(id);}});body.setOnLongClickListener(v->{if(!editing){editing=true;performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);render();return true;}return v.startDragAndDrop(ClipData.newPlainText("Strumento KeyAnt",id),new View.DragShadowBuilder(tile),new Drag(id),0);});
+    if(editing){TextView badge=label(active?"−":"+",17);badge.setPadding(0,0,0,0);badge.setGravity(Gravity.CENTER);GradientDrawable bubble=new GradientDrawable();bubble.setColor(ToolSurface.mix(back,ink,.15f));bubble.setCornerRadius(dp(9));badge.setBackground(bubble);badge.setElevation(dp(2));badge.setContentDescription((active?"Rimuovi ":"Aggiungi ")+ToolCatalog.label(id));badge.setOnClickListener(v->{ToolPanelState.show(getContext(),id,!active);render();});FrameLayout.LayoutParams bp=new FrameLayout.LayoutParams(dp(28),dp(28),Gravity.TOP|Gravity.END);tile.addView(badge,bp);wiggle(tile,i);}
+    if(editing){final float[] down={0,0};final boolean[] dragging={false};body.setOnTouchListener((v,event)->{switch(event.getActionMasked()){case MotionEvent.ACTION_DOWN:down[0]=event.getX();down[1]=event.getY();dragging[0]=false;return false;case MotionEvent.ACTION_MOVE:if(!dragging[0]&&Math.hypot(event.getX()-down[0],event.getY()-down[1])>ViewConfiguration.get(getContext()).getScaledTouchSlop()){dragging[0]=v.startDragAndDrop(ClipData.newPlainText("Strumento KeyAnt",id),new View.DragShadowBuilder(tile),new Drag(id),0);}return dragging[0];case MotionEvent.ACTION_UP:case MotionEvent.ACTION_CANCEL:if(dragging[0]){dragging[0]=false;return true;}default:return false;}});}
+    target(tile,id,active);LayoutParams lp=new LayoutParams(0,-1,1);int gap=dp(compact?2:4);lp.setMargins(gap,gap,gap,gap);row.addView(tile,lp);
+@@ -83,7 +83,7 @@ public final class ToolPanelEditor extends LinearLayout {
+  private void startMotion(){if(!isAttachedToWindow()||editTiles.isEmpty()||!ValueAnimator.areAnimatorsEnabled()||editPulse!=null)return;editPulse=ValueAnimator.ofFloat(0,1);editPulse.setDuration(400);editPulse.setRepeatCount(ValueAnimator.INFINITE);editPulse.setInterpolator(new android.view.animation.LinearInterpolator());editPulse.addUpdateListener(a->{float phase=(float)a.getAnimatedValue()*(float)Math.PI*2;for(int i=0;i<editTiles.size();i++){View tile=editTiles.get(i);if(tile.getLocalVisibleRect(visible))tile.setRotation(.65f*(float)Math.sin(phase+i*.7f));}});editPulse.start();}
+  private final Runnable appearanceRefresh=this::render;
+  private final android.content.SharedPreferences.OnSharedPreferenceChangeListener appearanceListener=(prefs,key)->{
+-  if(key!=null&&(key.startsWith("ka_toolbar_")||key.equals("ka_menu_icons")||key.equals("ka_force_opaque"))){removeCallbacks(appearanceRefresh);post(appearanceRefresh);}
++  if(key!=null&&((key.startsWith("ka_toolbar_")||key.startsWith("ka_tools_"))||key.equals("ka_menu_icons")||key.equals("ka_force_opaque"))){removeCallbacks(appearanceRefresh);post(appearanceRefresh);}
+  };
+  @Override protected void onAttachedToWindow(){super.onAttachedToWindow();KeyAntPrefs.get(getContext()).registerOnSharedPreferenceChangeListener(appearanceListener);startMotion();}
+  @Override protected void onDetachedFromWindow(){removeCallbacks(appearanceRefresh);KeyAntPrefs.get(getContext()).unregisterOnSharedPreferenceChangeListener(appearanceListener);stop();super.onDetachedFromWindow();}
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/ToolPanelTile694.java b/app/src/main/java/helium314/keyboard/keyforma/ToolPanelTile694.java
+index 44d416e..06d1143 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/ToolPanelTile694.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/ToolPanelTile694.java
+@@ -7,7 +7,7 @@ import android.graphics.drawable.*;
+ import android.view.*;
+ import android.widget.*;
+ /** Fixed icon band and two-line caption band. Glyph effects cannot shift neighbouring captions. */
+-final class ToolPanelTile694 extends FrameLayout {
++public final class ToolPanelTile694 extends FrameLayout {
+  final ImageView icon;final TextView caption;
+  private int dp(float x){return Math.round(x*getResources().getDisplayMetrics().density);}
+  static int height(Context c,String size,boolean icons){
+@@ -16,22 +16,29 @@ final class ToolPanelTile694 extends FrameLayout {
+   float d=c.getResources().getDisplayMetrics().density;
+   return Math.max(Math.round((size.equals("compact")?68:size.equals("large")?100:84)*d),lines+Math.round((icons?46:16)*d));
+  }
+- ToolPanelTile694(Context c,String id,int ink,int back,String size,boolean icons){super(c);
++ ToolPanelTile694(Context c,String id,int ink,int back,String size,boolean icons){this(c,id,ink,back,size,icons,ToolMenuSurface699.theme(c));}
++ ToolPanelTile694(Context c,String id,int ink,int back,String size,boolean icons,String theme){super(c);
++  boolean themed=theme!=null;boolean dark=themed&&ToolMenuSurface699.dark(c,theme);if(themed)ink=ThemeCatalog.ink(theme,dark,0);
+   setTag("tool-tile:"+id);setContentDescription(ToolCatalog.label(id));setFocusable(true);
+   setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_YES);
+   GradientDrawable shape=new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM,new int[]{ToolSurface.mix(back,ink,.075f),ToolSurface.mix(back,ink,.025f)});
+   shape.setCornerRadius(dp(12));shape.setStroke(Math.max(1,dp(.5f)),ToolSurface.mix(back,ink,.15f));
+   GradientDrawable mask=new GradientDrawable();mask.setColor(Color.WHITE);mask.setCornerRadius(dp(12));
+   setBackground(new RippleDrawable(ColorStateList.valueOf((ink&0xffffff)|0x22000000),shape,mask));
++  if(themed)setBackground(new ToolMenuSurface699(theme,dark));
+   caption=new TextView(c);caption.setText(ToolCatalog.label(id));caption.setTextSize(size.equals("compact")?11:12);caption.setTextColor(ink);caption.setIncludeFontPadding(false);caption.setMaxLines(2);caption.setEllipsize(android.text.TextUtils.TruncateAt.END);caption.setGravity(Gravity.CENTER);caption.setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO);
+   icon=new ImageView(c);icon.setScaleType(ImageView.ScaleType.CENTER);icon.setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO);
+   icon.setImageDrawable(ToolbarLook.icon(c,id,ink,dp(size.equals("compact")?20:23)));
+   // Reuse the exact toolbar material, including stock and icons-only coordination.
+-  if(ToolbarLook.enabled(c))ToolSurface.applyToolbar(icon,ink,back);
++  if(!themed&&ToolbarLook.enabled(c))ToolSurface.applyToolbar(icon,ink,back);
+   icon.setVisibility(icons?VISIBLE:GONE);
+-  LinearLayout content=new LinearLayout(c);content.setOrientation(LinearLayout.VERTICAL);content.setGravity(Gravity.CENTER);content.setPadding(dp(4),dp(4),dp(4),dp(4));
++  LinearLayout content=new LinearLayout(c);content.setOrientation(LinearLayout.VERTICAL);content.setGravity(Gravity.CENTER);content.setPadding(dp(themed?10:4),dp(4),dp(themed?10:4),dp(themed?10:4));
+   content.addView(icon,new LinearLayout.LayoutParams(-1,dp(36)));
+   LinearLayout.LayoutParams textParams=new LinearLayout.LayoutParams(-1,caption.getLineHeight()*2);textParams.topMargin=icons?dp(2):0;
+   content.addView(caption,textParams);addView(content,new LayoutParams(-1,-2,Gravity.CENTER));
+  }
++ @Override protected void onDetachedFromWindow(){if(getBackground()!=null)getBackground().jumpToCurrentState();super.onDetachedFromWindow();}
++ @Override public void setPressed(boolean pressed){super.setPressed(pressed);if(getChildCount()>0&&getBackground() instanceof ToolMenuSurface699){View content=getChildAt(0);content.animate().cancel();if(android.animation.ValueAnimator.areAnimatorsEnabled())content.animate().translationY(pressed?dp(1.5f):0).setDuration(pressed?65:130).start();else content.setTranslationY(0);}
++
++ }
+ }
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/VoiceRepairs699.java b/app/src/main/java/helium314/keyboard/keyforma/VoiceRepairs699.java
+new file mode 100644
+index 0000000..0c88dcc
+--- /dev/null
++++ b/app/src/main/java/helium314/keyboard/keyforma/VoiceRepairs699.java
+@@ -0,0 +1,11 @@
++// SPDX-License-Identifier: GPL-3.0-only
++package helium314.keyboard.keyforma;
++import java.util.regex.*;
++/** Optional deterministic repairs, only an explicit numeric/time correction, always previewed. */
++public final class VoiceRepairs699 {
++ private static final String VALUE="(?:[0-9]+(?::[0-9]{2}|[.,][0-9]+)?|zero|uno|due|tre|quattro|cinque|sei|sette|otto|nove|dieci|undici|dodici|tredici|quattordici|quindici|sedici|diciassette|diciotto|diciannove|venti)";
++ private static final Pattern REPAIR=Pattern.compile("(?iu)(?<![\\p{L}\\p{N}_:.+-])("+VALUE+")[ ,]+(?:anzi|volevo dire|scusa intendevo)[ ,]+("+VALUE+")(?![\\p{L}\\p{N}_:.])".replace("\\\\","\\"));
++ private static final Pattern QUOTES=Pattern.compile("\"[^\"]*\"|«[^»]*»|“[^”]*”");
++ public static String apply(String text){StringBuilder out=new StringBuilder();Matcher quotes=QUOTES.matcher(text);int end=0;while(quotes.find()){out.append(fragment(text.substring(end,quotes.start()))).append(quotes.group());end=quotes.end();}return out.append(fragment(text.substring(end))).toString();}
++ private static String fragment(String text){return REPAIR.matcher(text).replaceAll("$2");}
++}
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/VoiceSettings.kt b/app/src/main/java/helium314/keyboard/keyforma/VoiceSettings.kt
+index 63708b4..9373112 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/VoiceSettings.kt
++++ b/app/src/main/java/helium314/keyboard/keyforma/VoiceSettings.kt
+@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
+  }
+  if(section==1)StudioCard{
+   Choice("Pulizia della dettatura","voice_cleanup","off",listOf("off" to "Originale · nessuna pulizia","light" to "Esitazioni e sillabe ripetute · con anteprima","local" to "AI locale · con anteprima"))
++  Toggle("Ripensamenti numerici espliciti","voice_explicit_repairs",false,"Durante la pulizia: «quattro, anzi cinque» → «cinque» e «14:30, volevo dire 15:30» → «15:30». Solo con anteprima; le citazioni e i semplici «no» restano intatti.")
+   Note("Leggera: toglie ehm e ripetizioni come «e, e, e». L’AI locale può riconoscere anche false partenze; richiede il modello da 2,50 GB già scaricato. Nessun download automatico. Nell’anteprima puoi confrontare e inserire l’originale.")
+   Note("La pulizia lavora sulla trascrizione. L’intonazione viene interpretata dal servizio vocale, non da queste regole. Numeri, nomi e significato vanno controllati prima di inserire una pulizia AI.")
+  }
+diff --git a/app/src/main/java/helium314/keyboard/latin/LatinIME.java b/app/src/main/java/helium314/keyboard/latin/LatinIME.java
+index 2dc283d..877186a 100644
+--- a/app/src/main/java/helium314/keyboard/latin/LatinIME.java
++++ b/app/src/main/java/helium314/keyboard/latin/LatinIME.java
+@@ -782,6 +782,7 @@ public class LatinIME extends InputMethodService implements
+ 
+     @Override
+     public void onStartInput(final EditorInfo editorInfo, final boolean restarting) {
++        mKeyboardActionListener.onCancelInput();
+         mCommandUndo665.clear();
+         mSelectionUndo670.clear();
+         mContextActions651.clear();
+@@ -820,6 +821,7 @@ public class LatinIME extends InputMethodService implements
+ 
+     @Override
+     public void onFinishInput() {
++        mKeyboardActionListener.onCancelInput();
+         mSelectionUndo670.clear();
+         mContextActions651.clear();
+         helium314.keyboard.keyforma.ClipboardOffer.retireBefore(this,mTypingBar.lastTyped());
+diff --git a/app/src/test/java/helium314/keyboard/keyforma/KeyAnt699Test.kt b/app/src/test/java/helium314/keyboard/keyforma/KeyAnt699Test.kt
+new file mode 100644
+index 0000000..9e7416f
+--- /dev/null
++++ b/app/src/test/java/helium314/keyboard/keyforma/KeyAnt699Test.kt
+@@ -0,0 +1,143 @@
++// SPDX-License-Identifier: GPL-3.0-only
++package helium314.keyboard.keyforma
++import android.os.*
++import android.view.inputmethod.*
++import android.graphics.Rect
++import helium314.keyboard.keyboard.*
++import helium314.keyboard.keyboard.internal.keyboard_parser.floris.KeyCode
++import helium314.keyboard.latin.*
++import helium314.keyboard.latin.settings.Settings
++import org.junit.*
++import org.junit.Assert.*
++import org.junit.runner.RunWith
++import org.mockito.Mockito.*
++import org.robolectric.*
++import org.robolectric.annotation.*
++import org.robolectric.util.ReflectionHelpers
++import java.time.Duration
++
++@RunWith(RobolectricTestRunner::class)
++@Config(sdk=[35],qualifiers="w400dp-h900dp-port-mdpi",shadows=[helium314.keyboard.ShadowInputMethodManager2::class])
++@GraphicsMode(GraphicsMode.Mode.NATIVE)
++class KeyAnt699Test {
++ lateinit var c:android.content.Context;lateinit var ime:LatinIME
++ @Before fun setup(){c=RuntimeEnvironment.getApplication();KeyAntPrefs.get(c).edit().clear().putBoolean("ka_053_defaults",true).putBoolean(Settings.PREF_THEME_DAY_NIGHT,false).putBoolean("ka_theme_motion",false).putString("ka_rgb","off").apply();ime=Robolectric.setupService(LatinIME::class.java)}
++ @After fun close(){ime.onDestroy()}
++ fun theme(id:String){KeyAntPrefs.get(c).edit().putString(Settings.PREF_THEME_COLORS,ThemeCatalog.preference(id,true)).apply();Settings.getInstance().loadSettings(c);KeyboardLayoutSet.onKeyboardThemeChanged()}
++ fun keyboard(profile:String,element:Int,width:Int=400,split:Boolean=false):Keyboard{
++  val numeric=element==KeyboardId.ELEMENT_NUMBER
++  val editor=EditorInfo().apply{inputType=if(numeric)android.text.InputType.TYPE_CLASS_NUMBER or android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL else android.text.InputType.TYPE_CLASS_TEXT}
++  return KeyboardLayoutSet.Builder(ime,editor).forPreview("ref91_nuphy").forDimensions(profile).setKeyboardGeometry(width,240).setSubtype(RichInputMethodManager.getInstance().currentSubtype).setSplitLayoutEnabled(split).build().getKeyboard(element)
++ }
++ @Test fun jollyGesturesNeverCopyBeforeDoubleTapAndCancelAcrossFields(){
++  val host=spy(ime);val ic=mock(InputConnection::class.java);val editor=EditorInfo()
++  doReturn(ic).`when`(host).currentInputConnection;doReturn(editor).`when`(host).currentInputEditorInfo;doReturn(true).`when`(host).isInputViewShown
++  `when`(ic.getSelectedText(0)).thenReturn("12.5")
++  val jolly=NumericJolly699(host)
++  jolly.tap();Shadows.shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(80));jolly.tap();verify(ic).performContextMenuAction(android.R.id.selectAll);verify(ic,never()).performContextMenuAction(android.R.id.copy)
++  Shadows.shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(400));verify(ic,never()).performContextMenuAction(android.R.id.copy)
++  jolly.tap();Shadows.shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(400));verify(ic).performContextMenuAction(android.R.id.copy)
++  clearInvocations(ic);jolly.tap();jolly.press();Shadows.shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(450));verify(ic,never()).performContextMenuAction(android.R.id.copy);jolly.hold();Shadows.shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(400));verify(ic).performContextMenuAction(android.R.id.paste);verify(ic,never()).performContextMenuAction(android.R.id.copy)
++  clearInvocations(ic);jolly.tap();doReturn(EditorInfo()).`when`(host).currentInputEditorInfo;Shadows.shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(400));verifyNoInteractions(ic)
++  jolly.tap();jolly.cancel();Shadows.shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(400));verifyNoInteractions(ic)
++ }
++ @Test fun numericJollyNativeTouchesBypassTextSpaceGesturesAndHoldDoesNotEmitSpace(){
++  val input=ime.onCreateInputView();ime.setInputView(input);val host=input.findViewById<MainKeyboardView>(R.id.keyboard_view);host.bindKeyAnt(ime)
++  val k=keyboard("compact_portrait",KeyboardId.ELEMENT_NUMBER);host.setKeyboard(k);host.finishLayoutMotion();KeyAntV42Test.layout(host,400,240)
++  val listener=mock(KeyboardActionListener::class.java);`when`(listener.onCustomRequest(NumericJolly699.HOLD)).thenReturn(true);host.setKeyboardActionListener(listener)
++  val key=k.getKey(32)!!;val x=key.x+key.width/2f;val y=key.y+key.height/2f;val now=SystemClock.uptimeMillis()
++  fun event(action:Int,time:Long){val e=android.view.MotionEvent.obtain(now,time,action,x,y,0);host.onTouchEvent(e);e.recycle()}
++  event(0,now);event(1,now+20);verify(listener).onCodeInput(eq(32),anyInt(),anyInt(),eq(false));clearInvocations(listener)
++  event(0,now+400);Shadows.shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(900));event(1,now+1400)
++  verify(listener).onCustomRequest(NumericJolly699.HOLD);verify(listener,never()).onCodeInput(eq(32),anyInt(),anyInt(),anyBoolean());host.cancelAllOngoingEvents()
++ }
++ @Test fun jollyEmptySelectionDoesNothingAndCustomActionsUseEditorProtocol(){
++  val ic=mock(InputConnection::class.java);assertFalse(NumericJolly699.apply(ic,"copy"));assertFalse(NumericJolly699.apply(ic,"cut"));verify(ic,never()).performContextMenuAction(anyInt())
++  NumericJolly699.apply(ic,"space");verify(ic).commitText(" ",1)
++  NumericJolly699.apply(ic,"undo");verify(ic).performContextMenuAction(android.R.id.undo)
++  assertTrue(NumericJolly699.matches(keyboard("compact_portrait",KeyboardId.ELEMENT_NUMBER),32));assertFalse(NumericJolly699.matches(keyboard("compact_portrait",KeyboardId.ELEMENT_ALPHABET),32))
++ }
++ @Test fun palettesCanBeBypassedAndRestoredAcrossThemeSwitch(){
++  KeyColorOverrides.choose(c,"ref91_nuphy","comma","custom");val p=KeyAntPrefs.get(c);p.edit().putInt("ka_key_color_custom_comma",0xfff28c21.toInt()).apply()
++  assertEquals(0xfff28c21.toInt(),KeyColorOverrides.color(c,"ref91_nuphy",true,44,0))
++  p.edit().putBoolean("ka_key_color_enabled",false).apply();assertNull(KeyColorOverrides.color(c,"ref91_nuphy",true,44,0));assertEquals(0xfff28c21.toInt(),p.getInt("ka_key_color_custom_comma",0))
++  KeyColorOverrides.selectTheme(c,"ref91_field");KeyColorOverrides.selectTheme(c,"ref91_nuphy");assertFalse(KeyColorOverrides.enabled(c,"ref91_nuphy"))
++  p.edit().putBoolean("ka_key_color_enabled",true).apply();assertEquals(0xfff28c21.toInt(),KeyColorOverrides.color(c,"ref91_nuphy",true,44,0))
++ }
++ @Test fun layerProfilesInheritThenSeparateAndUndoKeepsUnrelatedSettings(){
++  val p=KeyAntPrefs.get(c);p.edit().putInt("ka_dim_compact_portrait_letters_width",85).putInt("ka_dim_compact_portrait_layer_numeric_letters_width",95).putString("ka_tools_surface","follow").apply()
++  assertEquals(85,DimensionProfiles697.value(c,"compact_portrait_layer_letters","letters_width",100));assertEquals(95,DimensionProfiles697.value(c,"compact_portrait_ball_layer_numeric","letters_width",100))
++  DimensionLayers699.putSize(c,"compact_portrait","letters_width",88);assertEquals(88,DimensionProfiles697.value(c,"compact_portrait_layer_numeric","letters_width",100));p.edit().putInt("ka_dim_compact_portrait_layer_numeric_letters_width",95).apply()
++  val before=DimensionLayers699.snapshot(c);p.edit().putInt("ka_dim_compact_portrait_layer_letters_letters_width",60).apply();assertEquals(95,DimensionProfiles697.value(c,"compact_portrait_layer_numeric","letters_width",100))
++  DimensionLayers699.restore(c,DimensionLayers699.decode(org.json.JSONObject(before).toString()));assertEquals(before,DimensionLayers699.snapshot(c));assertEquals("follow",p.getString("ka_tools_surface",""))
++  p.edit().putInt("ka_dim_compact_portrait_ball_row",62).putInt("ka_dim_compact_portrait_layer_symbols_row",72).apply();DimensionProfiles697.reset(c,"compact_portrait");assertEquals(62,DimensionProfiles697.row(c,"compact_portrait_ball","classic"));assertEquals(72,DimensionProfiles697.row(c,"compact_portrait_layer_symbols","classic"))
++ }
++ @Test fun perLayerBodyHeightSurvivesSwitchesAndSplitWithoutShrinkingNumbers(){
++  val p=KeyAntPrefs.get(c);val source=DimensionProfiles697.current(c)
++  val original=helium314.keyboard.latin.utils.ResourceUtils.getKeyboardHeight(c.resources,Settings.getValues())
++  p.edit().putInt(DimensionProfiles697.key(source+"_layer_letters","height"),70).apply();KeyboardLayoutSet.onKeyboardThemeChanged()
++  val layouts=KeyboardLayoutSet.Builder(ime,EditorInfo().apply{inputType=android.text.InputType.TYPE_CLASS_TEXT}).setKeyboardGeometry(400,original).setSubtype(RichInputMethodManager.getInstance().currentSubtype).build()
++  val letters=layouts.getKeyboard(KeyboardId.ELEMENT_ALPHABET);val numeric=layouts.getKeyboard(KeyboardId.ELEMENT_NUMBER)
++  assertTrue(letters.mOccupiedHeight<original);assertEquals(original,numeric.mOccupiedHeight)
++  val split=KeyboardLayoutSet.forSplit(c,letters.mId,true);assertEquals(original,split.getKeyboard(KeyboardId.ELEMENT_NUMBER).mOccupiedHeight)
++  DimensionLayers699.defaults(c,"compact_landscape");assertEquals(123,DimensionProfiles697.padding(c,"compact_landscape",800,123))
++  assertEquals(ReferenceCollection691.defaultRowHeight(SearchTheme.active(c),700),DimensionProfiles697.row(c,"compact_landscape",SearchTheme.active(c)))
++  AntDialog.submit(c,"Imposta altezza simboli 2 al 85%",emptyList());assertEquals(85,DimensionProfiles697.value(c,source+"_layer_symbols2","height",100))
++ }
++ @Test fun shrinkingSpaceRedistributesWidthToEnterAndExtraKeysHaveDistinctHitAreas(){
++  val p=KeyAntPrefs.get(c);val original=keyboard("compact_portrait",KeyboardId.ELEMENT_ALPHABET)
++  p.edit().putInt("ka_dim_compact_portrait_space_share",60).putString("ka_dim_compact_portrait_bottom_extras","emoji,clipboard").apply()
++  val changed=keyboard("compact_portrait",KeyboardId.ELEMENT_ALPHABET)
++  assertTrue(changed.getKey(32)!!.width<original.getKey(32)!!.width)
++  assertNotNull(changed.getKey(KeyCode.CLIPBOARD));assertNotNull(changed.getKey(KeyCode.EMOJI))
++  val keys=changed.sortedKeys.filter{!it.isSpacer&&it.y==changed.getKey(32)!!.y}.sortedBy{it.x}
++  keys.zipWithNext().forEach{(a,b)->assertTrue(a.x+a.width<=b.x+1)}
++  p.edit().remove("ka_dim_compact_portrait_bottom_extras").apply();val narrow=keyboard("compact_portrait",KeyboardId.ELEMENT_ALPHABET)
++  assertTrue(narrow.getKey(10)!!.width>original.getKey(10)!!.width)
++ }
++ @Test fun allNewGeometryExtremesKeepKeysAndTrackballWithinBounds(){
++  var count=0
++  for((screen,width) in listOf("compact_portrait" to 360,"compact_landscape" to 800,"wide_portrait" to 700,"wide_landscape" to 1000))for(ball in listOf(false,true))for(split in listOf(false,true))for(element in listOf(KeyboardId.ELEMENT_ALPHABET,KeyboardId.ELEMENT_SYMBOLS,KeyboardId.ELEMENT_SYMBOLS_SHIFTED,KeyboardId.ELEMENT_NUMBER))for(share in listOf(50,100,160)){
++   val profile=screen+if(ball)"_ball" else "";val layer=DimensionLayers699.profile(profile,element)
++   KeyAntPrefs.get(c).edit().putInt(DimensionProfiles697.key(layer,"space_share"),share).putString(DimensionProfiles697.key(layer,"bottom_extras"),"emoji,clipboard").apply()
++   val k=keyboard(profile,element,width,split)
++   for(key in k.sortedKeys.filterNot{it.isSpacer}){assertTrue("$layer code=${key.code}",key.width>0);assertTrue("$layer outside ${key.code}",key.x>=0&&key.x+key.width<=width+1&&key.y>=0&&key.y+key.height<=241);k.mMagicBallBounds?.let{assertFalse(Rect.intersects(it,Rect(key.x,key.y,key.x+key.width,key.y+key.height)))}}
++   if(ball&&element in listOf(KeyboardId.ELEMENT_SYMBOLS,KeyboardId.ELEMENT_SYMBOLS_SHIFTED))assertNotNull(k.mMagicBallBounds)
++   count++
++  };println("NEW_GEOMETRY_CONFIGURATIONS=$count")
++ }
++ @Test fun numericReorderingDoesNotAffectAlphabetOrSymbols(){
++  val p=KeyAntPrefs.get(c);p.edit().putString("ka_dim_compact_portrait_layer_numeric_numeric_order","calculator").apply()
++  val k=keyboard("compact_portrait",KeyboardId.ELEMENT_NUMBER);assertTrue(k.getKey(55)!!.y<k.getKey(49)!!.y)
++  assertNotNull(keyboard("compact_portrait",KeyboardId.ELEMENT_ALPHABET).getKey(97))
++ }
++ @Test fun explicitVoiceRepairsPreserveQuotesNegationsAndUnmarkedNumbers(){
++  assertEquals("Faccio cinque serie",VoiceRepairs699.apply("Faccio quattro, anzi cinque serie"))
++  assertEquals("Alle 15:30",VoiceRepairs699.apply("Alle 14:30, volevo dire 15:30"))
++  for(text in listOf("Faccio 4 no 5 serie","Non voglio cinque serie","«quattro, anzi cinque»","Il codice è 1234","Ehm è il nome del prodotto","Non è quattro o cinque"))assertEquals(text,VoiceRepairs699.apply(text))
++  KeyAntPrefs.get(c).edit().putString("ka_voice_vocabulary","Ehm").apply();assertEquals("Ehm è il nome del prodotto",VoiceCleanup.light(c,"Ehm è il nome del prodotto"))
++ }
++ @Test fun antCommandsGuideAndApplyWithoutTreatingQuestionsAsCommands(){
++  val p=KeyAntPrefs.get(c);val ask=AntDialog.submit(c,"Come funziona il jolly?",emptyList());assertEquals("Jolly del tastierino numerico",ask.target)
++  AntDialog.submit(c,"Metti il doppio tocco su incolla",listOf(ask.encode()));assertEquals("paste",p.getString("ka_jolly_double",""))
++  AntDialog.submit(c,"Coordina il pannello strumenti",emptyList());assertEquals("follow",p.getString("ka_tools_surface",""))
++  AntDialog.submit(c,"Ripristina il pannello stock",emptyList());assertEquals("stock",p.getString("ka_tools_surface",""))
++  AntDialog.submit(c,"Aggiungi appunti nella riga inferiore",emptyList());assertEquals("clipboard",DimensionLayers699.text(c,DimensionProfiles697.current(c),"bottom_extras",""))
++  val old=p.all.toMap();AntDialog.submit(c,"Se imposto il doppio tocco del jolly su copia?",emptyList());assertEquals(old,p.all)
++  for(q in listOf("jolly","ripensamenti numerici","superficie strumenti","assetto"))assertTrue(q,SettingsSearch.search(q,c).isNotEmpty())
++ }
++ @Test fun nativePreviewsRenderEveryLayerAndMenuThemeWithReadableBands(){
++  for(id in listOf("ref91_nuphy","ref91_field","classic","xbox_clear")){
++   theme(id)
++   for(layer in listOf("letters","symbols","symbols2","numeric")){
++    val v=KeyboardLayoutPreview(c);v.sizingLayer(layer);v.dimensions("compact_portrait_ball_layer_$layer",1);v.handles(if(layer=="numeric")"numbers" else "space")
++    KeyAntV42Test.save(KeyAntV63Test.render(v,400,300),"KeyAnt-699-$id-$layer.png")
++   }
++   for(dark in listOf(false,true)){
++    KeyAntPrefs.get(c).edit().putString(Settings.PREF_THEME_COLORS,ThemeCatalog.preference(id,dark)).apply();Settings.getInstance().loadSettings(c)
++    val tile=ToolPanelTile694(c,"clipboard",-1,0xff151515.toInt(),"original",true,id);KeyAntV42Test.save(KeyAntV63Test.render(tile,132,100),"KeyAnt-699-menu-$id-$dark.png")
++    assertTrue(tile.caption.bottom<=tile.height);assertTrue(tile.caption.top>=tile.icon.bottom)
++   }
++  }
++ }
++}
+diff --git a/app/src/test/java/helium314/keyboard/keyforma/KeyAntAudit699Test.java b/app/src/test/java/helium314/keyboard/keyforma/KeyAntAudit699Test.java
+new file mode 100644
+index 0000000..3a0bd87
+--- /dev/null
++++ b/app/src/test/java/helium314/keyboard/keyforma/KeyAntAudit699Test.java
+@@ -0,0 +1,65 @@
++// SPDX-License-Identifier: GPL-3.0-only
++package helium314.keyboard.keyforma;
++
++import android.content.*;
++import android.graphics.*;
++import android.view.ContextThemeWrapper;
++import helium314.keyboard.keyboard.*;
++import helium314.keyboard.keyboard.Keyboard;
++import helium314.keyboard.latin.*;
++import helium314.keyboard.latin.settings.Settings;
++import java.io.*;
++import org.junit.*;
++import org.junit.runner.RunWith;
++import org.robolectric.*;
++import org.robolectric.annotation.*;
++import static org.junit.Assert.*;
++
++/** Per-theme native-render inventory. Images are review evidence, not similarity assertions. */
++@RunWith(RobolectricTestRunner.class)
++@Config(sdk=35, qualifiers="w400dp-h900dp-mdpi", shadows={helium314.keyboard.ShadowInputMethodManager2.class})
++@GraphicsMode(GraphicsMode.Mode.NATIVE)
++public class KeyAntAudit699Test {
++ Context c; LatinIME ime;
++ @Before public void setup(){c=RuntimeEnvironment.getApplication();KeyAntPrefs.get(c).edit().clear().putBoolean("ka_053_defaults",true).putBoolean(Settings.PREF_THEME_DAY_NIGHT,false).putBoolean("ka_theme_motion",false).putString("ka_rgb","off").apply();ime=Robolectric.setupService(LatinIME.class);}
++ @After public void close(){ime.onDestroy();}
++ void theme(String id,boolean dark){KeyAntPrefs.get(c).edit().putString(Settings.PREF_THEME_COLORS,ThemeCatalog.preference(id,dark)).apply();Settings.getInstance().loadSettings(c);KeyboardLayoutSet.onKeyboardThemeChanged();}
++ @Test public void everyCatalogThemeBothModesAndAllLayoutFamilies() throws Exception {
++  File dir=new File("build/keyant-artifacts/audit699");dir.mkdirs();int count=0;
++  try(PrintWriter manifest=new PrintWriter(new File(dir,"manifest.tsv"))){
++   manifest.println("id\tname\tcollection\trequested_dark\teffective_dark\twidth\tsplit\tnumbers\tball\tlayer\tkeys\timage");
++   for(int index=0;index<ThemeCatalog.IDS.length;index++){
++    String id=ThemeCatalog.IDS[index];
++    Bitmap sheet=Bitmap.createBitmap(1600,1400,Bitmap.Config.ARGB_8888);Canvas out=new Canvas(sheet);out.drawColor(0xff242629);
++    Paint title=new Paint(3);title.setColor(Color.WHITE);title.setTextSize(20);out.drawText(id+" | "+ThemeCatalog.NAMES[index],12,24,title);
++    for(int mode=0;mode<2;mode++)for(int config=0;config<4;config++){
++     boolean requestedDark=mode==1,dark=ThemeCatalog.effectiveDark(id,requestedDark),split=config==3,numbers=config==2,ball=config==1;
++     int width=config>=2?760:400,layer=config==1?KeyboardId.ELEMENT_SYMBOLS:config==3?KeyboardId.ELEMENT_SYMBOLS_SHIFTED:KeyboardId.ELEMENT_ALPHABET;
++     RuntimeEnvironment.setQualifiers(config==2?"w760dp-h400dp-land-mdpi":config==3?"w760dp-h900dp-port-mdpi":"w400dp-h900dp-port-mdpi");
++     KeyAntPrefs.get(c).edit().putBoolean("ka_magic_ball",ball).apply();theme(id,dark);
++     int height=DimensionProfiles697.height(c,DimensionProfiles697.current(c),Settings.getValues().mKeyAntRowHeight,numbers);
++     Keyboard k=new KeyboardLayoutSet.Builder(ime,null).setKeyboardGeometry(width,height).setSubtype(RichInputMethodManager.getInstance().getCurrentSubtype()).setSplitLayoutEnabled(split).setNumberRowEnabled(numbers).build().getKeyboard(layer);
++     int keys=0;for(Key key:k.getSortedKeys()){if(key.isSpacer())continue;assertTrue(id+" key="+key.getCode(),key.getWidth()>0&&key.getHeight()>0);assertTrue(id+" outside "+key.getCode(),key.getX()>=0&&key.getX()+key.getWidth()<=width+1);keys++;}
++     KeyboardView view=new KeyboardView(new ContextThemeWrapper(c,KeyboardTheme.getKeyboardTheme(c).mStyleId),null,R.attr.keyboardViewStyle,id.equals("glass")?new GlassColors(dark):new FormaColors(dark,id,c.getResources()));
++     view.setKeyboard(k);view.setBackgroundColor(ThemeCatalog.background(id,dark));
++     Bitmap warmup=KeyAntV63Test.render(view,width,height);MechanicalCaps.awaitMaterials();org.robolectric.Shadows.shadowOf(android.os.Looper.getMainLooper()).idle();view.invalidateAllKeys();warmup.recycle();
++     Bitmap render=KeyAntV63Test.render(view,width,height);String file=id+"-"+mode+"-"+config+".png";
++     try(FileOutputStream stream=new FileOutputStream(new File(dir,file))){render.compress(Bitmap.CompressFormat.PNG,100,stream);}
++     int x=(config%2)*800,y=44+mode*672+(config/2)*336;
++     out.drawBitmap(render,new Rect(0,0,width,height),new Rect(x,y,x+width,y+height),null);render.recycle();
++     manifest.println(id+"\t"+ThemeCatalog.NAMES[index]+"\t"+ThemeCatalog.collection(id)+"\t"+requestedDark+"\t"+dark+"\t"+width+"\t"+split+"\t"+numbers+"\t"+ball+"\t"+layer+"\t"+keys+"\t"+file);count++;
++    }
++    try(FileOutputStream stream=new FileOutputStream(new File(dir,id+"-sheet.png"))){sheet.compress(Bitmap.CompressFormat.PNG,100,stream);}sheet.recycle();
++    for(boolean dark:new boolean[]{false,true}){
++     RuntimeEnvironment.setQualifiers("w400dp-h900dp-port-mdpi");theme(id,dark);
++     ToolPanelTile694 tile=new ToolPanelTile694(c,"clipboard",Color.WHITE,0xff151515,"original",true,id);
++     Bitmap image=KeyAntV63Test.render(tile,132,100);MechanicalCaps.awaitMaterials();image.recycle();image=KeyAntV63Test.render(tile,132,100);
++     try(FileOutputStream stream=new FileOutputStream(new File(dir,id+"-menu-"+dark+".png"))){image.compress(Bitmap.CompressFormat.PNG,100,stream);}image.recycle();
++     assertTrue(id+" icon-caption",tile.caption.getTop()>=tile.icon.getBottom());
++    }
++    if(index%20==0)System.out.println("AUDIT_THEME="+index+"/"+ThemeCatalog.IDS.length+" "+id);
++   }
++  }
++  System.out.println("AUDIT_THEMES="+ThemeCatalog.IDS.length+" NATIVE_RENDERS="+count);
++ }
++}
+diff --git a/app/src/test/java/helium314/keyboard/keyforma/KeyAntUi699Test.kt b/app/src/test/java/helium314/keyboard/keyforma/KeyAntUi699Test.kt
+new file mode 100644
+index 0000000..6788f92
+--- /dev/null
++++ b/app/src/test/java/helium314/keyboard/keyforma/KeyAntUi699Test.kt
+@@ -0,0 +1,57 @@
++// SPDX-License-Identifier: GPL-3.0-only
++package helium314.keyboard.keyforma
++import android.content.Intent
++import androidx.compose.ui.test.*
++import androidx.compose.ui.test.junit4.createEmptyComposeRule
++import helium314.keyboard.latin.LatinIME
++import helium314.keyboard.latin.settings.Settings
++import org.junit.*
++import org.junit.Assert.*
++import org.junit.runner.RunWith
++import org.robolectric.*
++import org.robolectric.annotation.*
++@RunWith(RobolectricTestRunner::class)
++@Config(sdk=[35],qualifiers="w400dp-h900dp-port-mdpi",shadows=[helium314.keyboard.ShadowInputMethodManager2::class])
++@GraphicsMode(GraphicsMode.Mode.NATIVE)
++class KeyAntUi699Test {
++ @get:Rule val compose=createEmptyComposeRule()
++ lateinit var c:android.content.Context;lateinit var ime:LatinIME
++ @Before fun setup(){c=RuntimeEnvironment.getApplication();KeyAntPrefs.get(c).edit().clear().putBoolean("ka_053_defaults",true).putString(Settings.PREF_THEME_COLORS,ThemeCatalog.preference("ref91_nuphy",true)).putBoolean(Settings.PREF_THEME_DAY_NIGHT,false).apply();ime=Robolectric.setupService(LatinIME::class.java)}
++ @After fun close(){ime.onDestroy()}
++ @Test fun dimensionEditorHasRealLayersAndRestorablePersonalBookmark(){
++  Robolectric.buildActivity(StudioActivity::class.java,Intent(c,StudioActivity::class.java).putExtra("page","size")).setup().visible().use{a->
++   KeyAntV42Test.layout(a.get().window.decorView,400,900);compose.waitForIdle()
++   KeyAntV42Test.save(KeyAntV63Test.render(a.get().window.decorView,400,900),"KeyAnt-699-size-top.png")
++   compose.onAllNodes(hasScrollToIndexAction())[2].performScrollToNode(hasText("Numeri"))
++   compose.onNodeWithText("Numeri",useUnmergedTree=true).performClick();compose.waitForIdle()
++   compose.onNodeWithText("Riga inferiore e tastierino").performScrollTo().performClick();compose.waitForIdle()
++   compose.mainClock.advanceTimeBy(500);compose.onNodeWithText("7–8–9").onAncestors().filter(hasScrollToIndexAction()).onFirst().performScrollTo();compose.waitForIdle();compose.onNodeWithText("7–8–9").performScrollTo().performClick();compose.waitForIdle();assertEquals(KeyAntPrefs.get(c).all.filterKeys{it.startsWith("ka_dim_")}.toString(),"calculator",KeyAntPrefs.get(c).getString("ka_dim_compact_portrait_layer_numeric_numeric_order",""))
++   compose.onNodeWithText("Salva il mio assetto").performScrollTo().performClick();assertTrue(KeyAntPrefs.get(c).contains("ka_size_bookmark"))
++   KeyAntPrefs.get(c).edit().putInt("ka_dim_compact_portrait_layer_numeric_height",80).apply()
++   compose.onNodeWithText("Riprendi assetto").performClick();compose.waitForIdle();assertFalse(KeyAntPrefs.get(c).contains("ka_dim_compact_portrait_layer_numeric_height"))
++   KeyAntV42Test.save(KeyAntV63Test.render(a.get().window.decorView,400,900),"KeyAnt-699-size-restore.png")
++  }
++ }
++ @Test fun menuSurfacePickerShowsPreviewAndKeepsExistingOrganization(){
++  Robolectric.buildActivity(StudioActivity::class.java,Intent(c,StudioActivity::class.java).putExtra("page","bars")).setup().visible().use{a->
++   KeyAntV42Test.layout(a.get().window.decorView,400,900)
++   compose.onNodeWithText("Superficie degli strumenti").performScrollTo().performClick()
++   compose.onNodeWithText("Segue la tastiera").performClick();compose.waitForIdle();assertEquals("follow",KeyAntPrefs.get(c).getString("ka_tools_surface",""))
++   compose.onNodeWithText("Il materiale e il click seguono il tema scelto. Attuale ripristina l’aspetto precedente. Per aggiungere o riordinare usa Organizza il pannello qui sotto.").performScrollTo();compose.mainClock.advanceTimeBy(300)
++   KeyAntV42Test.save(KeyAntV63Test.render(a.get().window.decorView,400,900),"KeyAnt-699-tools-settings.png")
++   compose.onNodeWithText("Organizza il pannello ⋯").performScrollTo().assertExists()
++  }
++ }
++ @Test fun quickPaletteBypassLeavesSavedColorsIntact(){
++  KeyColorOverrides.choose(c,"ref91_nuphy","comma","palette_1")
++  Robolectric.buildActivity(StudioActivity::class.java,Intent(c,StudioActivity::class.java).putExtra("page","themes")).setup().visible().use{a->
++   KeyAntV42Test.layout(a.get().window.decorView,400,900)
++   compose.onNodeWithText("Aspetto del tema").performScrollTo().performClick()
++   compose.onNodeWithText("Colori personali degli altri tasti").performScrollTo().performClick()
++   assertFalse(KeyColorOverrides.enabled(c,"ref91_nuphy"));assertEquals("palette_1",KeyAntPrefs.text(c,"key_color_comma",""))
++   compose.onNodeWithText("Punto e virgola come lettere").performScrollTo().performClick();assertTrue(KeyColorOverrides.enabled(c,"ref91_nuphy"));assertEquals("palette_0",KeyAntPrefs.text(c,"key_color_period",""))
++   compose.waitForIdle();compose.mainClock.advanceTimeBy(400)
++   KeyAntV42Test.save(KeyAntV63Test.render(a.get().window.decorView,400,900),"KeyAnt-699-theme-quick-colors.png")
++  }
++ }
++}
+diff --git a/gradle/keyant-0699.gradle b/gradle/keyant-0699.gradle
+new file mode 100644
+index 0000000..c32a93e
+--- /dev/null
++++ b/gradle/keyant-0699.gradle
+@@ -0,0 +1,11 @@
++allprojects {
++ tasks.withType(Test).configureEach {
++  def chosen=(project.findProperty('keyantTestClasses') ?: 'KeyAnt699Test,KeyAntUi699Test,KeyAnt698Test,KeyAntUi698Test,KeyAntUi697Test,KeyAnt697Test,KeyAntWriting670Test,KeyAntV62Test,KeyAntV615Test,KeyAntCorrection641Test').toString().split(',')
++  setIncludes(chosen.collect { '**/'+it+'.class' })
++  maxHeapSize='900m'
++  maxParallelForks=1
++  forkEvery=1
++  systemProperty 'robolectric.dependency.repo.url', 'https://repo.maven.apache.org/maven2'
++  testLogging { events 'passed','failed','skipped'; exceptionFormat 'full'; showStandardStreams=false }
++ }
++}

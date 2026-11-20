@@ -1,3 +1,11 @@
+# KeyAnt 0.6.99
+
+Jolly numerico configurabile, editor dimensioni con anteprima e profili separati per lettere/simboli/numeri, assetto personale ripristinabile, palette rapida reversibile e menu strumenti con materiale del tema. ANT aggiornato; pulizia vocale con protezione del vocabolario e ripensamenti numerici espliciti opzionali. VersionCode 126.
+
+[Continuità e ricostruzione](docs/CONTINUITA-0.6.99.md), [novità](docs/AGGIORNAMENTO-0.6.99.md), [verifiche e limiti](docs/VERIFICHE-0.6.99.txt), [inventario temi](docs/AUDIT-TEMI-0.6.99.tsv). APK firmata distribuita direttamente in chat; nessuna release binaria GitHub v0.6.99 pubblicata. Codice ricostruibile dai sorgenti 0.6.97 e dalle patch 0.6.98 e [0.6.99](patches/KeyAnt-0.6.99-da-0.6.98.patch). Nessuna prova su telefono fisico; lint globale non dichiarato superato.
+
+---
+
 # KeyAnt 0.6.98
 
 Angoli arrotondati riuniti in Aspetto del tema con preferenza condivisa; pannello inizialmente chiuso, anteprime aggiornate al cambio tema, categoria Scolpiti. ANT con glow leggero e suggerimenti contestuali; anteprime silenziose senza toast, caching aptico e revisione contestuale locale esplicita. VersionCode 125.
