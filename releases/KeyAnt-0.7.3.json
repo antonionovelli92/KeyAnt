@@ -1,0 +1,20 @@
+{
+  "version": "0.7.3",
+  "version_code": 130,
+  "package": "it.keyant.keyboard",
+  "apk": "KeyAnt-0.7.3.apk",
+  "bytes": 229035231,
+  "sha256": "f1927a94301730bd76e6b0c8f9adf46d31c0c79928766161c4da9dc97472f476",
+  "certificate_sha256": "bf7bc5998c63e50de960d4506499dce857cea819468673d0ca52d31bed527aa4",
+  "source_commit": "7b64074ffaa1170a3bc8892bc03d37f2ce074319",
+  "source_tree": "b5385b4534c17222d650d6ff9c0493723d638597",
+  "tests": 244,
+  "suites": 18,
+  "failures": 0,
+  "debuggable": false,
+  "apk_zip_integrity": "passed",
+  "zipalign": "passed -P 16 4",
+  "lint_vital": "passed",
+  "physical_device_tests": false,
+  "distribution": "APK delivered in chat; no GitHub binary release created"
+}

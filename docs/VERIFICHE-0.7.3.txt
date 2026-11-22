@@ -1,0 +1,12 @@
+KeyAnt 0.7.3 (130)
+APK: 229035231 byte
+SHA256: f1927a94301730bd76e6b0c8f9adf46d31c0c79928766161c4da9dc97472f476
+Firma originale: bf7bc5998c63e50de960d4506499dce857cea819468673d0ca52d31bed527aa4
+Integrità ZIP, allineamento APK 16 KB e metadati: superati.
+Nuove librerie arm64: segmenti ELF LOAD allineati 0x4000, dipendenze non di sistema presenti.
+APK non debuggable; modello Parakeet assente dal pacchetto, download facoltativo.
+244 test in 18 suite, 0 fallimenti/errori/skip. Lint vital superato; lint globale non eseguito.
+9 render Android prodotti. Confronto di tavole effetti chiaro/scuro, capsula completa telefono/Fold e impostazioni.
+Nessun test su telefono fisico, nessuna misura FPS, HDR o confronto di accuratezza con Gboard.
+Campione vocale italiano pubblico: 1 errore su 23 parole normalizzate. Non generalizzare il risultato.
+Video personale: audio interamente silenzioso; sola verifica visiva.

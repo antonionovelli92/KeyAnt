@@ -1,3 +1,13 @@
+# KeyAnt 0.7.3
+
+Dettatura direttamente nel campo del messaggio, card di revisione opzionale, 15 effetti vocali con anteprime condivise e vetro arcobaleno a tutta capsula. Scelta fra servizio Android e Parakeet v3 offline facoltativo (download esplicito 671 MB). ANT, Maker e ricerca coordinati; pause e risultati tardivi protetti. VersionCode 130.
+
+[Novità e limiti](docs/AGGIORNAMENTO-0.7.3.md), [continuità e ricostruzione](docs/CONTINUITA-0.7.3.md), [test](docs/TEST-0.7.3.json), [prova italiana del modello](docs/PARAKEET-0.7.3.json). APK firmata consegnata direttamente in chat; nessuna release binaria GitHub 0.7.3 creata. Nessun test su telefono fisico o garanzia di assenza di bug.
+
+Questo checkpoint recupera anche le patch 0.7.0, 0.7.1 e 0.7.2, precedentemente consegnate in chat. Tutte si applicano in ordine dopo le patch 0.6.98 e 0.6.99 al sorgente completo della release 0.6.97. Per 0.7.3 eseguire anche `python3 tools/fetch-parakeet-runtime.py` prima della build: il runtime Android è fissato e verificato tramite SHA256. Nessuna chiave privata, registrazione personale o modello vocale viene pubblicato.
+
+---
+
 # KeyAnt 0.6.99
 
 Jolly numerico configurabile, editor dimensioni con anteprima e profili separati per lettere/simboli/numeri, assetto personale ripristinabile, palette rapida reversibile e menu strumenti con materiale del tema. ANT aggiornato; pulizia vocale con protezione del vocabolario e ripensamenti numerici espliciti opzionali. VersionCode 126.

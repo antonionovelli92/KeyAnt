@@ -1,0 +1,7 @@
+KeyAnt 0.7.2 / versionCode 129
+174 metodi unici in 13 suite, zero fallimenti/errori/saltati nell'esecuzione finale. Non sommare i tentativi ripetuti.
+Verifiche della sequenza con risposta inline, notifica, nuova notifica, copia più recente, scadenza, chiusura, risposta provider tardiva, connessione/campo cambiati, metadata SMS/email, incognito e preferenze. Il listener è esercitato con notifiche sintetiche SMS/WhatsApp/email, senza accessi ad account reali.
+Render Android nativi della capsula a 320/400/700/1000 dp, chiaro/scuro, geometria verificata anche RTL; render del tastierino sui quattro profili ereditati dalla suite 701. Immagini ispezionate visivamente. Non sono screenshot di PayPal o del telefono fisico. Nessuna misura FPS o garanzia universale del riconoscimento.
+APK verificata con aapt, apksigner e zipalign 16 KiB; certificato originale bf7bc5998c63e50de960d4506499dce857cea819468673d0ca52d31bed527aa4. SHA256 2bca725cb5f7a682633051ffafeb72f2b1a1f5c55ab1d5a2dc0a40ebb518b07d.
+Il sorgente di partenza è stato ricostruito e verificato identico all'albero 0.7.1 93c2bca4d674b1ad62234c62577b519bc9ace8a7. La patch 0.7.2 ricostruisce l'albero a4ab6123eea6ed75c93b75caed2e8324a2c521cf. Nessuna chiave inclusa.
+LintVital incluso nella build. Il lint globale con debito storico non è dichiarato superato.

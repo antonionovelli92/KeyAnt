@@ -1,0 +1,569 @@
+diff --git a/AGENTS.md b/AGENTS.md
+index d67b15f..cea6fc7 100644
+--- a/AGENTS.md
++++ b/AGENTS.md
+@@ -31,3 +31,7 @@
+ - Il pannello strumenti può mantenere l’aspetto precedente, seguire il tema o usarne un altro. Riutilizzare il renderer dei copritasti, conservando fasce distinte per icona ed etichetta e organizzazione dei comandi.
+ - Disattivare i colori personali non deve cancellare la palette salvata per il tema. Ricerca, riepilogo rapido, impostazioni dettagliate e ANT devono usare lo stesso stato.
+ - La pulizia vocale mantiene sempre l’originale confrontabile. I ripensamenti numerici richiedono marcatori espliciti e un’opzione dedicata: non interpretare ogni «no» come cancellazione e non alterare citazioni, nomi o numeri non corretti esplicitamente.
++
++- Le pillole di accesso hanno comandi laterali simmetrici: non aggiungere padding solo a sinistra né una seconda freccia esterna. Verificare il centro nella barra completa e nel tastierino numerico.
++- Un campo numerico senza etichetta non prova che sia OTP. L’alternativa Authenticator deve restare reversibile, con il provider password disponibile e senza normalizzazione automatica del contenuto per sola euristica.
++- Le ripartenze vocali non devono cancellare sostantivi validi come «dei dei greci», citazioni o nomi personali. Non indovinare numeri da parole ambigue come «nodi dicevo».
+diff --git a/app/build.gradle.kts b/app/build.gradle.kts
+index 4a08c19..2646fa0 100644
+--- a/app/build.gradle.kts
++++ b/app/build.gradle.kts
+@@ -15,8 +15,8 @@ android {
+         applicationId = "it.keyant.keyboard"
+         minSdk = 26
+         targetSdk = 35
+-        versionCode = 127
+-        versionName = "0.7.0"
++        versionCode = 128
++        versionName = "0.7.1"
+         if (!providers.gradleProperty("keyantNativePrebuiltDir").isPresent) externalNativeBuild { ndkBuild { arguments += listOf("-j2") } }
+         ndk {
+             abiFilters.clear()
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/AntControls700.kt b/app/src/main/java/helium314/keyboard/keyforma/AntControls700.kt
+index 8d86d71..018d8e3 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/AntControls700.kt
++++ b/app/src/main/java/helium314/keyboard/keyforma/AntControls700.kt
+@@ -8,14 +8,16 @@ internal object AntControls700 {
+   SettingResult("privacy","Apertura Authenticator","finestra piccola compatta popup Samsung Fold normale"),
+   SettingResult("privacy","Authenticator anche in incognito","login privato collegamento pillola"),
+   SettingResult("voice","Anteprima vocale leggibile","maiuscole minuscole pause trascrizione"),
+-  SettingResult("voice","Ripensamenti temporali espliciti","adesso anzi no oggi ieri domani correzione"))
++  SettingResult("voice","Ripensamenti temporali espliciti","adesso anzi no oggi ieri domani correzione"),
++  SettingResult("privacy","Authenticator nei campi numerici non descritti","codice caselle cifre PayPal password alternativa riconoscimento"))
+  fun guide(q:String):AntGuide.Answer?=when{
+-  "authenticator" in q||Regex("codic.*(?:monouso|2fa|totp)").containsMatchIn(q)->AntGuide.Answer("La pillola apre l’app scelta nei campi riconosciuti per codici. Google è la prima scelta; puoi usare Microsoft o un’altra app. Copia il codice e torna: lo propone la pillola degli appunti. KeyAnt non legge l’archivio né genera codici di Google. La finestra compatta dipende da Android e può aprirsi a schermo intero. Se il campo non è descritto, usa Authenticator nel menu ⋯.",authLinks(q))
++  "authenticator" in q||Regex("codic.*(?:monouso|2fa|totp)").containsMatchIn(q)->AntGuide.Answer("La pillola apre l’app scelta nei campi riconosciuti per codici. Google è la prima scelta; puoi usare Microsoft o un’altra app. Copia il codice e torna: lo propone la pillola degli appunti. KeyAnt non legge l’archivio né genera codici di Google. La finestra compatta dipende da Android e può aprirsi a schermo intero. Nei campi numerici protetti senza descrizione compare come alternativa: il tasto a destra permette di tornare al gestore password. Non identifica da solo il sito né l’account. Per gli altri campi non descritti resta il menu ⋯.",authLinks(q))
+   Regex("maiuscol|minuscol|ripetizion|esitazion|ripensament|paus.*vocal").containsMatchIn(q)->AntGuide.Answer("In Dettatura → Testo, Pulizia prudente mostra un confronto con l’originale: ripetizioni brevi, maiuscole comuni e interruzioni evidenti. Ripensamenti temporali espliciti tratta «adesso, anzi no, oggi». Puoi spegnerlo; le frasi ambigue restano da rivedere. Per correzioni contestuali più ampie puoi scegliere AI locale se il modello è già installato.",listOf(SettingResult("voice","Pulizia della dettatura"),entries[4],entries[5]))
+   else->null
+  }
+  private fun authLinks(q:String):List<SettingResult> = when {
+   "incognito" in q || "privat" in q -> listOf(entries[3])
++  Regex("numeric|non descritt|caselle|paypal").containsMatchIn(q) -> listOf(entries[6])
+   Regex("apertura|finestra|popup|compatta").containsMatchIn(q) -> listOf(entries[2])
+   Regex("app authenticator|cambia.*app|scegli.*app").containsMatchIn(q) -> listOf(entries[1])
+   "pillola" in q || "impostaz" in q -> listOf(entries[0])
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/AntSwitches.kt b/app/src/main/java/helium314/keyboard/keyforma/AntSwitches.kt
+index 21f539b..18ef65f 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/AntSwitches.kt
++++ b/app/src/main/java/helium314/keyboard/keyforma/AntSwitches.kt
+@@ -10,6 +10,7 @@ import helium314.keyboard.keyboard.KeyboardSwitcher
+ internal object AntSwitches {
+  val keys:Map<String,String> by lazy { mapOf(
+   "Pillola Authenticator" to "ka_authenticator_pill",
++  "Authenticator nei campi numerici non descritti" to "ka_authenticator_numeric_fallback",
+   "Authenticator anche in incognito" to "ka_authenticator_private",
+   "Anteprima vocale leggibile" to "ka_voice_readable",
+   "Ripensamenti temporali espliciti" to "ka_voice_temporal_repairs",
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/AuthenticatorBridge700.java b/app/src/main/java/helium314/keyboard/keyforma/AuthenticatorBridge700.java
+index 7b643a0..76f8262 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/AuthenticatorBridge700.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/AuthenticatorBridge700.java
+@@ -25,9 +25,26 @@ public final class AuthenticatorBridge700 {
+  private String cachedPackage;private boolean available;private long checked=-30000;
+  public static boolean codeField(EditorInfo e){
+   if(e==null||e.inputType==InputType.TYPE_NULL)return false;
+-  String labels=(String.valueOf(e.hintText)+" "+String.valueOf(e.fieldName)).replaceAll("([a-z])([A-Z])","$1 $2").replace('_',' ').replace('-',' ');
++  String labels=labels(e);
+   return !NEGATIVE.matcher(labels).find()&&POSITIVE.matcher(labels).find();
+  }
++ private static String labels(EditorInfo e){return (String.valueOf(e.hintText)+" "+String.valueOf(e.fieldName)).replaceAll("([a-z])([A-Z])","$1 $2").replaceAll("([A-Z]+)([A-Z][a-z])","$1 $2").replace('_',' ').replace('-',' ');}
++ /** A shortcut candidate, NOT evidence that an unlabelled numeric password is an OTP.
++  * Apps often expose segmented verification fields only as numberPassword. Keep the
++  * credential provider available; never use this heuristic to insert or normalize text. */
++ public static boolean numericSecret(EditorInfo e){return numericCandidate(e,false);}
++ public static boolean numericCandidate(EditorInfo e,boolean providerPresent){
++  if(e==null||(e.inputType&InputType.TYPE_MASK_CLASS)!=InputType.TYPE_CLASS_NUMBER
++    ||(e.inputType&(InputType.TYPE_NUMBER_FLAG_DECIMAL|InputType.TYPE_NUMBER_FLAG_SIGNED))!=0
++    ||(!providerPresent&&(e.inputType&InputType.TYPE_MASK_VARIATION)!=InputType.TYPE_NUMBER_VARIATION_PASSWORD))return false;
++  String label=labels(e);
++  if(NEGATIVE.matcher(label).find()||Pattern.compile("(?iu)\\b(?:pin|puk|iban|carta|card|conto|account number|peso|weight|ripetizioni|reps)\\b").matcher(label).find())return false;
++  String hint=e.hintText==null?"":e.hintText.toString().trim();
++  hint=hint.replaceFirst("(?iu)^(?:enter|type|inserisci|digita)(?: (?:il|the))?[ \\t]+","");
++  // Explicit unrelated hints stay with their provider. Field IDs such as digit1
++  // carry no semantics and are common in custom multi-box controls.
++  return hint.isEmpty()||hint.matches("(?iu)(?:[•*·_0-9 ]+|(?:security |access )?code|codice(?: di (?:sicurezza|accesso))?|password|(?:digit|cifra)(?: [0-9]+)?(?: (?:of|di) [0-9]+)?)");
++ }
+  public static boolean privateField(EditorInfo e){return e!=null&&((e.imeOptions&EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING)!=0||helium314.keyboard.latin.utils.InputTypeUtils.isPasswordInputType(e.inputType));}
+  public static String selected(Context c){return KeyAntPrefs.text(c,"authenticator_app",GOOGLE);}
+  public static String name(Context c,String pkg){
+@@ -58,9 +75,10 @@ public final class AuthenticatorBridge700 {
+   }catch(RuntimeException first){if(compact)try{c.startActivity(i);return true;}catch(RuntimeException ignored){}Toast.makeText(c,"Impossibile aprire l’app Authenticator scelta",Toast.LENGTH_SHORT).show();return false;}
+  }
+  public static void settings(Context c){c.startActivity(new Intent(c,StudioActivity.class).putExtra("page","privacy").putExtra("target_setting","Pillola Authenticator").addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));}
+- public View suggestion(LatinIME ime){
++ public View suggestion(LatinIME ime){return suggestion(ime,false);}
++ public View suggestion(LatinIME ime,boolean providerPresent){
+   EditorInfo e=ime.getCurrentInputEditorInfo();
+-  if(e==dismissed||!codeField(e)||!unlocked(ime)||!KeyAntPrefs.bool(ime,"authenticator_pill",true))return null;
++  if(e==dismissed||!(codeField(e)||(KeyAntPrefs.bool(ime,"authenticator_numeric_fallback",true)&&numericCandidate(e,providerPresent)))||!unlocked(ime)||!KeyAntPrefs.bool(ime,"authenticator_pill",true))return null;
+   boolean privacy=Settings.getValues().mIncognitoModeEnabled||privateField(e);
+   if(privacy&&!KeyAntPrefs.bool(ime,"authenticator_private",true))return null;
+   String pkg=selected(ime);if(!installed(ime,pkg))return null;
+@@ -69,7 +87,7 @@ public final class AuthenticatorBridge700 {
+  public static View pill(Context c,String label,Runnable open,Runnable dismiss,Runnable settings){
+   float d=c.getResources().getDisplayMetrics().density;int ink=Settings.getValues().mColors.get(ColorType.KEY_TEXT);
+   PastePill.Halo halo=new PastePill.Halo(c,ink);
+-  LinearLayout row=new LinearLayout(c){@Override protected void onDetachedFromWindow(){halo.stop();super.onDetachedFromWindow();}};
++  LinearLayout row=new LinearLayout(c){@Override protected void onAttachedToWindow(){super.onAttachedToWindow();halo.active=true;halo.invalidateSelf();}@Override protected void onDetachedFromWindow(){halo.stop();super.onDetachedFromWindow();}};
+   row.setTag("keyant-authenticator");row.setGravity(Gravity.CENTER_VERTICAL);
+   ImageButton close=new ImageButton(c);close.setImageDrawable(new ToolbarIcon("back",ink,(int)(22*d)));close.setBackgroundColor(android.graphics.Color.TRANSPARENT);close.setContentDescription("Nascondi Authenticator in questo campo");close.setOnClickListener(v->dismiss.run());TouchFeedback.install(close);row.addView(close,new LinearLayout.LayoutParams((int)(44*d),(int)(48*d)));
+   TextView chip=new TextView(c);chip.setText(label);chip.setTextColor(ink);chip.setTextSize(14);chip.setMaxLines(1);chip.setHorizontallyScrolling(false);chip.setIncludeFontPadding(false);chip.setEllipsize(android.text.TextUtils.TruncateAt.END);chip.setGravity(Gravity.CENTER);chip.setPadding((int)(12*d),0,(int)(12*d),0);chip.setBackground(halo);chip.setCompoundDrawablesWithIntrinsicBounds(new ToolbarIcon("authenticator",ink,(int)(22*d)),null,null,null);chip.setCompoundDrawablePadding((int)(6*d));chip.setContentDescription("Apri "+label+" per copiare il codice");chip.setOnClickListener(v->open.run());TouchFeedback.install(chip);row.addView(chip,new LinearLayout.LayoutParams(0,(int)(44*d),1));
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/AuthenticatorSettings700.kt b/app/src/main/java/helium314/keyboard/keyforma/AuthenticatorSettings700.kt
+index 282a99a..81cde59 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/AuthenticatorSettings700.kt
++++ b/app/src/main/java/helium314/keyboard/keyforma/AuthenticatorSettings700.kt
+@@ -7,12 +7,13 @@ import androidx.compose.ui.platform.LocalContext
+  val c=LocalContext.current
+  val apps=remember { AuthenticatorBridge700.choices(c).entries.map{it.key to it.value} }
+  StudioCard{
+-  Toggle("Pillola Authenticator","authenticator_pill",true,"Compare nei campi riconosciuti per codici di verifica. Le pillole di Android e degli appunti mantengono la precedenza.")
++  Toggle("Pillola Authenticator","authenticator_pill",true,"Compare nei campi per codici e nei campi numerici protetti non descritti. Il pulsante a destra alterna Authenticator e gestore password; i codici già copiati hanno la precedenza.")
++  Toggle("Authenticator nei campi numerici non descritti","authenticator_numeric_fallback",true,"Offre l’alternativa nei campi numerici protetti o quando il gestore password invia una proposta. Non tratta ogni numero come codice e non inserisce nulla da solo.")
+   Choice("App Authenticator","authenticator_app",AuthenticatorBridge700.GOOGLE,apps)
+   Choice("Apertura Authenticator","authenticator_window","compact",listOf("compact" to "Finestra compatta · se supportata","normal" to "Apertura normale"))
+   Toggle("Authenticator anche in incognito","authenticator_private",true,"Mostra solo il collegamento all’app, senza leggere account o codici. L’inserimento dagli appunti segue le sue impostazioni separate.")
+   TextButton(onClick={AuthenticatorBridge700.open(c)}){Text("Prova apertura Authenticator")}
+   Note("Copia il codice nell’app e torna al campo: la pillola degli appunti lo rende disponibile. KeyAnt non legge né genera i codici di Google Authenticator. La finestra compatta è una richiesta ad Android: il sistema può aprire comunque l’app a schermo intero. Non viene incorporata nella tastiera.")
+-  Note("Se il sito non descrive il campo, il riconoscimento automatico può non riuscire. Puoi aggiungere Authenticator al menu ⋯ o alla barra in Organizza strumenti.")
++  Note("Un campo numerico protetto senza etichetta può essere un codice oppure una password: il collegamento non ne certifica il contenuto. I normali numeri, importi, PIN espliciti e CVV non attivano questa alternativa. Se l’app non fornisce indizi sufficienti, resta Authenticator nel menu ⋯.")
+  }
+ }
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/AutofillActions648.java b/app/src/main/java/helium314/keyboard/keyforma/AutofillActions648.java
+index 2783b11..7014990 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/AutofillActions648.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/AutofillActions648.java
+@@ -5,6 +5,8 @@ import android.graphics.Color;
+ import android.view.View;
+ import android.widget.ImageButton;
+ import android.widget.LinearLayout;
++import android.widget.FrameLayout;
++import android.view.ViewGroup;
+ import helium314.keyboard.latin.LatinIME;
+ import helium314.keyboard.latin.common.ColorType;
+ import helium314.keyboard.latin.settings.Settings;
+@@ -13,6 +15,37 @@ import helium314.keyboard.latin.settings.Settings;
+ public final class AutofillActions648 {
+     private AutofillActions648() {}
+ 
++    /** Preserve the provider's opaque surface; switch views, never inspect credentials.
++     * Both choices have the same two side targets, even on the numeric keyboard. */
++    public static View withAuthenticator(LatinIME ime, View provider, View authenticator) {
++        FrameLayout host = new FrameLayout(ime);
++        host.setTag("keyant-autofill");
++        final var editor = ime.getCurrentInputEditorInfo();
++        View wrapped = wrap(ime, provider);
++        ImageButton providerSwitch = (ImageButton)((ViewGroup)wrapped).getChildAt(2);
++        ImageButton authSwitch = (ImageButton)((ViewGroup)authenticator).getChildAt(2);
++        int ink = Settings.getValues().mColors.get(ColorType.KEY_TEXT);
++        int size = Math.round(21 * ime.getResources().getDisplayMetrics().density);
++        Runnable showAuth = () -> {
++            if (ime.getCurrentInputEditorInfo() != editor) return;
++            if ((!AuthenticatorBridge700.codeField(editor) && !KeyAntPrefs.bool(ime,"authenticator_numeric_fallback",true))
++                || !KeyAntPrefs.bool(ime,"authenticator_pill",true)
++                || ((Settings.getValues().mIncognitoModeEnabled || AuthenticatorBridge700.privateField(editor))
++                && !KeyAntPrefs.bool(ime,"authenticator_private",true))) return;
++            host.removeAllViews();host.addView(authenticator,new FrameLayout.LayoutParams(-1,-1));
++        };
++        authSwitch.setImageDrawable(new ToolbarIcon("password",ink,size));
++        authSwitch.setContentDescription("Mostra gestore password");
++        authSwitch.setTooltipText("Mostra gestore password");
++        authSwitch.setOnClickListener(v -> {if(ime.getCurrentInputEditorInfo()==editor){host.removeAllViews();host.addView(wrapped,new FrameLayout.LayoutParams(-1,-1));}});
++        providerSwitch.setImageDrawable(new ToolbarIcon("authenticator",ink,size));
++        providerSwitch.setContentDescription("Mostra Authenticator");
++        providerSwitch.setTooltipText("Mostra Authenticator");
++        providerSwitch.setOnClickListener(v -> showAuth.run());
++        host.addView(authenticator,new FrameLayout.LayoutParams(-1,-1));
++        return host;
++    }
++
+     public static View wrap(LatinIME ime, View suggestion) {
+         float density = ime.getResources().getDisplayMetrics().density;
+         int ink = Settings.getValues().mColors.get(ColorType.KEY_TEXT);
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/VoiceOptions.java b/app/src/main/java/helium314/keyboard/keyforma/VoiceOptions.java
+index 5728d07..1c13a42 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/VoiceOptions.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/VoiceOptions.java
+@@ -10,7 +10,7 @@ final class VoiceOptions {
+    if(KeyAntPrefs.bool(c,"voice_formatting",true))intent.putExtra(RecognizerIntent.EXTRA_ENABLE_FORMATTING,RecognizerIntent.FORMATTING_OPTIMIZE_QUALITY).putExtra(RecognizerIntent.EXTRA_HIDE_PARTIAL_TRAILING_PUNCTUATION,true);
+    intent.putStringArrayListExtra(RecognizerIntent.EXTRA_BIASING_STRINGS,sessionVocabulary(c));
+   }
+-  if(bilingual(c,language)){ArrayList<String> languages=new ArrayList<>(List.of("it-IT","en-US"));intent.putExtra(RecognizerIntent.EXTRA_ENABLE_LANGUAGE_DETECTION,true).putExtra(RecognizerIntent.EXTRA_ENABLE_LANGUAGE_SWITCH,RecognizerIntent.LANGUAGE_SWITCH_BALANCED).putStringArrayListExtra(RecognizerIntent.EXTRA_LANGUAGE_DETECTION_ALLOWED_LANGUAGES,languages).putStringArrayListExtra(RecognizerIntent.EXTRA_LANGUAGE_SWITCH_ALLOWED_LANGUAGES,languages);}
++  if(bilingual(c,language)){ArrayList<String> languages=new ArrayList<>(List.of("it-IT","en-US"));intent.putExtra(RecognizerIntent.EXTRA_ENABLE_LANGUAGE_DETECTION,true).putExtra(RecognizerIntent.EXTRA_ENABLE_LANGUAGE_SWITCH,RecognizerIntent.LANGUAGE_SWITCH_HIGH_PRECISION).putStringArrayListExtra(RecognizerIntent.EXTRA_LANGUAGE_DETECTION_ALLOWED_LANGUAGES,languages).putStringArrayListExtra(RecognizerIntent.EXTRA_LANGUAGE_SWITCH_ALLOWED_LANGUAGES,languages);}
+  }
+  static ArrayList<String> vocabulary(Context c){LinkedHashSet<String> words=new LinkedHashSet<>();for(String word:KeyAntPrefs.text(c,"voice_vocabulary","KeyAnt\nWhatsApp\nChatGPT").split("[\n,]")){word=word.trim();if(!word.isEmpty())words.add(word);}for(var entry:VoiceAliases.entries(c))words.add(entry.to());var settings=helium314.keyboard.latin.settings.Settings.getValues();
+   if(settings!=null && !settings.mIncognitoModeEnabled && settings.mUsePersonalizedDicts && !settings.mInputAttributes.mIsPasswordField && KeyAntPrefs.bool(c,"voice_learned_names",true)){
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/VoiceRepairs699.java b/app/src/main/java/helium314/keyboard/keyforma/VoiceRepairs699.java
+index 0c88dcc..e09bcb0 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/VoiceRepairs699.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/VoiceRepairs699.java
+@@ -4,8 +4,8 @@ import java.util.regex.*;
+ /** Optional deterministic repairs, only an explicit numeric/time correction, always previewed. */
+ public final class VoiceRepairs699 {
+  private static final String VALUE="(?:[0-9]+(?::[0-9]{2}|[.,][0-9]+)?|zero|uno|due|tre|quattro|cinque|sei|sette|otto|nove|dieci|undici|dodici|tredici|quattordici|quindici|sedici|diciassette|diciotto|diciannove|venti)";
+- private static final Pattern REPAIR=Pattern.compile("(?iu)(?<![\\p{L}\\p{N}_:.+-])("+VALUE+")[ ,]+(?:anzi|volevo dire|scusa intendevo)[ ,]+("+VALUE+")(?![\\p{L}\\p{N}_:.])".replace("\\\\","\\"));
+- private static final Pattern QUOTES=Pattern.compile("\"[^\"]*\"|«[^»]*»|“[^”]*”");
+- public static String apply(String text){StringBuilder out=new StringBuilder();Matcher quotes=QUOTES.matcher(text);int end=0;while(quotes.find()){out.append(fragment(text.substring(end,quotes.start()))).append(quotes.group());end=quotes.end();}return out.append(fragment(text.substring(end))).toString();}
+- private static String fragment(String text){return REPAIR.matcher(text).replaceAll("$2");}
++ private static final Pattern REPAIR=Pattern.compile("(?iu)(?<![\\p{L}\\p{N}_:.+-])("+VALUE+")[ ,]+(?:anzi(?:[ ,]+no)?|volevo dire|scusa[ ,]+intendevo|no[ ,]+(?:dicevo|intendevo))[ ,]+("+VALUE+")(?![\\p{L}\\p{N}_:.])".replace("\\\\","\\"));
++ private static final Pattern QUOTES=Pattern.compile("\"[^\"]*\"|«[^»]*»|“[^”]*”|`[^`]*`|https?://\\S+|www\\.\\S+|[\\w.+-]+@[\\w.-]+");
++ public static String apply(String text){if(text==null||text.length()>32000)return text;StringBuilder out=new StringBuilder();Matcher quotes=QUOTES.matcher(text);int end=0;while(quotes.find()){out.append(fragment(text.substring(end,quotes.start()))).append(quotes.group());end=quotes.end();}return out.append(fragment(text.substring(end))).toString();}
++ private static String fragment(String text){for(int n=0;n<8;n++){String next=REPAIR.matcher(text).replaceAll("$2");if(next.equals(text))break;text=next;}return text;}
+ }
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/VoiceSettings.kt b/app/src/main/java/helium314/keyboard/keyforma/VoiceSettings.kt
+index 34a6a1e..fcc5557 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/VoiceSettings.kt
++++ b/app/src/main/java/helium314/keyboard/keyforma/VoiceSettings.kt
+@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
+  if(section==0)StudioCard{
+   Choice("Lingue della dettatura","voice_language","auto",listOf("auto" to "Italiano + inglese · automatico","it-IT" to "Solo italiano","en-US" to "Solo inglese","current" to "Segue la lingua della tastiera"))
+   Toggle("Preferisci riconoscimento sul telefono","voice_local",true,"Usa i modelli locali disponibili. Altrimenti passa al servizio vocale di sistema.")
+-  Text("Per il cambio automatico servono entrambi i modelli e un servizio compatibile. Puoi richiederli qui.",Modifier.padding(16.dp),style=MaterialTheme.typography.bodySmall,color=MaterialTheme.colorScheme.onSurfaceVariant)
++  Text("Il cambio automatico richiede alta confidenza, per limitare i cambi accidentali durante esitazioni e inglesismi. Servono entrambi i modelli e un servizio compatibile. Puoi richiederli qui.",Modifier.padding(16.dp),style=MaterialTheme.typography.bodySmall,color=MaterialTheme.colorScheme.onSurfaceVariant)
+   Row(Modifier.fillMaxWidth().padding(horizontal=12.dp),horizontalArrangement=Arrangement.spacedBy(8.dp)){listOf("it-IT" to "Italiano","en-US" to "Inglese").forEach{(tag,title)->OutlinedButton(enabled=!busy,onClick={download?.close();busy=true;modelStatus="Richiesta al servizio…";download=VoiceModelDownload().also{it.start(c,tag){message,finished->modelStatus=message;busy=!finished}}},modifier=Modifier.weight(1f)){Text("Scarica $title")}}}
+   if(modelStatus.isNotEmpty())Text(modelStatus,Modifier.padding(16.dp),style=MaterialTheme.typography.bodySmall)
+  }
+@@ -39,8 +39,8 @@ import androidx.compose.ui.unit.dp
+  if(section==1)StudioCard{
+   Choice("Pulizia della dettatura","voice_cleanup","light",listOf("off" to "Originale · nessuna pulizia","light" to "Pulizia prudente · con anteprima","local" to "AI locale · con anteprima"))
+   Toggle("Ripensamenti temporali espliciti","voice_temporal_repairs",true,"Nella pulizia con anteprima: «adesso, anzi no, oggi» → «oggi». Mantiene l’originale; non interpreta qualsiasi «no» come cancellazione.")
+-  Toggle("Ripensamenti numerici espliciti","voice_explicit_repairs",false,"Durante la pulizia: «quattro, anzi cinque» → «cinque» e «14:30, volevo dire 15:30» → «15:30». Solo con anteprima; le citazioni e i semplici «no» restano intatti.")
+-  Note("Prudente: toglie ehm e ripetizioni brevi come «di di», uniforma le maiuscole comuni e ricuce interruzioni come «di. Caratteri». Conserva le enfasi come «molto molto» e le citazioni. L’AI locale può riconoscere anche false partenze; richiede il modello da 2,50 GB già scaricato. Nessun download automatico. Nell’anteprima puoi confrontare e inserire l’originale.")
++  Toggle("Ripensamenti numerici espliciti","voice_explicit_repairs",false,"Durante la pulizia: «quattro, anzi cinque» o «quattro, no, dicevo cinque» → «cinque» e «14:30, volevo dire 15:30» → «15:30». Solo con anteprima; le citazioni e i semplici «no» restano intatti.")
++  Note("Prudente: toglie ehm e ripetizioni brevi come «di di», ricuce ripartenze come «delle dei periodi» → «dei periodi», uniforma le maiuscole comuni e ricuce interruzioni come «di. Caratteri». Conserva le enfasi come «molto molto» e le citazioni. L’AI locale può riconoscere anche false partenze; richiede il modello da 2,50 GB già scaricato. Nessun download automatico. Nell’anteprima puoi confrontare e inserire l’originale.")
+   Note("La pulizia lavora sulla trascrizione. L’intonazione viene interpretata dal servizio vocale, non da queste regole. Numeri, nomi e significato vanno controllati prima di inserire una pulizia AI.")
+  }
+  if(section==2){StudioCard{
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/VoiceText700.java b/app/src/main/java/helium314/keyboard/keyforma/VoiceText700.java
+index 0066b9c..136ef84 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/VoiceText700.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/VoiceText700.java
+@@ -10,9 +10,10 @@ public final class VoiceText700 {
+  private static final Pattern WORD=Pattern.compile("[\\p{L}]+(?:[’'][\\p{L}]+)?");
+  private static final Pattern REPEAT=Pattern.compile("(?iu)\\b(di|a|da|in|con|su|per|tra|fra|il|lo|la|gli|le|un|una|che|cosa|come)(?:[ \\t]+\\1)+\\b");
+  private static final Pattern BROKEN=Pattern.compile("(?iu)\\b(di|del|della|delle|degli|dei|con|per|dello|allo|alla|nella|nelle|nel|sul|sulla|che)\\.[ \\t]+(?=\\p{L})");
++ private static final Pattern ARTICLE_RESTART=Pattern.compile("(?u)\\b(del|dello|della|dei|degli|delle)[ \\t]+((?!\\1\\b)(?:del|dello|della|dei|degli|delle))[ \\t]+(?=\\p{Ll})");
+  private static final String TIME="adesso|ora|oggi|ieri|domani|stasera|stamattina|stanotte";
+  private static final Pattern RETHINK=Pattern.compile("(?iu)\\b("+TIME+")[ ,]+anzi(?:[ ,]+no)?[ ,]+(?:(?:di|da|per)[ \\t]+)?("+TIME+")\\b");
+- private static final Set<String> COMMON=Set.of("io","tu","lui","lei","noi","voi","loro","non","no","si","sì","di","a","da","in","con","su","per","tra","fra","il","lo","la","gli","le","un","una","che","e","è","ma","o","se","come","cosa","quanto","quando","dove","perché","quindi","allora","ecco","anche","però","oppure","infatti","adesso","oggi","ieri","domani","anzi","bisogna","vediamo","capisce","capisci","diciamo","testo","frase","parole","caratteri","scrittura","vocale","scritto");
++ private static final Set<String> COMMON=Set.of("io","tu","lui","lei","noi","voi","loro","non","no","si","sì","di","a","da","in","con","su","per","tra","fra","il","lo","la","gli","le","un","una","che","e","è","ma","o","se","come","cosa","quanto","quando","dove","perché","quindi","allora","ecco","anche","però","oppure","infatti","adesso","oggi","ieri","domani","anzi","bisogna","vediamo","capisce","capisci","diciamo","testo","frase","parole","caratteri","scrittura","vocale","scritto","questo","questa","questi","queste","quello","quella","quelli","quelle","controlla","verifica","vedi","forse","meglio","sono","ho","hai","ha","abbiamo","avete","hanno");
+  private static BitSet protectedSpans(String value,List<Pattern> terms){BitSet bits=new BitSet(value.length());ArrayList<Pattern> all=new ArrayList<>(terms);all.add(LITERAL);for(Pattern p:all){Matcher m=p.matcher(value);while(m.find())bits.set(m.start(),m.end());}return bits;}
+  private static boolean protectedAt(BitSet bits,int start,int end){int n=bits.nextSetBit(start);return n>=0&&n<end;}
+  private static String replace(String value,Pattern pattern,int group,List<Pattern> terms,String suffix){BitSet bits=protectedSpans(value,terms);Matcher m=pattern.matcher(value);StringBuffer out=new StringBuffer();while(m.find())m.appendReplacement(out,Matcher.quoteReplacement(protectedAt(bits,m.start(),m.end())?m.group():m.group(group)+suffix));m.appendTail(out);return out.toString();}
+@@ -31,6 +32,7 @@ public final class VoiceText700 {
+  public static String clean(Context c,String text){
+   if(text==null||text.length()>32000)return text;var terms=VoiceOptions.protectedTerms(c,text);
+   String value=replace(text,REPEAT,1,terms,"");
++  value=replace(value,ARTICLE_RESTART,2,terms," ");
+   if(KeyAntPrefs.bool(c,"voice_temporal_repairs",true))value=replace(value,RETHINK,2,terms,"");
+   value=replace(value,BROKEN,1,terms," ");
+   return caseOnly(value,terms);
+diff --git a/app/src/main/java/helium314/keyboard/latin/LatinIME.java b/app/src/main/java/helium314/keyboard/latin/LatinIME.java
+index 0346243..ae8ef21 100644
+--- a/app/src/main/java/helium314/keyboard/latin/LatinIME.java
++++ b/app/src/main/java/helium314/keyboard/latin/LatinIME.java
+@@ -1364,7 +1364,10 @@ public class LatinIME extends InputMethodService implements
+         mHandler.cancelResumeSuggestions();
+ 
+         mInlineSuggestionsVisible=true;
+-        mSuggestionStripView.setExternalSuggestionView(helium314.keyboard.keyforma.AutofillActions648.wrap(this,inlineSuggestionView), false);
++        final View auth = mAuthenticator700.suggestion(this,true);
++        mSuggestionStripView.setExternalSuggestionView(auth == null
++                ? helium314.keyboard.keyforma.AutofillActions648.wrap(this,inlineSuggestionView)
++                : helium314.keyboard.keyforma.AutofillActions648.withAuthenticator(this,inlineSuggestionView,auth), false);
+ 
+         return true;
+     }
+@@ -1829,7 +1832,11 @@ public class LatinIME extends InputMethodService implements
+             return;
+         }
+         View authenticatorChip=mAuthenticator700.suggestion(this);
+-        if(authenticatorChip!=null&&hasSuggestionStripView()){mSuggestionStripView.setExternalSuggestionView(authenticatorChip,false);return;}
++        if(authenticatorChip!=null&&hasSuggestionStripView()){
++            View password = helium314.keyboard.keyforma.SafeInCloudBridge.suggestion(this);
++            mSuggestionStripView.setExternalSuggestionView(password==null?authenticatorChip:
++                helium314.keyboard.keyforma.AutofillActions648.withAuthenticator(this,password,authenticatorChip),false);return;
++        }
+         if(mTypingBar.writing()) {
+             setSuggestedWords(SuggestedWords.getEmptyInstance());
+             return;
+diff --git a/app/src/main/java/helium314/keyboard/latin/suggestions/SuggestionStripView.kt b/app/src/main/java/helium314/keyboard/latin/suggestions/SuggestionStripView.kt
+index c8cdecb..7708150 100644
+--- a/app/src/main/java/helium314/keyboard/latin/suggestions/SuggestionStripView.kt
++++ b/app/src/main/java/helium314/keyboard/latin/suggestions/SuggestionStripView.kt
+@@ -231,7 +231,7 @@ class SuggestionStripView(context: Context, attrs: AttributeSet?, defStyle: Int)
+ 
+     fun setToolbarVisibility(toolbarVisible: Boolean) {
+         if(toolbarVisible && !helium314.keyboard.keyforma.KeyAntPrefs.bool(context,"toolbar",true))updateRightCommand(false)
+-        if(!helium314.keyboard.keyforma.ToolbarVisibility.enabled(context)){pinnedKeys.isVisible=false;suggestionsStrip.isVisible=true;toolbarContainer.isVisible=false;toolbarExpandKey.isVisible=false;return}
++        if(keyAntFullWidth || !helium314.keyboard.keyforma.ToolbarVisibility.enabled(context)){pinnedKeys.isVisible=false;suggestionsStrip.isVisible=true;toolbarContainer.isVisible=false;toolbarExpandKey.isVisible=false;return}
+         if (helium314.keyboard.keyforma.KeyAntPrefs.bool(context, "toolbar", true)) {
+             pinnedKeys.isVisible = false
+             suggestionsStrip.isVisible = true
+@@ -649,7 +649,7 @@ class SuggestionStripView(context: Context, attrs: AttributeSet?, defStyle: Int)
+         offerPill(null, false)
+         isExternalSuggestionVisible = true
+         keyAntToolsVisible = view?.tag == "keyant-tools"
+-        keyAntFullWidth = view is helium314.keyboard.keyforma.PastePill || (view?.tag == "keyant-panel-header" || view?.tag == "keyant-selected-gif" || view?.tag == "keyant-language-pill" || view?.tag == "keyant-autofill")
++        keyAntFullWidth = view is helium314.keyboard.keyforma.PastePill || (view?.tag == "keyant-panel-header" || view?.tag == "keyant-selected-gif" || view?.tag == "keyant-language-pill" || view?.tag == "keyant-autofill" || view?.tag == "keyant-authenticator")
+ 
+         if (addCloseButton) {
+             val wrapper = LinearLayout(context)
+@@ -671,7 +671,7 @@ class SuggestionStripView(context: Context, attrs: AttributeSet?, defStyle: Int)
+             suggestionsStrip.addView(view, LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT))
+         }
+ 
+-        if (Settings.getValues().mAutoHideToolbar || helium314.keyboard.keyforma.KeyAntPrefs.bool(context,"toolbar",true)) setToolbarVisibility(false)
++        if (keyAntFullWidth || Settings.getValues().mAutoHideToolbar || helium314.keyboard.keyforma.KeyAntPrefs.bool(context,"toolbar",true)) setToolbarVisibility(false)
+     }
+ 
+     fun setMoreSuggestionsHeight(remainingHeight: Int) {
+diff --git a/app/src/main/java/helium314/keyboard/latin/utils/InlineAutofillUtils.java b/app/src/main/java/helium314/keyboard/latin/utils/InlineAutofillUtils.java
+index a3fb471..8cd213a 100644
+--- a/app/src/main/java/helium314/keyboard/latin/utils/InlineAutofillUtils.java
++++ b/app/src/main/java/helium314/keyboard/latin/utils/InlineAutofillUtils.java
+@@ -120,8 +120,9 @@ public class InlineAutofillUtils {
+         inlineSuggestionView.addView(container,new FrameLayout.LayoutParams(-2,-1));
+         InlineContentClipView scrollableSuggestionsClip = new InlineContentClipView(context);
+         scrollableSuggestionsClip.setTag("keyant-autofill");
+-        // Balance the close button on the opposite side of the suggestion strip.
+-        scrollableSuggestionsClip.setPadding(Math.round(40*d),0,0,0);
++        // AutofillActions648 already reserves equal touch targets on both sides.
++        // An old one-sided close-button compensation shifted the provider 20 dp right.
++        scrollableSuggestionsClip.setPadding(0,0,0,0);
+         scrollableSuggestionsClip.addView(inlineSuggestionView,new FrameLayout.LayoutParams(-1,-1));
+         return scrollableSuggestionsClip;
+     }
+@@ -184,4 +185,4 @@ public class InlineAutofillUtils {
+             }
+         }
+     }
+-}
+\ No newline at end of file
++}
+diff --git a/app/src/test/java/helium314/keyboard/keyforma/KeyAnt701Test.kt b/app/src/test/java/helium314/keyboard/keyforma/KeyAnt701Test.kt
+new file mode 100644
+index 0000000..b10f13a
+--- /dev/null
++++ b/app/src/test/java/helium314/keyboard/keyforma/KeyAnt701Test.kt
+@@ -0,0 +1,176 @@
++// SPDX-License-Identifier: GPL-3.0-only
++package helium314.keyboard.keyforma
++
++import android.content.*
++import android.content.pm.*
++import android.graphics.*
++import android.view.*
++import android.view.inputmethod.*
++import android.widget.*
++import android.text.InputType
++import helium314.keyboard.latin.LatinIME
++import helium314.keyboard.latin.R
++import helium314.keyboard.latin.settings.Settings
++import helium314.keyboard.latin.suggestions.SuggestionStripView
++import helium314.keyboard.latin.utils.InlineAutofillUtils
++import org.junit.*
++import org.junit.Assert.*
++import org.junit.runner.RunWith
++import org.mockito.Mockito.*
++import org.robolectric.*
++import org.robolectric.annotation.*
++import org.robolectric.util.ReflectionHelpers
++
++@RunWith(RobolectricTestRunner::class)
++@Config(sdk=[35],qualifiers="w400dp-h900dp-port-mdpi",shadows=[helium314.keyboard.ShadowInputMethodManager2::class])
++@GraphicsMode(GraphicsMode.Mode.NATIVE)
++class KeyAnt701Test {
++ lateinit var c:Context;lateinit var ime:LatinIME
++ @Before fun setup(){c=RuntimeEnvironment.getApplication();KeyAntPrefs.get(c).edit().clear().putBoolean("ka_053_defaults",true).putBoolean(Settings.PREF_THEME_DAY_NIGHT,false).putString(Settings.PREF_THEME_COLORS,ThemeCatalog.preference("ref91_nuphy",true)).apply();ime=Robolectric.setupService(LatinIME::class.java)}
++ @After fun close(){ime.onDestroy()}
++ private fun field(hint:String?=null,type:Int=InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_VARIATION_PASSWORD)=EditorInfo().apply{inputType=type;hintText=hint;packageName="test.checkout"}
++ private fun install(pkg:String){val info=ResolveInfo().apply{activityInfo=ActivityInfo().apply{packageName=pkg;name="$pkg.Main";applicationInfo=ApplicationInfo().apply{packageName=pkg}}};Shadows.shadowOf(c.packageManager).addResolveInfoForIntent(Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER).setPackage(pkg),info)}
++ private fun service(e:EditorInfo):LatinIME=spy(ime).also{doReturn(e).`when`(it).currentInputEditorInfo;doNothing().`when`(it).showKeyAntTools()}
++ private fun caption():TextView=TextView(c).apply{text="SafeInCloud";textSize=15f;setTextColor(Settings.getValues().mColors.get(helium314.keyboard.latin.common.ColorType.KEY_TEXT));gravity=Gravity.CENTER;setPadding(12,0,12,0);background=android.graphics.drawable.GradientDrawable().apply{setColor(0xff45414f.toInt());cornerRadius=20f}}
++ private fun provider():Pair<View,TextView>{
++  val root=InlineAutofillUtils.createView(emptyList(),c)
++  val scroll=root.getChildAt(root.childCount-1) as HorizontalScrollView
++  val row=scroll.getChildAt(0) as LinearLayout
++  val label=caption();row.addView(label,LinearLayout.LayoutParams(158,40))
++  return root to label
++ }
++ private fun bounds(root:ViewGroup,v:View):Rect=Rect().also{v.getDrawingRect(it);root.offsetDescendantRectToMyCoords(v,it)}
++ private fun strip(service:LatinIME):SuggestionStripView{
++  val input=service.onCreateInputView();service.setInputView(input)
++  val strip=input.findViewById<SuggestionStripView>(R.id.suggestion_strip_view)
++  strip.visibility=View.VISIBLE;strip.setListener(mock(SuggestionStripView.Listener::class.java),input)
++  return strip
++ }
++ @Test fun numericProtectedFallbackDoesNotPretendToRecognizeAnOtp(){
++  for(hint in listOf(null,"","•","1","Security code","Codice di sicurezza","Digit 1 of 6","Inserisci il codice","Enter security code")){
++   val e=field(hint);assertTrue("hint=$hint",AuthenticatorBridge700.numericSecret(e));assertFalse(AuthenticatorBridge700.codeField(e));assertEquals("123 456",CopiedCode.forEditor("123 456",e))
++  }
++  for(hint in listOf("PIN","PIN della carta","CVV","CVC","Codice fiscale","Peso kg","Ripetizioni","Importo","Card number"))assertFalse(hint,AuthenticatorBridge700.numericSecret(field(hint)))
++  for(type in listOf(InputType.TYPE_CLASS_NUMBER,InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD,InputType.TYPE_CLASS_PHONE,InputType.TYPE_NULL))assertFalse(AuthenticatorBridge700.numericSecret(field(null,type)))
++ }
++ @Test fun namedSegmentedOtpFieldsAreRecognizedWithoutAppSpecificRules(){
++  for(name in listOf("OTPCode","otpDigit1","verificationCode","authentication_code")){
++   val e=field(null,InputType.TYPE_CLASS_NUMBER);e.fieldName=name;assertTrue(name,AuthenticatorBridge700.codeField(e))
++  }
++ }
++ @Test fun fallbackPillHonorsPrivateOffAndInstalledApp(){
++  val s=service(field());val b=AuthenticatorBridge700();assertNull(b.suggestion(s));install(AuthenticatorBridge700.GOOGLE)
++  // A new bridge avoids the deliberate 30-second package cache.
++  val ready=AuthenticatorBridge700();assertNotNull(ready.suggestion(s));KeyAntPrefs.get(c).edit().putBoolean("ka_authenticator_private",false).apply();assertNull(ready.suggestion(s));KeyAntPrefs.get(c).edit().putBoolean("ka_authenticator_private",true).putBoolean("ka_authenticator_pill",false).apply();assertNull(ready.suggestion(s))
++ }
++ @Test fun inlineResponseOffersAuthenticatorAndRetainsProviderSwitch(){
++  install(AuthenticatorBridge700.GOOGLE);val s=service(field());val strip=strip(s)
++  val suggestion=mock(InlineSuggestion::class.java)
++  val response=mock(InlineSuggestionsResponse::class.java);`when`(response.inlineSuggestions).thenReturn(listOf(suggestion))
++  assertTrue(s.onInlineSuggestionsResponse(response));KeyAntV42Test.layout(strip,400,52)
++  val inner=strip.findViewById<ViewGroup>(R.id.suggestions_strip);val host=inner.getChildAt(0) as FrameLayout
++  val auth=host.getChildAt(0) as ViewGroup;assertEquals("keyant-authenticator",auth.tag)
++  assertEquals("Google Authenticator",(auth.getChildAt(1) as TextView).text.toString())
++  auth.getChildAt(2).performClick();val passwords=host.getChildAt(0) as ViewGroup;assertEquals("Mostra Authenticator",passwords.getChildAt(2).contentDescription)
++  passwords.getChildAt(2).performClick();assertSame(auth,host.getChildAt(0))
++ }
++ @Test fun ordinaryPasswordInlineIsNotReplacedByAuthenticator(){
++  install(AuthenticatorBridge700.GOOGLE);val s=service(field("Password",InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD));val strip=strip(s)
++  val response=mock(InlineSuggestionsResponse::class.java);`when`(response.inlineSuggestions).thenReturn(listOf(mock(InlineSuggestion::class.java)))
++  assertTrue(s.onInlineSuggestionsResponse(response));val inner=strip.findViewById<ViewGroup>(R.id.suggestions_strip);assertTrue(inner.getChildAt(0) is LinearLayout)
++ }
++ @Test fun providerSwitchCannotReactivateAfterFieldChangeOrPrivacyOptOut(){
++  install(AuthenticatorBridge700.GOOGLE);val e=field();val s=service(e);val auth=AuthenticatorBridge700().suggestion(s)!!
++  val host=AutofillActions648.withAuthenticator(s,caption(),auth) as FrameLayout
++  (auth as ViewGroup).getChildAt(2).performClick();val provider=host.getChildAt(0) as ViewGroup
++  KeyAntPrefs.get(c).edit().putBoolean("ka_authenticator_private",false).apply();provider.getChildAt(2).performClick();assertSame(provider,host.getChildAt(0))
++  KeyAntPrefs.get(c).edit().putBoolean("ka_authenticator_private",true).apply();doReturn(field("Peso",InputType.TYPE_CLASS_NUMBER)).`when`(s).currentInputEditorInfo;provider.getChildAt(2).performClick();assertSame(provider,host.getChildAt(0))
++ }
++ @Test fun fullStripCentersBothPillsOnNarrowWideAndRtlLayouts(){
++  val s=service(field());val strip=strip(s)
++  for(dark in listOf(false,true))for(width in listOf(320,400,700,900))for(rtl in listOf(false,true)){
++   KeyAntPrefs.get(c).edit().putString(Settings.PREF_THEME_COLORS,ThemeCatalog.preference("ref91_nuphy",dark)).apply();Settings.getInstance().loadSettings(c)
++   Settings.getValues().mColors.setBackground(strip,helium314.keyboard.latin.common.ColorType.STRIP_BACKGROUND)
++   strip.layoutDirection=if(rtl)View.LAYOUT_DIRECTION_RTL else View.LAYOUT_DIRECTION_LTR
++   val (view,label)=provider();val wrapped=AutofillActions648.wrap(s,view)
++   strip.setExternalSuggestionView(wrapped,false);KeyAntV42Test.layout(strip,width,52)
++   val rect=bounds(strip,label);assertEquals("provider $width/$dark/$rtl",width/2f,rect.exactCenterX(),1f)
++   val auth=AuthenticatorBridge700.pill(c,"Google Authenticator",{},{},{}) as ViewGroup
++   strip.setExternalSuggestionView(auth,false);KeyAntV42Test.layout(strip,width,52)
++   assertEquals("auth $width/$dark/$rtl",width/2f,bounds(strip,auth.getChildAt(1)).exactCenterX(),1f)
++   assertEquals(View.GONE,strip.findViewById<View>(R.id.suggestions_strip_toolbar_key).visibility)
++   if(!rtl){KeyAntV42Test.save(KeyAntV63Test.render(strip,width,52),"KeyAnt-701-auth-strip-$width-$dark.png")}
++  }
++ }
++ @Test fun oldPaddingReproducesReportedShiftAndNewHostRemovesIt(){
++  val s=service(field())
++  for(width in listOf(320,400,700)){
++   val (fixed,label)=provider();val wrapped=AutofillActions648.wrap(s,fixed) as ViewGroup
++   KeyAntV42Test.layout(wrapped,width,52);assertEquals(width/2f,bounds(wrapped,label).exactCenterX(),1f)
++   val sheet=Bitmap.createBitmap(width,104,Bitmap.Config.ARGB_8888);val canvas=Canvas(sheet);canvas.drawColor(0xff121215.toInt())
++   fixed.setPadding(40,0,0,0);KeyAntV42Test.layout(wrapped,width,52);assertEquals(width/2f+20,bounds(wrapped,label).exactCenterX(),1f);wrapped.draw(canvas)
++   fixed.setPadding(0,0,0,0);KeyAntV42Test.layout(wrapped,width,52);canvas.translate(0f,52f);wrapped.draw(canvas)
++   KeyAntV42Test.save(sheet,"KeyAnt-701-provider-before-after-$width.png")
++  }
++ }
++ @Test fun correctionHandlesObservedCommonCaseAndArticleRestartWithoutInventingWords(){
++  val raw="sto facendo un altro test con con il mio linguaggio. Ecco vediamo come come elabora. se noterai degli errori Quelle sono le cose che Non vanno. Ho messo delle dei periodi. Controlla tutto"
++  assertEquals("Sto facendo un altro test con il mio linguaggio. Ecco vediamo come elabora. Se noterai degli errori quelle sono le cose che non vanno. Ho messo dei periodi. Controlla tutto",VoiceCleanup.light(c,raw))
++  assertEquals("Dico quattro nodi dicevo cinque MA forse meglio sei a Q. Alle 17 e un quarto",VoiceCleanup.light(c,"dico quattro nodi dicevo cinque MA forse meglio sei a Q. alle 17 e un quarto"))
++ }
++ @Test fun numericalRepairsRequireUnambiguousMarkersAndProtectLiterals(){
++  for(s in listOf("quattro, no, dicevo cinque","quattro, anzi no, cinque","quattro, scusa, intendevo cinque"))assertEquals("cinque",VoiceRepairs699.apply(s))
++  assertEquals("sei",VoiceRepairs699.apply("quattro, anzi cinque, anzi sei"))
++  for(s in listOf("quattro nodi dicevo cinque","quattro no cinque","quattro ma forse meglio sei","quattro o cinque","alle 17 e un quarto","`quattro anzi cinque`","«quattro, no, dicevo cinque»","https://example.org/quattro,anzi,cinque","MA è la sigla","non pago 12 euro"))assertEquals(s,VoiceRepairs699.apply(s))
++ }
++ @Test fun personalNamesAndQuotesAreNotConsumedByRestartCleanup(){
++  assertEquals("Il canto dei dei greci",VoiceCleanup.light(c,"Il canto dei dei greci"))
++  val text="Leggo «delle dei periodi» e `delle dei periodi`; vedo Quelle domani."
++  PersonalWords.put(c,"nome701","Quelle");try{assertEquals(text,VoiceCleanup.light(c,text))}finally{PersonalWords.remove(c,"nome701")}
++ }
++ @Test fun antExplainsPasswordAlternativeAndSettingsRemainSearchable(){
++  val answer=AntControls700.guide("come funziona authenticator")!!;assertTrue(answer.toString().contains("gestore password"));assertNotNull(AntControls700.guide("ripensamenti"))
++ }
++ @Test fun unlabelledPlainNumericGetsAlternativeOnlyWhenProviderActuallyResponds(){
++  install(AuthenticatorBridge700.GOOGLE);val e=field(null,InputType.TYPE_CLASS_NUMBER);val host=service(e);val b=AuthenticatorBridge700()
++  assertNull(b.suggestion(host));assertNotNull(b.suggestion(host,true))
++  KeyAntPrefs.get(c).edit().putBoolean("ka_authenticator_numeric_fallback",false).apply();assertNull(b.suggestion(host,true))
++  e.hintText="Codice di verifica";assertNotNull(b.suggestion(host,true))
++  KeyAntPrefs.get(c).edit().putBoolean("ka_authenticator_numeric_fallback",true).apply()
++  for(hint in listOf("Peso","Importo","CVV","PIN")){e.hintText=hint;assertNull(b.suggestion(host,true))}
++  e.hintText=null;e.inputType=InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL;assertNull(b.suggestion(host,true))
++ }
++ @Test fun antCanDisableOnlyUnlabelledNumericFallback(){
++  val turn=AntDialog.submit(c,"dove trovo Authenticator nei campi numerici non descritti",emptyList())
++  assertEquals("Authenticator nei campi numerici non descritti",turn.target)
++  AntDialog.submit(c,"disattivala",listOf(turn.encode()))
++  assertFalse(KeyAntPrefs.bool(c,"authenticator_numeric_fallback",true));assertTrue(KeyAntPrefs.bool(c,"authenticator_pill",true))
++ }
++ @Test fun nativeNumericKeyboardAndPillShareCenterAtEachScreenWidth(){
++  val s=service(field());val input=s.onCreateInputView();s.setInputView(input)
++  val keyboard=input.findViewById<helium314.keyboard.keyboard.MainKeyboardView>(R.id.keyboard_view)
++  val strip=input.findViewById<SuggestionStripView>(R.id.suggestion_strip_view);strip.visibility=View.VISIBLE;strip.setListener(mock(SuggestionStripView.Listener::class.java),input)
++  for((profile,width) in listOf("compact_portrait" to 360,"compact_landscape" to 800,"wide_portrait" to 700,"wide_landscape" to 1000))for(dark in listOf(false,true)){
++   KeyAntPrefs.get(c).edit().putBoolean("ka_theme_motion",false).putString(Settings.PREF_THEME_COLORS,ThemeCatalog.preference("ref91_nuphy",dark)).apply();Settings.getInstance().loadSettings(c);helium314.keyboard.keyboard.KeyboardLayoutSet.onKeyboardThemeChanged()
++   val k=helium314.keyboard.keyboard.KeyboardLayoutSet.Builder(s,field()).forPreview("ref91_nuphy").forDimensions(profile).setKeyboardGeometry(width,240).setSubtype(helium314.keyboard.latin.RichInputMethodManager.getInstance().currentSubtype).build().getKeyboard(helium314.keyboard.keyboard.KeyboardId.ELEMENT_NUMBER)
++   Settings.getValues().mColors.setBackground(strip,helium314.keyboard.latin.common.ColorType.STRIP_BACKGROUND)
++   keyboard.setKeyboard(k);keyboard.finishLayoutMotion();KeyAntV42Test.layout(keyboard,width,k.mOccupiedHeight)
++   val pill=AuthenticatorBridge700.pill(c,"Google Authenticator",{},{},{}) as ViewGroup;strip.setExternalSuggestionView(AutofillActions648.withAuthenticator(s,caption(),pill),false);KeyAntV42Test.layout(strip,width,52)
++   assertEquals(width/2f,bounds(strip,pill.getChildAt(1)).exactCenterX(),1f)
++   val image=Bitmap.createBitmap(width,52+k.mOccupiedHeight,Bitmap.Config.ARGB_8888);val out=Canvas(image);out.drawColor(Settings.getValues().mColors.get(helium314.keyboard.latin.common.ColorType.MAIN_BACKGROUND));strip.draw(out);out.translate(0f,52f);keyboard.draw(out)
++   KeyAntV42Test.save(image,"KeyAnt-701-numeric-$profile-$dark.png")
++  }
++ }
++
++ @Test fun switchingBackRestartsGlowOnlyWhileAttached(){
++  install(AuthenticatorBridge700.GOOGLE);val s=service(field());val auth=AuthenticatorBridge700().suggestion(s) as ViewGroup
++  val halo=auth.getChildAt(1).background as PastePill.Halo
++  Robolectric.buildActivity(android.app.Activity::class.java).setup().visible().use{a->
++   val host=AutofillActions648.withAuthenticator(s,caption(),auth) as FrameLayout;a.get().setContentView(host);KeyAntV42Test.layout(host,400,52)
++   assertTrue(halo.active);auth.getChildAt(2).performClick();assertFalse(halo.active)
++   (host.getChildAt(0) as ViewGroup).getChildAt(2).performClick();assertTrue(halo.active)
++   (host.parent as ViewGroup).removeView(host);assertFalse(halo.active)
++  }
++ }
++
++}
+diff --git a/app/src/test/java/helium314/keyboard/keyforma/KeyAntV68Test.java b/app/src/test/java/helium314/keyboard/keyforma/KeyAntV68Test.java
+index 0979ccb..1d78e21 100644
+--- a/app/src/test/java/helium314/keyboard/keyforma/KeyAntV68Test.java
++++ b/app/src/test/java/helium314/keyboard/keyforma/KeyAntV68Test.java
+@@ -24,7 +24,7 @@ public class KeyAntV68Test {
+  }
+  @Test public void unifiedWorksWithOriginallyOpaqueBaseAndFullRange(){var p=KeyAntPrefs.get(c);assertFalse(KeyboardBackdrop.surface(c));UnifiedTransparency.setEnabled(c,true);assertTrue(KeyboardBackdrop.surface(c));for(int v:new int[]{0,1,65,99,100}){p.edit().putInt("ka_unified_opacity",v).apply();assertEquals(v,UnifiedTransparency.surfaceOpacity(c));assertEquals(v,NavigationSurface.opacity(c));}UnifiedTransparency.setEnabled(c,false);assertFalse(KeyboardBackdrop.surface(c));assertEquals(100,NavigationSurface.opacity(c));}
+  @Test public void newShellsKeepGeometryReadableLabelsAndAllOldIds()throws Exception{
+-  assertEquals(307,ThemeCatalog.IDS.length);assertEquals(307,new java.util.HashSet<>(java.util.List.of(ThemeCatalog.IDS)).size());Bitmap sheet=Bitmap.createBitmap(1040,920,Bitmap.Config.ARGB_8888);Canvas out=new Canvas(sheet);out.drawColor(0xff171720);Paint p=new Paint(3);p.setColor(Color.WHITE);p.setTextSize(20);
++  assertTrue(ThemeCatalog.IDS.length>=307);assertEquals(ThemeCatalog.IDS.length,new java.util.HashSet<>(java.util.List.of(ThemeCatalog.IDS)).size());Bitmap sheet=Bitmap.createBitmap(1040,920,Bitmap.Config.ARGB_8888);Canvas out=new Canvas(sheet);out.drawColor(0xff171720);Paint p=new Paint(3);p.setColor(Color.WHITE);p.setTextSize(20);
+   String[] ids={"xbox_clear","shell_grape","shell_obsidian","shell_tangerine","shell_bondi","shell_blueberry","shell_ruby"};int i=0;
+   for(String id:ids){assertEquals("Plastica traslucida",ThemeCatalog.collection(id));assertEquals(id,ThemeCatalog.profile(ThemeCatalog.preference(id,true)));for(int k=0;k<6;k++){assertEquals(CapGeometry.depth("xbox_clear",40,54,k),CapGeometry.depth(id,40,54,k),0);assertTrue(androidx.core.graphics.ColorUtils.calculateContrast(ThemeCatalog.ink(id,true,k),ThemeCatalog.face(id,true,k))>=4.5);}
+    CapPreview preview=new CapPreview(c,true,id).gallery();Bitmap b=KeyAntV63Test.render(preview,500,184);out.drawText(ThemeCatalog.NAMES[java.util.Arrays.asList(ThemeCatalog.IDS).indexOf(id)],10+i%2*520,24+i/2*230,p);out.drawBitmap(b,10+i%2*520,34+i/2*230,null);i++;
+@@ -35,7 +35,7 @@ public class KeyAntV68Test {
+   for(int i=0;i<ids.length;i++){KeyAntV42Test.save(AnimeOrbs.create(ids[i]),"orb-map-"+ids[i]+".png");BallAppearance ball=new BallAppearance();ball.skin(ids[i]);assertNotNull(BallMaps.load(c,ids[i]));out.drawText(ids[i],10,i*170+20,p);Bitmap first=null;for(int j=0;j<4;j++){Bitmap b=Bitmap.createBitmap(150,150,Bitmap.Config.ARGB_8888);ball.draw(new Canvas(b),c,75,75,66,10,j*50,false,Color.WHITE);assertEquals(255,Color.alpha(b.getPixel(75,75)));if(j==0)first=b;else if(j==1)assertFalse(first.sameAs(b));out.drawBitmap(b,200+j*160,i*170+12,null);}}
+   KeyAntV42Test.save(sheet,"KeyAnt-068-sfere.png");
+  }
+- @Test public void bilingualRecognitionRequestsBothModelsWithoutTranslating(){Intent i=PillVoice.recognitionIntent(c,"it-IT");assertEquals("it-IT",i.getStringExtra(RecognizerIntent.EXTRA_LANGUAGE));assertEquals(RecognizerIntent.LANGUAGE_SWITCH_BALANCED,i.getStringExtra(RecognizerIntent.EXTRA_ENABLE_LANGUAGE_SWITCH));assertEquals(java.util.List.of("it-IT","en-US"),i.getStringArrayListExtra(RecognizerIntent.EXTRA_LANGUAGE_SWITCH_ALLOWED_LANGUAGES));assertEquals(RecognizerIntent.FORMATTING_OPTIMIZE_QUALITY,i.getStringExtra(RecognizerIntent.EXTRA_ENABLE_FORMATTING));KeyAntPrefs.get(c).edit().putString("ka_voice_language","en-US").putBoolean("ka_voice_formatting",false).apply();i=PillVoice.recognitionIntent(c,"it");assertEquals("en-US",i.getStringExtra(RecognizerIntent.EXTRA_LANGUAGE));assertFalse(i.hasExtra(RecognizerIntent.EXTRA_ENABLE_LANGUAGE_SWITCH));assertFalse(i.hasExtra(RecognizerIntent.EXTRA_ENABLE_FORMATTING));}
++ @Test public void bilingualRecognitionRequestsBothModelsWithoutTranslating(){Intent i=PillVoice.recognitionIntent(c,"it-IT");assertEquals("it-IT",i.getStringExtra(RecognizerIntent.EXTRA_LANGUAGE));assertEquals(RecognizerIntent.LANGUAGE_SWITCH_HIGH_PRECISION,i.getStringExtra(RecognizerIntent.EXTRA_ENABLE_LANGUAGE_SWITCH));assertEquals(java.util.List.of("it-IT","en-US"),i.getStringArrayListExtra(RecognizerIntent.EXTRA_LANGUAGE_SWITCH_ALLOWED_LANGUAGES));assertEquals(RecognizerIntent.FORMATTING_OPTIMIZE_QUALITY,i.getStringExtra(RecognizerIntent.EXTRA_ENABLE_FORMATTING));KeyAntPrefs.get(c).edit().putString("ka_voice_language","en-US").putBoolean("ka_voice_formatting",false).apply();i=PillVoice.recognitionIntent(c,"it");assertEquals("en-US",i.getStringExtra(RecognizerIntent.EXTRA_LANGUAGE));assertFalse(i.hasExtra(RecognizerIntent.EXTRA_ENABLE_LANGUAGE_SWITCH));assertFalse(i.hasExtra(RecognizerIntent.EXTRA_ENABLE_FORMATTING));}
+  @Test @Config(sdk=33) public void unsupportedAndroidDoesNotRequestLanguageSwitch(){Intent i=PillVoice.recognitionIntent(c,"it");assertFalse(i.hasExtra("android.speech.extra.ENABLE_LANGUAGE_SWITCH"));assertEquals("it-IT",i.getStringExtra(RecognizerIntent.EXTRA_LANGUAGE));}
+  @Test public void voiceCommandsAndNamesRespectOrdinarySpeech(){assertEquals("Aspetta… forse; vediamo?",VoiceWriting.format("Aspetta tre puntini forse inserisci punto e virgola vediamo punto interrogativo","it",true,true));assertEquals("Are you ready? Let's go…",VoiceWriting.format("Are you ready question mark Let's go ellipsis","en-US",true,true));assertEquals("la virgola è importante",VoiceWriting.format("la virgola è importante","it",true,true));KeyAntPrefs.get(c).edit().putString("ka_voice_vocabulary","Haikyuu\nChatGPT\nCillian Murphy").apply();assertEquals("Guardo Haikyuu e Cillian Murphy; chatgptiano resta così",VoiceOptions.spelling(c,"Guardo haikyuu e cillian murphy; chatgptiano resta così"));assertEquals("non riscrivere nulla",VoiceWriting.format("non riscrivere nulla","it",false,true));}
+  @Test public void missingBilingualModelsFallbackOnceAndIgnoreOldCallbacks(){
+diff --git a/gradle/keyant-0701.gradle b/gradle/keyant-0701.gradle
+new file mode 100644
+index 0000000..16fbc7d
+--- /dev/null
++++ b/gradle/keyant-0701.gradle
+@@ -0,0 +1,11 @@
++allprojects {
++ tasks.withType(Test).configureEach {
++  def chosen=(project.findProperty('keyantTestClasses') ?: 'KeyAnt701Test,KeyAntV68Test,KeyAntPrivate669Test,KeyAntV613Test,KeyAnt700Test,KeyAntUi700Test,KeyAnt699Test,KeyAntV630Test,KeyAntCorrection641Test,KeyAntWriting670Test,KeyAntV69Test,KeyAntV610Test').toString().split(',')
++  setIncludes(chosen.collect { '**/'+it+'.class' })
++  maxHeapSize='900m'
++  maxParallelForks=1
++  forkEvery=1
++  systemProperty 'robolectric.dependency.repo.url', 'https://repo.maven.apache.org/maven2'
++  testLogging { events 'passed','failed','skipped'; exceptionFormat 'full'; showStandardStreams=false }
++ }
++}

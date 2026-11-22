@@ -1,0 +1,559 @@
+diff --git a/AGENTS.md b/AGENTS.md
+index cea6fc7..d7b6dce 100644
+--- a/AGENTS.md
++++ b/AGENTS.md
+@@ -35,3 +35,6 @@
+ - Le pillole di accesso hanno comandi laterali simmetrici: non aggiungere padding solo a sinistra né una seconda freccia esterna. Verificare il centro nella barra completa e nel tastierino numerico.
+ - Un campo numerico senza etichetta non prova che sia OTP. L’alternativa Authenticator deve restare reversibile, con il provider password disponibile e senza normalizzazione automatica del contenuto per sola euristica.
+ - Le ripartenze vocali non devono cancellare sostantivi validi come «dei dei greci», citazioni o nomi personali. Non indovinare numeri da parole ambigue come «nodi dicevo».
++
++- Le risposte inline del gestore password non devono bloccare codici o copie più recenti. Conservare la superficie opaca solo per lo stesso campo e ripristinarla dopo consumo/scadenza senza resuscitare contenuti vecchi. Verificare notifiche, risposte tardive, cambio campo, dismiss e policy private.
++- La capsula Authenticator è compatta e centrata dentro una barra a comandi laterali simmetrici; la larghezza della barra non è la larghezza della capsula. Le etichette esplicite SMS/email/WhatsApp escludono Authenticator; non dedurre il canale dal solo nome dell'app.
+diff --git a/app/build.gradle.kts b/app/build.gradle.kts
+index 2646fa0..b6e6c9d 100644
+--- a/app/build.gradle.kts
++++ b/app/build.gradle.kts
+@@ -15,8 +15,8 @@ android {
+         applicationId = "it.keyant.keyboard"
+         minSdk = 26
+         targetSdk = 35
+-        versionCode = 128
+-        versionName = "0.7.1"
++        versionCode = 129
++        versionName = "0.7.2"
+         if (!providers.gradleProperty("keyantNativePrebuiltDir").isPresent) externalNativeBuild { ndkBuild { arguments += listOf("-j2") } }
+         ndk {
+             abiFilters.clear()
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/AuthenticatorBridge700.java b/app/src/main/java/helium314/keyboard/keyforma/AuthenticatorBridge700.java
+index 76f8262..f5cba8f 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/AuthenticatorBridge700.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/AuthenticatorBridge700.java
+@@ -26,7 +26,15 @@ public final class AuthenticatorBridge700 {
+  public static boolean codeField(EditorInfo e){
+   if(e==null||e.inputType==InputType.TYPE_NULL)return false;
+   String labels=labels(e);
+-  return !NEGATIVE.matcher(labels).find()&&POSITIVE.matcher(labels).find();
++  return !NEGATIVE.matcher(labels).find()&&(POSITIVE.matcher(labels).find()||messageCodeField(e));
++ }
++ /** Delivery hints belong to the field, not to arbitrary text elsewhere on screen. */
++ public static boolean messageCodeField(EditorInfo e){
++  if(e==null||e.inputType==InputType.TYPE_NULL)return false;
++  String text=labels(e);
++  return !NEGATIVE.matcher(text).find()
++    && Pattern.compile("(?iu)\\b(?:sms|whats ?app|e ?mail|posta elettronica|text message|messaggio)\\b").matcher(text).find()
++    && Pattern.compile("(?iu)\\b(?:code|codice|otp|verification|verifica)\\b").matcher(text).find();
+  }
+  private static String labels(EditorInfo e){return (String.valueOf(e.hintText)+" "+String.valueOf(e.fieldName)).replaceAll("([a-z])([A-Z])","$1 $2").replaceAll("([A-Z]+)([A-Z][a-z])","$1 $2").replace('_',' ').replace('-',' ');}
+  /** A shortcut candidate, NOT evidence that an unlabelled numeric password is an OTP.
+@@ -78,7 +86,7 @@ public final class AuthenticatorBridge700 {
+  public View suggestion(LatinIME ime){return suggestion(ime,false);}
+  public View suggestion(LatinIME ime,boolean providerPresent){
+   EditorInfo e=ime.getCurrentInputEditorInfo();
+-  if(e==dismissed||!(codeField(e)||(KeyAntPrefs.bool(ime,"authenticator_numeric_fallback",true)&&numericCandidate(e,providerPresent)))||!unlocked(ime)||!KeyAntPrefs.bool(ime,"authenticator_pill",true))return null;
++  if(e==dismissed||messageCodeField(e)||!(codeField(e)||(KeyAntPrefs.bool(ime,"authenticator_numeric_fallback",true)&&numericCandidate(e,providerPresent)))||!unlocked(ime)||!KeyAntPrefs.bool(ime,"authenticator_pill",true))return null;
+   boolean privacy=Settings.getValues().mIncognitoModeEnabled||privateField(e);
+   if(privacy&&!KeyAntPrefs.bool(ime,"authenticator_private",true))return null;
+   String pkg=selected(ime);if(!installed(ime,pkg))return null;
+@@ -90,7 +98,9 @@ public final class AuthenticatorBridge700 {
+   LinearLayout row=new LinearLayout(c){@Override protected void onAttachedToWindow(){super.onAttachedToWindow();halo.active=true;halo.invalidateSelf();}@Override protected void onDetachedFromWindow(){halo.stop();super.onDetachedFromWindow();}};
+   row.setTag("keyant-authenticator");row.setGravity(Gravity.CENTER_VERTICAL);
+   ImageButton close=new ImageButton(c);close.setImageDrawable(new ToolbarIcon("back",ink,(int)(22*d)));close.setBackgroundColor(android.graphics.Color.TRANSPARENT);close.setContentDescription("Nascondi Authenticator in questo campo");close.setOnClickListener(v->dismiss.run());TouchFeedback.install(close);row.addView(close,new LinearLayout.LayoutParams((int)(44*d),(int)(48*d)));
+-  TextView chip=new TextView(c);chip.setText(label);chip.setTextColor(ink);chip.setTextSize(14);chip.setMaxLines(1);chip.setHorizontallyScrolling(false);chip.setIncludeFontPadding(false);chip.setEllipsize(android.text.TextUtils.TruncateAt.END);chip.setGravity(Gravity.CENTER);chip.setPadding((int)(12*d),0,(int)(12*d),0);chip.setBackground(halo);chip.setCompoundDrawablesWithIntrinsicBounds(new ToolbarIcon("authenticator",ink,(int)(22*d)),null,null,null);chip.setCompoundDrawablePadding((int)(6*d));chip.setContentDescription("Apri "+label+" per copiare il codice");chip.setOnClickListener(v->open.run());TouchFeedback.install(chip);row.addView(chip,new LinearLayout.LayoutParams(0,(int)(44*d),1));
++  TextView chip=new TextView(c);chip.setText(label);chip.setTextColor(ink);chip.setTextSize(14);chip.setMaxLines(1);chip.setHorizontallyScrolling(false);chip.setIncludeFontPadding(false);chip.setEllipsize(android.text.TextUtils.TruncateAt.END);chip.setGravity(Gravity.CENTER);chip.setPadding((int)(12*d),0,(int)(12*d),0);chip.setBackground(halo);chip.setCompoundDrawablesWithIntrinsicBounds(new ToolbarIcon("authenticator",ink,(int)(22*d)),null,null,null);chip.setCompoundDrawablePadding((int)(6*d));chip.setContentDescription("Apri "+label+" per copiare il codice");chip.setOnClickListener(v->open.run());TouchFeedback.install(chip);
++  FrameLayout center=new FrameLayout(c);center.setClipChildren(false);row.addView(center,new LinearLayout.LayoutParams(0,(int)(48*d),1));
++  chip.setMaxWidth((int)(300*d));FrameLayout.LayoutParams capsule=new FrameLayout.LayoutParams(-2,(int)(40*d),Gravity.CENTER);capsule.setMargins((int)(5*d),0,(int)(5*d),0);center.addView(chip,capsule);
+   ImageButton edit=new ImageButton(c);edit.setImageDrawable(new ToolbarIcon("settings",ink,(int)(21*d)));edit.setBackgroundColor(android.graphics.Color.TRANSPARENT);edit.setContentDescription("Impostazioni Authenticator");edit.setOnClickListener(v->settings.run());TouchFeedback.install(edit);row.addView(edit,new LinearLayout.LayoutParams((int)(44*d),(int)(48*d)));return row;
+  }
+ }
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/AutofillActions648.java b/app/src/main/java/helium314/keyboard/keyforma/AutofillActions648.java
+index 7014990..6a311f6 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/AutofillActions648.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/AutofillActions648.java
+@@ -27,7 +27,7 @@ public final class AutofillActions648 {
+         int ink = Settings.getValues().mColors.get(ColorType.KEY_TEXT);
+         int size = Math.round(21 * ime.getResources().getDisplayMetrics().density);
+         Runnable showAuth = () -> {
+-            if (ime.getCurrentInputEditorInfo() != editor) return;
++            if (ime.getCurrentInputEditorInfo() != editor || AuthenticatorBridge700.messageCodeField(editor)) return;
+             if ((!AuthenticatorBridge700.codeField(editor) && !KeyAntPrefs.bool(ime,"authenticator_numeric_fallback",true))
+                 || !KeyAntPrefs.bool(ime,"authenticator_pill",true)
+                 || ((Settings.getValues().mIncognitoModeEnabled || AuthenticatorBridge700.privateField(editor))
+diff --git a/app/src/main/java/helium314/keyboard/latin/ClipboardHistoryManager.kt b/app/src/main/java/helium314/keyboard/latin/ClipboardHistoryManager.kt
+index 23cbb6c..81bcdf5 100644
+--- a/app/src/main/java/helium314/keyboard/latin/ClipboardHistoryManager.kt
++++ b/app/src/main/java/helium314/keyboard/latin/ClipboardHistoryManager.kt
+@@ -328,6 +328,54 @@ class ClipboardHistoryManager(
+         return otp
+     }
+ 
++    /** A fresh notification can replace an inline credential surface. In a private verification
++     * field show a generic caption and never save history; manual incognito still excludes it. */
++    private fun notificationCodeSuggestion702(editor: EditorInfo?, clip: android.content.ClipData?, manualPrivate: Boolean): View? {
++        if (manualPrivate || !helium314.keyboard.keyforma.AuthenticatorBridge700.unlocked(latinIME)) return null
++        val privateSession = !publicSession()
++        if (privateSession && (!helium314.keyboard.keyforma.KeyAntPrefs.bool(latinIME,"private_paste_pill",true) ||
++            !(helium314.keyboard.keyforma.AuthenticatorBridge700.codeField(editor) ||
++              helium314.keyboard.keyforma.AuthenticatorBridge700.numericCandidate(editor,false)))) return null
++        val otp = if (privateSession) helium314.keyboard.keyforma.OtpStore.current(latinIME) else saveOtpHistory()
++        otp ?: return null
++        val stamp = clip?.let { clipStamp(it) } ?: 0L
++        if (InputTypeUtils.isNumberInputType(editor?.inputType ?: 0) && !otp.value.isValidNumber()) return null
++        if (otp.timestamp < maxOf(stamp, MediaSuggestionStore.latestEvent(latinIME)) || !latinIME.shouldOfferKeyAntClipboard(otp.timestamp)) return null
++        val connection = latinIME.currentInputConnection ?: return null
++        val fieldState = otpFieldState702(editor)
++        val token = "otp:${otp.timestamp}:${otp.value}:$privateSession:${latinIME.mSettings.current.mColors}"
++        if (renderedOffer == token && otpEditor702 === editor && otpConnection702 === connection && otpMetadata702 == fieldState && clipboardSuggestionView?.isGone == false) return clipboardSuggestionView
++        otpEditor702=editor;otpConnection702=connection;otpMetadata702=fieldState
++        fun retireOlder() {
++            if (!privateSession) {
++                helium314.keyboard.keyforma.ClipboardOffer.retireBefore(latinIME, otp.timestamp)
++                if (stamp <= otp.timestamp) { dontShowCurrentSuggestion=true;helium314.keyboard.keyforma.ClipboardOffer.dismiss(latinIME) }
++            }
++            if (stamp > 0 && stamp <= otp.timestamp) retirePrivate669(stamp,privateClipboardEpoch669)
++        }
++        val pill = helium314.keyboard.keyforma.PastePill(latinIME, if(privateSession) "Codice ricevuto" else "Codice · ${otp.value}", null, {
++            val current = helium314.keyboard.keyforma.OtpStore.current(latinIME)
++            if (renderedOffer == token && current === otp && latinIME.currentInputEditorInfo === editor && latinIME.currentInputConnection === connection &&
++                otpFieldState702(editor) == fieldState &&
++                helium314.keyboard.keyforma.AuthenticatorBridge700.unlocked(latinIME) &&
++                !helium314.keyboard.keyforma.KeyAntPrefs.get(latinIME).getBoolean(Settings.PREF_ALWAYS_INCOGNITO_MODE,false) &&
++                (!privateSession || helium314.keyboard.keyforma.KeyAntPrefs.bool(latinIME,"private_paste_pill",true))) {
++                retireOlder()
++                helium314.keyboard.keyforma.OtpStore.clear()
++                latinIME.onTextInput(otp.value)
++            }
++            // An old/detached pill cannot clear a more recent code or clipboard offer.
++            if (renderedOffer == token) { clipboardSuggestionView?.isGone=true;latinIME.setNeutralSuggestionStrip() }
++        }, { if (helium314.keyboard.keyforma.OtpStore.current(latinIME) === otp) { retireOlder();helium314.keyboard.keyforma.OtpStore.clear() } },
++           { if (renderedOffer == token) { clipboardSuggestionView?.isGone=true;latinIME.setNeutralSuggestionStrip() } })
++        renderedOffer=token;renderedMedia=null;clipboardSuggestionView=pill
++        return pill
++    }
++    private fun otpFieldState702(e: EditorInfo?): List<Any?> = listOf(e?.inputType,e?.imeOptions,e?.fieldId,e?.fieldName,e?.hintText?.toString())
++    private var otpMetadata702: List<Any?>? = null
++    private var otpEditor702: EditorInfo? = null
++    private var otpConnection702: android.view.inputmethod.InputConnection? = null
++
+     fun getClipboardSuggestionView(editorInfo: EditorInfo?, parent: ViewGroup?): View? {
+ 
+         // get the content, or return null
+@@ -338,6 +386,7 @@ class ClipboardHistoryManager(
+         val validClip = clipData?.takeIf { it.itemCount > 0 }
+         val copiedCode = helium314.keyboard.keyforma.CopiedCode.enabled(latinIME, validClip)
+         val manualPrivate = helium314.keyboard.keyforma.KeyAntPrefs.get(latinIME).getBoolean(Settings.PREF_ALWAYS_INCOGNITO_MODE,false)
++        notificationCodeSuggestion702(editorInfo, validClip, manualPrivate)?.let { return it }
+         // The explicit copy-code option also works in verification fields that disable learning.
+         if (manualPrivate || InputTypeUtils.isPasswordInputType(inputType) || !publicSession()) {
+             if (helium314.keyboard.keyforma.KeyAntPrefs.bool(latinIME,"private_paste_pill",true))
+@@ -345,20 +394,6 @@ class ClipboardHistoryManager(
+             if (manualPrivate || !copiedCode) return null
+         }
+         val timeStamp = validClip?.let { clipStamp(it) } ?: 0L
+-        val otp = saveOtpHistory()
+-        if (otp != null && (!InputTypeUtils.isNumberInputType(inputType) || otp.value.isValidNumber()) && otp.timestamp >= maxOf(timeStamp, MediaSuggestionStore.latestEvent(latinIME)) && latinIME.shouldOfferKeyAntClipboard(otp.timestamp)) {
+-            val token = "otp:${otp.timestamp}:${otp.value}:${latinIME.mSettings.current.mColors}"
+-            if (renderedOffer == token && clipboardSuggestionView?.isGone == false) return clipboardSuggestionView
+-            val pill = helium314.keyboard.keyforma.PastePill(latinIME, "Codice · ${otp.value}", null, {
+-                if (helium314.keyboard.keyforma.OtpStore.current(latinIME) === otp) latinIME.onTextInput(otp.value)
+-                helium314.keyboard.keyforma.OtpStore.clear()
+-                removeClipboardSuggestion()
+-            }, { if (helium314.keyboard.keyforma.OtpStore.current(latinIME) === otp) helium314.keyboard.keyforma.OtpStore.clear() }, { if (renderedOffer == token) removeClipboardSuggestion() })
+-            renderedOffer = token
+-            renderedMedia = null
+-            clipboardSuggestionView = pill
+-            return pill
+-        }
+         val media = if (publicSession()) MediaSuggestionStore.candidate(latinIME, timeStamp) else null
+         if (media == null && timeStamp < MediaSuggestionStore.latestEvent(latinIME)) return null
+         // Sensitivity belongs to that copy, not to a newer independently imported screenshot.
+diff --git a/app/src/main/java/helium314/keyboard/latin/LatinIME.java b/app/src/main/java/helium314/keyboard/latin/LatinIME.java
+index ae8ef21..56617f2 100644
+--- a/app/src/main/java/helium314/keyboard/latin/LatinIME.java
++++ b/app/src/main/java/helium314/keyboard/latin/LatinIME.java
+@@ -178,6 +178,11 @@ public class LatinIME extends InputMethodService implements
+     private final helium314.keyboard.keyforma.TypingBarState mTypingBar = new helium314.keyboard.keyforma.TypingBarState();
+     private final helium314.keyboard.keyforma.SuggestionPresentation mSuggestionPresentation = new helium314.keyboard.keyforma.SuggestionPresentation();
+     private boolean mInlineSuggestionsVisible;private boolean mKeyAntInlineRequested;
++    // Keep the opaque provider surface while a newer copy/notification temporarily owns the strip.
++    private View mKeyAntInlineView702;
++    private EditorInfo mKeyAntInlineEditor702;
++    private View mKeyAntInlineProvider702;
++    private String mKeyAntInlineContext702;
+     private boolean mAutofillDismissed648;
+     private final ClipboardHistoryManager mClipboardHistoryManager = new ClipboardHistoryManager(this);
+ 
+@@ -686,6 +691,7 @@ public class LatinIME extends InputMethodService implements
+ 
+     @Override
+     public void onDestroy() {
++        clearKeyAntInline702();
+         mSelectionUndo670.clear();
+         helium314.keyboard.keyforma.MediaClipboard.cancelPendingPaste(this);
+         helium314.keyboard.keyforma.TouchHeatmap.finish();
+@@ -869,7 +875,7 @@ public class LatinIME extends InputMethodService implements
+         if(!restarting){mAutofillDismissed648=false;helium314.keyboard.keyforma.ClipboardOffer.retireBefore(this,mTypingBar.lastTyped());mTypingBar.reset();helium314.keyboard.keyforma.ClipboardOffer.newEditor(this);}
+         mSuggestionPresentation.reset();
+         if(hasSuggestionStripView())mSuggestionStripView.rememberKeyAntSuggestions(SuggestedWords.getEmptyInstance());
+-        mInlineSuggestionsVisible=false;mKeyAntInlineRequested=false;
++        clearKeyAntInline702();mKeyAntInlineRequested=false;
+         super.onStartInput(editorInfo, restarting);
+ 
+         final RichInputMethodSubtype subtypeForApp = editorInfo == null
+@@ -1054,6 +1060,7 @@ public class LatinIME extends InputMethodService implements
+     }
+ 
+     void onFinishInputInternal() {
++        clearKeyAntInline702();
+         helium314.keyboard.keyforma.TouchHeatmap.finish();
+         helium314.keyboard.keyforma.TypingMetrics.finish();
+         helium314.keyboard.keyforma.AdaptiveTouch.reset();
+@@ -1347,14 +1354,14 @@ public class LatinIME extends InputMethodService implements
+         if(mAutofillDismissed648)return false;
+         if (Settings.getValues().mSuggestionStripHiddenPerUserSettings
+                 || !helium314.keyboard.keyforma.AutofillFieldPolicy.acceptsInline(getCurrentInputEditorInfo())) {
+-            if(mInlineSuggestionsVisible){mInlineSuggestionsVisible=false;setNeutralSuggestionStrip();}
++            clearKeyAntInline702();setNeutralSuggestionStrip();
+             return false;
+         }
+ 
+         if(!hasSuggestionStripView())return false;
+         final List<InlineSuggestion> inlineSuggestions = response.getInlineSuggestions();
+         if (inlineSuggestions.isEmpty()) {
+-            if(mInlineSuggestionsVisible){mInlineSuggestionsVisible=false;setNeutralSuggestionStrip();}
++            clearKeyAntInline702();setNeutralSuggestionStrip();
+             return false;
+         }
+ 
+@@ -1363,11 +1370,11 @@ public class LatinIME extends InputMethodService implements
+         // Without this function the inline autofill suggestions will not be visible
+         mHandler.cancelResumeSuggestions();
+ 
+-        mInlineSuggestionsVisible=true;
+-        final View auth = mAuthenticator700.suggestion(this,true);
+-        mSuggestionStripView.setExternalSuggestionView(auth == null
+-                ? helium314.keyboard.keyforma.AutofillActions648.wrap(this,inlineSuggestionView)
+-                : helium314.keyboard.keyforma.AutofillActions648.withAuthenticator(this,inlineSuggestionView,auth), false);
++        mKeyAntInlineEditor702=getCurrentInputEditorInfo();
++        mKeyAntInlineProvider702=inlineSuggestionView;
++        rebuildKeyAntInline702();
++        // A delayed provider response must not cover a code that has just arrived.
++        setNeutralSuggestionStrip();
+ 
+         return true;
+     }
+@@ -1807,7 +1814,7 @@ public class LatinIME extends InputMethodService implements
+     public void showKeyAntTools() {
+         if(!helium314.keyboard.keyforma.ToolbarVisibility.enabled(this)&&!hasKeyAntPanel()){if(hasSuggestionStripView())setSuggestedWords(SuggestedWords.getEmptyInstance());return;}
+         if(!hasKeyAntPanel())mTypingBar.tools();
+-        mInlineSuggestionsVisible=false;
++        clearKeyAntInline702();
+         if(mInputView==null||!hasSuggestionStripView())return;
+         android.app.KeyguardManager km=(android.app.KeyguardManager)getSystemService(KEYGUARD_SERVICE);
+         if(km!=null&&km.isDeviceLocked())return;
+@@ -1817,20 +1824,53 @@ public class LatinIME extends InputMethodService implements
+ 
+     /** New copy events are offered immediately, even inside an existing composition or selection. */
+     private final helium314.keyboard.keyforma.AuthenticatorBridge700 mAuthenticator700 = new helium314.keyboard.keyforma.AuthenticatorBridge700();
++    private void clearKeyAntInline702() {
++        mInlineSuggestionsVisible=false;mKeyAntInlineView702=null;mKeyAntInlineEditor702=null;
++        mKeyAntInlineProvider702=null;mKeyAntInlineContext702=null;
++    }
++    private String keyAntInlineContext702() {
++        EditorInfo e=getCurrentInputEditorInfo();
++        return String.valueOf(e==null?null:e.hintText)+":"+(e==null?null:e.fieldName)+":"+(e==null?0:e.inputType)+":"+(e==null?0:e.imeOptions)
++            +":"+helium314.keyboard.keyforma.KeyAntPrefs.bool(this,"authenticator_pill",true)
++            +":"+helium314.keyboard.keyforma.KeyAntPrefs.bool(this,"authenticator_private",true)
++            +":"+helium314.keyboard.keyforma.KeyAntPrefs.bool(this,"authenticator_numeric_fallback",true)
++            +":"+helium314.keyboard.keyforma.AuthenticatorBridge700.selected(this)
++            +":"+Settings.getValues().mIncognitoModeEnabled;
++    }
++    private void rebuildKeyAntInline702() {
++        if(mKeyAntInlineProvider702==null)return;
++        if(mKeyAntInlineProvider702.getParent() instanceof android.view.ViewGroup parent)parent.removeView(mKeyAntInlineProvider702);
++        View auth=mAuthenticator700.suggestion(this,true);
++        mKeyAntInlineView702=auth==null?helium314.keyboard.keyforma.AutofillActions648.wrap(this,mKeyAntInlineProvider702)
++            :helium314.keyboard.keyforma.AutofillActions648.withAuthenticator(this,mKeyAntInlineProvider702,auth);
++        mKeyAntInlineContext702=keyAntInlineContext702();
++    }
+     public void refreshKeyAntExternalSuggestions() {
+         setNeutralSuggestionStrip();
+     }
+ 
+     @Override
+     public void setNeutralSuggestionStrip() {
+-        if(hasKeyAntPanel() || mInlineSuggestionsVisible)return;
++        if(hasKeyAntPanel())return;
+         final SettingsValues currentSettings = mSettings.getCurrent();
+         if (tryShowClipboardSuggestion()) {
++            mInlineSuggestionsVisible=false;
+             // clipboard suggestion has been set
+             if (hasSuggestionStripView() && currentSettings.mAutoHideToolbar)
+                 mSuggestionStripView.setToolbarVisibility(false);
+             return;
+         }
++        if(mKeyAntInlineView702!=null) {
++            if(mKeyAntInlineEditor702==getCurrentInputEditorInfo()&&!mAutofillDismissed648
++                    &&!currentSettings.mSuggestionStripHiddenPerUserSettings
++                    &&helium314.keyboard.keyforma.AutofillFieldPolicy.acceptsInline(getCurrentInputEditorInfo())) {
++                if(!keyAntInlineContext702().equals(mKeyAntInlineContext702))rebuildKeyAntInline702();
++                mInlineSuggestionsVisible=true;
++                mSuggestionStripView.setExternalSuggestionView(mKeyAntInlineView702,false);
++                return;
++            }
++            clearKeyAntInline702();
++        }
+         View authenticatorChip=mAuthenticator700.suggestion(this);
+         if(authenticatorChip!=null&&hasSuggestionStripView()){
+             View password = helium314.keyboard.keyforma.SafeInCloudBridge.suggestion(this);
+@@ -1869,13 +1909,13 @@ public class LatinIME extends InputMethodService implements
+ 
+     public void dismissKeyAntAutofill() {
+         mAutofillDismissed648=true;
+-        mInlineSuggestionsVisible=false;
++        clearKeyAntInline702();
+         showKeyAntTools();
+     }
+ 
+     @Override
+     public void removeExternalSuggestions() {
+-        mInlineSuggestionsVisible=false;
++        clearKeyAntInline702();
+         setNeutralSuggestionStrip();
+         mHandler.postResumeSuggestions(false);
+     }
+diff --git a/app/src/test/java/helium314/keyboard/keyforma/KeyAnt700Test.kt b/app/src/test/java/helium314/keyboard/keyforma/KeyAnt700Test.kt
+index a0eccd4..9a1a887 100644
+--- a/app/src/test/java/helium314/keyboard/keyforma/KeyAnt700Test.kt
++++ b/app/src/test/java/helium314/keyboard/keyforma/KeyAnt700Test.kt
+@@ -66,7 +66,7 @@ class KeyAnt700Test {
+   val row=bridge.suggestion(service) as ViewGroup;row.getChildAt(0).performClick();assertNull(bridge.suggestion(service));editor=field("OTP");doReturn(editor).`when`(service).currentInputEditorInfo;assertNotNull(bridge.suggestion(service));KeyAntPrefs.get(c).edit().putBoolean("ka_authenticator_pill",false).apply();assertNull(bridge.suggestion(service))
+  }
+  @Test fun oldPillCannotOpenForNewEditor(){
+-  install(AuthenticatorBridge700.GOOGLE);val service=spy(ime);doReturn(field("OTP")).`when`(service).currentInputEditorInfo;val row=AuthenticatorBridge700().suggestion(service) as ViewGroup;doReturn(field("Peso")).`when`(service).currentInputEditorInfo;row.getChildAt(1).performClick();assertNull(Shadows.shadowOf(c as android.app.Application).nextStartedActivity)
++  install(AuthenticatorBridge700.GOOGLE);val service=spy(ime);doReturn(field("OTP")).`when`(service).currentInputEditorInfo;val row=AuthenticatorBridge700().suggestion(service) as ViewGroup;doReturn(field("Peso")).`when`(service).currentInputEditorInfo;(row.getChildAt(1) as android.widget.FrameLayout).getChildAt(0).performClick();assertNull(Shadows.shadowOf(c as android.app.Application).nextStartedActivity)
+  }
+  @Test fun voiceCleansObservedDisfluenciesWithoutInferringUnclearWords(){
+   assertEquals("Oggi non so cosa compare. Quindi bisogna capire una moltitudine di caratteri.",VoiceText700.clean(c,"oggi Non so cosa cosa compare. quindi Bisogna capire una moltitudine di. Caratteri."))
+@@ -101,9 +101,9 @@ class KeyAnt700Test {
+   for(width in listOf(320,400,700))for(dark in listOf(false,true)){
+    KeyAntPrefs.get(c).edit().putString(Settings.PREF_THEME_COLORS,ThemeCatalog.preference("ref91_nuphy",dark)).apply();Settings.getInstance().loadSettings(c)
+    var open=0;var hide=0;var settings=0;val row=AuthenticatorBridge700.pill(c,"Microsoft Authenticator",{open++},{hide++},{settings++}) as ViewGroup;row.setBackgroundColor(Settings.getValues().mColors.get(helium314.keyboard.latin.common.ColorType.MAIN_BACKGROUND));KeyAntV42Test.layout(row,width,52)
+-   val caption=row.getChildAt(1) as android.widget.TextView;assertTrue(caption.textSize>0);assertTrue(caption.paint.measureText(caption.text.toString())>0)
++   val caption=(row.getChildAt(1) as android.widget.FrameLayout).getChildAt(0) as android.widget.TextView;assertTrue(caption.textSize>0);assertTrue(caption.paint.measureText(caption.text.toString())>0)
+    assertEquals(44,row.getChildAt(0).width);assertEquals(44,row.getChildAt(2).width);assertTrue(row.getChildAt(1).width>=232);assertTrue(row.getChildAt(0).right<=row.getChildAt(1).left&&row.getChildAt(1).right<=row.getChildAt(2).left)
+-   for(i in 0..2)row.getChildAt(i).performClick();assertEquals(1,open);assertEquals(1,hide);assertEquals(1,settings)
++   row.getChildAt(0).performClick();caption.performClick();row.getChildAt(2).performClick();assertEquals(1,open);assertEquals(1,hide);assertEquals(1,settings)
+    val bitmap=KeyAntV63Test.render(row,width,52)
+    val ink=Settings.getValues().mColors.get(helium314.keyboard.latin.common.ColorType.KEY_TEXT);var lettering=0
+    for(y in 12..38)for(x in 110 until width-70){val pixel=bitmap.getPixel(x,y);if(kotlin.math.abs(android.graphics.Color.red(pixel)-android.graphics.Color.red(ink))<35&&kotlin.math.abs(android.graphics.Color.green(pixel)-android.graphics.Color.green(ink))<35&&kotlin.math.abs(android.graphics.Color.blue(pixel)-android.graphics.Color.blue(ink))<35)lettering++}
+diff --git a/app/src/test/java/helium314/keyboard/keyforma/KeyAnt701Test.kt b/app/src/test/java/helium314/keyboard/keyforma/KeyAnt701Test.kt
+index b10f13a..946d29a 100644
+--- a/app/src/test/java/helium314/keyboard/keyforma/KeyAnt701Test.kt
++++ b/app/src/test/java/helium314/keyboard/keyforma/KeyAnt701Test.kt
+@@ -70,7 +70,7 @@ class KeyAnt701Test {
+   assertTrue(s.onInlineSuggestionsResponse(response));KeyAntV42Test.layout(strip,400,52)
+   val inner=strip.findViewById<ViewGroup>(R.id.suggestions_strip);val host=inner.getChildAt(0) as FrameLayout
+   val auth=host.getChildAt(0) as ViewGroup;assertEquals("keyant-authenticator",auth.tag)
+-  assertEquals("Google Authenticator",(auth.getChildAt(1) as TextView).text.toString())
++  assertEquals("Google Authenticator",((auth.getChildAt(1) as FrameLayout).getChildAt(0) as TextView).text.toString())
+   auth.getChildAt(2).performClick();val passwords=host.getChildAt(0) as ViewGroup;assertEquals("Mostra Authenticator",passwords.getChildAt(2).contentDescription)
+   passwords.getChildAt(2).performClick();assertSame(auth,host.getChildAt(0))
+  }
+@@ -164,7 +164,7 @@ class KeyAnt701Test {
+ 
+  @Test fun switchingBackRestartsGlowOnlyWhileAttached(){
+   install(AuthenticatorBridge700.GOOGLE);val s=service(field());val auth=AuthenticatorBridge700().suggestion(s) as ViewGroup
+-  val halo=auth.getChildAt(1).background as PastePill.Halo
++  val halo=(auth.getChildAt(1) as FrameLayout).getChildAt(0).background as PastePill.Halo
+   Robolectric.buildActivity(android.app.Activity::class.java).setup().visible().use{a->
+    val host=AutofillActions648.withAuthenticator(s,caption(),auth) as FrameLayout;a.get().setContentView(host);KeyAntV42Test.layout(host,400,52)
+    assertTrue(halo.active);auth.getChildAt(2).performClick();assertFalse(halo.active)
+diff --git a/app/src/test/java/helium314/keyboard/keyforma/KeyAnt702Test.kt b/app/src/test/java/helium314/keyboard/keyforma/KeyAnt702Test.kt
+new file mode 100644
+index 0000000..929fd94
+--- /dev/null
++++ b/app/src/test/java/helium314/keyboard/keyforma/KeyAnt702Test.kt
+@@ -0,0 +1,166 @@
++// SPDX-License-Identifier: GPL-3.0-only
++package helium314.keyboard.keyforma
++
++import android.content.*
++import android.content.pm.*
++import android.os.*
++import android.graphics.Rect
++import android.text.InputType
++import android.view.*
++import android.view.inputmethod.*
++import android.widget.*
++import helium314.keyboard.latin.*
++import helium314.keyboard.latin.settings.Settings
++import helium314.keyboard.latin.suggestions.SuggestionStripView
++import org.junit.*
++import org.junit.Assert.*
++import org.junit.runner.RunWith
++import org.mockito.Mockito.*
++import org.robolectric.*
++import org.robolectric.annotation.*
++import org.robolectric.util.ReflectionHelpers
++import java.time.Duration
++
++@RunWith(RobolectricTestRunner::class)
++@Config(sdk=[35],qualifiers="w400dp-h900dp-port-mdpi",shadows=[helium314.keyboard.ShadowInputMethodManager2::class])
++@GraphicsMode(GraphicsMode.Mode.NATIVE)
++class KeyAnt702Test {
++ lateinit var c:Context;lateinit var service:LatinIME;lateinit var ime:LatinIME
++ lateinit var editor:EditorInfo;lateinit var history:ClipboardHistoryManager;lateinit var strip:SuggestionStripView
++ lateinit var activity:org.robolectric.android.controller.ActivityController<android.app.Activity>
++ lateinit var clipboard:ClipboardManager
++ @Before fun setup(){
++  c=RuntimeEnvironment.getApplication();OtpStore.bar=java.lang.ref.WeakReference(null);OtpStore.clear()
++  KeyAntPrefs.get(c).edit().clear().putBoolean("ka_053_defaults",true).putBoolean("ka_otp",true)
++   .putBoolean("ka_pill_motion",false).putBoolean(Settings.PREF_ENABLE_CLIPBOARD_HISTORY,false)
++   .putBoolean(Settings.PREF_SUGGEST_CLIPBOARD_CONTENT,true).putBoolean(Settings.PREF_THEME_DAY_NIGHT,false)
++   .putString(Settings.PREF_THEME_COLORS,ThemeCatalog.preference("ref91_nuphy",true)).apply()
++  service=Robolectric.setupService(LatinIME::class.java);ime=spy(service)
++  editor=EditorInfo().apply{inputType=InputType.TYPE_CLASS_NUMBER;hintText="Codice di verifica";packageName="test.checkout"}
++  doReturn(editor).`when`(ime).currentInputEditorInfo;doReturn(mock(InputConnection::class.java)).`when`(ime).currentInputConnection
++  doNothing().`when`(ime).onTextInput(anyString())
++  clipboard=c.getSystemService(ClipboardManager::class.java);clipboard.clearPrimaryClip()
++  clipboard.removePrimaryClipChangedListener(service.clipboardHistoryManager)
++  history=ClipboardHistoryManager(ime);ReflectionHelpers.setField(ime,"mClipboardHistoryManager",history);history.onCreate()
++  val input=ime.onCreateInputView();ime.setInputView(input);strip=input.findViewById(R.id.suggestion_strip_view)
++  strip.visibility=View.VISIBLE;strip.setListener(mock(SuggestionStripView.Listener::class.java),input)
++  input.findViewById<KeyAntBar>(R.id.keyant_bar).bind(ime)
++  (input.parent as? ViewGroup)?.removeView(input)
++  activity=Robolectric.buildActivity(android.app.Activity::class.java).setup();activity.get().setContentView(input)
++  val pkg=AuthenticatorBridge700.GOOGLE
++  val info=ResolveInfo().apply{activityInfo=ActivityInfo().apply{packageName=pkg;name="$pkg.Main";applicationInfo=ApplicationInfo().apply{packageName=pkg}}}
++  Shadows.shadowOf(c.packageManager).addResolveInfoForIntent(Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER).setPackage(pkg),info)
++ }
++ @After fun close(){OtpStore.bar=java.lang.ref.WeakReference(null);OtpStore.clear();activity.pause().stop().destroy();history.onDestroy();service.onDestroy()}
++ private fun response(empty:Boolean=false):Boolean{
++  val r=mock(InlineSuggestionsResponse::class.java);`when`(r.inlineSuggestions).thenReturn(if(empty)emptyList() else listOf(mock(InlineSuggestion::class.java)))
++  return ime.onInlineSuggestionsResponse(r)
++ }
++ private fun visible():View=strip.findViewById<ViewGroup>(R.id.suggestions_strip).getChildAt(0)
++ private fun capsule(v:View):View=(v as ViewGroup).getChildAt(1).let{(it as FrameLayout).getChildAt(0)}
++ private fun labels(v:View):String=(if(v is TextView)v.text.toString() else "")+(v.contentDescription?:"")+(if(v is ViewGroup)(0 until v.childCount).joinToString(""){labels(v.getChildAt(it))} else "")
++ private fun receive(code:String){OtpStore.offer(code);Shadows.shadowOf(Looper.getMainLooper()).idle()}
++ private fun privateField(){editor.inputType=InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_VARIATION_PASSWORD;Settings.getInstance().loadSettings(c,java.util.Locale.ITALIAN,InputAttributes(editor,false,c.packageName))}
++ @Test fun notificationEventReplacesAuthenticatorWithoutReopeningKeyboardAndRestoresIt(){
++  assertTrue(response());val original=visible();assertTrue(labels(original).contains("Google Authenticator"))
++  receive("702101");assertTrue(visible() is PastePill);assertTrue(labels(visible()).contains("702101"))
++  capsule(visible()).performClick();verify(ime).onTextInput("702101");assertSame(original,visible());assertNull(OtpStore.current(c))
++ }
++ @Test fun lateProviderResponseCannotCoverAReceivedCode(){
++  receive("702102");assertTrue(response());assertTrue(visible() is PastePill);assertTrue(labels(visible()).contains("702102"))
++ }
++ @Test fun nextNotificationReplacesPreviousAndDetachedCodeCannotConsumeIt(){
++  response();receive("702103");val old=visible();receive("702104");val current=visible();assertNotSame(old,current)
++  capsule(old).performClick();verify(ime,never()).onTextInput(anyString());assertEquals("702104",OtpStore.current(c).value);assertSame(current,visible())
++  capsule(current).performClick();verify(ime).onTextInput("702104")
++ }
++ @Test fun expirationReturnsToPreservedPasswordChoice(){
++  response();val host=visible() as FrameLayout;val auth=host.getChildAt(0) as ViewGroup;auth.getChildAt(2).performClick()
++  val provider=host.getChildAt(0);receive("702105");assertTrue(visible() is PastePill)
++  org.robolectric.shadows.ShadowSystemClock.advanceBy(Duration.ofMinutes(6));ime.refreshKeyAntExternalSuggestions()
++  assertSame(host,visible());assertSame(provider,host.getChildAt(0));assertNull(OtpStore.current(c))
++ }
++ @Test fun dismissCodeRestoresAuthenticatorWithoutWritingOrCopying(){
++  response();val auth=visible();receive("702106");(visible() as ViewGroup).getChildAt(0).performClick()
++  assertSame(auth,visible());verify(ime,never()).onTextInput(anyString());assertFalse(clipboard.hasPrimaryClip())
++ }
++ @Test fun newerClipboardTakesOverAndLaterNotificationTakesBack(){
++  response();receive("702107");org.robolectric.shadows.ShadowSystemClock.advanceBy(Duration.ofSeconds(1))
++  val previous=visible();clipboard.setPrimaryClip(ClipData.newPlainText("code","702108"))
++  // ShadowClipboardManager stamps uptime; Android's clipboard service stamps epoch wall time.
++  ReflectionHelpers.setField(clipboard.primaryClip!!.description,"mTimeStamp",System.currentTimeMillis())
++  Shadows.shadowOf(Looper.getMainLooper()).idle();ime.refreshKeyAntExternalSuggestions()
++  assertNotSame(previous,visible());assertTrue(visible() is PastePill)
++  capsule(visible()).performClick();verify(ime).onTextInput("702108")
++  org.robolectric.shadows.ShadowSystemClock.advanceBy(Duration.ofSeconds(1));receive("702109");assertTrue(labels(visible()).contains("702109"))
++ }
++ @Test fun privateVerificationOffersMaskedNotificationWithoutHistory(){
++  privateField();val count=history.getHistorySize();response();receive("702110")
++  assertTrue(visible() is PastePill);assertTrue(labels(visible()).contains("Codice ricevuto"));assertFalse(labels(visible()).contains("702110"))
++  capsule(visible()).performClick();verify(ime).onTextInput("702110");assertEquals(count,history.getHistorySize())
++ }
++ @Test fun notificationNeverLeaksIntoManualIncognitoOrOrdinaryPassword(){
++  privateField();KeyAntPrefs.get(c).edit().putBoolean(Settings.PREF_ALWAYS_INCOGNITO_MODE,true).apply();response();receive("702111");assertFalse(visible() is PastePill)
++  KeyAntPrefs.get(c).edit().putBoolean(Settings.PREF_ALWAYS_INCOGNITO_MODE,false).apply();editor.inputType=InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD;editor.hintText="Password";ime.refreshKeyAntExternalSuggestions();assertFalse(visible() is PastePill)
++ }
++ @Test fun privateOptOutAndOtpOptOutAreRespected(){
++  privateField();KeyAntPrefs.get(c).edit().putBoolean("ka_private_paste_pill",false).apply();response();receive("702112");assertFalse(visible() is PastePill)
++  KeyAntPrefs.get(c).edit().putBoolean("ka_private_paste_pill",true).putBoolean("ka_otp",false).apply();receive("702113");assertFalse(visible() is PastePill)
++ }
++ @Test fun stalePillCannotInsertInDifferentEditorOrConnection(){
++  response();receive("702114");val old=visible();doReturn(mock(InputConnection::class.java)).`when`(ime).currentInputConnection;capsule(old).performClick();verify(ime,never()).onTextInput(anyString())
++  receive("702115");val second=visible();doReturn(EditorInfo().apply{inputType=InputType.TYPE_CLASS_TEXT}).`when`(ime).currentInputEditorInfo;capsule(second).performClick();verify(ime,never()).onTextInput(anyString());assertFalse(visible().tag=="keyant-autofill")
++ }
++ @Test fun changedMetadataAndLockedDeviceCannotUseAnOldCodePill(){
++  response();receive("702119");val old=visible();editor.hintText="Codice via SMS";capsule(old).performClick();verify(ime,never()).onTextInput(anyString())
++  receive("702120");val current=visible();val lock=c.getSystemService(android.app.KeyguardManager::class.java)
++  Shadows.shadowOf(lock).setIsDeviceLocked(true);capsule(current).performClick();verify(ime,never()).onTextInput(anyString())
++ }
++ @Test fun emptyResponseDoesNotSuppressAnAlreadyArrivedCode(){
++  response();receive("702116");assertFalse(response(true));assertTrue(visible() is PastePill)
++ }
++ @Test fun fieldMetadataCanSwitchChannelWithoutAnEditorRestart(){
++  response();assertTrue(labels(visible()).contains("Google Authenticator"))
++  editor.hintText="Codice inviato via SMS";ime.refreshKeyAntExternalSuggestions();assertFalse(labels(visible()).contains("Google Authenticator"))
++  editor.hintText="Authenticator code";ime.refreshKeyAntExternalSuggestions();assertTrue(labels(visible()).contains("Google Authenticator"))
++ }
++ @Test fun deliveryMetadataSuppressesAuthenticatorButKeepsGenericCodeRecognition(){
++  for(hint in listOf("Codice SMS","Codice ricevuto via WhatsApp","Email verification code","Codice via posta elettronica")){
++   editor.hintText=hint;assertTrue(hint,AuthenticatorBridge700.messageCodeField(editor));assertTrue(AuthenticatorBridge700.codeField(editor));assertNull(AuthenticatorBridge700().suggestion(ime,true))
++  }
++  for(hint in listOf("Indirizzo email","Messaggio","Codice fiscale SMS","Authenticator code")){editor.hintText=hint;assertFalse(hint,AuthenticatorBridge700.messageCodeField(editor))}
++ }
++ @Test fun listenerRefreshesStripForSmsWhatsAppAndEmailNotifications(){
++  response();val original=visible();val listener=Robolectric.setupService(OtpListener::class.java)
++  for((index,pkg) in listOf("com.google.android.apps.messaging","com.whatsapp","com.google.android.gm").withIndex()){
++   val code="70310$index"
++   val n=android.app.Notification().apply{extras=Bundle().apply{putCharSequence(android.app.Notification.EXTRA_TEXT,"Codice di verifica $code")}}
++   val sbn=mock(android.service.notification.StatusBarNotification::class.java)
++   `when`(sbn.packageName).thenReturn(pkg);`when`(sbn.postTime).thenReturn(System.currentTimeMillis());`when`(sbn.notification).thenReturn(n)
++   listener.onNotificationPosted(sbn);Shadows.shadowOf(Looper.getMainLooper()).idle()
++   assertTrue(pkg,visible() is PastePill);assertTrue(labels(visible()).contains(code))
++  }
++  listener.onListenerDisconnected();Shadows.shadowOf(Looper.getMainLooper()).idle();assertSame(original,visible());listener.onDestroy()
++ }
++ @Test fun notificationExtractorSupportsMessagingAndMailWithoutProviderSpecificRules(){
++  for(key in listOf(android.app.Notification.EXTRA_TEXT,android.app.Notification.EXTRA_BIG_TEXT)){
++   val n=android.app.Notification().apply{extras=Bundle().apply{putCharSequence(key,"Il tuo codice di verifica è 702117")}}
++   assertEquals("702117",OtpListener.extract(n))
++  }
++  val msg=android.app.Notification.MessagingStyle.Message("Codice 702118",System.currentTimeMillis(),"Service")
++  val n=android.app.Notification.Builder(c,"test").setStyle(android.app.Notification.MessagingStyle("Me").addMessage(msg)).build()
++  assertEquals("702118",OtpListener.extract(n))
++ }
++ @Test fun compactCapsuleIsCenteredAndBoundedAcrossThemesWidthsAndDirections(){
++  for(dark in listOf(false,true))for(w in listOf(320,400,700,1000))for(rtl in listOf(false,true)){
++   KeyAntPrefs.get(c).edit().putString(Settings.PREF_THEME_COLORS,ThemeCatalog.preference("ref91_nuphy",dark)).apply();Settings.getInstance().loadSettings(c)
++   Settings.getValues().mColors.setBackground(strip,helium314.keyboard.latin.common.ColorType.STRIP_BACKGROUND)
++   strip.layoutDirection=if(rtl)View.LAYOUT_DIRECTION_RTL else View.LAYOUT_DIRECTION_LTR
++   val row=AuthenticatorBridge700.pill(c,"Google Authenticator",{},{},{}) as ViewGroup;strip.setExternalSuggestionView(row,false);KeyAntV42Test.layout(strip,w,52)
++   val chip=capsule(row);val rect=Rect();chip.getDrawingRect(rect);strip.offsetDescendantRectToMyCoords(chip,rect)
++   assertEquals(w/2f,rect.exactCenterX(),1f);assertTrue(chip.width<=300);assertTrue(chip.width<=w-98);assertEquals(40,chip.height)
++   assertEquals(44,row.getChildAt(0).width);assertEquals(44,row.getChildAt(2).width)
++   if(!rtl)KeyAntV42Test.save(KeyAntV63Test.render(strip,w,52),"KeyAnt-702-auth-$w-$dark.png")
++  }
++ }
++}
+diff --git a/gradle/keyant-0702.gradle b/gradle/keyant-0702.gradle
+new file mode 100644
+index 0000000..fa9a216
+--- /dev/null
++++ b/gradle/keyant-0702.gradle
+@@ -0,0 +1,11 @@
++allprojects {
++ tasks.withType(Test).configureEach {
++  def chosen=(project.findProperty('keyantTestClasses') ?: 'KeyAnt702Test,KeyAnt701Test,KeyAntV68Test,KeyAntPrivate669Test,KeyAntV613Test,KeyAnt700Test,KeyAntUi700Test,KeyAnt699Test,KeyAntV630Test,KeyAntCorrection641Test,KeyAntWriting670Test,KeyAntV69Test,KeyAntV610Test').toString().split(',')
++  setIncludes(chosen.collect { '**/'+it+'.class' })
++  maxHeapSize='900m'
++  maxParallelForks=1
++  forkEvery=1
++  systemProperty 'robolectric.dependency.repo.url', 'https://repo.maven.apache.org/maven2'
++  testLogging { events 'passed','failed','skipped'; exceptionFormat 'full'; showStandardStreams=false }
++ }
++}

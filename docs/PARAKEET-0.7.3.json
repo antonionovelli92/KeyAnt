@@ -1,0 +1,9 @@
+{
+  "sample": "google/fleurs it_it test/10000151032537989529.wav",
+  "reference": "il blog è uno strumento che si prefigge di incoraggiare la collaborazione e sviluppare l'apprendimento degli studenti ben oltre la giornata scolastica normale",
+  "recognized": "Il blog è uno strumento che si prefige di incoraggiare la collaborazione e sviluppare l'apprendimento degli studenti ben oltre la giornata scolastica normale.",
+  "word_edits": 1,
+  "reference_words": 23,
+  "runtime": "sherpa-onnx 2.0.3, Linux CPU, two threads",
+  "limits": "Single sample smoke test, not a phone benchmark or a general accuracy estimate. User recording audio is silent."
+}

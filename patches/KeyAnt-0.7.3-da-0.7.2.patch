@@ -1,0 +1,1377 @@
+diff --git a/.gitignore b/.gitignore
+index 5b89586..c06669b 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -26,3 +26,6 @@ validation/
+ 
+ __pycache__/
+ *.pyc
++
++# Reproducible optional speech runtime; fetch with tools/fetch-parakeet-runtime.py
++app/libs/*.aar
+diff --git a/AGENTS.md b/AGENTS.md
+index d7b6dce..20541c7 100644
+--- a/AGENTS.md
++++ b/AGENTS.md
+@@ -38,3 +38,7 @@
+ 
+ - Le risposte inline del gestore password non devono bloccare codici o copie più recenti. Conservare la superficie opaca solo per lo stesso campo e ripristinarla dopo consumo/scadenza senza resuscitare contenuti vecchi. Verificare notifiche, risposte tardive, cambio campo, dismiss e policy private.
+ - La capsula Authenticator è compatta e centrata dentro una barra a comandi laterali simmetrici; la larghezza della barra non è la larghezza della capsula. Le etichette esplicite SMS/email/WhatsApp escludono Authenticator; non dedurre il canale dal solo nome dell'app.
++
++- Dettatura diretta: aggiornare soltanto la porzione posseduta dalla sessione. Cambio di campo, testo o cursore interrompe la sostituzione; non indovinare una cancellazione. × ripristina la selezione iniziale solo finché la sessione la possiede. Non inviare messaggi automaticamente. Con estratto incompleto usare la card opzionale e conservare l'originale per la pulizia.
++- Parakeet è un download facoltativo e verificato per file, separato dall'APK. Non passare dal motore offline alla rete senza una scelta dell'utente. Capture e inferenza fuori dal thread UI, memoria/coda limitate, microfono rilasciato anche su stop e errore. Non confondere riconoscimento per frasi, riscrittura AI e comprensione semantica della fine del dialogo.
++- Le animazioni vocali condividono renderer tra capsula, selettore e Maker. Il vetro arcobaleno interessa l'intera capsula, senza cambiare i bersagli dei controlli. Le anteprime sono simulate; le animazioni reali seguono il livello audio e si fermano fuori schermo.
+diff --git a/app/build.gradle.kts b/app/build.gradle.kts
+index b6e6c9d..8f9a9b9 100644
+--- a/app/build.gradle.kts
++++ b/app/build.gradle.kts
+@@ -15,8 +15,8 @@ android {
+         applicationId = "it.keyant.keyboard"
+         minSdk = 26
+         targetSdk = 35
+-        versionCode = 129
+-        versionName = "0.7.2"
++        versionCode = 130
++        versionName = "0.7.3"
+         if (!providers.gradleProperty("keyantNativePrebuiltDir").isPresent) externalNativeBuild { ndkBuild { arguments += listOf("-j2") } }
+         ndk {
+             abiFilters.clear()
+@@ -128,6 +128,7 @@ android {
+ }
+ 
+ dependencies {
++    implementation(files("libs/sherpa-onnx-2.0.3.aar"))
+     implementation("com.google.android.gms:play-services-auth:22.0.0")
+     implementation("com.google.mlkit:translate:17.0.3")
+     implementation("com.journeyapps:zxing-android-embedded:4.3.0")
+diff --git a/app/src/main/assets/keyant-licenses/Parakeet-NOTICE.txt b/app/src/main/assets/keyant-licenses/Parakeet-NOTICE.txt
+new file mode 100644
+index 0000000..7814f60
+--- /dev/null
++++ b/app/src/main/assets/keyant-licenses/Parakeet-NOTICE.txt
+@@ -0,0 +1,7 @@
++NVIDIA Parakeet TDT 0.6B v3, optional download, CC BY 4.0.
++Original: https://huggingface.co/nvidia/parakeet-tdt-0.6b-v3
++License: https://creativecommons.org/licenses/by/4.0/
++ONNX int8 conversion by csukuangfj, pinned revision ed5d745623472f97cfc2e6c2916ee248798fc5a8:
++https://huggingface.co/csukuangfj/sherpa-onnx-nemo-parakeet-tdt-0.6b-v3-int8
++Weights are not bundled in this APK. KeyAnt does not train or modify the downloaded weights.
++Runtime: sherpa-onnx v2.0.3, Apache 2.0; ONNX Runtime, MIT.
+diff --git a/app/src/main/assets/keyant-licenses/onnxruntime-LICENSE b/app/src/main/assets/keyant-licenses/onnxruntime-LICENSE
+new file mode 100644
+index 0000000..48bc6bb
+--- /dev/null
++++ b/app/src/main/assets/keyant-licenses/onnxruntime-LICENSE
+@@ -0,0 +1,21 @@
++MIT License
++
++Copyright (c) Microsoft Corporation
++
++Permission is hereby granted, free of charge, to any person obtaining a copy
++of this software and associated documentation files (the "Software"), to deal
++in the Software without restriction, including without limitation the rights
++to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
++copies of the Software, and to permit persons to whom the Software is
++furnished to do so, subject to the following conditions:
++
++The above copyright notice and this permission notice shall be included in all
++copies or substantial portions of the Software.
++
++THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
++IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
++FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
++AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
++LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
++OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
++SOFTWARE.
+diff --git a/app/src/main/assets/keyant-licenses/sherpa-onnx-LICENSE b/app/src/main/assets/keyant-licenses/sherpa-onnx-LICENSE
+new file mode 100644
+index 0000000..d645695
+--- /dev/null
++++ b/app/src/main/assets/keyant-licenses/sherpa-onnx-LICENSE
+@@ -0,0 +1,202 @@
++
++                                 Apache License
++                           Version 2.0, January 2004
++                        http://www.apache.org/licenses/
++
++   TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
++
++   1. Definitions.
++
++      "License" shall mean the terms and conditions for use, reproduction,
++      and distribution as defined by Sections 1 through 9 of this document.
++
++      "Licensor" shall mean the copyright owner or entity authorized by
++      the copyright owner that is granting the License.
++
++      "Legal Entity" shall mean the union of the acting entity and all
++      other entities that control, are controlled by, or are under common
++      control with that entity. For the purposes of this definition,
++      "control" means (i) the power, direct or indirect, to cause the
++      direction or management of such entity, whether by contract or
++      otherwise, or (ii) ownership of fifty percent (50%) or more of the
++      outstanding shares, or (iii) beneficial ownership of such entity.
++
++      "You" (or "Your") shall mean an individual or Legal Entity
++      exercising permissions granted by this License.
++
++      "Source" form shall mean the preferred form for making modifications,
++      including but not limited to software source code, documentation
++      source, and configuration files.
++
++      "Object" form shall mean any form resulting from mechanical
++      transformation or translation of a Source form, including but
++      not limited to compiled object code, generated documentation,
++      and conversions to other media types.
++
++      "Work" shall mean the work of authorship, whether in Source or
++      Object form, made available under the License, as indicated by a
++      copyright notice that is included in or attached to the work
++      (an example is provided in the Appendix below).
++
++      "Derivative Works" shall mean any work, whether in Source or Object
++      form, that is based on (or derived from) the Work and for which the
++      editorial revisions, annotations, elaborations, or other modifications
++      represent, as a whole, an original work of authorship. For the purposes
++      of this License, Derivative Works shall not include works that remain
++      separable from, or merely link (or bind by name) to the interfaces of,
++      the Work and Derivative Works thereof.
++
++      "Contribution" shall mean any work of authorship, including
++      the original version of the Work and any modifications or additions
++      to that Work or Derivative Works thereof, that is intentionally
++      submitted to Licensor for inclusion in the Work by the copyright owner
++      or by an individual or Legal Entity authorized to submit on behalf of
++      the copyright owner. For the purposes of this definition, "submitted"
++      means any form of electronic, verbal, or written communication sent
++      to the Licensor or its representatives, including but not limited to
++      communication on electronic mailing lists, source code control systems,
++      and issue tracking systems that are managed by, or on behalf of, the
++      Licensor for the purpose of discussing and improving the Work, but
++      excluding communication that is conspicuously marked or otherwise
++      designated in writing by the copyright owner as "Not a Contribution."
++
++      "Contributor" shall mean Licensor and any individual or Legal Entity
++      on behalf of whom a Contribution has been received by Licensor and
++      subsequently incorporated within the Work.
++
++   2. Grant of Copyright License. Subject to the terms and conditions of
++      this License, each Contributor hereby grants to You a perpetual,
++      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
++      copyright license to reproduce, prepare Derivative Works of,
++      publicly display, publicly perform, sublicense, and distribute the
++      Work and such Derivative Works in Source or Object form.
++
++   3. Grant of Patent License. Subject to the terms and conditions of
++      this License, each Contributor hereby grants to You a perpetual,
++      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
++      (except as stated in this section) patent license to make, have made,
++      use, offer to sell, sell, import, and otherwise transfer the Work,
++      where such license applies only to those patent claims licensable
++      by such Contributor that are necessarily infringed by their
++      Contribution(s) alone or by combination of their Contribution(s)
++      with the Work to which such Contribution(s) was submitted. If You
++      institute patent litigation against any entity (including a
++      cross-claim or counterclaim in a lawsuit) alleging that the Work
++      or a Contribution incorporated within the Work constitutes direct
++      or contributory patent infringement, then any patent licenses
++      granted to You under this License for that Work shall terminate
++      as of the date such litigation is filed.
++
++   4. Redistribution. You may reproduce and distribute copies of the
++      Work or Derivative Works thereof in any medium, with or without
++      modifications, and in Source or Object form, provided that You
++      meet the following conditions:
++
++      (a) You must give any other recipients of the Work or
++          Derivative Works a copy of this License; and
++
++      (b) You must cause any modified files to carry prominent notices
++          stating that You changed the files; and
++
++      (c) You must retain, in the Source form of any Derivative Works
++          that You distribute, all copyright, patent, trademark, and
++          attribution notices from the Source form of the Work,
++          excluding those notices that do not pertain to any part of
++          the Derivative Works; and
++
++      (d) If the Work includes a "NOTICE" text file as part of its
++          distribution, then any Derivative Works that You distribute must
++          include a readable copy of the attribution notices contained
++          within such NOTICE file, excluding those notices that do not
++          pertain to any part of the Derivative Works, in at least one
++          of the following places: within a NOTICE text file distributed
++          as part of the Derivative Works; within the Source form or
++          documentation, if provided along with the Derivative Works; or,
++          within a display generated by the Derivative Works, if and
++          wherever such third-party notices normally appear. The contents
++          of the NOTICE file are for informational purposes only and
++          do not modify the License. You may add Your own attribution
++          notices within Derivative Works that You distribute, alongside
++          or as an addendum to the NOTICE text from the Work, provided
++          that such additional attribution notices cannot be construed
++          as modifying the License.
++
++      You may add Your own copyright statement to Your modifications and
++      may provide additional or different license terms and conditions
++      for use, reproduction, or distribution of Your modifications, or
++      for any such Derivative Works as a whole, provided Your use,
++      reproduction, and distribution of the Work otherwise complies with
++      the conditions stated in this License.
++
++   5. Submission of Contributions. Unless You explicitly state otherwise,
++      any Contribution intentionally submitted for inclusion in the Work
++      by You to the Licensor shall be under the terms and conditions of
++      this License, without any additional terms or conditions.
++      Notwithstanding the above, nothing herein shall supersede or modify
++      the terms of any separate license agreement you may have executed
++      with Licensor regarding such Contributions.
++
++   6. Trademarks. This License does not grant permission to use the trade
++      names, trademarks, service marks, or product names of the Licensor,
++      except as required for reasonable and customary use in describing the
++      origin of the Work and reproducing the content of the NOTICE file.
++
++   7. Disclaimer of Warranty. Unless required by applicable law or
++      agreed to in writing, Licensor provides the Work (and each
++      Contributor provides its Contributions) on an "AS IS" BASIS,
++      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
++      implied, including, without limitation, any warranties or conditions
++      of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A
++      PARTICULAR PURPOSE. You are solely responsible for determining the
++      appropriateness of using or redistributing the Work and assume any
++      risks associated with Your exercise of permissions under this License.
++
++   8. Limitation of Liability. In no event and under no legal theory,
++      whether in tort (including negligence), contract, or otherwise,
++      unless required by applicable law (such as deliberate and grossly
++      negligent acts) or agreed to in writing, shall any Contributor be
++      liable to You for damages, including any direct, indirect, special,
++      incidental, or consequential damages of any character arising as a
++      result of this License or out of the use or inability to use the
++      Work (including but not limited to damages for loss of goodwill,
++      work stoppage, computer failure or malfunction, or any and all
++      other commercial damages or losses), even if such Contributor
++      has been advised of the possibility of such damages.
++
++   9. Accepting Warranty or Additional Liability. While redistributing
++      the Work or Derivative Works thereof, You may choose to offer,
++      and charge a fee for, acceptance of support, warranty, indemnity,
++      or other liability obligations and/or rights consistent with this
++      License. However, in accepting such obligations, You may act only
++      on Your own behalf and on Your sole responsibility, not on behalf
++      of any other Contributor, and only if You agree to indemnify,
++      defend, and hold each Contributor harmless for any liability
++      incurred by, or claims asserted against, such Contributor by reason
++      of your accepting any such warranty or additional liability.
++
++   END OF TERMS AND CONDITIONS
++
++   APPENDIX: How to apply the Apache License to your work.
++
++      To apply the Apache License to your work, attach the following
++      boilerplate notice, with the fields enclosed by brackets "[]"
++      replaced with your own identifying information. (Don't include
++      the brackets!)  The text should be enclosed in the appropriate
++      comment syntax for the file format. We also recommend that a
++      file or class name and description of purpose be included on the
++      same "printed page" as the copyright notice for easier
++      identification within third-party archives.
++
++   Copyright [yyyy] [name of copyright owner]
++
++   Licensed under the Apache License, Version 2.0 (the "License");
++   you may not use this file except in compliance with the License.
++   You may obtain a copy of the License at
++
++       http://www.apache.org/licenses/LICENSE-2.0
++
++   Unless required by applicable law or agreed to in writing, software
++   distributed under the License is distributed on an "AS IS" BASIS,
++   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++   See the License for the specific language governing permissions and
++   limitations under the License.
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/AdaptiveTouch.java b/app/src/main/java/helium314/keyboard/keyforma/AdaptiveTouch.java
+index 758f0a1..3db816d 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/AdaptiveTouch.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/AdaptiveTouch.java
+@@ -44,21 +44,23 @@ public final class AdaptiveTouch {
+  }
+  static Key resolve(Keyboard keyboard,Key primary,int x,int y,float[] probabilities){return resolve(keyboard,primary,x,y,probabilities,false);}
+  static Key resolve(Keyboard keyboard,Key primary,int x,int y,float[] probabilities,boolean calibrated){
+-  if(keyboard==null||!keyboard.mId.isAlphabetKeyboard()||primary==null||primary.isSpacer()||primary.getWidth()<=0||primary.getHeight()<=0)return primary;
++  if(probabilities==null||probabilities.length!=26||keyboard==null||!keyboard.mId.isAlphabetKeyboard()||primary==null||primary.isSpacer()||primary.getWidth()<=0||primary.getHeight()<=0)return primary;
+   int code=Character.toLowerCase(primary.getCode());if(code<'a'||code>'z')return primary;
+   float nx=(x-primary.getX())/(float)primary.getWidth(),ny=(y-primary.getY())/(float)primary.getHeight();
+   // Central 76% of each cap is invariant, even with a confident language prediction.
+   if(nx>=.12f&&nx<=.88f&&ny>=.12f&&ny<=.88f)return primary;
+-  Key best=primary;float confidence=probabilities[code-'a'];
++  Key best=primary;float confidence=probabilities[code-'a'];float bestScore=-1;
++  if(!Float.isFinite(confidence))return primary;
+   for(Key k:keyboard.getNearestKeys(x,y)){
+    int c=Character.toLowerCase(k.getCode());if(k==primary||k.getWidth()<=0||k.getHeight()<=0||k.isSpacer()||c<'a'||c>'z')continue;
+-   float p=probabilities[c-'a'];if(p<.70f||p<confidence+.55f)continue;
++   float p=probabilities[c-'a'];if(!Float.isFinite(p)||p<.70f||p<confidence+.55f)continue;
+    // Only the narrow border of an immediate neighbour; never jump across a split gap.
+    float dx=Math.max(k.getX()-x,Math.max(0,x-k.getX()-k.getWidth()));
+    float dy=Math.max(k.getY()-y,Math.max(0,y-k.getY()-k.getHeight()));
+    if(Math.hypot(dx/k.getWidth(),dy/k.getHeight())>.12)continue;
+    if(calibrated){float primaryScore=Math.max(.05f,probabilities[code-'a'])*TouchCalibration.likelihood(keyboard,primary,x,y);float candidateScore=p*TouchCalibration.likelihood(keyboard,k,x,y);if(candidateScore<primaryScore*1.2f)continue;}
+-   best=k;confidence=p;
++   float score=calibrated?p*TouchCalibration.likelihood(keyboard,k,x,y):p;
++   if(score>bestScore||(score==bestScore&&k.getCode()<best.getCode())){best=k;bestScore=score;}
+   }
+   return best;
+  }
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/AntControls703.kt b/app/src/main/java/helium314/keyboard/keyforma/AntControls703.kt
+new file mode 100644
+index 0000000..b8c1ec5
+--- /dev/null
++++ b/app/src/main/java/helium314/keyboard/keyforma/AntControls703.kt
+@@ -0,0 +1,44 @@
++// SPDX-License-Identifier: GPL-3.0-only
++package helium314.keyboard.keyforma
++import android.content.Context
++internal object AntControls703 {
++ val entries=listOf(SettingResult("voice","Dove scrive la dettatura","vocale diretto campo messaggio card anteprima"),SettingResult("voice","Motore vocale","Parakeet offline Android riconoscimento dispositivo"),SettingResult("voice","Effetto della pillola vocale","animazione vetro arcobaleno onda spettro microfono"))
++ fun guide(q:String):AntGuide.Answer?=if(Regex("parakeet|dettatura.*(?:diretta|campo)|pillola.*(?:vocal|arcobaleno)|effett.*microfono").containsMatchIn(q))AntGuide.Answer("Puoi scrivere direttamente nel messaggio oppure rivedere nella card. Parakeet v3 è facoltativo, offline e aggiorna per frasi dopo brevi pause: richiede il download di 671 MB in Dettatura. In Microfono · aspetto scegli l’effetto, compreso Vetro arcobaleno. Puoi chiedermi «usa dettatura nel campo», «usa la card di revisione» oppure «metti la pillola vocale vetro arcobaleno».",entries)else null
++ fun submit(c:Context,text:String,previous:AntDialog.Turn?):AntDialog.Turn?{
++  val q=SettingsSearch.normal(text)
++  if(text.trimEnd().endsWith('?')&&!q.startsWith("puoi "))return null
++  if(!Regex("^(?:(?:ant|ok|mi|puoi|per favore) )*(?:usa|metti|imposta|cambia|attiva(?:la|lo)?|disattiva(?:la|lo)?)\\b").containsMatchIn(q))return null
++  val voice=Regex("vocal|dettatura|parakeet|microfono").containsMatchIn(q)
++  val related=voice||previous?.target in entries.map{it.title}
++  if(!related||(!voice&&Regex("tastiera|tema|trackball|appunti|rgb").containsMatchIn(q)))return null
++  var key:String?=null;var value:String?=null;var index=0
++  val off=Regex("\\bdisattiva(?:la|lo)?\\b").containsMatchIn(q)
++  val context=previous?.target
++  if(off&&("parakeet" in q||context==entries[1].title)){key="voice_engine";value="auto";index=1}
++  else if((off||q.startsWith("attiva"))&&(Regex("effetto|animazion|pillola").containsMatchIn(q)||context==entries[2].title)){key="voice_indicator";value=if(off)"text" else "wave";index=2}
++  else if(off&&(Regex("diretta|campo").containsMatchIn(q)||context==entries[0].title)){key="voice_destination";value="preview"}
++  else
++  if(Regex("campo|diretta|messaggio").containsMatchIn(q)){key="voice_destination";value="field"}
++  else if(Regex("card|revisione|anteprima").containsMatchIn(q)){key="voice_destination";value="preview"}
++  else if("parakeet" in q){key="voice_engine";value="parakeet";index=1}
++  else if("automatico" in q){key="voice_engine";value="auto";index=1}
++  else if("dispositivo" in q){key="voice_engine";value="device";index=1}
++  else if("android" in q){key="voice_engine";value="system";index=1}
++  else {val effect=VoiceWave.NAMES.indices.firstOrNull{SettingsSearch.normal(VoiceWave.NAMES[it]) in q}?:if("arcobaleno" in q||"glass" in q)VoiceWave.IDS.indexOf("glass")else null
++   if(effect!=null){key="voice_effect";value=VoiceWave.IDS[effect];index=2}}
++  if(key==null||value==null)return null
++  if(value=="parakeet"&&!ParakeetModel703.ready(c))return AntDialog.Turn(text,"Prima scarica il modello in Dettatura: 671 MB. Il motore attuale resta selezionato.",target=entries[1].title,page="voice")
++  KeyAntPrefs.get(c).edit().putString("ka_"+key,value).apply()
++  // An explicit style selection also makes the animation visible.
++  if(key=="voice_effect")KeyAntPrefs.get(c).edit().putString("ka_voice_indicator","wave").apply()
++  if(key=="voice_effect"||key=="voice_indicator"){
++   val active=SuggestionLook.active()
++   if(active!=null&&active.optString("id").startsWith("make_")){
++    val copy=org.json.JSONObject(active.toString()).put(key,value)
++    if(key=="voice_effect")copy.put("voice_indicator","wave")
++    MakeKeyAnt.save(c,copy);KeyAntPrefs.get(c).edit().putString("ka_maker_applied",copy.toString()).apply();MakeKeyAnt.init(c)
++   }
++  }
++  return AntDialog.Turn(text,when(key){"voice_destination"->if(value=="field")"La dettatura scrive nel campo del messaggio, senza inviarlo." else "La dettatura usa la card di revisione.";"voice_indicator"->if(value=="text")"Animazione vocale disattivata; lo stile scelto resta memorizzato." else "Animazione vocale attivata.";"voice_effect"->"Effetto vocale: "+VoiceWave.NAMES[VoiceWave.IDS.indexOf(value)]+".";else->"Motore vocale impostato: $value."},target=entries[index].title,page="voice")
++ }
++}
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/AntDialog.kt b/app/src/main/java/helium314/keyboard/keyforma/AntDialog.kt
+index 4d63acd..32c7ec3 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/AntDialog.kt
++++ b/app/src/main/java/helium314/keyboard/keyforma/AntDialog.kt
+@@ -24,6 +24,7 @@ internal object AntDialog {
+    if(previous?.page?.isNotEmpty()==true)return Turn(text,"Apro "+previous.target+".",target=previous.target,page=previous.page,navigate=true)
+    return Turn(text,"Quale impostazione vuoi aprire? Scrivimi il suo nome.")
+   }
++  AntControls703.submit(c,text,previous)?.let{return it}
+   AntControls700.submit(c,text,previous)?.let{return it}
+   AntControls699.submit(c,text,previous)?.let{return it}
+   AntSizing697.submit(c,text,previous)?.let{return it}
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/AntGuide.kt b/app/src/main/java/helium314/keyboard/keyforma/AntGuide.kt
+index 59ce1d5..1c05ca2 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/AntGuide.kt
++++ b/app/src/main/java/helium314/keyboard/keyforma/AntGuide.kt
+@@ -12,6 +12,7 @@ internal object AntGuide {
+  data class Answer(val text:String,val links:List<SettingResult>,val themes:List<SettingResult> = emptyList())
+  fun answer(c:Context,question:String,previous:String=""):Answer{
+   val raw=SettingsSearch.normal(question)
++  AntControls703.guide(raw)?.let{return it}
+   AntControls700.guide(raw)?.let{return it}
+   AntControls699.guide(raw)?.let{return it}
+   if(Regex("revisione contestuale|correzione del paragrafo").containsMatchIn(raw))return Answer("Nel comando Correggi, Revisione contestuale locale usa il modello già scaricato per rileggere l’intero testo. Non lavora a ogni tasto: prima di inserire puoi controllare il risultato. Senza modello, o spegnendola, resta il correttore rapido. Nomi, numeri e negazioni vengono controllati prima di accettare la revisione.",listOf(SettingResult("typing","Revisione contestuale locale")))
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/LanguagePill.java b/app/src/main/java/helium314/keyboard/keyforma/LanguagePill.java
+index 2229563..24c4ba1 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/LanguagePill.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/LanguagePill.java
+@@ -2,35 +2,36 @@
+ package helium314.keyboard.keyforma;
+ import android.graphics.*;import android.graphics.drawable.GradientDrawable;import android.view.*;import android.view.inputmethod.InputConnection;import android.widget.*;import android.animation.ValueAnimator;
+ import helium314.keyboard.latin.LatinIME;import helium314.keyboard.latin.settings.Settings;import helium314.keyboard.latin.common.ColorType;import helium314.keyboard.latin.utils.InputTypeUtils;import helium314.keyboard.keyboard.internal.keyboard_parser.floris.KeyCode;
+-/** Transient local editor: typing here never writes to the chat until the user confirms insertion. */
++/** Assistant editor, with explicitly selected live dictation into an owned host span. */
+ public final class LanguagePill {
+  static final String[][] LANGUAGES={{"it","Italiano"},{"en","English"},{"es","Español"},{"fr","Français"},{"de","Deutsch"},{"pt","Português"},{"nl","Nederlands"},{"pl","Polski"},{"ro","Română"},{"el","Ελληνικά"},{"tr","Türkçe"},{"uk","Українська"},{"ru","Русский"},{"ar","العربية"},{"hi","हिन्दी"},{"ja","日本語"},{"ko","한국어"},{"zh","中文"}};
+  private final LatinIME ime;private final KeyAntBar bar;private final boolean translate;private boolean dictation;private final LinearLayout header,content;private final TextView field,left,right,action;private TextView mic;private VoiceHalo voiceHalo;private final QuickProofreader proofreader=new QuickProofreader();private final VoiceCleanup cleanup=new VoiceCleanup();private String voiceOriginal,voiceCleaned,voiceNotice;private final InputConnection original;
+  private final String captured;private final boolean selected;private String source,result,from,to,mode="web";private boolean closed,busy,delivering;private PopupWindow popup;private final LocalTranslation translator=new LocalTranslation();private final QuickKnowledge knowledge=new QuickKnowledge();private String sourceTitle,sourceUrl;private final int ink,back;
+  private ValueAnimator reveal,swapping;private boolean openingStarted;private String phase="",voiceState="";private android.webkit.WebView web;private ResearchPane research;private PillVoice voice;private final LoadingDots dots;private final VoiceWave wave;
++ private LiveDictation703 live703;private boolean fieldMode703;private boolean interrupted703;
+  private int dp(float n){return Math.round(n*ime.getResources().getDisplayMetrics().density);}
+  public LanguagePill(LatinIME ime,KeyAntBar bar,boolean translate,boolean dictation){this(ime,bar,translate);this.dictation=dictation;if(dictation){source="";left.setOnClickListener(v->dictate());field.setContentDescription("Dettatura vocale");render();header.post(this::dictate);}}
+  public LanguagePill(LatinIME ime,KeyAntBar bar,boolean translate){this(ime,bar,translate,AssistantSelection.capture(ime.getCurrentInputConnection()));}
+  public LanguagePill(LatinIME ime,KeyAntBar bar,boolean translate,String selectionText){this(ime,bar,translate,selectionText,"");}
+  LanguagePill(LatinIME ime,KeyAntBar bar,boolean translate,String selectionText,String preceding){this.ime=ime;this.bar=bar;this.translate=translate;ink=Settings.getValues().mColors.get(ColorType.KEY_TEXT);back=Settings.getValues().mColors.get(ColorType.MAIN_BACKGROUND);original=ime.getCurrentInputConnection();CharSequence selection=selectionText;selected=selection!=null&&selection.length()>0;CharSequence text=selected?selection:preceding;captured=text==null?"":text.toString();source=captured;if(!translate)mode=SearchEngine.firstMode(ime,selected);from=KeyAntPrefs.text(ime,"translate_from","it");to=KeyAntPrefs.text(ime,"translate_to","en");
+   header=new LinearLayout(ime);header.setTag("keyant-language-pill");header.setGravity(Gravity.CENTER);header.setPadding(dp(8),0,dp(8),0);header.setClipChildren(false);header.setClipToPadding(false);
+-  content=new LinearLayout(ime);content.setGravity(Gravity.CENTER_VERTICAL);content.setPadding(dp(6),0,dp(6),0);content.setBackground(new PillSurface(ime,ink));header.addView(content,new LinearLayout.LayoutParams(-1,dp(44)));
++  content=new VoicePillLayout703(ime,ink);content.setGravity(Gravity.CENTER_VERTICAL);content.setPadding(dp(6),0,dp(6),0);content.setBackground(new PillSurface(ime,ink));header.addView(content,new LinearLayout.LayoutParams(-1,dp(44)));
+   left=chip(translate?from.toUpperCase(java.util.Locale.ROOT):"AI",translate?"Lingua di partenza":"Assistente locale · scegli azione",v->{if(translate)languages(true);else modes();},translate?36:40);content.addView(left);languageChip(left);
+   if(translate){TextView swap=chip("⇄","Inverti lingue",v->swap(),30);content.addView(swap);right=chip(to.toUpperCase(java.util.Locale.ROOT),"Lingua di destinazione",v->languages(false),36);content.addView(right);languageChip(right);}else right=null;
+   field=new TextView(ime);field.setTextColor(ink);field.setTextSize(13);field.setGravity(Gravity.CENTER_VERTICAL);field.setIncludeFontPadding(false);field.setMaxLines(2);field.setEllipsize(android.text.TextUtils.TruncateAt.END);field.setPadding(dp(7),0,dp(5),0);field.setContentDescription(translate?"Testo da tradurre":"Domanda o testo per l’assistente");field.setOnClickListener(v->{if(result!=null)showResult();else submit();});field.setOnLongClickListener(v->{source="";invalidateRequest();render();return true;});content.addView(field,new LinearLayout.LayoutParams(0,-1,1));
+   wave=new VoiceWave(ime,ink);wave.setVisibility(View.GONE);content.addView(wave,new LinearLayout.LayoutParams(0,-1,1));
+   dots=new LoadingDots(ime,ink);content.addView(dots,new LinearLayout.LayoutParams(dp(32),dp(36)));
+-  action=chip("↑",translate?"Traduci":"Elabora",v->{if(result!=null)insert();else submit();},36);content.addView(action);mic=chip("","Dettatura nella pillola",v->dictate(),34);voiceHalo=new VoiceHalo(ThemeAccent.color(ime),ime.getResources().getDisplayMetrics().density);mic.setSoundEffectsEnabled(false);mic.setBackground(voiceHalo);mic.setForeground(new android.graphics.drawable.InsetDrawable(new ToolbarIcon("voice",ink,dp(17)),dp(9),dp(12),dp(9),dp(12)));content.addView(mic);content.addView(chip("×","Chiudi assistente",v->closeAnimated(),34));render();
++  action=chip("↑",translate?"Traduci":"Elabora",v->{if(result!=null)insert();else submit();},36);content.addView(action);mic=chip("","Dettatura nella pillola",v->dictate(),34);voiceHalo=new VoiceHalo(ThemeAccent.color(ime),ime.getResources().getDisplayMetrics().density);mic.setSoundEffectsEnabled(false);mic.setBackground(voiceHalo);mic.setForeground(new android.graphics.drawable.InsetDrawable(new ToolbarIcon("voice",ink,dp(17)),dp(9),dp(12),dp(9),dp(12)));content.addView(mic);content.addView(chip("×","Chiudi assistente",v->{if(live703!=null)live703.cancel();closeAnimated();},34));render();
+   content.addOnLayoutChangeListener((v,l,t,r,b,ol,ot,or,ob)->{if(!openingStarted&&r>l&&!closed){openingStarted=true;if(ValueAnimator.areAnimatorsEnabled()&&KeyAntPrefs.bool(ime,"pill_motion",true))reveal=PillMotion.reveal(content,true,null);}});
+  }
+  private void languageChip(TextView view){GradientDrawable circle=new GradientDrawable();circle.setShape(GradientDrawable.OVAL);circle.setColor(ToolSurface.mix(ink,back,.89f));circle.setStroke(dp(1),ToolSurface.mix(ink,back,.67f));view.setBackground(new android.graphics.drawable.InsetDrawable(circle,dp(3),dp(5),dp(3),dp(5)));}
+  private TextView chip(String label,String description,View.OnClickListener listener,int width){TextView t=new TextView(ime);t.setText(label);t.setTextSize(label.length()>2?11:15);t.setTypeface(Typeface.DEFAULT,Typeface.BOLD);t.setTextColor(ink);t.setGravity(Gravity.CENTER);t.setIncludeFontPadding(false);t.setContentDescription(description);t.setLayoutParams(new LinearLayout.LayoutParams(dp(width),dp(40)));t.setOnClickListener(listener);TouchFeedback.install(t);return t;}
+  public View view(){return header;}
+- private void render(){boolean showWave=voice!=null&&source.isEmpty()&&voiceState.equals("Ascolto…")&&SuggestionLook.text(ime,SuggestionLook.active(),"voice_indicator","wave").equals("wave");wave.listening(showWave);wave.setVisibility(showWave?View.VISIBLE:View.GONE);field.setVisibility(showWave?View.GONE:View.VISIBLE);field.setText(result!=null?result:busy?"":source.isEmpty()?(!voiceState.isEmpty()?voiceState:translate||dictation?"":mode.equals("web")?"Cerca sul web…":mode.equals("ask")?"Cerca su Wikipedia…":"Scrivi o seleziona un testo…"):(voice!=null&&source.length()>240?"…"+source.substring(source.length()-240):source)+" ▏");dots.setVisibility(busy?View.VISIBLE:View.GONE);action.setVisibility((wholeWritingField||mode.equals("correct")||mode.equals("rewrite")||mode.equals("formal")||mode.equals("casual"))&&!source.isBlank()?View.VISIBLE:View.GONE);if(mic!=null){mic.setContentDescription(voice!=null?"Termina dettatura":"Avvia dettatura");mic.setSelected(voice!=null);voiceHalo.active(voice!=null);}dots.setContentDescription(voice!=null?"Ascolto":phase);action.setText(result!=null?"✓":"↑");action.setEnabled(!busy&&voice==null);left.setText(translate?from.toUpperCase(java.util.Locale.ROOT):mode.equals("web")?(SearchEngine.current(ime).equals("wikipedia")?"W":""):mode.equals("dictionary")?"Aa":mode.equals("chat")?"AI":"✦");left.setForeground(!translate&&mode.equals("web")&&!SearchEngine.current(ime).equals("wikipedia")?new android.graphics.drawable.InsetDrawable(new ToolbarIcon("search",ink,dp(20)),dp(10),dp(10),dp(10),dp(10)):null);left.setContentDescription(translate?"Lingua di partenza":mode.equals("web")?"Ricerca · "+SearchEngine.label(SearchEngine.current(ime)):"Scegli funzione assistente");if(right!=null)right.setText(to.toUpperCase(java.util.Locale.ROOT));if(dictation){left.setVisibility(View.GONE);left.setText("");left.setContentDescription("Dettatura");left.setForeground(new android.graphics.drawable.InsetDrawable(new ToolbarIcon("voice",ink,dp(20)),dp(10)));}}
++ private void render(){wave.style(SuggestionLook.text(ime,SuggestionLook.active(),"voice_effect","classic"));boolean showWave=voice!=null&&(fieldMode703||source.isEmpty())&&voiceState.startsWith("Ascolto")&&SuggestionLook.text(ime,SuggestionLook.active(),"voice_indicator","wave").equals("wave");wave.listening(showWave);boolean glass=showWave&&wave.style().equals("glass");((VoicePillLayout703)content).active(glass);wave.setVisibility(showWave?(glass?View.INVISIBLE:View.VISIBLE):View.GONE);field.setVisibility(showWave?View.GONE:View.VISIBLE);field.setText(result!=null?result:busy?"":source.isEmpty()?(!voiceState.isEmpty()?voiceState:translate||dictation?"":mode.equals("web")?"Cerca sul web…":mode.equals("ask")?"Cerca su Wikipedia…":"Scrivi o seleziona un testo…"):(voice!=null&&source.length()>240?"…"+source.substring(source.length()-240):source)+" ▏");dots.setVisibility(busy?View.VISIBLE:View.GONE);action.setVisibility((wholeWritingField||mode.equals("correct")||mode.equals("rewrite")||mode.equals("formal")||mode.equals("casual"))&&!source.isBlank()?View.VISIBLE:View.GONE);if(mic!=null){mic.setContentDescription(voice!=null?"Termina dettatura":"Avvia dettatura");mic.setSelected(voice!=null);voiceHalo.active(voice!=null);}dots.setContentDescription(voice!=null?"Ascolto":phase);action.setText(result!=null?"✓":"↑");action.setEnabled(!busy&&voice==null);left.setText(translate?from.toUpperCase(java.util.Locale.ROOT):mode.equals("web")?(SearchEngine.current(ime).equals("wikipedia")?"W":""):mode.equals("dictionary")?"Aa":mode.equals("chat")?"AI":"✦");left.setForeground(!translate&&mode.equals("web")&&!SearchEngine.current(ime).equals("wikipedia")?new android.graphics.drawable.InsetDrawable(new ToolbarIcon("search",ink,dp(20)),dp(10),dp(10),dp(10),dp(10)):null);left.setContentDescription(translate?"Lingua di partenza":mode.equals("web")?"Ricerca · "+SearchEngine.label(SearchEngine.current(ime)):"Scegli funzione assistente");if(right!=null)right.setText(to.toUpperCase(java.util.Locale.ROOT));if(dictation){left.setVisibility(View.GONE);left.setText("");left.setContentDescription("Dettatura");left.setForeground(new android.graphics.drawable.InsetDrawable(new ToolbarIcon("voice",ink,dp(20)),dp(10)));}}
+  private void invalidateRequest(){if(result!=null&&popup!=null)dismissPopup();cleanup.cancel();voiceOriginal=voiceCleaned=voiceNotice=null;voiceState="";if(voice!=null){voice.close();voice=null;}proofreader.cancel();translator.cancel();knowledge.cancel();LocalAssistant.cancel();busy=false;result=null;sourceTitle=sourceUrl=null;}
+  public boolean webSelecting(){return research!=null&&research.isPointerSelecting();}
+- public boolean input(int code){if(closed||delivering)return false;if(code==KeyCode.SHIFT||code==KeyCode.SYMBOL_ALPHA||code==KeyCode.ALPHA||code==KeyCode.SYMBOL)return false;if(code==KeyCode.VOICE_INPUT){dictate();return true;}if(research!=null){research.input(code);return true;}if(code==10){if(voice!=null){voice.stop();return true;}if(result!=null)insert();else submit();return true;}if(code==KeyCode.DELETE){invalidateRequest();if(!source.isEmpty())source=source.substring(0,source.offsetByCodePoints(source.length(),-1));render();return true;}if(code>0&&!Character.isISOControl(code)){invalidateRequest();if(dictation||source.length()<1500)source+=new String(Character.toChars(code));render();}return true;}
+- public boolean inputText(String value){if(closed||delivering)return false;if(research!=null&&research.text(value))return true;invalidateRequest();int count=dictation?value.length():Math.max(0,1500-source.length());String add=value.substring(0,Math.min(count,value.length()));if(!add.isEmpty()&&Character.isHighSurrogate(add.charAt(add.length()-1)))add=add.substring(0,add.length()-1);source+=add;render();return true;}
++ public boolean input(int code){if(closed||delivering)return false;if(fieldMode703&&code!=KeyCode.VOICE_INPUT&&code!=KeyCode.SHIFT&&code!=KeyCode.SYMBOL_ALPHA&&code!=KeyCode.ALPHA&&code!=KeyCode.SYMBOL){if(code==10&&voice!=null){voice.stop();return true;}finishLive703();return false;}if(code==KeyCode.SHIFT||code==KeyCode.SYMBOL_ALPHA||code==KeyCode.ALPHA||code==KeyCode.SYMBOL)return false;if(code==KeyCode.VOICE_INPUT){dictate();return true;}if(research!=null){research.input(code);return true;}if(code==10){if(voice!=null){voice.stop();return true;}if(result!=null)insert();else submit();return true;}if(code==KeyCode.DELETE){invalidateRequest();if(!source.isEmpty())source=source.substring(0,source.offsetByCodePoints(source.length(),-1));render();return true;}if(code>0&&!Character.isISOControl(code)){invalidateRequest();if(dictation||source.length()<1500)source+=new String(Character.toChars(code));render();}return true;}
++ public boolean inputText(String value){if(closed||delivering)return false;if(fieldMode703){finishLive703();return false;}if(research!=null&&research.text(value))return true;invalidateRequest();int count=dictation?value.length():Math.max(0,1500-source.length());String add=value.substring(0,Math.min(count,value.length()));if(!add.isEmpty()&&Character.isHighSurrogate(add.charAt(add.length()-1)))add=add.substring(0,add.length()-1);source+=add;render();return true;}
+  static String placeholder(String language){return switch(language){case "it"->"Scrivi";case "en"->"Write";case "es"->"Escribe";case "fr"->"Écris";case "de"->"Schreiben";case "pt"->"Escreva";case "nl"->"Schrijf";case "pl"->"Napisz";case "ro"->"Scrie";case "el"->"Γράψε";case "tr"->"Yaz";case "uk"->"Напиши";case "ru"->"Напиши";case "ar"->"اكتب";case "hi"->"लिखें";case "ja"->"入力";case "ko"->"입력";case "zh"->"输入";default->"Write";};}
+  private void swap(){if(swapping!=null&&swapping.isRunning())return;invalidateRequest();Runnable finish=()->{if(closed)return;String prev=from;from=to;to=prev;saveLanguages();render();};if(ValueAnimator.areAnimatorsEnabled()&&right.getWidth()>0)swapping=PillMotion.swap(left,right,finish);else finish.run();}
+  private void saveLanguages(){KeyAntPrefs.get(ime).edit().putString("ka_translate_from",from).putString("ka_translate_to",to).apply();}
+@@ -116,9 +117,9 @@ public final class LanguagePill {
+   if(closed)return;
+   if(voice!=null){voice.stop();return;}
+   if(ime.checkSelfPermission(android.Manifest.permission.RECORD_AUDIO)!=android.content.pm.PackageManager.PERMISSION_GRANTED){VoicePermissionActivity.ask(ime,()->{if(!closed&&header.isShown())dictate();});return;}
+-  invalidateRequest();voiceState="Avvio microfono…";voice=new PillVoice(ime,new PillVoice.Listener(){public void state(String text){if(!closed){voiceState=text;render();}}public void partial(String text){if(!closed){if(!source.equals(text)){source=text;render();}}}public void level(float value){if(closed||mic==null)return;voiceHalo.level(value);wave.level(value);}public void ready(String text){voiceState="";voice=null;acceptVoiceResult(text);}public void error(String message){voiceState=message;voice=null;if(!closed){render();Toast.makeText(ime,message,Toast.LENGTH_LONG).show();}}});render();voice.start(translate?from:"it",!translate&&!dictation&&mode.equals("web"));
++  invalidateRequest();if(dictation&&KeyAntPrefs.text(ime,"voice_destination","field").equals("field")){live703=LiveDictation703.begin(ime);fieldMode703=live703!=null;}voiceState="Avvio microfono…";voice=new PillVoice(ime,new PillVoice.Listener(){public void state(String text){if(!closed){voiceState=text;render();}}public void partial(String text){if(!closed){if(!source.equals(text)){source=text;if(fieldMode703&&!live703.update(text)){liveInterrupted703();return;}render();}}}public void level(float value){if(closed||mic==null)return;voiceHalo.level(value);wave.level(value);((VoicePillLayout703)content).level(value);}public void ready(String text){voiceState="";voice=null;acceptVoiceResult(text);}public void error(String message){voiceState=message;voice=null;if(fieldMode703){finishLive703();Toast.makeText(ime,message,Toast.LENGTH_LONG).show();return;}if(!closed){render();Toast.makeText(ime,message,Toast.LENGTH_LONG).show();}}});render();voice.start(translate?from:"it",!translate&&!dictation&&mode.equals("web"));
+  }
+- void acceptVoiceResult(String text){if(closed||text==null||text.isBlank())return;invalidateRequest();source=text.trim();if(dictation){
++ void acceptVoiceResult(String text){if(closed)return;if(text==null||text.isBlank()){if(fieldMode703)finishLive703();return;}if(fieldMode703){if(!live703.update(VoiceText700.live(ime,text,VoiceOptions.language(ime,"it")))){source=text;liveInterrupted703();return;}finishLive703();return;}invalidateRequest();source=text.trim();if(dictation){
+   String cleanMode=KeyAntPrefs.text(ime,"voice_cleanup","light");
+   if(cleanMode.equals("off")){result=source;insert();return;}
+   voiceOriginal=source;
+@@ -152,7 +153,7 @@ public final class LanguagePill {
+  }
+  private void resultButton(LinearLayout row,String icon,String label,Runnable action){ImageButton button=new ImageButton(ime);button.setImageDrawable(new ToolbarIcon(icon,ink,dp(21)));button.setContentDescription(label);button.setTooltipText(label);ToolSurface.applyToolbar(button,ink,back);TouchFeedback.install(button);button.setOnClickListener(v->action.run());LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(dp(48),dp(44));lp.setMargins(dp(8),0,dp(8),0);row.addView(button,lp);}
+  static boolean unchanged(InputConnection current,InputConnection original,String captured,boolean selected){if(current==null||current!=original)return false;CharSequence now=selected?AssistantSelection.capture(current):current.getTextBeforeCursor(captured.length(),0);return captured.isEmpty()||(now!=null&&captured.contentEquals(now));}
+- private void insert(){if(closed||result==null)return;var editor=ime.getCurrentInputEditorInfo();if(editor==null||Settings.getValues().mIncognitoModeEnabled||InputTypeUtils.isPasswordInputType(editor.inputType)||(editor.imeOptions&android.view.inputmethod.EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING)!=0||(wholeWritingField?(original!=ime.getCurrentInputConnection()||!captured.equals(wholeField(original))):!unchanged(ime.getCurrentInputConnection(),original,captured,selected))){Toast.makeText(ime,"Il campo o il testo è cambiato. Riapri lo strumento.",Toast.LENGTH_LONG).show();closeAnimated();return;}delivering=true;try{if(wholeWritingField && !captured.isEmpty()){
++ private void insert(){if(closed||result==null)return;if(interrupted703){Toast.makeText(ime,"Il campo è cambiato: usa Copia risultato e scegli dove incollarlo.",Toast.LENGTH_LONG).show();return;}var editor=ime.getCurrentInputEditorInfo();if(editor==null||Settings.getValues().mIncognitoModeEnabled||InputTypeUtils.isPasswordInputType(editor.inputType)||(editor.imeOptions&android.view.inputmethod.EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING)!=0||(wholeWritingField?(original!=ime.getCurrentInputConnection()||!captured.equals(wholeField(original))):!unchanged(ime.getCurrentInputConnection(),original,captured,selected))){Toast.makeText(ime,"Il campo o il testo è cambiato. Riapri lo strumento.",Toast.LENGTH_LONG).show();closeAnimated();return;}delivering=true;try{if(wholeWritingField && !captured.isEmpty()){
+   original.beginBatchEdit();
+   try{
+    if(!original.performContextMenuAction(android.R.id.selectAll)||!captured.equals(AssistantSelection.capture(original))){
+@@ -162,6 +163,8 @@ public final class LanguagePill {
+   }finally{original.endBatchEdit();}
+  }else ime.replaceFromAssistant(result,selected?0:captured.length());}finally{delivering=false;}closeAnimated();}
+  private void dismissPopup(){header.removeCallbacks(modelPoll);if(popup!=null){PopupWindow old=popup;popup=null;old.dismiss();}disposeWeb();}
+- private void closeAnimated(){if(closed)return;closed=true;cleanup.cancel();if(voice!=null){voice.close();voice=null;}proofreader.cancel();voiceHalo.active(false);wave.listening(false);translator.close();knowledge.close();LocalAssistant.cancel();dismissPopup();if(swapping!=null)swapping.cancel();if(reveal!=null)reveal.cancel();if(ValueAnimator.areAnimatorsEnabled()&&KeyAntPrefs.bool(ime,"pill_motion",true))reveal=PillMotion.reveal(content,false,()->bar.closeLanguagePill());else bar.closeLanguagePill();}
+- public void close(){closed=true;cleanup.cancel();if(voice!=null){voice.close();voice=null;}proofreader.cancel();voiceHalo.active(false);wave.listening(false);translator.close();knowledge.close();LocalAssistant.cancel();dismissPopup();if(reveal!=null)reveal.cancel();if(swapping!=null)swapping.cancel();content.animate().cancel();if(header.getParent() instanceof ViewGroup p)p.removeView(header);}
++ private void finishLive703(){if(live703!=null)live703.finish();closeAnimated();}
++ private void liveInterrupted703(){interrupted703=true;if(live703!=null)live703.finish();fieldMode703=false;if(voice!=null){voice.close();voice=null;}voiceState="";result=source;voiceNotice="Il campo o il cursore è cambiato. Il testo già scritto resta intatto; puoi copiare la trascrizione.";render();showResult();}
++ private void closeAnimated(){if(closed)return;if(live703!=null)live703.finish();closed=true;cleanup.cancel();if(voice!=null){voice.close();voice=null;}proofreader.cancel();voiceHalo.active(false);wave.listening(false);((VoicePillLayout703)content).active(false);translator.close();knowledge.close();LocalAssistant.cancel();dismissPopup();if(swapping!=null)swapping.cancel();if(reveal!=null)reveal.cancel();if(ValueAnimator.areAnimatorsEnabled()&&KeyAntPrefs.bool(ime,"pill_motion",true))reveal=PillMotion.reveal(content,false,()->bar.closeLanguagePill());else bar.closeLanguagePill();}
++ public void close(){if(live703!=null)live703.finish();closed=true;cleanup.cancel();if(voice!=null){voice.close();voice=null;}proofreader.cancel();voiceHalo.active(false);wave.listening(false);((VoicePillLayout703)content).active(false);translator.close();knowledge.close();LocalAssistant.cancel();dismissPopup();if(reveal!=null)reveal.cancel();if(swapping!=null)swapping.cancel();content.animate().cancel();if(header.getParent() instanceof ViewGroup p)p.removeView(header);}
+ }
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/LiveDictation703.java b/app/src/main/java/helium314/keyboard/keyforma/LiveDictation703.java
+new file mode 100644
+index 0000000..63f5b92
+--- /dev/null
++++ b/app/src/main/java/helium314/keyboard/keyforma/LiveDictation703.java
+@@ -0,0 +1,36 @@
++// SPDX-License-Identifier: GPL-3.0-only
++package helium314.keyboard.keyforma;
++import android.view.inputmethod.*;
++import helium314.keyboard.latin.LatinIME;
++/** Owns only the dictated span. Never guesses a replacement when the host changes text or selection. */
++final class LiveDictation703 {
++ private final LatinIME ime;private final InputConnection connection;private final EditorInfo editor;
++ private final String before,after,selection;private final int start;private String written="";private boolean active=true,inserted;
++ static ExtractedText snapshot(InputConnection ic){
++  if(ic==null)return null;
++  try{ExtractedTextRequest r=new ExtractedTextRequest();r.hintMaxChars=65536;ExtractedText e=ic.getExtractedText(r,0);
++   if(e==null||e.text==null||e.startOffset!=0||e.partialStartOffset>=0||e.text.length()>=65536||e.selectionStart<0||e.selectionEnd<0||e.selectionStart>e.text.length()||e.selectionEnd>e.text.length())return null;return e;
++  }catch(RuntimeException e){return null;}
++ }
++ static LiveDictation703 begin(LatinIME ime){ExtractedText e=snapshot(ime.getCurrentInputConnection());return e==null?null:new LiveDictation703(ime,e);}
++ private LiveDictation703(LatinIME ime,ExtractedText e){this.ime=ime;connection=ime.getCurrentInputConnection();editor=ime.getCurrentInputEditorInfo();start=Math.min(e.selectionStart,e.selectionEnd);int end=Math.max(e.selectionStart,e.selectionEnd);String text=e.text.toString();before=text.substring(0,start);selection=text.substring(start,end);after=text.substring(end);}
++ private boolean owned(){
++  if(!active||connection!=ime.getCurrentInputConnection()||editor!=ime.getCurrentInputEditorInfo()||editor==null||helium314.keyboard.latin.utils.InputTypeUtils.isPasswordInputType(editor.inputType))return false;
++  ExtractedText e=snapshot(connection);if(e==null)return false;
++  String expected=before+(inserted?written:selection)+after;
++  int end=start+(inserted?written.length():selection.length());
++  boolean caret=inserted?e.selectionStart==end&&e.selectionEnd==end:Math.min(e.selectionStart,e.selectionEnd)==start&&Math.max(e.selectionStart,e.selectionEnd)==end;
++  return caret&&expected.contentEquals(e.text);
++ }
++ static String spaced(String before,String text,String after){if(text.isEmpty())return text;boolean lead=!before.isEmpty()&&!Character.isWhitespace(before.charAt(before.length()-1))&&Character.isLetterOrDigit(before.codePointBefore(before.length()))&&Character.isLetterOrDigit(text.codePointAt(0));boolean tail=!after.isEmpty()&&!Character.isWhitespace(after.charAt(0))&&Character.isLetterOrDigit(after.codePointAt(0))&&Character.isLetterOrDigit(text.codePointBefore(text.length()));return (lead?" ":"")+text+(tail?" ":"");}
++ boolean update(String text){
++  if(!owned()){finish();return false;}String next=spaced(before,text,after);if(inserted&&next.equals(written))return true;
++  connection.beginBatchEdit();try{
++   if(!connection.setSelection(start,start+(inserted?written.length():selection.length()))){active=false;return false;}
++   if(!connection.commitText(next,1)){active=false;return false;}written=next;inserted=true;ime.noteKeyAntSelection(start+next.length(),start+next.length());return true;
++  }finally{connection.endBatchEdit();}
++ }
++ boolean cancel(){if(!owned()){finish();return false;}try{if(inserted){connection.beginBatchEdit();try{if(!connection.setSelection(start,start+written.length())||!connection.commitText(selection,1))return false;connection.setSelection(start,start+selection.length());ime.noteKeyAntSelection(start,start+selection.length());}finally{connection.endBatchEdit();}}return true;}finally{active=false;}}
++ void finish(){active=false;}
++ boolean hasInserted(){return inserted;}
++}
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/MakeKeyAnt.java b/app/src/main/java/helium314/keyboard/keyforma/MakeKeyAnt.java
+index 4c1d63c..e9fb8f5 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/MakeKeyAnt.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/MakeKeyAnt.java
+@@ -22,7 +22,7 @@ public final class MakeKeyAnt {
+    d.put("height",DimensionProfiles697.row(c,DimensionProfiles697.current(c),profile));
+    d.put("toolbar",ToolbarVisibility.enabled(c));d.put("toolbar_display",toolbarText(c,"toolbar_display","classic"));d.put("toolbar_knob_trigger",toolbarText(c,"toolbar_knob_trigger","tap"));
+    if(!MakeKeyAnt.is(profile)){d.put("rgbMode",KeyEffects.effectiveMode(c,profile)).put("rgbPalette",KeyAntPrefs.text(c,"rgb_color_choice","").equals("playstation")?"playstation":"single").put("rgbIntensity",KeyAntPrefs.number(c,"rgb_intensity",70)).put("rgbSpeed",KeyAntPrefs.number(c,"rgb_speed",50)).put("rgbDuration",KeyAntPrefs.number(c,"rgb_duration",520)).put("rgbSpread",KeyAntPrefs.number(c,"rgb_spread",300)).put("rgbColor",String.format(java.util.Locale.ROOT,"%06X",KeyEffects.configuredColor(c,profile)&0xffffff));}
+-   if(!MakeKeyAnt.is(profile)){for(String key:new String[]{"suggestion_divider","suggestion_effect","suggestion_color_mode","voice_indicator","touchpad_style","touchpad_labels","touchpad_lettering","clipboard_style"})if(KeyAntPrefs.get(c).contains("ka_"+key))d.put(key,KeyAntPrefs.text(c,key,"inherit"));for(String key:new String[]{"suggestion_color","divider_strength","divider_width","divider_shadow","suggestion_strength","touchpad_opacity","touchpad_text_size","clipboard_opacity"})if(KeyAntPrefs.get(c).contains("ka_"+key))d.put(key,KeyAntPrefs.number(c,key,0));d.put("front_punctuation",KeyAntPrefs.text(c,"front_punctuation","both"));d.put("front_left_key",KeyAntPrefs.text(c,"front_left_key","comma"));d.put("toolbar_look",KeyAntPrefs.text(c,"toolbar_look","current"));d.put("toolbar_glyph",KeyAntPrefs.text(c,"toolbar_glyph","preset"));if(KeyAntPrefs.get(c).contains("ka_toolbar_match_theme"))d.put("toolbar_match_theme",ToolbarCoordination693.enabled(c)).put("toolbar_theme_icons_only",ToolbarCoordination693.iconsOnly(c));}
++   if(!MakeKeyAnt.is(profile)){for(String key:new String[]{"suggestion_divider","suggestion_effect","suggestion_color_mode","voice_indicator","voice_effect","touchpad_style","touchpad_labels","touchpad_lettering","clipboard_style"})if(KeyAntPrefs.get(c).contains("ka_"+key))d.put(key,KeyAntPrefs.text(c,key,"inherit"));for(String key:new String[]{"suggestion_color","divider_strength","divider_width","divider_shadow","suggestion_strength","touchpad_opacity","touchpad_text_size","clipboard_opacity"})if(KeyAntPrefs.get(c).contains("ka_"+key))d.put(key,KeyAntPrefs.number(c,key,0));d.put("front_punctuation",KeyAntPrefs.text(c,"front_punctuation","both"));d.put("front_left_key",KeyAntPrefs.text(c,"front_left_key","comma"));d.put("toolbar_look",KeyAntPrefs.text(c,"toolbar_look","current"));d.put("toolbar_glyph",KeyAntPrefs.text(c,"toolbar_glyph","preset"));if(KeyAntPrefs.get(c).contains("ka_toolbar_match_theme"))d.put("toolbar_match_theme",ToolbarCoordination693.enabled(c)).put("toolbar_theme_icons_only",ToolbarCoordination693.iconsOnly(c));}
+    if(!MakeKeyAnt.is(profile)&&XboxAnniversary.supports(profile))d.put("backgroundOpacity",XboxAnniversary.opacity(c,profile));
+    if(!MakeKeyAnt.is(profile)){d.put("showHints",p.getBoolean(Settings.PREF_SHOW_HINTS,helium314.keyboard.latin.settings.Defaults.PREF_SHOW_HINTS));d.put("commaInk",KeyAntPrefs.text(c,"comma_ink","auto"));d.put("commaInkColor",String.format(java.util.Locale.ROOT,"%06X",KeyAntPrefs.number(c,"comma_ink_color",Color.WHITE)&0xffffff));if(SmokeGlassCaps.supports(profile)){d.put("smokeAspect",SmokeGlassCaps.aspect(profile));d.put("smokeCustomProportions",SmokeGlassCaps.customProportions(profile));}}
+    d.put("nativeTouch",ThemeEffects697.enabled(c,profile));d.put("numberRow",p.getBoolean(Settings.PREF_SHOW_NUMBER_ROW,false));
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/ParakeetModel703.java b/app/src/main/java/helium314/keyboard/keyforma/ParakeetModel703.java
+new file mode 100644
+index 0000000..2c6d94d
+--- /dev/null
++++ b/app/src/main/java/helium314/keyboard/keyforma/ParakeetModel703.java
+@@ -0,0 +1,41 @@
++// SPDX-License-Identifier: GPL-3.0-only
++package helium314.keyboard.keyforma;
++import android.content.Context;
++import java.io.*;import java.net.*;import java.security.*;
++/** Explicit optional download, pinned revision and hashes. No audio leaves this engine. */
++public final class ParakeetModel703 implements AutoCloseable {
++ static final class Part {final String name,sha,url;final long size;Part(String n,long s,String h,String u){name=n;size=s;sha=h;url=u;}}
++ static final Part[] PARTS={new Part("decoder.int8.onnx",11845274L,"0222a86147299d4dee90edf95b6d13827edb42ad8b7c9cf0b2582f030937c0b5","https://huggingface.co/csukuangfj/sherpa-onnx-nemo-parakeet-tdt-0.6b-v3-int8/resolve/ed5d745623472f97cfc2e6c2916ee248798fc5a8/decoder.int8.onnx"),
++new Part("encoder.int8.onnx",652282294L,"1afbe69c1ffdabee94755f42e4daf1d93549131a3da11356bda84fcef0f2c479","https://huggingface.co/csukuangfj/sherpa-onnx-nemo-parakeet-tdt-0.6b-v3-int8/resolve/ed5d745623472f97cfc2e6c2916ee248798fc5a8/encoder.int8.onnx"),
++new Part("joiner.int8.onnx",6355277L,"cbd02f3696e9944970111fb439d9c3fd365a80374565f13f2b9c7007d253fc98","https://huggingface.co/csukuangfj/sherpa-onnx-nemo-parakeet-tdt-0.6b-v3-int8/resolve/ed5d745623472f97cfc2e6c2916ee248798fc5a8/joiner.int8.onnx"),
++new Part("tokens.txt",93939L,"d58544679ea4bc6ac563d1f545eb7d474bd6cfa467f0a6e2c1dc1c7d37e3c35d","https://huggingface.co/csukuangfj/sherpa-onnx-nemo-parakeet-tdt-0.6b-v3-int8/resolve/ed5d745623472f97cfc2e6c2916ee248798fc5a8/tokens.txt")};
++ public interface Progress{void update(String status,boolean done);}
++ private static final java.util.concurrent.atomic.AtomicBoolean BUSY=new java.util.concurrent.atomic.AtomicBoolean();
++ private volatile boolean cancelled;private volatile HttpURLConnection connection;
++ public static File folder(Context c){return new File(c.getNoBackupFilesDir(),"parakeet-v3-int8");}
++ public static boolean ready(Context c){File dir=folder(c);if(!new File(dir,"verified-v1").isFile())return false;for(Part p:PARTS)if(new File(dir,p.name).length()!=p.size)return false;return true;}
++ public static boolean busy(){return BUSY.get();}
++ public void start(Context c,Progress listener){Context app=c.getApplicationContext();android.os.Handler main=new android.os.Handler(android.os.Looper.getMainLooper());
++  if(!BUSY.compareAndSet(false,true)){listener.update("Download già in corso",true);return;}
++  new Thread(()->{String result="Modello pronto · Parakeet v3";File dir=folder(app);try{
++   if(!dir.isDirectory()&&!dir.mkdirs())throw new IOException();
++   if(dir.getUsableSpace()<850000000L&&!ready(app))throw new IOException("Servono almeno 850 MB liberi");
++   long total=0;for(Part part:PARTS)total+=part.size;long received=0;long last=0;
++   for(Part part:PARTS){File target=new File(dir,part.name);if(valid(target,part)){received+=part.size;continue;}
++    File temp=new File(dir,part.name+".part");MessageDigest digest=MessageDigest.getInstance("SHA-256");
++    try{if(cancelled)throw new InterruptedIOException();connection=(HttpURLConnection)new URL(part.url).openConnection();connection.setConnectTimeout(20000);connection.setReadTimeout(20000);connection.setRequestProperty("Accept-Encoding","identity");
++     if(connection.getResponseCode()!=200)throw new IOException("Download non disponibile");long count=0;
++     try(InputStream in=connection.getInputStream();OutputStream out=new FileOutputStream(temp)){byte[] buffer=new byte[65536];int n;while((n=in.read(buffer))!=-1){if(cancelled)throw new InterruptedIOException();count+=n;if(count>part.size)throw new IOException("Dimensione inattesa");out.write(buffer,0,n);digest.update(buffer,0,n);received+=n;long now=android.os.SystemClock.elapsedRealtime();if(now-last>250){last=now;String status="Download Parakeet · "+(received*100/total)+"%";main.post(()->{if(!cancelled)listener.update(status,false);});}}}
++     if(count!=part.size||!hex(digest.digest()).equals(part.sha))throw new IOException("Verifica del modello non riuscita");
++     if(!temp.renameTo(target))throw new IOException("Salvataggio non riuscito");
++    }finally{if(connection!=null)connection.disconnect();connection=null;temp.delete();}
++   }
++   if(cancelled)throw new InterruptedIOException();try(FileOutputStream out=new FileOutputStream(new File(dir,"verified-v1"))){out.write(1);}
++  }catch(Exception e){result=cancelled?"Download annullato":e.getMessage()==null?"Download non riuscito. Puoi riprovare.":e.getMessage();}
++  finally{BUSY.set(false);}String status=result;main.post(()->listener.update(status,true));
++  },"keyant-parakeet-download").start();
++ }
++ static boolean valid(File file,Part part)throws Exception{if(file.length()!=part.size)return false;MessageDigest d=MessageDigest.getInstance("SHA-256");try(InputStream in=new FileInputStream(file)){byte[] b=new byte[65536];int n;while((n=in.read(b))!=-1)d.update(b,0,n);}return hex(d.digest()).equals(part.sha);}
++ static String hex(byte[] bytes){StringBuilder b=new StringBuilder();for(byte v:bytes)b.append(String.format(java.util.Locale.ROOT,"%02x",v&255));return b.toString();}
++ public void close(){cancelled=true;HttpURLConnection c=connection;if(c!=null)c.disconnect();}
++}
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/ParakeetSettings703.kt b/app/src/main/java/helium314/keyboard/keyforma/ParakeetSettings703.kt
+new file mode 100644
+index 0000000..2bcfe8a
+--- /dev/null
++++ b/app/src/main/java/helium314/keyboard/keyforma/ParakeetSettings703.kt
+@@ -0,0 +1,23 @@
++// SPDX-License-Identifier: GPL-3.0-only
++package helium314.keyboard.keyforma
++import androidx.compose.runtime.*
++import androidx.compose.material3.*
++import androidx.compose.foundation.layout.*
++import androidx.compose.ui.Modifier
++import androidx.compose.ui.platform.LocalContext
++import androidx.compose.ui.unit.dp
++@Composable internal fun ParakeetSettings703(){
++ val c=LocalContext.current
++ var status by remember{mutableStateOf(if(ParakeetModel703.ready(c))"Parakeet v3 pronto" else "Modello non scaricato")}
++ var busy by remember{mutableStateOf(false)}
++ var task by remember{mutableStateOf<ParakeetModel703?>(null)}
++ DisposableEffect(Unit){onDispose{task?.close()}}
++ Text("Parakeet TDT 0.6B v3",Modifier.padding(horizontal=16.dp),style=MaterialTheme.typography.titleMedium)
++ Note("Download facoltativo di 671 MB; servono almeno 850 MB liberi. Usa memoria e processore del telefono. L’audio resta sul dispositivo. Il download continua mentre questa pagina resta aperta; uscire lo interrompe. Tornando puoi riprendere i file già verificati.")
++ Text(status,Modifier.padding(horizontal=16.dp),style=MaterialTheme.typography.bodyMedium)
++ Row(Modifier.padding(12.dp),horizontalArrangement=Arrangement.spacedBy(8.dp)){
++  OutlinedButton(enabled=!busy,onClick={busy=true;task=ParakeetModel703().also{it.start(c){message,done->status=message;busy=!done}}}){Text(if(ParakeetModel703.ready(c))"Verifica modello" else "Scarica Parakeet")}
++  if(busy)TextButton(onClick={task?.close()}){Text("Annulla")}
++ }
++ Note("Modello NVIDIA, licenza CC BY 4.0; conversione ONNX di csukuangfj; motore sherpa-onnx. I nomi personali sono suggerimenti per il servizio Android: Parakeet non riceve automaticamente questa lista. Non equivale alla riscrittura AI della frase.")
++}
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/ParakeetVoice703.kt b/app/src/main/java/helium314/keyboard/keyforma/ParakeetVoice703.kt
+new file mode 100644
+index 0000000..9d3412c
+--- /dev/null
++++ b/app/src/main/java/helium314/keyboard/keyforma/ParakeetVoice703.kt
+@@ -0,0 +1,71 @@
++// SPDX-License-Identifier: GPL-3.0-only
++package helium314.keyboard.keyforma
++import android.content.Context
++import android.media.*
++import android.os.*
++import com.k2fsa.sherpa.onnx.*
++import java.util.concurrent.ArrayBlockingQueue
++import java.util.concurrent.TimeUnit
++
++/** Bounded phrase decoding. Capture and inference never run on the UI thread. */
++internal class ParakeetVoice703(private val context:Context,private val listener:PillVoice.Listener,private val silenceMs:Int):AutoCloseable {
++ private val main=Handler(Looper.getMainLooper())
++ @Volatile private var closed=false
++ @Volatile private var stopping=false
++ @Volatile private var captured=false
++ @Volatile private var recording:AudioRecord?=null
++ @Volatile private var failure:String?=null
++ private val queue=ArrayBlockingQueue<FloatArray>(3)
++ private fun post(action:()->Unit){main.post{if(!closed)action()}}
++ fun start(){Thread({decode()},"keyant-parakeet-decode").start()}
++ private fun decode(){var recognizer:OfflineRecognizer?=null
++  try{
++   post{listener.state("Carico Parakeet…")}
++   val dir=ParakeetModel703.folder(context)
++   recognizer=OfflineRecognizer(config=OfflineRecognizerConfig(modelConfig=OfflineModelConfig(
++    transducer=OfflineTransducerModelConfig(encoder=java.io.File(dir,"encoder.int8.onnx").path,decoder=java.io.File(dir,"decoder.int8.onnx").path,joiner=java.io.File(dir,"joiner.int8.onnx").path),
++    tokens=java.io.File(dir,"tokens.txt").path,numThreads=2,modelType="nemo_transducer",provider="cpu")))
++   if(closed)return
++   if(stopping){post{listener.error("Registrazione annullata prima dell’avvio.")};return}
++   Thread({capture()},"keyant-parakeet-mic").start()
++   val text=StringBuilder()
++   while(!closed&&(!captured||queue.isNotEmpty())){
++    val samples=queue.poll(100,TimeUnit.MILLISECONDS)?:continue
++    val stream=recognizer.createStream()
++    val phrase=try{stream.acceptWaveform(samples,16000);recognizer.decode(stream);recognizer.getResult(stream).text.trim()}finally{stream.release()}
++    if(phrase.isNotEmpty()){if(text.isNotEmpty())text.append(' ');text.append(phrase);val partial=text.toString();post{listener.partial(partial)}}
++   }
++   if(!closed){val value=text.toString();val issue=failure;post{if(issue!=null)listener.error(issue)else if(value.isBlank())listener.error("Non ho ricevuto parole. Riprova.")else listener.ready(value)}}
++  }catch(e:Exception){fail("Parakeet non disponibile. Puoi riprovare o scegliere Servizio Android.")}
++   catch(e:LinkageError){fail("Parakeet non è compatibile con questo dispositivo.")}
++   catch(e:OutOfMemoryError){fail("Memoria insufficiente per Parakeet. Scegli Servizio Android.")}
++  finally{stopping=true;try{recording?.stop()}catch(_:Exception){};recognizer?.release()}
++ }
++ private fun fail(message:String){post{listener.error(message)}}
++ private fun capture(){var recorder:AudioRecord?=null
++  try{
++   val minimum=AudioRecord.getMinBufferSize(16000,AudioFormat.CHANNEL_IN_MONO,AudioFormat.ENCODING_PCM_16BIT)
++   check(minimum>0)
++   recorder=AudioRecord.Builder().setAudioSource(MediaRecorder.AudioSource.VOICE_RECOGNITION).setAudioFormat(AudioFormat.Builder().setSampleRate(16000).setChannelMask(AudioFormat.CHANNEL_IN_MONO).setEncoding(AudioFormat.ENCODING_PCM_16BIT).build()).setBufferSizeInBytes(maxOf(6400,minimum*2)).build()
++   check(recorder.state==AudioRecord.STATE_INITIALIZED);recording=recorder
++   if(stopping||closed)return
++   recorder.startRecording();post{listener.state("Ascolto · Parakeet")}
++   val gate=VoiceStream.ActivityGate(silenceMs,SystemClock.elapsedRealtime())
++   val pcm=ShortArray(1600);val phrase=FloatArray(16000*20);var used=0;var heard=false;var lastSpeech=SystemClock.elapsedRealtime()
++   fun enqueue(){if(used>0&&heard&&!closed){if(!queue.offer(phrase.copyOf(used))){failure="Parakeet non riesce a seguire questo ritmo. Il testo riconosciuto è conservato; riprova con Servizio Android.";stopping=true}};used=0;heard=false}
++   while(!stopping&&!closed){val n=recorder.read(pcm,0,pcm.size);if(n<0){if(!stopping)error("microphone");break};if(n==0)continue
++    var sum=0.0;for(i in 0 until n)sum+=pcm[i].toDouble()*pcm[i];val rms=kotlin.math.sqrt(sum/n);val now=SystemClock.elapsedRealtime();val active=gate.sample(rms,now)
++    if(active){heard=true;lastSpeech=now};val level=(rms/4500).coerceIn(0.0,1.0).toFloat();post{listener.level(level)}
++    for(i in 0 until n){phrase[used++]=pcm[i]/32768f;if(used==phrase.size)enqueue()}
++    if(heard&&now-lastSpeech>=800)enqueue()
++    // Keep at most 200ms of preceding silence without unbounded allocation.
++    if(!heard&&used>3200){System.arraycopy(phrase,used-3200,phrase,0,3200);used=3200}
++    if(gate.expired(now))break
++   }
++   enqueue()
++  }catch(e:Exception){if(!closed&&!stopping)failure="Microfono interrotto. Il testo già riconosciuto è conservato."}
++  finally{try{recorder?.stop()}catch(_:Exception){};recorder?.release();recording=null;captured=true}
++ }
++ fun stop(){stopping=true;try{recording?.stop()}catch(_:Exception){}}
++ override fun close(){closed=true;stop();main.removeCallbacksAndMessages(null);queue.clear()}
++}
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/PersonalStyleSettings.kt b/app/src/main/java/helium314/keyboard/keyforma/PersonalStyleSettings.kt
+index 21492cb..a889640 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/PersonalStyleSettings.kt
++++ b/app/src/main/java/helium314/keyboard/keyforma/PersonalStyleSettings.kt
+@@ -34,11 +34,16 @@ internal val SuggestionColors=listOf("theme" to "Colore del tema","rgb" to "Come
+  Note("Gli effetti riguardano soltanto questa barra. Le parole restano subito selezionabili; le animazioni rispettano la preferenza di sistema.")}
+ }
+ @Composable internal fun VoiceIndicatorSettings(draft:JSONObject?=null,change:((JSONObject)->Unit)?=null){
++ val c=LocalContext.current;val p=KeyAntPrefs.get(c);var revision by remember{mutableIntStateOf(0)}
++ DisposableEffect(p){val l=android.content.SharedPreferences.OnSharedPreferenceChangeListener{_,_->revision++};p.registerOnSharedPreferenceChangeListener(l);onDispose{p.unregisterOnSharedPreferenceChangeListener(l)}}
+  Text("Microfono · aspetto",style=MaterialTheme.typography.titleMedium)
+- StudioCard{AndroidView(factory={VoiceWave(it,0xffbda5ff.toInt()).apply{listening(true)}},modifier=Modifier.fillMaxWidth().height(50.dp))
+- val options=listOf("wave" to "Onda audio animata","text" to "Scritta Ascolto")
++ StudioCard{
++ AndroidView(factory={VoiceWave(it,0xffbda5ff.toInt()).apply{preview(true)}},update={revision;it.style(SuggestionLook.text(c,draft,"voice_effect","classic"))},modifier=Modifier.fillMaxWidth().height(56.dp))
++ val effects=VoiceWave.IDS.indices.map{VoiceWave.IDS[it] to VoiceWave.NAMES[it]}
++ if(draft==null)Choice("Effetto della pillola vocale","voice_effect","classic",effects)else MakerChoice("Effetto della pillola vocale",draft.optString("voice_effect","inherit"),listOf("inherit" to "Come nelle impostazioni")+effects){change?.invoke(JSONObject(draft.toString()).put("voice_effect",it))}
++ val options=listOf("wave" to "Animazione audio","text" to "Scritta Ascolto")
+  if(draft==null)Choice("Indicatore di ascolto","voice_indicator","wave",options)else MakerChoice("Indicatore di ascolto",draft.optString("voice_indicator","inherit"),listOf("inherit" to "Come nelle impostazioni")+options){change?.invoke(JSONObject(draft.toString()).put("voice_indicator",it))}
+- Note("L’onda risponde al volume rilevato. Appena arriva la prima frase, lascia spazio al testo riconosciuto.")}
++ Note("Anteprima in loop. Durante la registrazione l’effetto segue il volume del microfono; non indica la precisione del riconoscimento. Le animazioni rispettano il movimento ridotto. In modalità card il testo prende il posto dell’effetto.")}
+ }
+ @Composable internal fun FrontRowSettings(){
+  val c=LocalContext.current;val prefs=KeyAntPrefs.get(c);var revision by remember{mutableIntStateOf(0)}
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/PillVoice.java b/app/src/main/java/helium314/keyboard/keyforma/PillVoice.java
+index c2e1902..8a6cac2 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/PillVoice.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/PillVoice.java
+@@ -26,7 +26,7 @@ final class PillVoice implements AutoCloseable {
+     private Audio stream;
+     private boolean shortQuery, closed, stopping, onDevice, segmented, primaryOnly, compatibility, direct, providerFallback;
+     private int generation;
+-    private String language;
++    private String language;private String lastPartial703="";private ParakeetVoice703 offline703;
+     private long lastActivity, endDeadline;
+     private final Runnable startTimeout = () -> retryOrFail("Il servizio vocale non risponde.");
+     private final Runnable finalTimeout = this::complete;
+@@ -35,7 +35,7 @@ final class PillVoice implements AutoCloseable {
+     PillVoice(Context c, Listener l) { this(c, l, VoiceStream::new); }
+     PillVoice(Context c, Listener l, AudioFactory factory) { context = c; listener = l; audioFactory = factory; }
+     static int silenceMillis(Context c, boolean query) {
+-        return query ? 2200 : Math.max(2, Math.min(30, KeyAntPrefs.number(c, "voice_silence", 12))) * 1000;
++        return query ? 2200 : Math.max(2, Math.min(30, KeyAntPrefs.number(c, "voice_silence", 5))) * 1000;
+     }
+     static boolean directAudio(Context c) {
+         // Restore the continuous route. The 0.6.9 experimental switch is deliberately retired.
+@@ -60,9 +60,18 @@ final class PillVoice implements AutoCloseable {
+         if (context.checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+             fail("Consenti l’accesso al microfono per dettare"); return;
+         }
++        String engine=KeyAntPrefs.text(context,"voice_engine","auto");
++        if(engine.equals("parakeet")){if(!ParakeetModel703.ready(context)){fail("Scarica Parakeet v3 in Dettatura prima di usarlo.");return;}offline703=new ParakeetVoice703(context,new Listener(){
++ public void state(String text){if(!closed)listener.state(text);}
++ public void level(float value){if(!closed)listener.level(value);}
++ public void partial(String text){if(!closed)listener.partial(VoiceText700.live(context,text,language));}
++ public void ready(String text){if(closed)return;String formatted=VoiceWriting.format(text,language,KeyAntPrefs.bool(context,"voice_punctuation",true),VoiceOptions.bilingual(context,language));formatted=VoiceOptions.spelling(context,formatted);close();listener.ready(formatted);}
++ public void error(String message){if(closed)return;close();listener.error(message);}
++ },silenceMillis(context,shortQuery));offline703.start();return;}
++        if(engine.equals("device")&&(Build.VERSION.SDK_INT<31||!SpeechRecognizer.isOnDeviceRecognitionAvailable(context))){fail("Riconoscimento sul dispositivo non disponibile. Scegli Automatico o Servizio Android in Dettatura.");return;}
+         direct = directAudio(context);
+         lastActivity = SystemClock.uptimeMillis();
+-        startRecognizer(KeyAntPrefs.bool(context, "voice_local", true) && Build.VERSION.SDK_INT >= 31 && SpeechRecognizer.isOnDeviceRecognitionAvailable(context));
++        startRecognizer(!engine.equals("system") && (engine.equals("device") || KeyAntPrefs.bool(context, "voice_local", true)) && Build.VERSION.SDK_INT >= 31 && SpeechRecognizer.isOnDeviceRecognitionAvailable(context));
+     }
+     private void activity() {
+         lastActivity = SystemClock.uptimeMillis();
+@@ -117,7 +126,7 @@ final class PillVoice implements AutoCloseable {
+                     if (!valid()) return;
+                     handler.removeCallbacks(startTimeout);
+                     String value = text(b);
+-                    if (!value.isBlank()) { activity(); transcript.partial(value); listener.partial(displayText()); }
++                    if (!value.isBlank()) { if(stream==null&&!value.equals(lastPartial703))activity();lastPartial703=value;transcript.partial(value); listener.partial(displayText()); }
+                 }
+                 public void onSegmentResults(Bundle b) {
+                     if (!valid()) return;
+@@ -145,7 +154,7 @@ final class PillVoice implements AutoCloseable {
+                     }
+                     retryOrFail("Servizio vocale non disponibile (" + error + ").");
+                 }
+-                public void onBufferReceived(byte[] b) {} public void onEndOfSpeech() {} public void onEvent(int type, Bundle b) {}
++                public void onBufferReceived(byte[] b) {} public void onEndOfSpeech() {if(valid()&&stream==null&&!stopping){handler.removeCallbacks(pauseTimeout);endDeadline=lastActivity+silenceMillis(context,shortQuery);handler.postAtTime(pauseTimeout,endDeadline);}} public void onEvent(int type, Bundle b) {}
+             });
+             listener.state(compatibility ? "Riprovo l’ascolto…" : "Avvio microfono…");
+             handler.postDelayed(startTimeout, 7000);
+@@ -170,7 +179,7 @@ final class PillVoice implements AutoCloseable {
+         if (closed) return;
+         if (!stopping && transcript.empty() && (!compatibility || (direct && onDevice && !providerFallback))) {
+             boolean local = onDevice;
+-            if (compatibility) { local = false; providerFallback = true; }
++            if (compatibility) { if(KeyAntPrefs.text(context,"voice_engine","auto").equals("device")){fail(message);return;}local = false; providerFallback = true; }
+             compatibility = true; primaryOnly = true;
+             generation++; handler.removeCallbacks(startTimeout); release();
+             listener.state("Riprovo l’ascolto…");
+@@ -195,12 +204,13 @@ final class PillVoice implements AutoCloseable {
+     static String join(String a, String b) { return a.isEmpty() ? b : b.isEmpty() ? a : a + " " + b; }
+     void stop() {
+         if (closed || stopping) return;
++        if(offline703!=null){stopping=true;listener.state("Completo il testo…");offline703.stop();return;}
+         stopping = true; listener.state("Completo il testo…");
+         handler.removeCallbacks(startTimeout); handler.removeCallbacks(pauseTimeout);
+         if (stream != null) stream.finish();
+         else if (recognizer != null) { try { recognizer.stopListening(); } catch (RuntimeException e) { complete(); return; } }
+         else { complete(); return; }
+-        handler.postDelayed(finalTimeout, 8000);
++        handler.postDelayed(finalTimeout, transcript.empty()?8000:3000);
+     }
+     private void complete() {
+         if (closed) return;
+@@ -222,7 +232,7 @@ final class PillVoice implements AutoCloseable {
+     }
+     public void close() {
+         if (closed) return;
+-        closed = true; generation++; handler.removeCallbacksAndMessages(null); release();
++        closed = true;if(offline703!=null){offline703.close();offline703=null;} generation++; handler.removeCallbacksAndMessages(null); release();
+     }
+     private String displayText(){String value=VoiceText700.live(context,transcript.text(),language);return language!=null&&(language.startsWith("it")||VoiceOptions.bilingual(context,language))?VoiceWriting.repairQuestion(value):value;}
+ }
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/SettingsSearch.kt b/app/src/main/java/helium314/keyboard/keyforma/SettingsSearch.kt
+index f489ba1..b38bbfc 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/SettingsSearch.kt
++++ b/app/src/main/java/helium314/keyboard/keyforma/SettingsSearch.kt
+@@ -30,7 +30,7 @@ object SettingsSearch {
+  val movementTitles=setOf("Precisione · dp per carattere","Accelerazione della sfera","Inerzia della sfera","Tocco singolo sulla sfera")
+  val voiceTextTitles=setOf("Anteprima vocale leggibile","Ripensamenti temporali espliciti","Ripensamenti numerici espliciti","Punteggiatura automatica","Domande prudenti","Pausa nella dettatura · secondi","Comandi di punteggiatura","Pulizia della dettatura")
+  val voiceMemoryTitles=setOf("I tuoi nomi e termini","Nomi e marchi","Correzioni vocali personali","Usa i nomi appresi nella dettatura")
+- val entries:List<SettingResult> by lazy { (AntControls700.entries+AntControls699.entries+AntGuide.destinations+listOf(SettingResult("panel_appearance","Suono del tastierino","audio click numeri volume"),SettingResult("panel_appearance","Tema del tastierino","materiale numeri indipendente"),SettingResult("context_actions","Avviso all’orario con KeyAnt","notifica Tasks ora promemoria"),SettingResult("edge_panels","Numeri affiancati sul Fold orizzontale","PC numeri calendario insieme lettere aperto orizzontale persistente"),SettingResult("panel_appearance","Larghezza del tastierino","stretto compatto pannello numerico"),SettingResult("panel_appearance","Luci come la tastiera","RGB indipendenti numeri LED"),SettingResult("panel_appearance","Luce del tastierino","fissa al tocco spenta effetti"),SettingResult("context_actions","Accesso bloccato? Apri Utenti di test","403 access_denied OAuth Google tester Pubblico Audience"))+toolbar667+legacyEntries+GeneratedSettingsIndex.entries+ThemeCatalog.IDS.indices.map{SettingResult("themes",ThemeCatalog.NAMES[it],"tema "+ThemeCatalog.collection(ThemeCatalog.IDS[it]))}+BallAppearance.IDS.indices.map{SettingResult("trackball",BallAppearance.NAMES[it],"tema sfera "+BallAppearance.group(BallAppearance.IDS[it]))}).map{canonical(it)}.distinctBy{Triple(it.page,it.title,it.themeId)} }
++ val entries:List<SettingResult> by lazy { (AntControls703.entries+AntControls700.entries+AntControls699.entries+AntGuide.destinations+listOf(SettingResult("panel_appearance","Suono del tastierino","audio click numeri volume"),SettingResult("panel_appearance","Tema del tastierino","materiale numeri indipendente"),SettingResult("context_actions","Avviso all’orario con KeyAnt","notifica Tasks ora promemoria"),SettingResult("edge_panels","Numeri affiancati sul Fold orizzontale","PC numeri calendario insieme lettere aperto orizzontale persistente"),SettingResult("panel_appearance","Larghezza del tastierino","stretto compatto pannello numerico"),SettingResult("panel_appearance","Luci come la tastiera","RGB indipendenti numeri LED"),SettingResult("panel_appearance","Luce del tastierino","fissa al tocco spenta effetti"),SettingResult("context_actions","Accesso bloccato? Apri Utenti di test","403 access_denied OAuth Google tester Pubblico Audience"))+toolbar667+legacyEntries+GeneratedSettingsIndex.entries+ThemeCatalog.IDS.indices.map{SettingResult("themes",ThemeCatalog.NAMES[it],"tema "+ThemeCatalog.collection(ThemeCatalog.IDS[it]))}+BallAppearance.IDS.indices.map{SettingResult("trackball",BallAppearance.NAMES[it],"tema sfera "+BallAppearance.group(BallAppearance.IDS[it]))}).map{canonical(it)}.distinctBy{Triple(it.page,it.title,it.themeId)} }
+ 
+  val paths=mapOf("panel_appearance" to "Gesti e strumenti › Pannelli laterali","key_style" to "Aspetto › Tasti", "motion" to "Aspetto › Animazioni","holds" to "Gesti e strumenti › Pressione lunga dei tasti","edge_panels" to "Gesti e strumenti › Pannelli laterali","advanced" to "Avanzate › Precisione del tocco","maker" to "Aspetto › MakerAnt","apps" to "Aspetto › Barra delle icone › Collegamenti app","statistics" to "Statistiche di scrittura","keycolors" to "Aspetto › Temi › Colori dei tasti","voice" to "Scrittura e voce › Dettatura", "typing" to "Scrittura e voce › Correzione e tocco", "themes" to "Aspetto › Temi", "effects" to "Aspetto › Luci ed effetti", "transparency" to "Aspetto › Sfondo e trasparenza", "trackball" to "Aspetto › Trackball", "sounds" to "Scrittura e voce › Suoni e vibrazione", "bars" to "Aspetto › Barra delle icone","suggestions" to "Scrittura e voce › Suggerimenti","comma" to "Gesti e strumenti › Menu della virgola","touchpad" to "Gesti e strumenti › Touchpad", "gestures" to "Gesti e strumenti › Gesti e selezione", "size" to "Aspetto › Dimensioni", "privacy" to "Appunti e codici", "layout" to "Aspetto › Disposizione", "media" to "Gesti e strumenti › Emoji e GIF", "assistant" to "Gesti e strumenti › Web e assistente", "shortcuts" to "Gesti e strumenti › Scorciatoie Ctrl", "words" to "Scrittura e voce › Memoria personale", "maker_library" to "Aspetto › Le mie tastiere")
+  private val legacyEntries=listOf(
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/StudioControls.kt b/app/src/main/java/helium314/keyboard/keyforma/StudioControls.kt
+index 53185e4..4ede0ed 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/StudioControls.kt
++++ b/app/src/main/java/helium314/keyboard/keyforma/StudioControls.kt
+@@ -27,6 +27,12 @@ import androidx.compose.ui.viewinterop.AndroidView
+  FilledTonalButton(onClick=onClick,shape=RoundedCornerShape(16.dp),contentPadding=PaddingValues(horizontal=14.dp,vertical=10.dp)) {StudioIcon(icon);Spacer(Modifier.width(8.dp));Text(label)}
+ }
+ @Composable internal fun OptionSample(key:String,id:String){
++ if(key=="voice_effect"){
++  val ink=MaterialTheme.colorScheme.onSurface.toArgb()
++  AndroidView(factory={VoiceWave(it,ink).apply{preview(true)}},update={it.style(id)},modifier=Modifier.size(76.dp,42.dp))
++  Spacer(Modifier.width(12.dp));return
++ }
++
+  if(key=="clipboard_tile" || key=="space_meter"){
+   val color=MaterialTheme.colorScheme.primary
+   val base=MaterialTheme.colorScheme.surfaceContainerHighest
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/VoicePillLayout703.java b/app/src/main/java/helium314/keyboard/keyforma/VoicePillLayout703.java
+new file mode 100644
+index 0000000..51403f2
+--- /dev/null
++++ b/app/src/main/java/helium314/keyboard/keyforma/VoicePillLayout703.java
+@@ -0,0 +1,12 @@
++// SPDX-License-Identifier: GPL-3.0-only
++package helium314.keyboard.keyforma;
++import android.content.Context;import android.graphics.Canvas;import android.widget.LinearLayout;
++/** Glass spans the whole capsule, including controls; geometry stays unchanged. */
++final class VoicePillLayout703 extends LinearLayout {
++ private final VoiceWave glass;private boolean active;
++ VoicePillLayout703(Context c,int ink){super(c);setWillNotDraw(false);glass=new VoiceWave(c,ink);glass.style("glass");}
++ void active(boolean value){if(active==value)return;active=value;glass.listening(value);invalidate();}
++ void level(float value){glass.level(value);if(active)invalidate();}
++ @Override protected void onSizeChanged(int w,int h,int oldw,int oldh){super.onSizeChanged(w,h,oldw,oldh);glass.layout(0,0,w,h);}
++ @Override protected void onDraw(Canvas canvas){super.onDraw(canvas);if(active){glass.draw(canvas);if(isShown()&&isAttachedToWindow()&&android.animation.ValueAnimator.areAnimatorsEnabled()&&KeyAntPrefs.bool(getContext(),"pill_motion",true))postInvalidateOnAnimation();}}
++}
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/VoiceSettings.kt b/app/src/main/java/helium314/keyboard/keyforma/VoiceSettings.kt
+index fcc5557..ba89b64 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/VoiceSettings.kt
++++ b/app/src/main/java/helium314/keyboard/keyforma/VoiceSettings.kt
+@@ -18,9 +18,16 @@ import androidx.compose.ui.unit.dp
+  val requested=when {target in SettingsSearch.voiceTextTitles->1;target in SettingsSearch.voiceMemoryTitles->2;else->0}
+  SettingsTabs(listOf("Ascolto","Testo","Nomi e memoria"),requested){section->
+  if(section==0)StudioHero("Parla come ti viene naturale", "Lingue, pause e nomi che usi spesso.")
++ if(section==0)StudioCard{
++  Choice("Dove scrive la dettatura","voice_destination","field",listOf("field" to "Nel campo del messaggio · in diretta","preview" to "Nella card · rivedi prima di inserire"))
++  Note("In diretta non invia messaggi. Il microfono conclude; × annulla solo il testo dettato se il campo non è cambiato. Spostare il cursore o scrivere interrompe l’aggiornamento. Se l’app non espone il testo completo si usa la card di revisione.")
++ }
++ if(section==0)VoiceIndicatorSettings()
+  if(section==0)StudioCard{
+   Choice("Lingue della dettatura","voice_language","auto",listOf("auto" to "Italiano + inglese · automatico","it-IT" to "Solo italiano","en-US" to "Solo inglese","current" to "Segue la lingua della tastiera"))
+-  Toggle("Preferisci riconoscimento sul telefono","voice_local",true,"Usa i modelli locali disponibili. Altrimenti passa al servizio vocale di sistema.")
++  Choice("Motore vocale","voice_engine","auto",listOf("auto" to "Automatico · preferenza attuale","device" to "Solo sul dispositivo · Android","system" to "Servizio Android","parakeet" to "Parakeet v3 · offline, per frasi"))
++  Note("Automatico conserva la preferenza precedente e può usare il servizio di rete. Solo sul dispositivo e Parakeet non passano automaticamente alla rete. Parakeet rileva automaticamente la lingua, anche italiano e inglese; il selettore delle lingue guida il servizio Android. Parakeet aggiorna il testo per frasi dopo brevi pause, non parola per parola.")
++  ParakeetSettings703()
+   Text("Il cambio automatico richiede alta confidenza, per limitare i cambi accidentali durante esitazioni e inglesismi. Servono entrambi i modelli e un servizio compatibile. Puoi richiederli qui.",Modifier.padding(16.dp),style=MaterialTheme.typography.bodySmall,color=MaterialTheme.colorScheme.onSurfaceVariant)
+   Row(Modifier.fillMaxWidth().padding(horizontal=12.dp),horizontalArrangement=Arrangement.spacedBy(8.dp)){listOf("it-IT" to "Italiano","en-US" to "Inglese").forEach{(tag,title)->OutlinedButton(enabled=!busy,onClick={download?.close();busy=true;modelStatus="Richiesta al servizio…";download=VoiceModelDownload().also{it.start(c,tag){message,finished->modelStatus=message;busy=!finished}}},modifier=Modifier.weight(1f)){Text("Scarica $title")}}}
+   if(modelStatus.isNotEmpty())Text(modelStatus,Modifier.padding(16.dp),style=MaterialTheme.typography.bodySmall)
+@@ -28,10 +35,10 @@ import androidx.compose.ui.unit.dp
+  if(section==1)StudioCard{
+   Text("Ritmo e punteggiatura",Modifier.padding(16.dp),style=MaterialTheme.typography.titleMedium)
+   Toggle("Punteggiatura automatica","voice_formatting",true,"Chiede al servizio virgole, punti e domande secondo la frase e l’intonazione.")
+-  Toggle("Anteprima vocale leggibile","voice_readable",true,"Uniforma le maiuscole comuni mentre ascolti. La trascrizione originale resta disponibile al termine.")
++  Toggle("Anteprima vocale leggibile","voice_readable",true,"Uniforma le maiuscole comuni mentre ascolti. In modalità card resta disponibile anche l’originale da confrontare.")
+   Toggle("Domande prudenti","voice_prudent_questions",true,"Riduce i punti interrogativi aggiunti dal servizio in frasi indirette come «non so quando arriva». Conserva le domande dirette e i segni pronunciati. Richiede il risultato originale del riconoscitore.")
+   Note("Anche nelle frasi colloquiali: «allora, non ho capito come funziona». I casi ambigui restano al riconoscitore.")
+-  Range("Pausa nella dettatura · secondi","voice_silence",12,2,30)
++  Range("Pausa nella dettatura · secondi","voice_silence",5,2,30)
+   Text("Attesa prima di terminare l’ascolto. Una pausa breve non deve obbligarti a ricominciare; non viene trasformata automaticamente in tre puntini.",Modifier.padding(horizontal=16.dp,vertical=4.dp),style=MaterialTheme.typography.bodySmall,color=MaterialTheme.colorScheme.onSurfaceVariant)
+   Toggle("Comandi di punteggiatura","voice_punctuation",true,"Pronuncia il segno quando vuoi essere preciso.")
+   Text("«inserisci virgola» → ,\n«punto interrogativo» → ?\n«tre puntini» → …\n«inserisci punto e virgola» → ;\n«vai a capo» → nuova riga",Modifier.padding(16.dp),style=MaterialTheme.typography.bodyMedium)
+@@ -67,6 +74,6 @@ import androidx.compose.ui.unit.dp
+   Text("Nella ricerca web la domanda parte automaticamente dopo circa 2 secondi di silenzio. Nella dettatura vale la pausa scelta sopra; puoi sempre toccare di nuovo il microfono per concludere.",Modifier.padding(16.dp),style=MaterialTheme.typography.bodySmall,color=MaterialTheme.colorScheme.onSurfaceVariant)
+  }
+  if(section==0)StudioCard{AssistantMicrophonePermission()}
+- Note("Il microfono luminoso indica l’ascolto: toccalo per terminare. Nomi, punteggiatura e cambio lingua dipendono dal servizio vocale. La pulizia facoltativa si applica solo alla dettatura diretta, con anteprima prima dell’inserimento.")
++ Note("Il microfono luminoso indica l’ascolto: toccalo per terminare. Nomi, punteggiatura e cambio lingua dipendono dal servizio vocale. La pulizia facoltativa con confronto si applica alla modalità card. In diretta si conserva il significato riconosciuto, senza riscrittura AI automatica.")
+  }
+ }
+diff --git a/app/src/main/java/helium314/keyboard/keyforma/VoiceWave.java b/app/src/main/java/helium314/keyboard/keyforma/VoiceWave.java
+index f138ba8..5075f26 100644
+--- a/app/src/main/java/helium314/keyboard/keyforma/VoiceWave.java
++++ b/app/src/main/java/helium314/keyboard/keyforma/VoiceWave.java
+@@ -1,14 +1,48 @@
+ // SPDX-License-Identifier: GPL-3.0-only
+ package helium314.keyboard.keyforma;
+ import android.content.Context;import android.graphics.*;import android.os.SystemClock;import android.view.View;
+-/** Smoothed microphone energy, with a quiet breathing baseline. No synthetic speech activity. */
++/** Shared renderer for the actual microphone and looping previews. No work while detached. */
+ public final class VoiceWave extends View {
+- private final Paint paint=new Paint(3);private float target,current;private long last,frame;private boolean listening;
+- public VoiceWave(Context c,int color){super(c);paint.setColor(color);paint.setStrokeCap(Paint.Cap.ROUND);setContentDescription("Microfono in ascolto");setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_YES);}
+- public void listening(boolean active){listening=active;if(!active){current=target=0;}invalidate();}
++ public static final String[] IDS={"classic","wave","dots","fill","vu","spectrum","equaliser","pulse","drift","liquid","ridges","strings","mirror","tuner","glass"};
++ public static final String[] NAMES={"Originale","Onde","Punti","Vela","VU meter","Spettro","Equalizzatore","Impulso","Particelle","Liquido","Creste","Corde","Specchio","Accordatore","Vetro arcobaleno"};
++ private final Paint paint=new Paint(3);private final Path path=new Path();private final RectF rect=new RectF();private final int color;private float target,current;private long last,frame;private boolean listening,preview;private String style="classic";private Shader rainbow;private final Matrix matrix=new Matrix();
++ public VoiceWave(Context c,int color){super(c);this.color=color;paint.setStrokeCap(Paint.Cap.ROUND);setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_YES);setContentDescription("Microfono in ascolto");}
++ public void style(String id){style=java.util.Arrays.asList(IDS).contains(id)?id:"classic";invalidate();}
++ public String style(){return style;}
++ public void preview(boolean value){preview=value;listening(value);}
++ public void listening(boolean active){listening=active;if(!active){current=target=0;frame=0;}invalidate();}
+  public void level(float value){target=Math.max(0,Math.min(1,value));last=SystemClock.uptimeMillis();invalidate();}
+- @Override protected void onDraw(Canvas c){super.onDraw(c);if(!listening)return;long now=SystemClock.uptimeMillis();float dt=frame==0?16:Math.min(64,now-frame);frame=now;float energy=now-last>250?0:target;current+=(energy-current)*(1-(float)Math.exp(-dt/(energy>current?65:180)));boolean motion=android.animation.ValueAnimator.areAnimatorsEnabled();float d=getResources().getDisplayMetrics().density,w=Math.min(getWidth()-16*d,110*d),x=(getWidth()-w)/2,mid=getHeight()/2f;paint.setStrokeWidth(2*d);
+- for(int i=0;i<23;i++){float envelope=(float)Math.sin(Math.PI*(i+1)/24),variation=motion?.7f+.3f*(float)Math.sin(now*.009+i*.8):.85f;float h=(3+(motion?.35f*(float)Math.sin(now*.003+i*.25):0))*d+Math.min(getHeight()*.65f,25*d)*current*envelope*variation;paint.setAlpha((int)(145+100*envelope));c.drawLine(x+i*w/22,mid-h/2,x+i*w/22,mid+h/2,paint);}if(motion&&isShown())postInvalidateOnAnimation();}
++ @Override protected void onSizeChanged(int w,int h,int ow,int oh){rainbow=new LinearGradient(0,0,Math.max(1,w),0,new int[]{0xff247bff,0xff9c51ff,0xffff49ae,0xffffb13d,0xffa7d947,0xff29d8be,0xff247bff},null,Shader.TileMode.MIRROR);}
++ @Override protected void onDraw(Canvas c){super.onDraw(c);if(!listening)return;long now=SystemClock.uptimeMillis();boolean motion=android.animation.ValueAnimator.areAnimatorsEnabled()&&KeyAntPrefs.bool(getContext(),"pill_motion",true);float t=motion?now*.001f:0;float dt=frame==0?16:Math.min(64,now-frame);frame=now;float energy=preview?.45f+.35f*(float)Math.sin(t*1.7):now-last>250?0:target;if(!motion)current=energy;else current+=(energy-current)*(1-(float)Math.exp(-dt/(energy>current?65:180)));float d=getResources().getDisplayMetrics().density,w=Math.max(0,getWidth()-20*d),x=10*d,mid=getHeight()/2f,h=Math.min(getHeight()*.34f,18*d),a=h*(.10f+.9f*current);
++ paint.setShader(null);paint.setStyle(Paint.Style.STROKE);paint.setStrokeWidth(1.8f*d);paint.setColor(color);paint.setAlpha(230);
++ if(style.equals("glass")){
++  rect.set(d,d,getWidth()-d,getHeight()-d);float radius=getHeight()/2f;
++  paint.setStyle(Paint.Style.FILL);paint.setColor(0x273c4f77);c.drawRoundRect(rect,radius,radius,paint);
++  c.save();path.reset();path.addRoundRect(rect,radius,radius,Path.Direction.CW);c.clipPath(path);
++  if(rainbow!=null){matrix.setTranslate((float)Math.sin(t*.28f)*getWidth()*.22f,0);rainbow.setLocalMatrix(matrix);paint.setShader(rainbow);}
++  for(int j=0;j<10;j++){paint.setAlpha(12+j*5);float top=getHeight()*(.28f+j*.045f)-current*getHeight()*.15f;rect.set(-d,top,getWidth()+d,getHeight()+h);c.drawRoundRect(rect,radius,radius,paint);}
++  paint.setShader(null);paint.setColor(0x44ffffff);rect.set(d,d,getWidth()-d,getHeight()-d);paint.setStyle(Paint.Style.STROKE);paint.setStrokeWidth(d);c.drawRoundRect(rect,radius,radius,paint);paint.setColor(0x55ffffff);c.drawLine(radius*.8f,2*d,getWidth()-radius*.8f,2*d,paint);c.restore();
++ }else if(style.equals("tuner")){
++  paint.setStyle(Paint.Style.STROKE);paint.setAlpha(65);for(int i=0;i<=20;i++){float xx=x+w*i/20;c.drawLine(xx,mid-(i%5==0?8:4)*d,xx,mid+(i%5==0?8:4)*d,paint);}
++  paint.setAlpha(240);paint.setStrokeWidth(3*d);float needle=getWidth()/2f+(float)Math.sin(t*2)*w*.28f*current;c.drawLine(needle,mid-h,needle,mid+h,paint);
++ }else if(style.equals("dots")||style.equals("drift")||style.equals("vu")||style.equals("equaliser")||style.equals("classic")||style.equals("mirror")){
++  int n=style.equals("classic")?23:35;float span=style.equals("classic")?Math.min(w,110*d):w;float start=(getWidth()-span)/2;paint.setStyle(Paint.Style.FILL);
++  for(int i=0;i<n;i++){float env=(float)Math.sin(Math.PI*(i+1)/(n+1));float v=.55f+.45f*(float)Math.sin(t*4+i*.83);float amp=(2*d+a*env*v);float xx=start+i*span/(n-1);
++   if(style.equals("dots"))c.drawCircle(xx,mid,Math.max(d,amp*.18f),paint);
++   else if(style.equals("drift")){paint.setAlpha(90+(int)(150*env));c.drawCircle(xx,mid+(float)Math.sin(i*1.3+t*2)*amp,1.3f*d,paint);}
++   else if(style.equals("equaliser")||style.equals("vu")){for(int j=0;j<7;j++){paint.setAlpha(j<1+current*6*env*v?235:45);float yy=style.equals("vu")?mid+9*d-j*3*d:mid-j*3*d;c.drawRect(xx-d,yy-d,xx+d,yy+d,paint);if(style.equals("equaliser"))c.drawRect(xx-d,2*mid-yy-d,xx+d,2*mid-yy+d,paint);}}
++   else if(style.equals("mirror")){float bump=a*(.5f+.5f*(float)Math.cos(Math.abs(i-(n-1)/2f)*.7f-t*3));c.drawCircle(xx,mid-3*d-bump*.7f,1.2f*d,paint);c.drawCircle(xx,mid+3*d+bump*.7f,1.2f*d,paint);}
++   else c.drawLine(xx,mid-amp*.65f,xx,mid+amp*.65f,paint);
++  }
++ }else{
++  int lines=style.equals("strings")?4:style.equals("ridges")?5:style.equals("wave")?3:1;
++  for(int line=0;line<lines;line++){path.reset();float base=mid+(line-(lines-1)*.5f)*3*d;path.moveTo(x,base);
++   for(int i=0;i<=96;i++){float f=i/96f,env=(float)Math.sin(Math.PI*f);float wave=(float)Math.sin(f*Math.PI*(style.equals("spectrum")?12:4)-t*3+line*.7);if(style.equals("pulse"))wave=(f>.42&&f<.58)?(float)Math.sin((f-.42)*Math.PI*25):0;float yy=style.equals("liquid")?mid+h-current*h*1.8f+(float)Math.sin(f*Math.PI*3-t*2)*a*.25f:base+wave*a*env*(1-line*.1f);path.lineTo(x+f*w,yy);}
++   if(style.equals("fill")||style.equals("liquid")){path.lineTo(x+w,mid+h);path.lineTo(x,mid+h);path.close();paint.setStyle(Paint.Style.FILL);paint.setAlpha(130);}else{paint.setStyle(Paint.Style.STROKE);paint.setAlpha(230-line*30);}c.drawPath(path,paint);
++  }
++ }
++ if(motion&&isShown()&&isAttachedToWindow())postInvalidateOnAnimation();
++ }
+  @Override protected void onVisibilityChanged(View changed,int visibility){super.onVisibilityChanged(changed,visibility);if(visibility==VISIBLE)invalidate();}
+  @Override protected void onDetachedFromWindow(){frame=0;super.onDetachedFromWindow();}
+ }
+diff --git a/app/src/test/java/helium314/keyboard/keyforma/KeyAnt703Test.kt b/app/src/test/java/helium314/keyboard/keyforma/KeyAnt703Test.kt
+new file mode 100644
+index 0000000..734615e
+--- /dev/null
++++ b/app/src/test/java/helium314/keyboard/keyforma/KeyAnt703Test.kt
+@@ -0,0 +1,88 @@
++// SPDX-License-Identifier: GPL-3.0-only
++package helium314.keyboard.keyforma
++import android.content.*
++import android.graphics.*
++import android.text.InputType
++import android.view.inputmethod.*
++import android.widget.*
++import helium314.keyboard.latin.LatinIME
++import helium314.keyboard.latin.settings.Settings
++import org.junit.*
++import org.junit.Assert.*
++import org.junit.runner.RunWith
++import org.mockito.Mockito.*
++import org.robolectric.*
++import org.robolectric.annotation.*
++@RunWith(RobolectricTestRunner::class)
++@Config(sdk=[35],qualifiers="w400dp-h900dp-port-mdpi",shadows=[helium314.keyboard.ShadowInputMethodManager2::class])
++@GraphicsMode(GraphicsMode.Mode.NATIVE)
++class KeyAnt703Test {
++ lateinit var c:Context;lateinit var service:LatinIME;lateinit var ime:LatinIME;lateinit var edit:EditText;lateinit var ic:InputConnection;lateinit var editor:EditorInfo
++ @Before fun setup(){
++  c=RuntimeEnvironment.getApplication();KeyAntPrefs.get(c).edit().clear().putBoolean("ka_053_defaults",true).putBoolean("ka_pill_motion",false).putBoolean(Settings.PREF_THEME_DAY_NIGHT,false).putString(Settings.PREF_THEME_COLORS,ThemeCatalog.preference("ref91_nuphy",true)).apply()
++  service=Robolectric.setupService(LatinIME::class.java);ime=spy(service);editor=EditorInfo().apply{inputType=InputType.TYPE_CLASS_TEXT;packageName="test.messages"}
++  edit=EditText(c);edit.inputType=InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE;ic=edit.onCreateInputConnection(EditorInfo())!!
++  doReturn(editor).`when`(ime).currentInputEditorInfo;doReturn(ic).`when`(ime).currentInputConnection
++ }
++ @After fun close(){service.onDestroy()}
++ private fun begin(text:String,start:Int=text.length,end:Int=start):LiveDictation703{edit.setText(text);edit.setSelection(start,end);return LiveDictation703.begin(ime)!!}
++ @Test fun partialRevisionsReplaceOnlyDictatedSpan(){val live=begin("Ciao ");assertTrue(live.update("come"));assertTrue(live.update("come stai?"));assertEquals("Ciao come stai?",edit.text.toString());live.finish();assertFalse(live.update("altro"));assertEquals("Ciao come stai?",edit.text.toString())}
++ @Test fun selectedTextIsRestoredOnCancel(){val live=begin("prima vecchio dopo",6,13);assertTrue(live.update("nuovo"));assertEquals("prima nuovo dopo",edit.text.toString());assertTrue(live.cancel());assertEquals("prima vecchio dopo",edit.text.toString());assertEquals(6,edit.selectionStart);assertEquals(13,edit.selectionEnd)}
++ @Test fun movedCursorNeverOverwritesExistingText(){val live=begin("ciao ");assertTrue(live.update("Antonio"));edit.setSelection(0);assertFalse(live.update("Antonio domani"));assertFalse(live.cancel());assertEquals("ciao Antonio",edit.text.toString())}
++ @Test fun editedHostTextNeverGetsReverted(){val live=begin("");live.update("domani");edit.append("!");assertFalse(live.cancel());assertEquals("domani!",edit.text.toString())}
++ @Test fun newConnectionInvalidatesSession(){val live=begin("prima ");live.update("ciao");doReturn(mock(InputConnection::class.java)).`when`(ime).currentInputConnection;assertFalse(live.update("cancella"));assertEquals("prima ciao",edit.text.toString())}
++ @Test fun passwordTransitionStopsWrites(){val live=begin("ciao ");editor.inputType=InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD;assertFalse(live.update("privato"));assertEquals("ciao ",edit.text.toString())}
++ @Test fun unicodeAndMidFieldSpacingArePreserved(){val live=begin("👋domani",2);live.update("ciao");assertEquals("👋ciao domani",edit.text.toString());live.update("ciao Antonio");assertEquals("👋ciao Antonio domani",edit.text.toString());live.cancel();assertEquals("👋domani",edit.text.toString())}
++ @Test fun partialSnapshotFallsBackWithoutWriting(){val fake=mock(InputConnection::class.java);doReturn(fake).`when`(ime).currentInputConnection;assertNull(LiveDictation703.begin(ime));verify(fake,never()).commitText(anyString(),anyInt())}
++ @Test fun repeatedPartialDoesNotRewriteField(){val wrapped=spy(ic);doReturn(wrapped).`when`(ime).currentInputConnection;val live=begin("");live.update("ciao");live.update("ciao");verify(wrapped,times(1)).commitText("ciao",1)}
++ @Test fun cancelledBeforeFirstPartialPreservesSelection(){val live=begin("uno due tre",4,7);assertTrue(live.cancel());assertEquals("uno due tre",edit.text.toString());assertEquals(4,edit.selectionStart);assertEquals(7,edit.selectionEnd)}
++ @Test fun silenceDefaultIsShorterButExplicitPreferenceSurvives(){assertEquals(5000,PillVoice.silenceMillis(c,false));KeyAntPrefs.get(c).edit().putInt("ka_voice_silence",12).apply();assertEquals(12000,PillVoice.silenceMillis(c,false));assertEquals(2200,PillVoice.silenceMillis(c,true))}
++ @Test fun antCanChangeDestinationAndEffectButNeverDownloadsModel(){assertNotNull(AntControls703.submit(c,"usa dettatura nel campo",null));assertEquals("field",KeyAntPrefs.text(c,"voice_destination",""));assertNotNull(AntControls703.submit(c,"metti la pillola vocale vetro arcobaleno",null));assertEquals("glass",KeyAntPrefs.text(c,"voice_effect",""));assertNotNull(AntControls703.submit(c,"usa Parakeet",null));assertEquals("auto",KeyAntPrefs.text(c,"voice_engine","auto"));assertFalse(ParakeetModel703.busy())}
++ @Test fun modelReadinessRequiresAllFilesAndVerifiedMarker(){assertFalse(ParakeetModel703.ready(c));val d=ParakeetModel703.folder(c);d.mkdirs();java.io.File(d,"verified-v1").writeText("1");assertFalse(ParakeetModel703.ready(c));d.deleteRecursively()}
++ @Test fun allEffectsRenderWithSharedNativeRendererInLightAndDark(){
++  for(dark in listOf(false,true))for(width in listOf(320,700)){
++   val board=Bitmap.createBitmap(width,VoiceWave.IDS.size*78,Bitmap.Config.ARGB_8888);val canvas=Canvas(board);canvas.drawColor(if(dark)0xff11131a.toInt() else 0xffe9e7f0.toInt())
++   for(i in VoiceWave.IDS.indices){val v=VoiceWave(c,if(dark)Color.WHITE else Color.BLACK);v.style(VoiceWave.IDS[i]);v.preview(true);v.measure(android.view.View.MeasureSpec.makeMeasureSpec(width-20,1073741824),android.view.View.MeasureSpec.makeMeasureSpec(48,1073741824));v.layout(0,0,width-20,48);canvas.save();canvas.translate(10f,(i*78+22).toFloat());v.draw(canvas);canvas.restore();val paint=Paint(3).apply{color=if(dark)Color.WHITE else Color.BLACK;textSize=12f};canvas.drawText(VoiceWave.NAMES[i],10f,(i*78+15).toFloat(),paint)}
++   KeyAntV42Test.save(board,"KeyAnt-703-effects-${if(dark)"dark" else "light"}-$width.png")
++  }
++ }
++
++ @Test fun actualPillPreservesControlsAndShowsLiveMessageAtPhoneAndFoldWidths(){
++  KeyAntPrefs.get(c).edit().putString("ka_voice_effect","glass").apply()
++  for(width in listOf(320,400,700)){
++   val live=begin("Testo già presente. ");val bar=spy(KeyAntBar(ime,null));doNothing().`when`(bar).closeLanguagePill();val pill=LanguagePill(ime,bar,false)
++   org.robolectric.util.ReflectionHelpers.setField(pill,"dictation",true)
++   org.robolectric.util.ReflectionHelpers.setField(pill,"live703",live)
++   org.robolectric.util.ReflectionHelpers.setField(pill,"fieldMode703",true)
++   org.robolectric.util.ReflectionHelpers.setField(pill,"voice",mock(PillVoice::class.java))
++   org.robolectric.util.ReflectionHelpers.setField(pill,"voiceState","Ascolto…")
++   org.robolectric.util.ReflectionHelpers.callInstanceMethod<Any>(pill,"render")
++   live.update("Ciao Antonio, hai fame?")
++   val layout=LinearLayout(c).apply{orientation=LinearLayout.VERTICAL;setBackgroundColor(0xff15131c.toInt())}
++   edit.setTextColor(Color.WHITE);edit.setPadding(16,16,16,16);(edit.parent as? android.view.ViewGroup)?.removeView(edit)
++   layout.addView(edit,LinearLayout.LayoutParams(-1,150));layout.addView(pill.view(),LinearLayout.LayoutParams(-1,56))
++   KeyAntV42Test.save(KeyAntV63Test.render(layout,width,220),"KeyAnt-703-live-pill-$width.png")
++   assertFalse(pill.input('x'.code));assertEquals("Testo già presente. Ciao Antonio, hai fame?",edit.text.toString());pill.close()
++  }
++ }
++
++ @Test fun antOffKeepsEffectAndUnrelatedThemeCommandDoesNotChangeVoice(){
++  val effect=AntControls703.submit(c,"metti la pillola vocale vetro arcobaleno",null)!!
++  assertNotNull(AntControls703.submit(c,"disattivala",effect));assertEquals("glass",KeyAntPrefs.text(c,"voice_effect",""));assertEquals("text",KeyAntPrefs.text(c,"voice_indicator",""))
++  assertNull(AntControls703.submit(c,"metti la tastiera Android",effect));assertEquals("auto",KeyAntPrefs.text(c,"voice_engine","auto"))
++  assertNotNull(AntControls703.submit(c,"disattiva Parakeet",null));assertEquals("auto",KeyAntPrefs.text(c,"voice_engine",""))
++ }
++
++ @Test fun modelHashVerificationRejectsCorruptSameLengthBytes(){
++  val file=java.io.File(c.cacheDir,"model-test");file.writeText("abc")
++  val part=ParakeetModel703.Part("test",3,"ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad","https://example.invalid")
++  assertTrue(ParakeetModel703.valid(file,part));file.writeText("abd");assertFalse(ParakeetModel703.valid(file,part));file.delete()
++ }
++ @Test fun antEffectUpdatesActiveMakerWithoutChangingGeometry(){
++  val design=MakeKeyAnt.create("ref91_nuphy").put("voice_effect","dots").put("height",67)
++  MakeKeyAnt.apply(c,design)
++  AntControls703.submit(c,"metti la pillola vocale vetro arcobaleno",null)
++  assertEquals("glass",SuggestionLook.text(c,SuggestionLook.active(),"voice_effect","classic"))
++  assertEquals(67,SuggestionLook.active().getInt("height"))
++ }
++}
+diff --git a/app/src/test/java/helium314/keyboard/keyforma/KeyAntUi703Test.kt b/app/src/test/java/helium314/keyboard/keyforma/KeyAntUi703Test.kt
+new file mode 100644
+index 0000000..8117267
+--- /dev/null
++++ b/app/src/test/java/helium314/keyboard/keyforma/KeyAntUi703Test.kt
+@@ -0,0 +1,31 @@
++// SPDX-License-Identifier: GPL-3.0-only
++package helium314.keyboard.keyforma
++import android.content.*
++import androidx.compose.ui.test.*
++import androidx.compose.ui.test.junit4.createEmptyComposeRule
++import helium314.keyboard.latin.LatinIME
++import helium314.keyboard.latin.settings.Settings
++import org.junit.*
++import org.junit.Assert.*
++import org.junit.runner.RunWith
++import org.robolectric.*
++import org.robolectric.annotation.*
++@RunWith(RobolectricTestRunner::class)
++@Config(sdk=[35],qualifiers="w400dp-h900dp-port-mdpi",shadows=[helium314.keyboard.ShadowInputMethodManager2::class])
++@GraphicsMode(GraphicsMode.Mode.NATIVE)
++class KeyAntUi703Test{
++ @get:Rule val compose=createEmptyComposeRule()
++ lateinit var c:android.content.Context;lateinit var ime:LatinIME
++ @Before fun setup(){c=RuntimeEnvironment.getApplication();KeyAntPrefs.get(c).edit().clear().putBoolean("ka_053_defaults",true).putBoolean("ka_pill_motion",false).putString(Settings.PREF_THEME_COLORS,ThemeCatalog.preference("ref91_nuphy",true)).putBoolean(Settings.PREF_THEME_DAY_NIGHT,false).apply();ime=Robolectric.setupService(LatinIME::class.java)}
++ @After fun close(){ime.onDestroy()}
++ @Test fun liveAndPreviewChoiceAndEffectsAreReachable(){
++  Robolectric.buildActivity(StudioActivity::class.java,Intent(c,StudioActivity::class.java).putExtra("page","voice").putExtra("target_setting","Dove scrive la dettatura")).setup().visible().use{a->
++   KeyAntV42Test.layout(a.get().window.decorView,400,900);compose.waitForIdle()
++   compose.onNodeWithText("Dove scrive la dettatura").performScrollTo().performClick();compose.onNodeWithText("Nella card · rivedi prima di inserire").performClick();assertEquals("preview",KeyAntPrefs.text(c,"voice_destination",""))
++   compose.onNodeWithText("Effetto della pillola vocale").performScrollTo().performClick();compose.onNode(hasScrollToIndexAction()).performScrollToNode(hasText("Vetro arcobaleno"));compose.onNodeWithText("Vetro arcobaleno").performClick();assertEquals("glass",KeyAntPrefs.text(c,"voice_effect",""))
++   compose.onNodeWithText("Dove scrive la dettatura").performScrollTo();compose.waitForIdle();KeyAntV42Test.save(KeyAntV63Test.render(a.get().window.decorView,400,900),"KeyAnt-703-voice-settings.png")
++   compose.onNodeWithText("Motore vocale").performScrollTo().performClick();compose.onNodeWithText("Solo sul dispositivo · Android").performClick();assertEquals("device",KeyAntPrefs.text(c,"voice_engine",""))
++   compose.onNodeWithText("Scarica Parakeet").performScrollTo();compose.waitForIdle();KeyAntV42Test.save(KeyAntV63Test.render(a.get().window.decorView,400,900),"KeyAnt-703-model-settings.png")
++  }
++ }
++}
+diff --git a/app/src/test/java/helium314/keyboard/keyforma/KeyAntV55Test.java b/app/src/test/java/helium314/keyboard/keyforma/KeyAntV55Test.java
+index 5293a3f..eb48661 100644
+--- a/app/src/test/java/helium314/keyboard/keyforma/KeyAntV55Test.java
++++ b/app/src/test/java/helium314/keyboard/keyforma/KeyAntV55Test.java
+@@ -10,14 +10,15 @@ public class KeyAntV55Test {
+  @Test public void writingIntentSurvivesSpacesAndOnlyNewCopiesMayInterrupt(){TypingBarState state=new TypingBarState();state.typed(100);assertTrue(state.writing());assertFalse(state.offer(90));assertTrue(state.offer(110));state.typed(120);assertTrue(state.writing());state.tools();assertFalse(state.writing());state.typed(130);assertTrue(state.writing());state.reset();assertFalse(state.writing());}
+  @Test public void dismissalNeedsTwoActualTapsAndNeverARepeat(){TypingBarState state=new TypingBarState();assertFalse(state.backspace(100,true,false));assertTrue(state.backspace(400,true,false));assertTrue(state.writing());assertFalse(state.backspace(700,true,false));assertFalse(state.backspace(750,true,true));assertFalse(state.backspace(800,true,false));state.typed(1000);assertFalse(state.backspace(1010,true,false));assertFalse(state.backspace(1800,true,false));assertFalse(state.backspace(1900,false,false));}
+  @Test public void firstTypedCharacterRetiresCopyButKeepsNewCopiesAvailable(){Context c=RuntimeEnvironment.getApplication();ClipboardOffer.observe(c,"image",100);ClipboardOffer.typed(c,1);assertFalse(ClipboardOffer.eligible(c));assertFalse(ClipboardOffer.observe(c,"image",100));assertTrue(ClipboardOffer.observe(c,"new",200));assertTrue(ClipboardOffer.eligible(c));}
+- @Test public void voiceSearchAndDictationHaveDifferentBudgets(){Context c=RuntimeEnvironment.getApplication();assertEquals(2200,PillVoice.silenceMillis(c,true));assertEquals(12000,PillVoice.silenceMillis(c,false));KeyAntPrefs.get(c).edit().putInt("ka_voice_silence",5).apply();assertEquals(5000,PillVoice.silenceMillis(c,false));Intent i=PillVoice.recognitionIntent(c,"it",true);assertEquals(2200,i.getIntExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS,0));}
++ @Test public void voiceSearchAndDictationHaveDifferentBudgets(){Context c=RuntimeEnvironment.getApplication();assertEquals(2200,PillVoice.silenceMillis(c,true));assertEquals(5000,PillVoice.silenceMillis(c,false));KeyAntPrefs.get(c).edit().putInt("ka_voice_silence",5).apply();assertEquals(5000,PillVoice.silenceMillis(c,false));Intent i=PillVoice.recognitionIntent(c,"it",true);assertEquals(2200,i.getIntExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS,0));}
+  @Test public void haloNeverPaintsOutsideMicAndDoesNotScaleIcon(){VoiceHalo halo=new VoiceHalo(Color.MAGENTA,1);halo.setBounds(0,0,34,40);halo.active(true);halo.level(1);Bitmap b=Bitmap.createBitmap(34,40,Bitmap.Config.ARGB_8888);for(int i=0;i<50;i++)halo.draw(new Canvas(b));for(int x=0;x<34;x++){assertEquals(0,b.getPixel(x,0));assertEquals(0,b.getPixel(x,39));}for(int y=0;y<40;y++){assertEquals(0,b.getPixel(0,y));assertEquals(0,b.getPixel(33,y));}halo.active(false);b.eraseColor(0);halo.draw(new Canvas(b));assertEquals(0,b.getPixel(17,20));}
+  @Test public void improvementDoesNotNeedModelAndProtectsNamesLinksAndConjunctions(){assertEquals("Ciao, come stai? Tutto bene?",QuickProofreader.basic("Ciao come stai tutto bene?"));assertEquals("questa mattina è stata pesante, io ho fame",QuickProofreader.basic("questa mattina e stata pesante, io o fame"));assertEquals("perché così più un po’",QuickProofreader.basic("perche cosi piu un po"));for(String s:new String[]{"pane e acqua","Piddu e WhatsApp","https://example.org/perche/cosi","perche@example.org","`cosi`"})assertEquals(s,QuickProofreader.basic(s));}
+  @Test public void correctionAcceptsOnlyBoundedRecommendedTypos(){LatinIME ime=Robolectric.setupService(LatinIME.class);try{String s="giornta Piddu ciao@example.org";SuggestionsInfo typo=new SuggestionsInfo(6,new String[]{"giornata"});SuggestionsInfo name=new SuggestionsInfo(6,new String[]{"piddu"});SentenceSuggestionsInfo sentence=new SentenceSuggestionsInfo(new SuggestionsInfo[]{typo,name},new int[]{0,8},new int[]{7,5});assertEquals("giornata Piddu ciao@example.org",QuickProofreader.apply(s,new SentenceSuggestionsInfo[]{sentence}));SentenceSuggestionsInfo invalid=new SentenceSuggestionsInfo(new SuggestionsInfo[]{typo},new int[]{-1},new int[]{9999});assertEquals(s,QuickProofreader.apply(s,new SentenceSuggestionsInfo[]{invalid}));}finally{ime.onDestroy();}}
+  @Test public void correctionFinishesWithoutModelAndCancellationSuppressesResult(){Context c=RuntimeEnvironment.getApplication();java.util.List<String> out=new java.util.ArrayList<>();QuickProofreader p=new QuickProofreader();p.run(c,"ciao come stai tutto bene?",out::add);Shadows.shadowOf(Looper.getMainLooper()).idleFor(java.time.Duration.ofSeconds(2));assertEquals(java.util.List.of("ciao, come stai? Tutto bene?"),out);out.clear();p.run(c,"perche",out::add);p.cancel();Shadows.shadowOf(Looper.getMainLooper()).idleFor(java.time.Duration.ofSeconds(2));assertTrue(out.isEmpty());}
+  @Test public void exactOwnedUriIsReusedButForeignAndTraversingUrisAreNot()throws Exception{Context c=RuntimeEnvironment.getApplication();String value="keyant:image:"+"b".repeat(64)+".png";java.io.File f=MediaClipboard.file(c,value);f.getParentFile().mkdirs();try(var out=new java.io.FileOutputStream(f)){Bitmap.createBitmap(10,10,Bitmap.Config.ARGB_8888).compress(Bitmap.CompressFormat.PNG,100,out);}android.net.Uri uri=androidx.core.content.FileProvider.getUriForFile(c,c.getPackageName()+".media",f);assertEquals(value,MediaClipboard.ownedValue(c,uri));assertNull(MediaClipboard.ownedValue(c,uri.buildUpon().authority("other.media").build()));assertNull(MediaClipboard.ownedValue(c,uri.buildUpon().appendQueryParameter("x","1").build()));assertNull(MediaClipboard.ownedValue(c,android.net.Uri.parse("content://"+c.getPackageName()+".media/clipboard_media/../"+f.getName())));}
+  @Test public void webAndTranslationHideArrowAtAllWidths()throws Exception{LatinIME ime=Robolectric.setupService(LatinIME.class);try{for(boolean translate:new boolean[]{false,true}){LanguagePill p=new LanguagePill(ime,new KeyAntBar(ime,null),translate);for(int width:new int[]{320,400,760}){KeyAntV42Test.layout(p.view(),width,52);android.animation.ValueAnimator a=ReflectionHelpers.getField(p,"reveal");if(a!=null)a.end();View action=ReflectionHelpers.getField(p,"action"),mic=ReflectionHelpers.getField(p,"mic");assertEquals(View.GONE,action.getVisibility());assertEquals(1f,mic.getScaleX(),.001f);assertTrue(mic.getTop()>=0);assertTrue(mic.getBottom()<=((View)mic.getParent()).getHeight());if(width==400){VoiceHalo halo=ReflectionHelpers.getField(p,"voiceHalo");halo.active(true);halo.level(.8f);Bitmap b=Bitmap.createBitmap(width,52,Bitmap.Config.ARGB_8888);p.view().draw(new Canvas(b));KeyAntV42Test.save(b,"KeyAnt-055-"+(translate?"traduzione":"ricerca")+".png");}}p.close();}}finally{ime.onDestroy();}}
+- @Test public void realStripNeverReturnsToToolsBetweenWords(){LatinIME ime=Robolectric.setupService(LatinIME.class);try{View input=ime.onCreateInputView();ime.setInputView(input);TypingBarState state=ReflectionHelpers.getField(ime,"mTypingBar");state.typed(System.currentTimeMillis());ime.setNeutralSuggestionStrip();var strip=input.findViewById(R.id.suggestion_strip_view);assertNotNull(strip);assertFalse((boolean)ReflectionHelpers.getField(strip,"keyAntToolsVisible"));ime.setSuggestions(SuggestedWords.getEmptyInstance());assertFalse((boolean)ReflectionHelpers.getField(strip,"keyAntToolsVisible"));ime.showKeyAntTools();assertTrue((boolean)ReflectionHelpers.getField(strip,"keyAntToolsVisible"));state.typed(System.currentTimeMillis());ime.setNeutralSuggestionStrip();assertFalse((boolean)ReflectionHelpers.getField(strip,"keyAntToolsVisible"));}finally{ime.onDestroy();}}
++ @Test public void emptyStripShowsToolsWithoutLosingWritingIntent(){LatinIME ime=Robolectric.setupService(LatinIME.class);try{View input=ime.onCreateInputView();ime.setInputView(input);TypingBarState state=ReflectionHelpers.getField(ime,"mTypingBar");state.typed(System.currentTimeMillis());ime.setNeutralSuggestionStrip();var strip=input.findViewById(R.id.suggestion_strip_view);assertNotNull(strip);assertTrue((boolean)ReflectionHelpers.getField(strip,"keyAntToolsVisible"));assertTrue(state.writing());ime.setSuggestions(SuggestedWords.getEmptyInstance());assertTrue(state.writing());ime.showKeyAntTools();assertTrue((boolean)ReflectionHelpers.getField(strip,"keyAntToolsVisible"));assertFalse(state.writing());state.typed(System.currentTimeMillis());ime.setNeutralSuggestionStrip();assertTrue(state.writing());}finally{ime.onDestroy();}}
++
+ 
+  @Test public void selectedTextImprovementBypassesMissingLargeModel(){LatinIME ime=Robolectric.setupService(LatinIME.class);try{LanguagePill p=new LanguagePill(ime,new KeyAntBar(ime,null),false);ReflectionHelpers.setField(p,"selected",true);ReflectionHelpers.setField(p,"mode","correct");ReflectionHelpers.setField(p,"source","Ciao come stai tutto bene?");assertTrue(p.input(10));Shadows.shadowOf(Looper.getMainLooper()).idleFor(java.time.Duration.ofSeconds(2));assertEquals("Ciao, come stai? Tutto bene?",ReflectionHelpers.getField(p,"result"));assertFalse((boolean)ReflectionHelpers.getField(p,"busy"));p.close();}finally{ime.onDestroy();}}
+  @Test public void nativeKeyCentersStayCorrectAcrossFoldWidths(){LatinIME ime=Robolectric.setupService(LatinIME.class);try{for(int width:new int[]{320,400,760,1000}){var keyboard=new helium314.keyboard.keyboard.KeyboardLayoutSet.Builder(ime,null).setKeyboardGeometry(width,184).setSubtype(RichInputMethodManager.getInstance().getCurrentSubtype()).setSplitLayoutEnabled(width>=600).build().getKeyboard(helium314.keyboard.keyboard.KeyboardId.ELEMENT_ALPHABET);var detector=new helium314.keyboard.keyboard.KeyDetector();detector.setKeyboard(keyboard,0,0);for(int pass=0;pass<10;pass++)for(var key:keyboard.getSortedKeys())if(key.getCode()>32&&key.getCode()<127&&key.getWidth()>0)assertSame("Width "+width+" key "+key.getCode(),key,detector.detectHitKey(key.getX()+key.getWidth()/2,key.getY()+key.getHeight()/2));}}finally{ime.onDestroy();}}
+diff --git a/app/src/test/java/helium314/keyboard/keyforma/KeyAntV610Test.java b/app/src/test/java/helium314/keyboard/keyforma/KeyAntV610Test.java
+index fbf9708..233dceb 100644
+--- a/app/src/test/java/helium314/keyboard/keyforma/KeyAntV610Test.java
++++ b/app/src/test/java/helium314/keyboard/keyforma/KeyAntV610Test.java
+@@ -49,7 +49,7 @@ public class KeyAntV610Test {
+  ShadowSpeechRecognizer service(PillVoice v){return Shadows.shadowOf((SpeechRecognizer)ReflectionHelpers.getField(v,"recognizer"));}
+  @Test public void defaultUsesContinuousAudioAndOldExperimentalFalseDoesNotRestoreBeepingRoute(){
+   KeyAntPrefs.get(c).edit().putBoolean("ka_voice_direct_audio",false).apply();assertTrue(PillVoice.directAudio(c));PillVoice v=voice();v.start("it");idle();
+-  assertEquals(1,audio.size());assertEquals(12000,audio.get(0).silence);assertTrue(service(v).getLastRecognizerIntent().hasExtra(RecognizerIntent.EXTRA_AUDIO_SOURCE));assertEquals("it-IT",service(v).getLastRecognizerIntent().getStringExtra(RecognizerIntent.EXTRA_LANGUAGE));v.close();assertTrue(audio.get(0).closed);
++  assertEquals(1,audio.size());assertEquals(5000,audio.get(0).silence);assertTrue(service(v).getLastRecognizerIntent().hasExtra(RecognizerIntent.EXTRA_AUDIO_SOURCE));assertEquals("it-IT",service(v).getLastRecognizerIntent().getStringExtra(RecognizerIntent.EXTRA_LANGUAGE));v.close();assertTrue(audio.get(0).closed);
+  }
+  @Test public void standaloneQuestionMarkCannotReplaceTheSentenceShownInTheVideo(){
+   for(String mark:List.of("?","punto interrogativo")){
+@@ -122,4 +122,24 @@ public class KeyAntV610Test {
+    v.stop();recognizer.triggerOnResults(b);idle();assertEquals(List.of(prudent?"Non so quando arriva.":"Non so quando arriva?"),ready);
+   }
+  }
++
++ @Test public void repeatedSystemPartialCannotKeepTheMicrophoneAliveAfterEndOfSpeech(){
++  KeyAntPrefs.get(c).edit().putString("ka_voice_capture","system").apply();PillVoice v=voice();v.start("it");idle();var recognizer=service(v);
++  recognizer.triggerOnPartialResults(result("Una frase"));idle();recognizer.triggerOnEndOfSpeech();idle();
++  for(int i=0;i<6;i++){advance(1000);recognizer.triggerOnPartialResults(result("Una frase"));idle();}
++  advance(2200);assertEquals(List.of("Una frase"),ready);assertTrue(recognizer.isDestroyed());
++ }
++ @Test public void strictDeviceModeNeverSwitchesToNetworkProvider(){
++  KeyAntPrefs.get(c).edit().putString("ka_voice_engine","device").apply();PillVoice v=voice();v.start("it");idle();
++  for(int i=0;i<4&&errors.isEmpty();i++){audio.get(audio.size()-1).listener.failed();advance(300);}
++  assertEquals(1,errors.size());assertFalse((Boolean)ReflectionHelpers.getField(v,"providerFallback"));v.close();
++ }
++
++ @Test public void resumedSpeechAfterProviderEndExtendsTheExistingDeadline(){
++  KeyAntPrefs.get(c).edit().putString("ka_voice_capture","system").apply();PillVoice v=voice();v.start("it");idle();var recognizer=service(v);
++  recognizer.triggerOnPartialResults(result("Prima frase"));idle();recognizer.triggerOnEndOfSpeech();idle();advance(4000);
++  recognizer.triggerOnPartialResults(result("Prima frase e continuo"));idle();advance(2000);
++  assertFalse((Boolean)ReflectionHelpers.getField(v,"stopping"));assertTrue(ready.isEmpty());
++  v.stop();recognizer.triggerOnResults(result("Prima frase e continuo"));idle();assertEquals(List.of("Prima frase e continuo"),ready);
++ }
+ }
+diff --git a/docs/AGGIORNAMENTO-0.7.3.md b/docs/AGGIORNAMENTO-0.7.3.md
+new file mode 100644
+index 0000000..476d604
+--- /dev/null
++++ b/docs/AGGIORNAMENTO-0.7.3.md
+@@ -0,0 +1,23 @@
++# KeyAnt 0.7.3 — dettatura nel campo e modelli vocali
++
++La dettatura scrive per default nel campo del messaggio. I risultati parziali sostituiscono solo la porzione di testo della sessione; il microfono conclude, × ripristina l’eventuale selezione originale finché campo, testo e cursore sono invariati. Non invia messaggi. Digitare interrompe l’aggiornamento vocale; un cambio campo/cursore interrompe la sostituzione e permette di copiare la trascrizione. Le app che non espongono un estratto completo e affidabile usano la card precedente. La card rimane selezionabile in Dettatura → Ascolto e conserva pulizia prudente/AI con confronto originale.
++
++Quindici effetti condividono il renderer fra ascolto, anteprima in loop, selettore e Maker: Originale, Onde, Punti, Vela, VU meter, Spettro, Equalizzatore, Impulso, Particelle, Liquido, Creste, Corde, Specchio, Accordatore, Vetro arcobaleno. Il vetro copre tutta la capsula. Il movimento si ferma fuori schermo e rispetta le preferenze del sistema/app. Le animazioni rappresentano il livello audio, non la confidenza del riconoscitore.
++
++Motori: Automatico (mantiene la preferenza locale precedente e relativo fallback), Solo sul dispositivo Android, Servizio Android, Parakeet TDT 0.6B v3 offline facoltativo. Parakeet richiede un download esplicito di 670.576.784 byte (circa 671 MB) in Dettatura, verifica SHA256 di tutti i file e non passa automaticamente alla rete. L’audio non viene salvato. Il modello lavora per frasi dopo pause, con coda limitata e segnalazione se il telefono non tiene il ritmo. Non è streaming parola per parola né riscrittura grammaticale. Le prestazioni del Fold/Pixel restano da misurare sul dispositivo; un test CPU server non le dimostra. I suggerimenti del dizionario personale sono supportati dal servizio Android; Parakeet non riceve automaticamente il vocabolario personale.
++
++La pausa predefinita passa da 12 a 5 secondi; i valori già scelti restano invariati. I risultati identici non prolungano l’ascolto dopo fine parlato. L’attesa del risultato finale dopo stop passa a 3 secondi quando esiste già testo, conservandolo se il servizio tarda. Questa soglia non significa comprendere semanticamente la fine di una conversazione.
++
++ANT e ricerca raggiungono destinazione, motore ed effetto. I comandi di disattivazione conservano lo stile e una scelta esplicita aggiorna anche la creazione Maker attiva. ANT non scarica modelli autonomamente e non attiva Parakeet se manca il download. Il Maker conserva il proprio effetto vocale. Il decoder touch rifiuta probabilità invalide e sceglie il candidato con evidenza maggiore senza dipendere dall’ordine dei vicini, mantenendo la protezione del centro dei tasti, le soglie conservative, i confini split e le policy private. Non si dichiara una misura di accuratezza di digitazione o superiorità a Gboard.
++
++## Riferimenti e limiti delle prove
++- Registrazione utente 69,802 s: traccia PCM interamente silenziosa (picco/RMS zero), verificabile visivamente ma inadatta al confronto audio/testo. File e frame personali esclusi dalla pubblicazione.
++- Video NuKey: riferimento per stili di animazione e scelta del modello Parakeet, non un’implementazione Android riutilizzabile. Dimensione iOS del video non applicabile al pacchetto ONNX Android.
++- https://huggingface.co/nvidia/parakeet-tdt-0.6b-v3
++- https://k2-fsa.github.io/sherpa/onnx/pretrained_models/offline-transducer/nemo-transducer-models.html
++- https://developer.android.com/reference/android/speech/RecognizerIntent
++- https://nukeyapp.com/
++
++Modello convertito: csukuangfj/sherpa-onnx-nemo-parakeet-tdt-0.6b-v3-int8, revisione ed5d745623472f97cfc2e6c2916ee248798fc5a8. Runtime sherpa-onnx 2.0.3, SHA256 4c766e2e74c9d33d595338c21fe3b305c73ba45d47e96a235675c33142a2ec50. Il download del runtime per ricompilare è in tools/fetch-parakeet-runtime.py. Licenze incluse negli asset dell’APK. Modello NVIDIA CC BY 4.0; runtime Apache 2.0 e ONNX Runtime MIT.
++
++Prova reale del modello su CPU Linux: campione inglese ufficiale sherpa e campione italiano Google FLEURS. Sul campione italiano compare «prefige» invece di «prefigge» (1 sostituzione su 23 parole normalizzate). Una singola prova conferma il funzionamento, non la superiorità del modello né l’accuratezza nella dettatura spontanea. Dettagli in PARAKEET-0.7.3.json. Dataset: https://huggingface.co/datasets/google/fleurs (CC BY 4.0).
+diff --git a/docs/PARAKEET-0.7.3.json b/docs/PARAKEET-0.7.3.json
+new file mode 100644
+index 0000000..63f2a6f
+--- /dev/null
++++ b/docs/PARAKEET-0.7.3.json
+@@ -0,0 +1,9 @@
++{
++  "sample": "google/fleurs it_it test/10000151032537989529.wav",
++  "reference": "il blog è uno strumento che si prefigge di incoraggiare la collaborazione e sviluppare l'apprendimento degli studenti ben oltre la giornata scolastica normale",
++  "recognized": "Il blog è uno strumento che si prefige di incoraggiare la collaborazione e sviluppare l'apprendimento degli studenti ben oltre la giornata scolastica normale.",
++  "word_edits": 1,
++  "reference_words": 23,
++  "runtime": "sherpa-onnx 2.0.3, Linux CPU, two threads",
++  "limits": "Single sample smoke test, not a phone benchmark or a general accuracy estimate. User recording audio is silent."
++}
+\ No newline at end of file
+diff --git a/docs/TEST-0.7.3.json b/docs/TEST-0.7.3.json
+new file mode 100644
+index 0000000..38d5bdc
+--- /dev/null
++++ b/docs/TEST-0.7.3.json
+@@ -0,0 +1,155 @@
++{
++  "totals": {
++    "tests": 244,
++    "failures": 0,
++    "errors": 0,
++    "skipped": 0
++  },
++  "suites": [
++    {
++      "name": "helium314.keyboard.keyforma.KeyAnt699Test",
++      "tests": "12",
++      "failures": "0",
++      "errors": "0",
++      "skipped": "0",
++      "time": "10.24"
++    },
++    {
++      "name": "helium314.keyboard.keyforma.KeyAnt700Test",
++      "tests": "16",
++      "failures": "0",
++      "errors": "0",
++      "skipped": "0",
++      "time": "2.278"
++    },
++    {
++      "name": "helium314.keyboard.keyforma.KeyAnt701Test",
++      "tests": "16",
++      "failures": "0",
++      "errors": "0",
++      "skipped": "0",
++      "time": "3.1"
++    },
++    {
++      "name": "helium314.keyboard.keyforma.KeyAnt702Test",
++      "tests": "17",
++      "failures": "0",
++      "errors": "0",
++      "skipped": "0",
++      "time": "5.746"
++    },
++    {
++      "name": "helium314.keyboard.keyforma.KeyAnt703Test",
++      "tests": "18",
++      "failures": "0",
++      "errors": "0",
++      "skipped": "0",
++      "time": "2.705"
++    },
++    {
++      "name": "helium314.keyboard.keyforma.KeyAntCorrection641Test",
++      "tests": "6",
++      "failures": "0",
++      "errors": "0",
++      "skipped": "0",
++      "time": "3.876"
++    },
++    {
++      "name": "helium314.keyboard.keyforma.KeyAntPrivate669Test",
++      "tests": "8",
++      "failures": "0",
++      "errors": "0",
++      "skipped": "0",
++      "time": "0.672"
++    },
++    {
++      "name": "helium314.keyboard.keyforma.KeyAntUi700Test",
++      "tests": "3",
++      "failures": "0",
++      "errors": "0",
++      "skipped": "0",
++      "time": "2.394"
++    },
++    {
++      "name": "helium314.keyboard.keyforma.KeyAntUi703Test",
++      "tests": "1",
++      "failures": "0",
++      "errors": "0",
++      "skipped": "0",
++      "time": "0.629"
++    },
++    {
++      "name": "helium314.keyboard.keyforma.KeyAntV54Test",
++      "tests": "15",
++      "failures": "0",
++      "errors": "0",
++      "skipped": "0",
++      "time": "1.077"
++    },
++    {
++      "name": "helium314.keyboard.keyforma.KeyAntV55Test",
++      "tests": "15",
++      "failures": "0",
++      "errors": "0",
++      "skipped": "0",
++      "time": "1.238"
++    },
++    {
++      "name": "helium314.keyboard.keyforma.KeyAntV610Test",
++      "tests": "19",
++      "failures": "0",
++      "errors": "0",
++      "skipped": "0",
++      "time": "0.916"
++    },
++    {
++      "name": "helium314.keyboard.keyforma.KeyAntV613Test",
++      "tests": "32",
++      "failures": "0",
++      "errors": "0",
++      "skipped": "0",
++      "time": "4.198"
++    },
++    {
++      "name": "helium314.keyboard.keyforma.KeyAntV616Test",
++      "tests": "18",
++      "failures": "0",
++      "errors": "0",
++      "skipped": "0",
++      "time": "1.82"
++    },
++    {
++      "name": "helium314.keyboard.keyforma.KeyAntV630Test",
++      "tests": "22",
++      "failures": "0",
++      "errors": "0",
++      "skipped": "0",
++      "time": "2.189"
++    },
++    {
++      "name": "helium314.keyboard.keyforma.KeyAntV68Test",
++      "tests": "9",
++      "failures": "0",
++      "errors": "0",
++      "skipped": "0",
++      "time": "4.772"
++    },
++    {
++      "name": "helium314.keyboard.keyforma.KeyAntV69Test",
++      "tests": "8",
++      "failures": "0",
++      "errors": "0",
++      "skipped": "0",
++      "time": "0.911"
++    },
++    {
++      "name": "helium314.keyboard.keyforma.KeyAntWriting670Test",
++      "tests": "9",
++      "failures": "0",
++      "errors": "0",
++      "skipped": "0",
++      "time": "2.948"
++    }
++  ],
++  "environment": "Robolectric 4.14.1 Android 35 native graphics; some regression methods also target Android 33. No physical phone verification."
++}
+\ No newline at end of file
+diff --git a/tools/fetch-parakeet-runtime.py b/tools/fetch-parakeet-runtime.py
+new file mode 100644
+index 0000000..90fe211
+--- /dev/null
++++ b/tools/fetch-parakeet-runtime.py
+@@ -0,0 +1,19 @@
++#!/usr/bin/env python3
++"""Fetch the pinned Android runtime. Does not download speech models or user audio."""
++import hashlib,urllib.request,os
++from pathlib import Path
++root=Path(__file__).resolve().parent.parent
++url="https://github.com/k2-fsa/sherpa-onnx/releases/download/v2.0.3/sherpa-onnx-2.0.3.aar"
++expected="4c766e2e74c9d33d595338c21fe3b305c73ba45d47e96a235675c33142a2ec50"
++out=root/"app/libs/sherpa-onnx-2.0.3.aar"
++if out.exists() and hashlib.sha256(out.read_bytes()).hexdigest()==expected:
++ print("Runtime already verified")
++else:
++ out.parent.mkdir(parents=True,exist_ok=True)
++ temp=out.with_suffix(".part")
++ try:
++  with urllib.request.urlopen(url,timeout=60) as r,temp.open("wb") as f:
++   while chunk:=r.read(1024*1024):f.write(chunk)
++  if hashlib.sha256(temp.read_bytes()).hexdigest()!=expected:raise RuntimeError("Runtime SHA256 mismatch")
++  os.replace(temp,out);print("Runtime downloaded and verified")
++ finally:temp.unlink(missing_ok=True)

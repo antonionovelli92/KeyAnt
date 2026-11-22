@@ -31,3 +31,14 @@
 - Il pannello strumenti può mantenere l’aspetto precedente, seguire il tema o usarne un altro. Riutilizzare il renderer dei copritasti, conservando fasce distinte per icona ed etichetta e organizzazione dei comandi.
 - Disattivare i colori personali non deve cancellare la palette salvata per il tema. Ricerca, riepilogo rapido, impostazioni dettagliate e ANT devono usare lo stesso stato.
 - La pulizia vocale mantiene sempre l’originale confrontabile. I ripensamenti numerici richiedono marcatori espliciti e un’opzione dedicata: non interpretare ogni «no» come cancellazione e non alterare citazioni, nomi o numeri non corretti esplicitamente.
+
+- Le pillole di accesso hanno comandi laterali simmetrici: non aggiungere padding solo a sinistra né una seconda freccia esterna. Verificare il centro nella barra completa e nel tastierino numerico.
+- Un campo numerico senza etichetta non prova che sia OTP. L’alternativa Authenticator deve restare reversibile, con il provider password disponibile e senza normalizzazione automatica del contenuto per sola euristica.
+- Le ripartenze vocali non devono cancellare sostantivi validi come «dei dei greci», citazioni o nomi personali. Non indovinare numeri da parole ambigue come «nodi dicevo».
+
+- Le risposte inline del gestore password non devono bloccare codici o copie più recenti. Conservare la superficie opaca solo per lo stesso campo e ripristinarla dopo consumo/scadenza senza resuscitare contenuti vecchi. Verificare notifiche, risposte tardive, cambio campo, dismiss e policy private.
+- La capsula Authenticator è compatta e centrata dentro una barra a comandi laterali simmetrici; la larghezza della barra non è la larghezza della capsula. Le etichette esplicite SMS/email/WhatsApp escludono Authenticator; non dedurre il canale dal solo nome dell'app.
+
+- Dettatura diretta: aggiornare soltanto la porzione posseduta dalla sessione. Cambio di campo, testo o cursore interrompe la sostituzione; non indovinare una cancellazione. × ripristina la selezione iniziale solo finché la sessione la possiede. Non inviare messaggi automaticamente. Con estratto incompleto usare la card opzionale e conservare l'originale per la pulizia.
+- Parakeet è un download facoltativo e verificato per file, separato dall'APK. Non passare dal motore offline alla rete senza una scelta dell'utente. Capture e inferenza fuori dal thread UI, memoria/coda limitate, microfono rilasciato anche su stop e errore. Non confondere riconoscimento per frasi, riscrittura AI e comprensione semantica della fine del dialogo.
+- Le animazioni vocali condividono renderer tra capsula, selettore e Maker. Il vetro arcobaleno interessa l'intera capsula, senza cambiare i bersagli dei controlli. Le anteprime sono simulate; le animazioni reali seguono il livello audio e si fermano fuori schermo.

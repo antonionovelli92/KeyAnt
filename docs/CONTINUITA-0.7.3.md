@@ -1,0 +1,15 @@
+# Ripresa KeyAnt 0.7.3
+
+Sorgente finale: commit locale 7b64074ffaa1170a3bc8892bc03d37f2ce074319, albero b5385b4534c17222d650d6ff9c0493723d638597. Base verificata 0.7.2: albero a4ab6123eea6ed75c93b75caed2e8324a2c521cf. Il commit locale non è un commit del ramo documentale GitHub: il contenuto è ricostruibile tramite le patch.
+
+1. Scaricare il sorgente completo della release v0.6.97: https://github.com/antonionovelli92/KeyAnt/releases/download/v0.6.97/KeyAnt-0.6.97-sorgenti.zip — SHA256 b8c9ddcb844141a836dd0ba873380a198fa4bb914430ac384868139b0623c57c.
+2. Estrarre e applicare in ordine le patch 0.6.98, 0.6.99, 0.7.0, 0.7.1, 0.7.2 e 0.7.3 incluse nel checkpoint. I file della base nel git di riferimento hanno mode 100644: alcuni estrattori ZIP preservano vecchi flag eseguibili. Normalizzarli per confrontare gli alberi, senza modificare il contenuto.
+3. Eseguire `python3 tools/fetch-parakeet-runtime.py`. Il runtime AAR non è incluso nelle patch; lo script verifica l'hash fissato. I pesi Parakeet si scaricano solo dall'interfaccia dell'app, non sono richiesti per la compilazione.
+4. Toolchain usata: Temurin 21.0.13.1+2, Gradle 8.14, SDK/build tools 36; target35/min26, arm64-v8a/x86_64. La build usa `-PkeyantNativePrebuiltDir=/percorso/native` con libjni_latinime.so estratte dalle due ABI della APK 0.6.97 verificata (SHA256 dd13309f63f2d2a813dc078f1441c24b8999ae8e5ddf20034da6a9e3a8cad532). La chiave originale va fornita esternamente con KEYANT_KEYSTORE: non è distribuita né pubblicata.
+5. `:app:testReleaseUnitTest` con le 18 suite elencate nel rapporto TEST, poi `:app:assembleDebugNoMinify`. Quest'ultima variante non è debuggable e usa la firma originale. Build eseguita con un worker e compilatore Kotlin in-process, heap Gradle 3 GB; la compilazione parallela delle due varianti con heap 1 GB è stata interrotta perché non avanzava.
+
+244 metodi di test, nessun fallimento/errore/skip. Il commit funzionale testato è df9d0e6168bee42be9807bd406dc1b5b88333cb2; il commit finale modifica soltanto due spiegazioni nell'interfaccia (lingua Parakeet automatica e confronto originale riservato alla card) ed è stato ricompilato. Lint vital della variante superato; lint globale non dichiarato superato. Nessuna verifica su telefono fisico.
+
+Render nativi: quattro tavole dei 15 effetti (chiaro/scuro, 320/700 dp), tre capsule reali con campo sintetico (320/400/700 dp), due schermate impostazioni. Nove immagini nel checkpoint della chat. Verifiche di firma, integrità ZIP, allineamento e metadati APK nel rapporto di rilascio. Le nuove librerie arm64 rispettano l'allineamento ELF 16 KB. Nessuna misurazione di frame rate o HDR.
+
+Restano da provare sul dispositivo: qualità e latenza dei riconoscitori, supporto InputConnection nelle app reali, comportamento del microfono e memoria/temperatura con Parakeet. Il video personale allegato aveva una traccia audio interamente silenziosa: non è usato come benchmark ASR. Il campione italiano pubblico evidenzia un errore ortografico, documentato nel rapporto; non dichiarare precisione perfetta.

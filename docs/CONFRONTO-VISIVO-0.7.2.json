@@ -1,0 +1,119 @@
+{
+  "baseline": "0.7.1",
+  "current": "0.7.2",
+  "native_numeric_renders": [
+    {
+      "render": "KeyAnt-701-numeric-compact_landscape-false.png",
+      "size": [
+        800,
+        292
+      ],
+      "changed_bounds": [
+        44,
+        4,
+        756,
+        48
+      ],
+      "pixels_below_strip_identical": true
+    },
+    {
+      "render": "KeyAnt-701-numeric-compact_landscape-true.png",
+      "size": [
+        800,
+        292
+      ],
+      "changed_bounds": [
+        44,
+        4,
+        756,
+        48
+      ],
+      "pixels_below_strip_identical": true
+    },
+    {
+      "render": "KeyAnt-701-numeric-compact_portrait-false.png",
+      "size": [
+        360,
+        292
+      ],
+      "changed_bounds": [
+        44,
+        4,
+        316,
+        48
+      ],
+      "pixels_below_strip_identical": true
+    },
+    {
+      "render": "KeyAnt-701-numeric-compact_portrait-true.png",
+      "size": [
+        360,
+        292
+      ],
+      "changed_bounds": [
+        44,
+        4,
+        316,
+        48
+      ],
+      "pixels_below_strip_identical": true
+    },
+    {
+      "render": "KeyAnt-701-numeric-wide_landscape-false.png",
+      "size": [
+        1000,
+        292
+      ],
+      "changed_bounds": [
+        44,
+        4,
+        956,
+        48
+      ],
+      "pixels_below_strip_identical": true
+    },
+    {
+      "render": "KeyAnt-701-numeric-wide_landscape-true.png",
+      "size": [
+        1000,
+        292
+      ],
+      "changed_bounds": [
+        44,
+        4,
+        956,
+        48
+      ],
+      "pixels_below_strip_identical": true
+    },
+    {
+      "render": "KeyAnt-701-numeric-wide_portrait-false.png",
+      "size": [
+        700,
+        292
+      ],
+      "changed_bounds": [
+        44,
+        4,
+        656,
+        48
+      ],
+      "pixels_below_strip_identical": true
+    },
+    {
+      "render": "KeyAnt-701-numeric-wide_portrait-true.png",
+      "size": [
+        700,
+        292
+      ],
+      "changed_bounds": [
+        44,
+        4,
+        656,
+        48
+      ],
+      "pixels_below_strip_identical": true
+    }
+  ],
+  "manually_inspected": 16
+}
